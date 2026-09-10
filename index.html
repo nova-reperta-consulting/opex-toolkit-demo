@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nova Reperta · AI-Enabled OpEx toolkit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#060B16; --ground-2:#0A1120; --surface:#0C1526; --surface-2:#111C31;
+  --hairline:#1B2A47; --hairline-soft:#152239;
+  --ink:#E8EEF9; --ink-2:#93A4C4; --ink-3:#57678A;
+  --live:#4E86F7; --green:#4FC08D; --amber:#E5A03C;
+  --sans:'Hanken Grotesk','Segoe UI',system-ui,-apple-system,sans-serif;
+  --mono:'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);line-height:1.55;
+  padding:clamp(28px,5vw,72px) clamp(20px,5vw,64px) 80px}
+.wrap{max-width:1080px;margin:0 auto}
+
+.eyebrow{font-family:var(--mono);font-size:clamp(9.5px,1.1vw,10.5px);letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink-3)}
+h1{font-size:clamp(26px,4.2vw,42px);font-weight:600;letter-spacing:-.02em;line-height:1.14;margin-top:14px}
+.lede{font-size:clamp(14px,1.6vw,17px);color:var(--ink-2);max-width:64ch;margin-top:18px}
+.lede b{color:var(--ink);font-weight:600}
+
+.notice{display:flex;gap:13px;align-items:flex-start;margin-top:30px;padding:15px 17px;
+  border:1px solid rgba(229,160,60,.36);border-radius:10px;background:rgba(229,160,60,.07)}
+.notice .dot{flex:0 0 auto;width:7px;height:7px;border-radius:50%;background:var(--amber);margin-top:8px}
+.notice p{font-size:clamp(12.5px,1.4vw,14px);color:#DBC79E}
+.notice p b{color:#F0DCB4;font-weight:600}
+
+.rule{border:none;border-top:1px solid var(--hairline-soft);margin:44px 0 0}
+
+.cards{display:grid;gap:20px;margin-top:36px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--hairline);
+  border-radius:14px;padding:24px 22px 22px;text-decoration:none;color:inherit;transition:.18s}
+.card:hover{border-color:#2E4674;background:var(--surface-2);transform:translateY(-2px)}
+.card .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-3)}
+.card h2{font-size:clamp(17px,2vw,20px);font-weight:600;letter-spacing:-.01em;margin-top:9px}
+.card p{font-size:clamp(12.5px,1.4vw,13.5px);color:var(--ink-2);margin-top:11px;flex:1}
+.card .go{margin-top:18px;font-size:13px;font-weight:600;color:#9CBEFF;display:inline-flex;align-items:center;gap:7px}
+.card .go .arw{font-size:11px;opacity:.85}
+
+.sub{margin-top:52px}
+.sub h3{font-size:clamp(15px,1.8vw,17px);font-weight:600;letter-spacing:-.01em}
+.sub p{font-size:clamp(12.5px,1.4vw,14px);color:var(--ink-2);margin-top:10px;max-width:62ch}
+.steps{margin-top:20px;display:grid;gap:11px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.step{border:1px solid var(--hairline);border-radius:10px;background:var(--ground-2);padding:14px 15px}
+.step .n{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.step .t{font-size:13px;color:#B3C1DA;margin-top:6px}
+
+footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--hairline-soft);
+  font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);
+  display:flex;flex-wrap:wrap;gap:8px 20px}
+</style></head><body>
+<div class="wrap">
+
+  <div class="eyebrow">Nova Reperta · Internal</div>
+  <h1>The AI-Enabled OpEx toolkit,<br>open for a look around</h1>
+  <p class="lede">Everything we use to run an OpEx Quickscan — the analyses, what each one produces, and
+  what you type to start it. This is a <b>familiarisation environment</b>: read the map, open a finished
+  analysis, see how the pieces join up before you run one on a real client.</p>
+
+  <div class="notice"><span class="dot"></span>
+    <p><b>Nothing here is a real client.</b> Every figure, quote and finding belongs to Northwind
+    Assurance, an insurer we invented for this purpose. Real engagement material stays in the private
+    repository.</p></div>
+
+  <hr class="rule">
+
+  <div class="cards">
+    <a class="card" href="opex-constellation.html">
+      <span class="k">The map</span>
+      <h2>OpEx Constellation</h2>
+      <p>Every tool in the toolkit, what it produces, which of them are live today, and where each one
+      lives. Click any star for a description, a look at the skill itself, and the three steps to run
+      it — what to install, what to have ready, and the exact prompt to start with.</p>
+      <span class="go">Open the map <span class="arw">▸</span></span>
+    </a>
+    <a class="card" href="sandbox/index.html">
+      <span class="k">The sandbox</span>
+      <h2>Northwind Assurance</h2>
+      <p>One fictional engagement, read end to end. A claims team of 42 FTE, its process baseline, and
+      five finished analyses that all agree with each other — so you can see what a Quickscan actually
+      produces before you sit in front of a client.</p>
+      <span class="go">Open the engagement <span class="arw">▸</span></span>
+    </a>
+  </div>
+
+  <div class="sub">
+    <h3>How to use this</h3>
+    <p>The map answers what exists and how to run it. The sandbox answers what the output looks like.
+    Between them you should be able to pick an analysis and start it on your own engagement.</p>
+    <div class="steps">
+      <div class="step"><div class="n">Step 1</div>
+        <div class="t">Open the map and find the analysis that fits your question.</div></div>
+      <div class="step"><div class="n">Step 2</div>
+        <div class="t">Read its panel: what it needs before you start, and the prompt that kicks it off.</div></div>
+      <div class="step"><div class="n">Step 3</div>
+        <div class="t">Open the same analysis in the sandbox to see what it produces.</div></div>
+      <div class="step"><div class="n">Step 4</div>
+        <div class="t">Install the plugin the panel names, and run it on your own team.</div></div>
+    </div>
+  </div>
+
+  <footer>
+    <span>Nova Reperta</span><span>AI-Enabled OpEx</span><span>Sample data only</span>
+  </footer>
+</div>
+</body></html>

@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Team Barometer — read-out</title>
+<style>
+  *{box-sizing:border-box}
+  :root{--page:#FFF}
+  html,body{margin:0;height:100vh;overflow:hidden}
+  body{background:var(--page);font-family:'Aptos','Segoe UI',system-ui,sans-serif;transition:background .25s}
+  /* ===== NR BRAND THEME (inlined from brand.css; swap for a client template) ===== */
+  #pw{--navy:#0B2347;--navy-fill:#0B2347;--slate:#364156;--steel:#7991AD;--green:#1C7A4A;--accent:#6EB1D1;--sky:#A9D5E6;--navy2:#16315B;
+      --slate-10:rgba(54,65,86,.09);--rag-green:#2F8F6B;--rag-amber:#D49A3A;--rag-red:#D2645A;--rag-na:#9AA4B0;
+      --ink:#15243A;--txt:#46505C;--mut:#7A838F;--line:#E1E6EE;--card:#FFF;--bg:#FFF;
+      --sh:0 1px 2px rgba(20,30,50,.04),0 14px 32px -24px rgba(20,30,50,.30);
+      width:100%;max-width:2200px;margin:0 auto;height:100vh;overflow:hidden;position:relative;
+      display:flex;flex-direction:column;background:var(--bg);color:var(--ink);padding:76px 40px 12px 98px}
+  #pw[data-t="dark"]{--bg:#16202C;--card:#1E2937;--ink:#EAEFF5;--txt:#C4CEDA;--mut:#94A1B2;--line:#2A3744;--navy-fill:#243246;--accent:#8FC7E8;--sh:0 1px 2px rgba(0,0,0,.4),0 14px 32px -24px rgba(0,0,0,.6)}
+  body:has(#pw[data-t="dark"]){--page:#0E1620}
+  .nr-rail{position:absolute;left:0;top:0;bottom:0;width:52px;background:var(--navy-fill)}
+  .toprow{position:absolute;top:22px;left:0;right:40px;display:flex;justify-content:space-between;align-items:center;gap:14px;z-index:3}
+  .tags{display:flex;align-items:center;gap:11px;min-width:0}
+  .nr-pill{display:inline-flex;align-items:center;gap:11px;background:var(--green);padding:10px 22px 10px 14px;border-radius:0 9px 9px 0}
+  .nr-pill img{height:21px;filter:brightness(0) invert(1)}
+  .nr-pill b{color:#fff;font-size:13px;font-weight:700;letter-spacing:.3px}
+  .nr-track{background:#E3E8EF;color:var(--navy);font-weight:700;font-size:11.5px;letter-spacing:.8px;padding:9px 16px;border-radius:8px}
+  #pw[data-t="dark"] .nr-track{background:#243246;color:#EAEFF5}
+  .seg{display:flex;background:var(--slate-10);border-radius:999px;padding:3px}
+  .seg button{font-size:12px;font-weight:600;border:none;background:transparent;color:var(--mut);padding:6px 14px;border-radius:999px;cursor:pointer}
+  .seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--sh)}
+  .ctrls{display:flex;gap:9px;flex:none}
+  h1{font-size:clamp(20px,1.85vw,28px);font-weight:700;color:var(--navy);letter-spacing:-.2px;line-height:1.24;margin:0;max-width:1300px}
+  #pw[data-t="dark"] h1{color:#EAEFF5}
+  h1 .hl{color:var(--green)}
+  .subrow{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:8px 0 16px}
+  .subt{font-size:15px;font-weight:600;color:var(--accent)}
+  /* body / cards */
+  #view{flex:1;min-height:0;position:relative;overflow:hidden}
+  #vinner{position:absolute;top:0;left:0;width:100%;transform-origin:top left;padding-bottom:24px}
+  .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;align-items:stretch}
+  @media(max-width:1280px){.grid{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:820px){.grid{grid-template-columns:repeat(2,1fr)}}
+  .card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh);padding:20px 20px 18px;position:relative}
+  .step{position:absolute;top:13px;left:14px;width:23px;height:23px;border-radius:50%;background:var(--slate-10);color:var(--mut);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .chd{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;margin-bottom:13px}
+  .cnm{font-size:18px;font-weight:600;color:var(--ink);line-height:1.2}
+  .cq{font-size:13px;color:var(--mut);line-height:1.35;margin-bottom:11px}
+  .ladd{display:flex;gap:4px;margin:1px 0 15px}
+  .lc{flex:1;height:7px;border-radius:4px}
+  .subs{flex:1;display:flex;flex-direction:column;gap:16px}
+  .sub-h{display:flex;align-items:center;gap:8px}
+  .dot{flex:none;width:8px;height:8px;border-radius:50%}
+  .sub-nm{flex:1;min-width:0;font-size:15px;font-weight:600;color:var(--ink);line-height:1.25}
+  .sub-sc{flex:none;font-size:13.5px;font-weight:700}
+  .ins{list-style:none;margin:5px 0 0;padding:0}
+  .ins li{position:relative;padding-left:15px;font-size:14px;color:var(--txt);line-height:1.45;margin:4px 0}
+  .ins li::before{content:"";position:absolute;left:2px;top:8px;width:5px;height:5px;border-radius:50%;background:var(--mut);opacity:.5}
+  .na{font-size:13.5px;color:var(--mut);font-style:italic;margin:5px 0 0;line-height:1.4}
+  .lead-n{width:44px;height:44px;border-radius:50%;color:#fff;font-size:19px;font-weight:600;display:flex;align-items:center;justify-content:center}
+  .ribbon{display:flex;gap:0;margin-bottom:22px;overflow-x:auto}
+  .chev{flex:1;min-width:150px;padding:13px 16px;margin-left:-10px;display:flex;flex-direction:column;gap:4px;color:var(--ink)}
+  .chev:first-child{margin-left:0}
+  .chev .ct{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:600;line-height:1.2}
+  .chev .cq2{font-size:12px;color:var(--txt);line-height:1.32;opacity:.85}
+  .nb{flex:none;width:22px;height:22px;border-radius:50%;color:#fff;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+  .chpill{align-self:flex-start;font-size:11.5px;font-weight:600;padding:2px 10px;border-radius:999px;margin-top:3px}
+  /* footer: source + legend bottom-left, trademark bottom-right */
+  #ft{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:12px;font-size:clamp(9.5px,0.75vw,12px);color:var(--mut)}
+  #ft .l{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  #ft .ov b{color:var(--ink)}
+  .legend{display:flex;gap:7px}
+  .lp{font-size:0.95em;font-weight:600;padding:0.2em 0.85em;border-radius:999px}
+  .conf{font-size:0.88em;letter-spacing:.5px;font-weight:600}
+  /* classic cyclic-arrow view */
+  .classic{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,500px) minmax(0,1fr);gap:16px;align-items:start}
+  .classic>svg{align-self:center}
+  .cl-col{display:flex;flex-direction:column;gap:14px}
+  .cl-h{display:flex;align-items:center;gap:8px;margin-bottom:1px}
+  .cl-num{flex:none;display:inline-flex;width:19px;height:19px;border-radius:50%;background:var(--navy);color:#fff;font-size:11px;font-weight:700;align-items:center;justify-content:center}
+  #pw[data-t="dark"] .cl-num{background:var(--accent);color:var(--navy)}
+  .cl-n{font-size:13.5px;font-weight:700;color:var(--navy)}
+  #pw[data-t="dark"] .cl-n{color:#EAEFF5}
+  .cl-q{font-size:11.5px;font-style:italic;color:var(--mut);margin:0 0 4px 27px}
+  .classic .ins{margin-left:27px}
+  .classic .ladd{margin:3px 0 9px 27px;max-width:200px}
+  .classic .ins li{font-size:12.5px;line-height:1.4}
+  .classic .ins li::before{background:var(--bc,var(--mut));opacity:1;width:6px;height:6px;top:7px}
+  @media(max-width:1100px){
+    .classic{grid-template-columns:1fr 1fr;justify-items:start;gap:14px 26px}
+    .classic>svg{grid-column:1/-1;order:-1;max-width:380px;justify-self:center;margin-bottom:4px}
+  }
+  @media(max-width:680px){
+    .classic{grid-template-columns:1fr}
+    .classic>svg{max-width:320px}
+  }
+  /* ================= BAROMETER BODY (content) ================= */
+  .dcols{display:grid;grid-template-columns:2fr 1fr;gap:38px;align-items:start}
+  .dcol-side{padding-left:6px;min-width:0}
+  .dcol-main{min-width:0}
+  .colhead{font-size:15px;font-weight:700;color:var(--ink);letter-spacing:-.1px;margin:0 0 14px}
+  .conc-grp{margin-bottom:16px}
+  .conc-h{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px}
+  .conc-h.pos{color:var(--pos)} .conc-h.neg{color:var(--neg)}
+  .conc-ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+  .conc-ul li{position:relative;padding-left:16px;font-size:13.5px;line-height:1.4;color:var(--ink)}
+  .conc-ul li::before{content:"";position:absolute;left:3px;top:7px;width:6px;height:6px;border-radius:50%}
+  .conc-ul.pos li::before{background:var(--pos)} .conc-ul.neg li::before{background:var(--neg)}
+  .insights.conc{display:flex;flex-direction:column;gap:15px}
+  .conc-k{display:block;font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px}
+  .conc-t{display:block;font-size:13.5px;line-height:1.42;color:var(--ink)}
+  .conc-so{display:block;margin-top:2px;background:var(--tint);border-left:4px solid var(--nr-green);border-radius:8px;padding:12px 14px}
+  .conc-so-k{display:block;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--nr-green);margin-bottom:4px}
+  .conc-so-t{display:block;font-size:14px;font-weight:600;line-height:1.42;color:var(--ink)}
+  .cap{font-size:12px;color:var(--muted);line-height:1.4;margin:-2px 0 10px}
+  .cap b{color:var(--ink);font-weight:700}
+
+  /* barometer token map onto NR palette (chrome above stays PW) */
+  #pw{--nr-navy:var(--navy);--nr-green:var(--green);--muted:var(--mut);--border:var(--line);--hair:var(--line);--tint:var(--slate-10);
+      --s1:#8C2B26;--s2:#B4483C;--s3:#C98A2C;--s4:#9FC3AE;--s5:#4F9A72;--s6:#1C7A4A;--pos:#1C7A4A;--neg:#A8352F;--warn:#96660A}
+  #pw[data-t="dark"]{--tint:#243246;--s1:#C0453E;--s2:#D06A4A;--s3:#D8A64A;--s4:#7FB49A;--s5:#40A579;--s6:#2FBE86;--pos:#3FBE86;--neg:#D0655C;--warn:#D2A64A}
+  .seg.small button{padding:4px 10px;font-size:11px}
+  .legend{flex-wrap:wrap;align-items:center;gap:9px}
+  .legend .lp{display:inline-flex;align-items:center;gap:5px;padding:0;background:none;border-radius:0}
+  .legend .sw{width:11px;height:11px;border-radius:2px;display:inline-block}
+/* KPI tiles */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--sh);padding:14px 16px;min-width:0}
+.kpi .l{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.kpi .v{font-size:30px;font-weight:800;line-height:1;color:var(--ink)}
+.kpi .u{font-size:14px;font-weight:700;color:var(--muted)}
+.kpi.pos .v{color:var(--pos)} .kpi.neg .v{color:var(--neg)}
+.kpi .s{font-size:11px;color:var(--muted);margin-top:5px}
+/* section label */
+.slab{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:18px 0 9px}
+/* theme strip */
+.themes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.tcard{background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--sh);padding:11px 13px;min-width:0}
+.tcard .tn{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:8px;min-height:30px}
+.tbar{height:8px;background:var(--hair);position:relative;overflow:hidden}
+.tbar>i{position:absolute;left:0;top:0;bottom:0;background:var(--nr-green)}
+.tcard .tv{font-size:19px;font-weight:800;color:var(--ink);margin-top:8px}
+.tcard .tv small{font-size:11px;font-weight:700;color:var(--muted)}
+/* insight band */
+.insights{display:flex;flex-direction:column;gap:9px}
+.ins{display:flex;gap:11px;align-items:flex-start}
+.ins .num{flex:none;width:22px;height:22px;border-radius:50%;background:var(--nr-navy);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+#pw[data-t="dark"] .ins .num{background:var(--nr-green)}
+.ins .tx{font-size:13.5px;line-height:1.4;color:var(--ink)}
+.ins .tx b{font-weight:700}
+/* distribution rows */
+.dist{display:flex;flex-direction:column;gap:3px}
+.dgrp{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:10px 0 4px}
+.drow{display:flex;align-items:center;gap:10px;padding:3px 0}
+.drow .dl{width:160px;flex:none;font-size:13px;font-weight:600;color:var(--ink)}
+.drow .db{flex:1;height:23px;display:flex;overflow:hidden;background:var(--hair);border-radius:3px}
+.drow .db span{height:100%}
+.drow .df{width:80px;flex:none;text-align:right;font-size:13px}
+.drow .df b{font-weight:800}
+.drow .df i{font-style:normal;color:var(--muted);font-size:11px}
+/* heatmap */
+.hmctl{display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.hmctl .lab{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.hm{border-collapse:separate;border-spacing:3px;width:100%;table-layout:fixed}
+table.hm th.rw{width:132px}
+table.hm td,table.hm th.col{overflow:hidden;text-overflow:ellipsis}
+table.hm th.col{font-size:12px;font-weight:700;color:var(--ink);text-align:center;vertical-align:bottom;padding:2px 4px 6px}
+table.hm th.rw{font-size:13.5px;text-align:left;padding-right:10px;white-space:nowrap;color:var(--ink);font-weight:600}
+table.hm th.rw .chip{font-size:9px;font-weight:700;color:var(--muted);background:var(--tint);padding:1px 5px;margin-left:4px}
+table.hm td{height:73px;text-align:center;font-size:15px;font-weight:700;color:#fff;min-width:56px}
+table.hm td.na{background:var(--hair)!important;color:var(--muted)!important;font-weight:400}
+table.hm tr.all th.rw{font-weight:800;color:var(--nr-navy)}
+#pw[data-t="dark"] table.hm tr.all th.rw{color:var(--ink)}
+table.hm tr.all td{outline:2px solid rgba(0,32,91,.35);outline-offset:-2px}
+.hmleg{display:flex;gap:9px;align-items:center;margin-top:9px;font-size:11px;color:var(--muted)}
+.dqbox{margin-top:12px;border:1px solid var(--border);border-left:4px solid var(--warn);background:var(--tint);padding:9px 13px;font-size:11.5px;color:var(--ink)}
+.dqbox b{color:var(--warn)}
+
+  /* -- responsive chrome: on a narrow screen the absolute toprow would collide, so drop it
+     into normal flow and let it wrap (applies to every artifact that uses this chrome) -- */
+  @media (max-width:760px){
+    #art,#pm,#pw{padding:14px 18px 10px 42px}
+    .nr-rail{width:24px}
+    .toprow{position:static;top:auto;right:auto;margin:0 0 12px;flex-wrap:wrap;justify-content:flex-start;gap:10px 12px}
+    .tags{flex-wrap:wrap;gap:8px;margin-left:-42px}
+    .ctrls{flex-wrap:wrap;gap:8px;flex:1 1 100%}
+  }
+  
+
+</style></head>
+<body>
+<div id="pw" data-t="light">
+  <div class="nr-rail"></div>
+  <div class="toprow">
+    <div class="tags">
+      <div class="nr-pill"><img alt="Nova Reperta" src="data:image/png;base64,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"><b id="ctx">OPEX QUICKSCAN</b></div>
+      <div class="nr-track" id="lens">MINDSET · TEAM BAROMETER</div>
+          
+    </div>
+    <div class="ctrls">
+      <div class="seg" id="views"><button data-v="distribution" class="on">Overview</button><button data-v="heatmap">By segment</button></div>
+      <div class="seg" id="theme"><button data-s="light" class="on">Light</button><button data-s="dark">Dark</button></div>
+    </div>
+  </div>
+  <h1 id="title"></h1>
+  <div class="subrow"><div class="subt" id="subt"></div></div>
+  <div id="view"><div id="vinner"></div></div>
+  
+  <div id="ft">
+    <div class="l"><span id="src"></span><div class="legend" id="lg"></div></div>
+    <span class="conf">Sample data · Northwind Assurance is fictional</span>
+  </div>
+</div>
+
+<script>
+const DATA = /* DATA */ {
+ "keyMessage": "Claims Handling likes the work and likes each other, and is running hot: workload is the one statement where the team is clearly negative, and development support is the second. Nothing here points at the people; both sit where the management system is thinnest.",
+ "teamName": "Claims Handling",
+ "context": "OPEX QUICKSCAN",
+ "lens": "MINDSET · TEAM BAROMETER",
+ "source": "Anonymous survey of the Claims Handling team, 26 Aug - 6 Sep 2026",
+ "method": "One standard statement set on a 1-6 agreement scale, answered anonymously. Favourable counts the top three points. Team-level reporting only, with a minimum cell of 4.",
+ "scale": {
+  "min": 1,
+  "max": 6,
+  "favourableFrom": 4,
+  "labels": [
+   "Completely disagree",
+   "Disagree",
+   "Rather disagree",
+   "Rather agree",
+   "Agree",
+   "Completely agree"
+  ]
+ },
+ "response": {
+  "invited": 42,
+  "responded": 34,
+  "ratePct": 81,
+  "window": "2 weeks",
+  "anonymity": "anonymous",
+  "minCell": 4
+ },
+ "overall": {
+  "respondents": 34,
+  "mean": 4.21,
+  "favourablePct": 76.2
+ },
+ "statements": [
+  {
+   "id": "enjoy",
+   "label": "Job enjoyment",
+   "theme": "Work & Role",
+   "n": 34,
+   "mean": 4.74,
+   "favourablePct": 91,
+   "counts": [
+    0,
+    1,
+    2,
+    9,
+    15,
+    7
+   ],
+   "dist": [
+    0,
+    3,
+    6,
+    26,
+    44,
+    21
+   ]
+  },
+  {
+   "id": "team",
+   "label": "Team belonging",
+   "theme": "Team & Atmosphere",
+   "n": 34,
+   "mean": 5.09,
+   "favourablePct": 97,
+   "counts": [
+    0,
+    0,
+    1,
+    6,
+    16,
+    11
+   ],
+   "dist": [
+    0,
+    0,
+    3,
+    18,
+    47,
+    32
+   ]
+  },
+  {
+   "id": "function",
+   "label": "Role fit",
+   "theme": "Work & Role",
+   "n": 34,
+   "mean": 4.41,
+   "favourablePct": 85,
+   "counts": [
+    0,
+    2,
+    3,
+    12,
+    13,
+    4
+   ],
+   "dist": [
+    0,
+    6,
+    9,
+    35,
+    38,
+    12
+   ]
+  },
+  {
+   "id": "skills",
+   "label": "Skills match",
+   "theme": "Work & Role",
+   "n": 34,
+   "mean": 4.41,
+   "favourablePct": 85,
+   "counts": [
+    0,
+    1,
+    4,
+    13,
+    12,
+    4
+   ],
+   "dist": [
+    0,
+    3,
+    12,
+    38,
+    35,
+    12
+   ]
+  },
+  {
+   "id": "info",
+   "label": "Access to information",
+   "theme": "Enablement",
+   "n": 34,
+   "mean": 3.82,
+   "favourablePct": 68,
+   "counts": [
+    1,
+    3,
+    7,
+    14,
+    8,
+    1
+   ],
+   "dist": [
+    3,
+    9,
+    21,
+    41,
+    24,
+    3
+   ]
+  },
+  {
+   "id": "atmosphere",
+   "label": "Team spirit",
+   "theme": "Team & Atmosphere",
+   "n": 34,
+   "mean": 4.91,
+   "favourablePct": 94,
+   "counts": [
+    0,
+    0,
+    2,
+    8,
+    15,
+    9
+   ],
+   "dist": [
+    0,
+    0,
+    6,
+    24,
+    44,
+    26
+   ]
+  },
+  {
+   "id": "workload",
+   "label": "Manageable workload",
+   "theme": "Workload",
+   "n": 34,
+   "mean": 2.94,
+   "favourablePct": 32,
+   "counts": [
+    4,
+    8,
+    11,
+    8,
+    3,
+    0
+   ],
+   "dist": [
+    12,
+    24,
+    32,
+    24,
+    9,
+    0
+   ]
+  },
+  {
+   "id": "freedom",
+   "label": "Autonomy",
+   "theme": "Enablement",
+   "n": 34,
+   "mean": 4.18,
+   "favourablePct": 79,
+   "counts": [
+    0,
+    2,
+    5,
+    14,
+    11,
+    2
+   ],
+   "dist": [
+    0,
+    6,
+    15,
+    41,
+    32,
+    6
+   ]
+  },
+  {
+   "id": "mgr_support",
+   "label": "Manager support",
+   "theme": "Leadership",
+   "n": 34,
+   "mean": 4.62,
+   "favourablePct": 88,
+   "counts": [
+    0,
+    1,
+    3,
+    10,
+    14,
+    6
+   ],
+   "dist": [
+    0,
+    3,
+    9,
+    29,
+    41,
+    18
+   ]
+  },
+  {
+   "id": "mgr_motivation",
+   "label": "Manager motivation",
+   "theme": "Leadership",
+   "n": 34,
+   "mean": 3.97,
+   "favourablePct": 74,
+   "counts": [
+    1,
+    2,
+    6,
+    15,
+    8,
+    2
+   ],
+   "dist": [
+    3,
+    6,
+    18,
+    44,
+    24,
+    6
+   ]
+  },
+  {
+   "id": "mgr_development",
+   "label": "Development support",
+   "theme": "Leadership",
+   "n": 34,
+   "mean": 3.21,
+   "favourablePct": 44,
+   "counts": [
+    3,
+    6,
+    10,
+    11,
+    4,
+    0
+   ],
+   "dist": [
+    9,
+    18,
+    29,
+    32,
+    12,
+    0
+   ]
+  }
+ ],
+ "themes": [
+  {
+   "name": "Work & Role",
+   "ids": [
+    "enjoy",
+    "function",
+    "skills"
+   ],
+   "mean": 4.52,
+   "favourablePct": 87.3,
+   "n": 102
+  },
+  {
+   "name": "Team & Atmosphere",
+   "ids": [
+    "team",
+    "atmosphere"
+   ],
+   "mean": 5.0,
+   "favourablePct": 95.6,
+   "n": 68
+  },
+  {
+   "name": "Workload",
+   "ids": [
+    "workload"
+   ],
+   "mean": 2.94,
+   "favourablePct": 32.4,
+   "n": 34
+  },
+  {
+   "name": "Enablement",
+   "ids": [
+    "info",
+    "freedom"
+   ],
+   "mean": 4.0,
+   "favourablePct": 73.5,
+   "n": 68
+  },
+  {
+   "name": "Leadership",
+   "ids": [
+    "mgr_support",
+    "mgr_motivation",
+    "mgr_development"
+   ],
+   "mean": 3.93,
+   "favourablePct": 68.6,
+   "n": 102
+  }
+ ],
+ "comments": [],
+ "dataQuality": {
+  "completeness": "All 11 standard statements answered; no statement fell below the minimum cell",
+  "recency": "current cycle",
+  "responseRate": "34 of 42 invited (81%), comfortably above the 60% reporting floor",
+  "representativeness": "Responses span all three claim types and both shifts; no sub-group reported separately",
+  "definitionConsistency": "One standard question set, single 1-6 scale",
+  "confidence": "high — response rate and spread both support reporting at team level",
+  "flags": [
+   "Workload sits more than a point below every other theme, which is a finding rather than a data problem"
+  ]
+ },
+ "gaps": [
+  "Repeat next cycle to see whether the workload score moves once the team routine is in place",
+  "Ask the workload-distribution statement, which this cycle did not carry"
+ ]
+};
+(function(){
+  var D=DATA;
+  function esc(t){return String(t==null?"":t).replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c];});}
+  function hl(t){return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1</span>');}
+  function cvar(n){return getComputedStyle(document.getElementById("pw")).getPropertyValue(n).trim();}
+  function hx(c){c=c.trim();return [parseInt(c.slice(1,3),16),parseInt(c.slice(3,5),16),parseInt(c.slice(5,7),16)];}
+  function toHex(a){return "#"+a.map(function(x){return Math.round(x).toString(16).padStart(2,"0");}).join("");}
+  function ramp(t){var st=["--s1","--s2","--s3","--s4","--s5","--s6"].map(function(n){return hx(cvar(n));});
+    t=Math.max(0,Math.min(1,t));var sg=t*5,i=Math.floor(sg),f=sg-i,a=st[i],b=st[Math.min(i+1,5)];
+    return toHex([a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f,a[2]+(b[2]-a[2])*f]);}
+  function avgColor(v){return ramp((v-2.5)/3.5);}
+  function favColor(p){return ramp(p/100);}
+  function textOn(hexc){var a=hx(hexc);return (0.299*a[0]+0.587*a[1]+0.114*a[2])/255>0.62?"#11261A":"#ffffff";}
+  function fmtMean(m){return m==null?"–":m.toFixed(1);}
+
+  // header + footer
+  document.getElementById("lens").textContent=D.lens||"BAROMETER";
+  document.getElementById("ctx").textContent=D.context||"OPEX QUICKSCAN";
+  document.getElementById("title").innerHTML=hl(D.keyMessage||"");
+  document.getElementById("subt").textContent=D.teamName||"";
+  var rr=D.response&&D.response.ratePct!=null?(D.response.ratePct+"% response"):"response rate to confirm";
+  document.getElementById("src").innerHTML="<b>Source:</b> "+esc(D.source||"")+" &nbsp;·&nbsp; n="+(D.overall.respondents)+" &nbsp;·&nbsp; "+esc(rr)+" &nbsp;·&nbsp; anonymous, min cell "+D.response.minCell;
+  document.getElementById("lg").innerHTML="<b style='color:var(--ink);margin-right:2px'>Scale:</b>"+
+    D.scale.labels.map(function(l,i){return '<span class="lp"><span class="sw" style="background:var(--s'+(i+1)+')"></span>'+esc(l)+'</span>';}).join("");
+
+  var statements=D.statements, themes=D.themes, teams=(D.segments||D.teams||[]);
+  var favSorted=statements.slice().sort(function(a,b){return b.favourablePct-a.favourablePct;});
+
+  function kpi(l,v,u,cls,s){return '<div class="kpi '+(cls||"")+'"><div class="l">'+esc(l)+'</div><div class="v">'+v+(u?'<span class="u"> '+u+'</span>':'')+'</div>'+(s?'<div class="s">'+esc(s)+'</div>':'')+'</div>';}
+
+  function renderSummary(){
+    var o=D.overall;
+    var top=favSorted[0], low=favSorted[favSorted.length-1];
+    var lead=themes.filter(function(t){return t.name==="Leadership";})[0];
+    var html='<div class="kpis">'+
+      kpi("Respondents", o.respondents, "", "", "self-report, anonymous")+
+      kpi("Overall favourable", o.favourablePct.toFixed(0)+"%", "", "pos", "answered 4–6 of 6")+
+      kpi("Mean score", o.mean.toFixed(1), "/ 6", "", "across "+statements.length+" statements")+
+      kpi("Reported teams", teams.filter(function(t){return t.reported;}).length, "", "", "min cell "+D.response.minCell)+
+    '</div>';
+    html+='<div class="slab">Favourable by theme</div><div class="themes">'+
+      themes.map(function(t){var c=t.favourablePct>=70?"var(--pos)":t.favourablePct>=50?"var(--warn)":"var(--neg)";
+        return '<div class="tcard"><div class="tn">'+esc(t.name)+'</div><div class="tbar"><i style="width:'+t.favourablePct+'%;background:'+c+'"></i></div><div class="tv">'+t.favourablePct.toFixed(0)+'<small>% fav · '+fmtMean(t.mean)+'/6</small></div></div>';}).join("")+'</div>';
+    html+='<div class="slab">Key insights</div><div class="insights">'+
+      '<div class="ins"><span class="num">1</span><span class="tx"><b>Strength:</b> '+esc(top.label)+' scores '+top.favourablePct.toFixed(0)+'% favourable — job content, team and skills are solid.</span></div>'+
+      '<div class="ins"><span class="num">2</span><span class="tx"><b>Attention:</b> '+esc(low.label)+' is lowest at '+low.favourablePct.toFixed(0)+'% favourable; the Workload theme sits at '+(themes.filter(function(t){return t.name==="Workload";})[0]||{favourablePct:0}).favourablePct.toFixed(0)+'%.</span></div>'+
+      (lead?'<div class="ins"><span class="num">3</span><span class="tx"><b>Leadership:</b> support and motivation aggregate to '+lead.favourablePct.toFixed(0)+'% favourable — a develop-further zone, not a red flag.</span></div>':'')+
+    '</div>';
+    return html;
+  }
+
+  function renderDistribution(){
+    var order=["Work & Role","Team & Atmosphere","Workload","Enablement","Leadership"];
+    var byTheme={}; statements.forEach(function(s){(byTheme[s.theme]=byTheme[s.theme]||[]).push(s);});
+    var html='<div class="dist">';
+    order.forEach(function(th){ if(!byTheme[th])return;
+      html+='<div class="dgrp">'+esc(th)+'</div>';
+      byTheme[th].forEach(function(s){
+        var segs=s.dist.map(function(p,i){return p>0?'<span title="'+esc(D.scale.labels[i])+': '+p+'%" style="width:'+p+'%;background:var(--s'+(i+1)+')"></span>':'';}).join("");
+        var favc=s.favourablePct>=70?"var(--pos)":s.favourablePct>=50?"var(--warn)":"var(--neg)";
+        html+='<div class="drow"><div class="dl">'+esc(s.label)+'</div><div class="db">'+segs+'</div>'+
+          '<div class="df"><b style="color:'+favc+'">'+s.favourablePct.toFixed(0)+'%</b> <i>n='+s.n+'</i></div></div>';
+      });
+    });
+    html+='</div>';
+    return html;
+  }
+
+  var hmCols="themes", hmMetric="avg";
+  function renderHeatmap(){
+    var cols = hmCols==="themes" ? themes.map(function(t){return {label:t.name,key:t.name,kind:"theme"};})
+             : statements.map(function(s){return {label:s.label,key:s.id,kind:"stmt"};});
+    var rows=[{name:"ALL",all:true,n:D.overall.respondents,get:function(c){return metricFromAgg(allAgg(c));}}]
+      .concat(teams.map(function(tm){return {name:tm.name,reported:tm.reported,n:tm.n,
+        get:function(c){var m=c.kind==="theme"?tm.byTheme[c.key]:tm.byStatement[c.key];return m;}};}));
+    function allAgg(c){ if(c.kind==="theme"){var t=themes.filter(function(x){return x.name===c.key;})[0];return {mean:t.mean,fav:t.favourablePct};}
+      var s=statements.filter(function(x){return x.id===c.key;})[0];return {mean:s.mean,fav:s.favourablePct};}
+    function metricFromAgg(m){return m;}
+    var html='<div class="hmctl"><span class="lab">Group by</span><div class="seg small" id="hmc"><button data-v="themes"'+(hmCols==="themes"?' class="on"':'')+'>By theme</button><button data-v="statements"'+(hmCols==="statements"?' class="on"':'')+'>By question</button></div>'+
+      '<span class="lab" style="margin-left:8px">Show</span><div class="seg small" id="hmm"><button data-v="avg"'+(hmMetric==="avg"?' class="on"':'')+'>Average score</button><button data-v="fav"'+(hmMetric==="fav"?' class="on"':'')+'>% favourable</button></div></div>';
+    html+='<table class="hm"><thead><tr><th class="rw"></th>'+cols.map(function(c){return '<th class="col">'+esc(c.label)+'</th>';}).join("")+'</tr></thead><tbody>';
+    rows.forEach(function(r){
+      html+='<tr class="'+(r.all?"all":"")+'"><th class="rw">'+esc(r.name)+'<span class="chip">n='+r.n+'</span></th>';
+      if(r.reported===false){ cols.forEach(function(){html+='<td class="na">n/r</td>';}); html+='</tr>'; return; }
+      cols.forEach(function(c){var m=r.get(c);
+        if(!m){html+='<td class="na">–</td>';return;}
+        var val=hmMetric==="avg"?m.mean:m.fav; var bg=hmMetric==="avg"?avgColor(m.mean):favColor(m.fav);
+        var txt=hmMetric==="avg"?m.mean.toFixed(1):Math.round(m.fav)+"%";
+        html+='<td style="background:'+bg+';color:'+textOn(bg)+'">'+txt+'</td>';});
+      html+='</tr>';
+    });
+    html+='</tbody></table>';
+    
+    
+    return html;
+  }
+
+  function buildConclusions(D){var st=D.statements,th=D.themes,f=function(x){return Math.round(x);};function tops(theme,best){var a=st.filter(function(s){return s.theme===theme;});if(!a.length)return null;a.sort(function(x,y){return best?y.favourablePct-x.favourablePct:x.favourablePct-y.favourablePct;});return a[0];}var byFav=th.slice().sort(function(a,b){return b.favourablePct-a.favourablePct;});var top=byFav.slice(0,2);var rest=byFav.slice(2);var bot=(rest.length?rest:byFav).slice(-2).sort(function(a,b){return a.favourablePct-b.favourablePct;});var strengths=top.map(function(t){var s=tops(t.name,true);return t.name+' is strong at '+f(t.favourablePct)+'% favourable'+(s?', led by '+s.label+' ('+f(s.favourablePct)+'%)':'')+'.';});var attentions=bot.map(function(t,i){var s=tops(t.name,false);return t.name+(i===0?' needs the most attention':' is also soft')+' at '+f(t.favourablePct)+'% favourable'+(s?', where '+s.label+' sits at '+f(s.favourablePct)+'%':'')+'.';});var worst=bot[0],ws=tops(worst.name,false),best=top[0];var takeaway='Focus on '+worst.name+' first \u2014 understand why '+(ws?ws.label:worst.name)+' scores just '+f(worst.favourablePct)+'% favourable and act on it, while protecting the strong '+best.name+'.';return {strengths:strengths,attentions:attentions,takeaway:takeaway};}
+  function renderConclusions(){var C=(D.conclusions&&D.conclusions.strengths)?D.conclusions:buildConclusions(D);function ul(items,cls){return '<ul class="conc-ul '+cls+'">'+items.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul>';}var h='';if(C.strengths&&C.strengths.length)h+='<div class="conc-grp"><div class="conc-h pos">Strengths</div>'+ul(C.strengths,'pos')+'</div>';if(C.attentions&&C.attentions.length)h+='<div class="conc-grp"><div class="conc-h neg">Attention areas</div>'+ul(C.attentions,'neg')+'</div>';if(C.takeaway)h+='<div class="conc-so"><span class="conc-so-k">\u2192 Key take-away</span><span class="conc-so-t">'+esc(C.takeaway)+'</span></div>';return h;}
+  function buildSegmentConclusions(D){var segs=(D.segments||D.teams||[]).filter(function(x){return x&&x.reported!==false&&x.favourablePct!=null;});var themes=D.themes,f=function(x){return Math.round(x);};if(segs.length<2)return null;function weak(seg){if(!seg.byTheme)return [];var a=themes.map(function(t){var m=seg.byTheme[t.name];return m?{name:t.name,fav:m.fav}:null;}).filter(Boolean);a.sort(function(x,y){return x.fav-y.fav;});return a.slice(0,2);}var byFav=segs.slice().sort(function(a,b){return b.favourablePct-a.favourablePct;});var best=byFav[0],worst=byFav[byFav.length-1];var standouts=[best.name+' is the strongest segment at '+f(best.favourablePct)+'% favourable, well above the rest.'];var low=byFav.slice(-2).sort(function(a,b){return a.favourablePct-b.favourablePct;});var support=low.map(function(sg,i){var w=weak(sg);return sg.name+(i===0?' is the lowest':' is also soft')+' at '+f(sg.favourablePct)+'% favourable'+(w.length?', weakest on '+w.map(function(x){return x.name+' ('+f(x.fav)+'%)';}).join(' and '):'')+'.';});var gap=null;themes.forEach(function(t){var v=segs.map(function(sg){return sg.byTheme&&sg.byTheme[t.name]?sg.byTheme[t.name].fav:null;}).filter(function(x){return x!=null;});if(v.length>1){var mx=Math.max.apply(null,v),mn=Math.min.apply(null,v);if(!gap||(mx-mn)>gap.r)gap={n:t.name,r:mx-mn,mx:mx,mn:mn};}});var takeaway='Prioritise '+worst.name+' ('+f(worst.favourablePct)+'% favourable)'+(gap?'; '+gap.n+' shows the widest gap across segments ('+f(gap.mn)+'\u2013'+f(gap.mx)+'%)':'')+'. Learn from '+best.name+' ('+f(best.favourablePct)+'%).';return {standouts:standouts,support:support,takeaway:takeaway};}
+  function renderSegmentConclusions(){var C=buildSegmentConclusions(D);if(!C)return renderConclusions();function ul(items,cls){return '<ul class="conc-ul '+cls+'">'+items.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul>';}var h='';if(C.standouts&&C.standouts.length)h+='<div class="conc-grp"><div class="conc-h pos">Standout segments</div>'+ul(C.standouts,'pos')+'</div>';if(C.support&&C.support.length)h+='<div class="conc-grp"><div class="conc-h neg">Segments to support</div>'+ul(C.support,'neg')+'</div>';if(C.takeaway)h+='<div class="conc-so"><span class="conc-so-k">\u2192 Key take-away</span><span class="conc-so-t">'+esc(C.takeaway)+'</span></div>';return h;}
+  function conclBlock(){return '<div class="colhead" style="margin-top:18px">Conclusions</div>'+renderConclusions();}
+  var VIEWS={distribution:function(){return '<div class="dcols"><div class="dcol-main"><div class="colhead">Survey outcome</div><div class="cap">Each bar is the full 1\u20136 response spread. <b>% favourable</b> = share answering 4\u20136 (rather agree, agree, completely agree).</div>'+renderDistribution()+'</div><div class="dcol-side"><div class="colhead">Conclusions</div>'+renderConclusions()+'</div></div>';},heatmap:function(){return '<div class="dcols"><div class="dcol-main"><div class="colhead">Segment breakdown</div>'+renderHeatmap()+'</div><div class="dcol-side"><div class="colhead">Conclusions</div>'+renderSegmentConclusions()+'</div></div>';}},cur="distribution";
+  function fitView(){var v=document.getElementById('view'),vi=document.getElementById('vinner');var ah=v.clientHeight;if(!ah)return;var st=vi.querySelector('[data-stretch]');if(st)st.style.height='';vi.style.transform='none';var lo=0.25,hi=1.12,best=0.25;for(var k=0;k<12;k++){var s=(lo+hi)/2;vi.style.width=(100/s)+'%';var H=vi.scrollHeight;if(H*s<=ah-10){best=s;lo=s;}else{hi=s;}}vi.style.width=(100/best)+'%';vi.style.transform='scale('+best+')';if(st){var free=(ah-10)/best-vi.scrollHeight;if(free>1)st.style.height=(st.offsetHeight+free)+'px';}}
+  function render(){document.getElementById("vinner").innerHTML=VIEWS[cur]();
+    if(cur==="heatmap"){wireSeg("hmc",function(v){hmCols=v;render();});wireSeg("hmm",function(v){hmMetric=v;render();});}
+    
+    requestAnimationFrame(fitView);setTimeout(fitView,50);}
+  function wireSeg(id,cb){var box=document.getElementById(id);if(!box)return;box.querySelectorAll("button").forEach(function(b){b.onclick=function(){cb(b.getAttribute("data-v"));};});}
+  function seg(id,attr,cb){var box=document.getElementById(id);box.querySelectorAll("button").forEach(function(b){b.onclick=function(){box.querySelectorAll("button").forEach(function(x){x.classList.remove("on");});b.classList.add("on");cb(b.getAttribute(attr));};});}
+  seg("views","data-v",function(v){cur=v;render();});
+  seg("theme","data-s",function(t){document.getElementById("pw").setAttribute("data-t",t);render();});
+  (function(){var segs=(D.segments||D.teams||[]);if(segs.length<2){var hb=document.querySelector('#views button[data-v="heatmap"]');if(hb)hb.remove();delete VIEWS.heatmap;if(cur==="heatmap")cur="distribution";}})();
+  window.addEventListener("resize",fitView);
+
+  render();
+})();
+</script>
+</body></html>
