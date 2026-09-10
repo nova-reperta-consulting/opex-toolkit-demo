@@ -1,0 +1,513 @@
+<!doctype html>
+<!-- ============================================================================
+  EXECUTIVE SUMMARY  ·  exec-sum-synthesiser
+  A text-based, one-slide executive summary: Situation, Complication, Resolution,
+  Call to action, in that order. Bold lead sentence per block, indented supporting
+  bullets beneath. No charts, no tiles: the evidence lives in the artifacts behind it.
+  Two altitudes via data.altitude = "team" | "engagement".
+  Replace ONLY the /* DATA */ block. Markup, CSS and JS are fixed.
+  Brand tokens inlined from diagnostic-skill-builder/templates/brand.css. Logo inlined.
+============================================================================ -->
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Executive summary</title>
+<style>
+  *{box-sizing:border-box}
+  :root{--page:#FFF}
+  html,body{margin:0;height:100vh;overflow:hidden}
+  body{background:var(--page);font-family:'Aptos','Segoe UI',system-ui,sans-serif}
+  #art{--navy:#0B2347;--slate:#364156;--green:#1C7A4A;--accent:#6EB1D1;--navy2:#16315B;
+      --rag-green:#2F8F6B;--rag-amber:#D49A3A;--rag-red:#D2645A;--rag-na:#9AA4B0;
+      --rag-green-text:#2F8F6B;--rag-amber-text:#B97F22;--rag-red-text:#C2483D;--rag-na-text:#6B7480;
+      --tint-green:rgba(47,143,107,.12);--tint-amber:rgba(212,154,58,.16);--tint-red:rgba(210,100,90,.13);--tint-na:rgba(154,164,176,.16);
+      --navy-fill:#0B2347;--slate-10:rgba(54,65,86,.09);--navy-10:rgba(11,35,71,.10);--green-10:rgba(28,122,74,.10);
+      --rule:#D7E0EC;
+      --ink:#15243A;--txt:#46505C;--mut:#7A838F;--line:#E1E6EE;--card:#FFF;--bg:#FFF;
+      --sh:0 1px 2px rgba(20,30,50,.04),0 14px 32px -24px rgba(20,30,50,.30);
+      --fs:1;width:100%;max-width:2200px;margin:0 auto;height:100vh;overflow:hidden;position:relative;
+      display:flex;flex-direction:column;background:var(--bg);color:var(--ink);padding:76px 40px 12px 98px}
+  #art[data-t="dark"]{--bg:#16202C;--card:#1E2937;--ink:#EAEFF5;--txt:#C4CEDA;--mut:#94A1B2;--line:#2A3744;
+      --navy-fill:#243246;--accent:#8FC7E8;--rule:#33414F;
+      --rag-green:#5FBF94;--rag-amber:#E8B96A;--rag-red:#F0968C;--rag-na:#9AA8B8;
+      --rag-green-text:#5FBF94;--rag-amber-text:#E8B96A;--rag-red-text:#F0968C;--rag-na-text:#9AA8B8;
+      --tint-green:rgba(95,191,148,.15);--tint-amber:rgba(232,185,106,.15);--tint-red:rgba(240,150,140,.14);--tint-na:rgba(148,161,178,.15);
+      --sh:0 1px 2px rgba(0,0,0,.4),0 14px 32px -24px rgba(0,0,0,.6)}
+  body:has(#art[data-t="dark"]){--page:#0E1620}
+  .nr-rail{position:absolute;left:0;top:0;bottom:0;width:52px;background:var(--navy-fill)}
+  .toprow{position:absolute;top:22px;left:0;right:40px;display:flex;justify-content:space-between;align-items:center;gap:14px;z-index:3}
+  .tags{display:flex;align-items:center;gap:11px}
+  .nr-pill{display:inline-flex;align-items:center;gap:11px;background:var(--green);padding:10px 22px 10px 14px;border-radius:0 9px 9px 0}
+  .nr-pill img{height:21px;filter:brightness(0) invert(1)} .nr-pill b{color:#fff;font-size:13px;font-weight:700;letter-spacing:.3px}
+  .nr-track{background:#E3E8EF;color:var(--navy);font-weight:700;font-size:11.5px;letter-spacing:.8px;padding:9px 16px;border-radius:8px}
+  #art[data-t="dark"] .nr-track{background:#243246;color:#EAEFF5}
+  .ctrls{display:flex;align-items:center;gap:10px}
+  .seg{display:flex;background:var(--slate-10);border-radius:999px;padding:3px}
+  .seg button{font-size:12px;font-weight:600;border:none;background:transparent;color:var(--mut);padding:6px 14px;border-radius:999px;cursor:pointer}
+  .seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--sh)}
+  h1{font-size:calc(clamp(19px,1.6vw,25px)*var(--fs));font-weight:700;color:var(--navy);letter-spacing:-.2px;line-height:1.2;margin:0 0 calc(3px*var(--fs))}
+  #art[data-t="dark"] h1{color:#EAEFF5}
+  .sub{font-size:calc(12px*var(--fs));color:var(--mut);margin:0 0 calc(12px*var(--fs))}
+  #view{flex:1;min-height:0;position:relative;overflow:auto;padding-right:6px;display:flex;flex-direction:column}
+
+  /* ---- the summary sheet ---- */
+  .sheet{padding:calc(6px*var(--fs)) 4px calc(10px*var(--fs));max-width:1500px;flex:1 0 auto}
+  .row{display:grid;grid-template-columns:1fr;gap:0;align-items:start;margin-bottom:calc(22px*var(--fs))}
+  .row.labelled{grid-template-columns:112px 1fr;gap:18px}
+  .row:last-child{margin-bottom:0}
+  .lbl{font-size:11px;font-weight:700;letter-spacing:.6px;color:var(--navy2);padding-top:2px;text-align:right}
+  #art[data-t="dark"] .lbl{color:var(--accent)}
+  .blk{max-width:1240px}
+  .blk.boxed{background:var(--slate-10);border-radius:10px;padding:calc(16px*var(--fs)) calc(20px*var(--fs)) calc(17px*var(--fs));margin-top:2px}
+  #art[data-t="dark"] .blk.boxed{background:rgba(148,161,178,.14)}
+
+  ul{list-style:none;margin:0;padding:0}
+  li{position:relative;padding-left:16px;line-height:1.5}
+  .lead{font-size:calc(13.7px*var(--fs));font-weight:700;color:var(--ink);margin-bottom:calc(9px*var(--fs));padding-left:0}
+  .l2{font-size:calc(12.7px*var(--fs));color:var(--txt);margin:calc(4px*var(--fs)) 0 calc(4px*var(--fs)) 4px;padding-left:calc(16px*var(--fs))}
+  .l2::before{content:'';position:absolute;left:2px;top:.56em;width:5px;height:5px;border-radius:50%;background:var(--mut)}
+  .n2{font-size:calc(12.8px*var(--fs));color:var(--txt);margin:calc(7px*var(--fs)) 0 calc(7px*var(--fs)) 4px;padding-left:calc(30px*var(--fs));line-height:1.5}
+  .n2 .num{position:absolute;left:0;top:1px;width:calc(20px*var(--fs));height:calc(20px*var(--fs));border-radius:50%;
+           background:var(--navy2);color:#fff;font-size:calc(10.5px*var(--fs));font-weight:700;
+           display:flex;align-items:center;justify-content:center;letter-spacing:0}
+  .n2 .t{color:var(--ink);font-weight:700}
+  .blk.rec .n2 .num{background:var(--green)}
+  #art[data-t="dark"] .n2 .num{background:var(--accent);color:#16202C}
+  #art[data-t="dark"] .blk.rec .n2 .num{background:var(--rag-green);color:#12211A}
+  li b{color:var(--ink);font-weight:700}
+  .own{color:var(--mut);white-space:nowrap;font-size:.95em}
+  .own::before{content:' · '}
+  .meta{display:block;color:var(--mut);font-size:.92em;margin-top:2px}
+  .lead .num{color:var(--green)}
+
+  /* ---- evidence trace ---- */
+  .block{margin-bottom:16px;max-width:1500px}
+  .sec{margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:.9px;color:var(--mut);text-transform:uppercase}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh)}
+  table{width:100%;border-collapse:collapse;font-size:12.3px}
+  th{text-align:left;font-size:10.5px;letter-spacing:.7px;text-transform:uppercase;color:var(--mut);font-weight:700;padding:8px 10px;border-bottom:1px solid var(--line)}
+  td{padding:8px 10px;border-bottom:1px solid var(--line);color:var(--txt);vertical-align:top;line-height:1.42}
+  tr:last-child td{border-bottom:none}
+  td b{color:var(--ink)}
+  .lever{font-size:10.5px;font-weight:700;letter-spacing:.4px;padding:3px 9px;border-radius:999px;color:#fff;white-space:nowrap}
+  .lv-process{background:#D08A3C} .lv-auto{background:#3D7FB8} .lv-acc{background:#6EB1D1} .lv-enh{background:#8B6FBF}
+  #art[data-t="dark"] .lv-process{background:#E0A469} #art[data-t="dark"] .lv-auto{background:#6FA6D6}
+  #art[data-t="dark"] .lv-acc{background:#8FC7E8} #art[data-t="dark"] .lv-enh{background:#A992D6}
+  .rev{font-size:11.8px;color:var(--mut);line-height:1.5;padding:10px 14px}
+  .miss{color:var(--rag-red-text)}
+  #ft{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:11px;color:var(--mut)}
+  .conf{font-size:0.88em;letter-spacing:.5px;font-weight:600}
+  .hide{display:none}
+  @media (max-width:820px){
+    #art{padding:14px 18px 10px 42px}
+    .nr-rail{width:24px}
+    .toprow{position:static;top:auto;right:auto;margin:0 0 12px;flex-wrap:wrap;justify-content:flex-start;gap:10px 12px}
+    .tags{flex-wrap:wrap;gap:8px;margin-left:-42px}
+    .ctrls{flex-wrap:wrap;gap:8px;flex:1 1 100%}
+    .sheet{padding:14px 16px 16px;border-right-width:4px;border-bottom-width:4px}
+    .row{grid-template-columns:1fr;gap:4px}
+    .lbl{text-align:left}
+  }
+</style></head>
+<body>
+<div id="art" data-t="light">
+  <div class="nr-rail"></div>
+  <div class="toprow">
+    <div class="tags">
+      <div class="nr-pill"><img alt="Nova Reperta" src="data:image/png;base64,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"><b id="ctx">OPEX QUICKSCAN</b></div>
+      <div class="nr-track" id="lens">EXEC SUMMARY</div>
+    </div>
+    <div class="ctrls">
+      <div class="seg" id="viewseg"><button data-v="summary" class="on">Summary</button><button data-v="trace">Evidence trace</button></div>
+      <div class="seg" id="theme"><button data-s="light" class="on">Light</button><button data-s="dark">Dark</button></div>
+    </div>
+  </div>
+  <h1 id="title">Executive summary</h1>
+  <div class="sub" id="sub"></div>
+  <div id="view">
+    <div id="v-summary" style="display:flex;flex-direction:column;flex:1"></div>
+    <div id="v-trace" class="hide"></div>
+  </div>
+  <div id="ft"><span id="src"></span><span class="conf">Sample data · Northwind Assurance is fictional</span></div>
+</div>
+<script>
+/* ============ ONLY THIS BLOCK CHANGES PER SUMMARY ============ */
+const DATA = /* DATA */ {
+  "altitude": "team",
+  "context": "OPEX QUICKSCAN",
+  "scopeLabel": "Northwind Assurance · Claims Handling · 42 FTE",
+  "coverageLine": "6 of 6 analyses complete · data maturity still running",
+  "source": "Six analyses on Claims Handling, 3-8 Sep 2026 · process baseline 2026.6",
+  "keyMessage": "Fix the information handovers once, and 14,0 of the 16,1 avoidable FTE goes with them - without asking anyone to work faster",
+  "blocks": {
+    "situation": {
+      "lead": "Claims Handling, 42 FTE, was assessed from six directions in the first week of September",
+      "bullets": [
+        {
+          "text": "Twelve activities and twenty-one tasks were mapped against a single process baseline, together with the parts of Customer Service and Finance Control that touch the claim",
+          "evidence": [
+            {
+              "claim": "42,0 FTE across 12 activities and 21 tasks",
+              "ref": "baseline#activities, baseline#allocations",
+              "source": "Process baseline, 8 Sep 2026"
+            }
+          ]
+        },
+        {
+          "text": "Effort, systems, data and quantified problems were captured in one instrument set, so the six analyses can be held against each other rather than read as six opinions",
+          "evidence": [
+            {
+              "claim": "MAE, process map, service blueprint, OTE, two wheels and the team survey",
+              "ref": "captures/*",
+              "source": "Instrument captures, 3-8 Sep 2026"
+            }
+          ]
+        },
+        {
+          "text": "Volumes are stable at about 1.900 notifications a month and no one in the team has argued that the headcount or the volumes are misstated",
+          "evidence": [
+            {
+              "claim": "~1.900 notifications/month, confirmed by the team lead",
+              "ref": "mae#act-01",
+              "source": "Team lead interview, 3 Sep 2026"
+            }
+          ]
+        }
+      ]
+    },
+    "complication": {
+      "lead": "16,1 of the 42 FTE is avoidable, and almost two thirds of it is spent moving information around the claim rather than deciding it",
+      "bullets": [
+        {
+          "text": "The three largest losses are all information movement: chasing adjuster reports (3,0 FTE), re-typing the notification between the contact centre and the claims system (2,5 FTE) and looking cover up in a second system on every file (1,8 FTE)",
+          "evidence": [
+            {
+              "claim": "7,3 FTE across three activities",
+              "ref": "baseline#pains p-01, p-02, p-03",
+              "source": "Coordinator interviews and the claims system report pack"
+            }
+          ]
+        },
+        {
+          "text": "A further 4,0 FTE sits in Customer Service answering customers who ring because nothing on their side tells them where the claim stands - the same root cause, one team further out",
+          "evidence": [
+            {
+              "claim": "4,0 FTE of status calls",
+              "ref": "baseline#pains p-05",
+              "source": "Contact-centre report pack, Jan-Aug 2026"
+            }
+          ]
+        },
+        {
+          "text": "Only 32% of the time Northwind pays for reaches a customer or the business, and the two biggest structural losses are the peaks the team cannot staff for and the 95 minutes a day every handler spends chasing, searching and re-typing",
+          "evidence": [
+            {
+              "claim": "OTE 32%, rigidity 27%, waste 18%",
+              "ref": "ote-waterfall#summary",
+              "source": "OTE waterfall, 5 Sep 2026"
+            }
+          ]
+        },
+        {
+          "text": "The team measures a great deal and steers on almost none of it, and nothing records who can handle which claim type, so triage sends complex files to whoever is free",
+          "evidence": [
+            {
+              "claim": "Performance wheel and skills wheel, scored with the manager and the team",
+              "ref": "captures/claims-handling-mgmt, -skills",
+              "source": "Interviews, 3-4 Sep 2026"
+            }
+          ]
+        }
+      ]
+    },
+    "resolution": {
+      "lead": "Six improvements answer 14,0 of the 16,1 FTE, four of them the same fix - let the systems carry the information, not the people",
+      "bullets": [
+        {
+          "text": "Passing the notification straight through from the contact centre, showing cover on the claim record and tracking adjuster due dates automatically remove 7,3 FTE of pure re-entry and chasing between them",
+          "evidence": [
+            {
+              "claim": "o-01, o-02, o-03 against pains p-01, p-02, p-03",
+              "ref": "baseline#opportunities",
+              "source": "Opportunity register, 8 Sep 2026"
+            }
+          ],
+          "title": "Straight-through notification",
+          "lever": "auto",
+          "duration": "8 weeks",
+          "owner": "Head of Claims Operations"
+        },
+        {
+          "text": "Telling the customer what happened without them asking removes the reason for the status call rather than handling it faster, which is where the 4,0 FTE in Customer Service goes",
+          "evidence": [
+            {
+              "claim": "o-04, AI enhancement against pain p-05",
+              "ref": "baseline#opportunities o-04",
+              "source": "Opportunity register, 8 Sep 2026"
+            }
+          ],
+          "title": "No status call to make",
+          "lever": "enh",
+          "duration": "10 weeks",
+          "owner": "Customer Service Manager"
+        },
+        {
+          "text": "Two redesigns carry the rest: move the settlement calculation into the claim, and triage on skill as well as complexity so the file goes to someone who can finish it",
+          "evidence": [
+            {
+              "claim": "o-05 and o-06 against pains p-04 and p-06",
+              "ref": "baseline#opportunities",
+              "source": "Opportunity register, 8 Sep 2026"
+            }
+          ],
+          "title": "Settlement and triage redesign",
+          "lever": "process",
+          "duration": "6 weeks",
+          "owner": "Claims Handling Manager"
+        }
+      ]
+    },
+    "callToAction": {
+      "lead": "Commit to the three system fixes at the October steering, and the data question gets an answer before anything is promised to a customer",
+      "bullets": [
+        {
+          "text": "Fund the contact-centre to claims connection and the cover-on-claim view as one piece of integration work, not as three separate team requests",
+          "evidence": [
+            {
+              "claim": "7,3 FTE addressed by o-01, o-02, o-03",
+              "ref": "baseline#opportunities",
+              "source": "Opportunity register, 8 Sep 2026"
+            }
+          ],
+          "covers": [
+            1
+          ],
+          "owner": "COO and IT",
+          "by": "31 Oct 2026"
+        },
+        {
+          "text": "Finish the data maturity assessment on the claim status object before committing to tell customers anything automatically - it is the only hypothesis still open",
+          "evidence": [
+            {
+              "claim": "1 of 11 hypotheses still open",
+              "ref": "hypothesis-tree#n17",
+              "source": "Hypothesis tree, 8 Sep 2026"
+            }
+          ],
+          "covers": [
+            2
+          ],
+          "owner": "Head of Claims Operations",
+          "by": "30 Sep 2026"
+        },
+        {
+          "text": "Give triage and recovery a single accountable owner, which costs nothing and is the root of two of the six problems",
+          "evidence": [
+            {
+              "claim": "No accountable owner on triage or recovery",
+              "ref": "raci-diagnostic#a05, a12",
+              "source": "RACI workshop, 8 Sep 2026"
+            }
+          ],
+          "covers": [
+            3
+          ],
+          "owner": "Claims Handling Manager",
+          "by": "31 Oct 2026"
+        }
+      ]
+    }
+  },
+  "valueAtStake": {
+    "baseLabel": "FTE in scope",
+    "baseValue": 42,
+    "addressable": {
+      "value": 16.1,
+      "unit": "FTE"
+    },
+    "identified": {
+      "value": 10.0,
+      "unit": "FTE"
+    },
+    "coverageNote": "10,0 FTE of the identified saving sits inside Claims Handling; a further 4,0 FTE sits in Customer Service and is removed by the same fix.",
+    "savingType": "redeployment and avoided hiring"
+  },
+  "recommendations": [
+    {
+      "id": "R1",
+      "move": "Pass the notification straight through from the contact centre into the claims system",
+      "lever": "auto",
+      "horizon": "now",
+      "precondition": "one owner for the notification field definitions across both systems",
+      "decision": "fund the integration as a programme item",
+      "owner": "COO and IT",
+      "by": "31 Oct 2026"
+    },
+    {
+      "id": "R2",
+      "move": "Show cover on the claim record and track adjuster due dates automatically",
+      "lever": "auto",
+      "horizon": "now",
+      "precondition": "PolicyHub exposes cover as a service",
+      "decision": "approve the two system changes together",
+      "owner": "Head of Claims Operations",
+      "by": "31 Oct 2026"
+    },
+    {
+      "id": "R3",
+      "move": "Tell the customer what happened without them having to ring",
+      "lever": "enh",
+      "horizon": "next",
+      "precondition": "the claim status object passes the data maturity assessment",
+      "decision": "commit only once the data answer is in",
+      "owner": "Customer Service Manager",
+      "by": "31 Dec 2026"
+    },
+    {
+      "id": "R4",
+      "move": "Give triage and recovery a single accountable owner and triage on skill as well as complexity",
+      "lever": "process",
+      "horizon": "now",
+      "precondition": "a written record of who can handle which claim type",
+      "decision": "agree the owner in the October steering",
+      "owner": "Claims Handling Manager",
+      "by": "31 Oct 2026"
+    }
+  ],
+  "blindSpots": [
+    {
+      "gap": "The broker channel, about a fifth of notifications, was not looked at",
+      "changes": "The re-keying loss may be larger than 2,5 FTE, and the fix may need a second interface",
+      "closeWith": "one session with the broker desk, half a day"
+    },
+    {
+      "gap": "Data maturity on the claim status object is still running",
+      "changes": "Whether an assistant can answer a status question at all, which is the whole of R3",
+      "closeWith": "the data maturity assessment, two weeks"
+    },
+    {
+      "gap": "Failure demand is not separated from real demand in the status calls",
+      "changes": "Part of the 4,0 FTE may disappear rather than move, which would make R3 worth more",
+      "closeWith": "reason-code analysis on one month of calls"
+    }
+  ],
+  "advisorReview": {
+    "verdict": "sound-with-fixes",
+    "openMajors": [],
+    "note": "4 findings raised on 8 Sep, all applied: the 4,0 FTE of status calls attributed to Customer Service rather than Claims Handling, the broker channel named as a blind spot, failure demand separated from the saving, and the AI recommendation made conditional on the data answer."
+  }
+};
+/* ============================================================= */
+(function(){
+  var ORDER=[["situation","Situation"],["complication","Complication"],["resolution","Resolution"],["callToAction","Call to action"]];
+  var LEV={process:["Process redesign","lv-process"],auto:["Automation","lv-auto"],acc:["AI Accelerate","lv-acc"],enh:["AI Enhance","lv-enh"]};
+  function esc(t){return String(t==null?'':t).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+  function md(t){return esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');}
+  var D=DATA, alt=(D.altitude||'team'), B=D.blocks||{};
+  document.getElementById('ctx').textContent=D.context||'OPEX QUICKSCAN';
+  document.getElementById('lens').textContent='EXEC SUMMARY · '+(alt==='engagement'?'ENGAGEMENT':'TEAM');
+  document.getElementById('sub').textContent=[D.scopeLabel,D.coverageLine].filter(Boolean).join(' · ');
+  document.getElementById('src').innerHTML=D.source?('<b style="color:var(--txt)">Source:</b> '+esc(D.source)):'';
+
+  /* Two levels only: a bold lead, then its items. Anything deeper is promoted to an item.
+     Situation reads as context (dashes); findings, moves and decisions are numbered so the
+     reader can count them. */
+  var NUMBERED={complication:1,resolution:1,callToAction:1};
+  function bullets(list,numbered){
+    var n=0;
+    return (list||[]).map(function(b){
+      /* an initiative carries its lever, how long it runs and who owns it, on its own line;
+         a decision carries the initiatives it unlocks, its owner and its date */
+      var bits=[];
+      if(b.lever) bits.push(esc((LEV[b.lever]||[b.lever])[0]));
+      if(b.covers&&b.covers.length) bits.push('Unlocks '+esc(b.covers.join(', ')));
+      if(b.duration) bits.push(esc(b.duration));
+      if(b.owner||b.by) bits.push(esc([b.owner,b.by].filter(Boolean).join(', ')));
+      var meta=(b.lever||b.duration||(b.covers&&b.covers.length));
+      var tail=bits.length?(meta?('<span class="meta">'+bits.join(' · ')+'</span>')
+                                :('<span class="own">'+bits.join(', ')+'</span>')):'';
+      var head=b.title?('<span class="t">'+md(b.title)+'.</span> '):'';
+      var extra=(b.sub||[]).map(function(s){return numbered?('<li class="n2"><span class="num">'+(++n)+'</span>'+md(s)+'</li>')
+                                                          :('<li class="l2">'+md(s)+'</li>');}).join('');
+      if(numbered) return '<li class="n2"><span class="num">'+(++n)+'</span>'+head+md(b.text)+tail+'</li>'+extra;
+      return '<li class="l2">'+head+md(b.text)+tail+'</li>'+extra;
+    }).join('');
+  }
+  var labelled=(D.showLabels===true);
+  var rows=ORDER.map(function(pair){
+    var k=pair[0], blk=B[k];
+    if(!blk||(!blk.lead&&!(blk.bullets||[]).length)) return '';
+    var boxed=(k==='callToAction')?' boxed':'';
+    var rec=(k==='resolution')?' rec':'';
+    var lead=blk.lead?('<li class="lead">'+md(blk.lead)+'</li>'):'';
+    var label=labelled?('<div class="lbl">'+esc(pair[1])+'</div>'):'';
+    return '<div class="row'+(labelled?' labelled':'')+'">'+label+
+      '<div class="blk'+boxed+rec+'"><ul>'+lead+bullets(blk.bullets,!!NUMBERED[k])+'</ul></div></div>';
+  }).join('');
+  document.getElementById('v-summary').innerHTML='<div class="sheet">'+rows+'</div>';
+
+  /* ---- evidence trace: every claim, and where it comes from ---- */
+  var tr=[];
+  ORDER.forEach(function(pair){
+    var blk=B[pair[0]]; if(!blk) return;
+    (blk.bullets||[]).forEach(function(b){
+      var ev=b.evidence||[];
+      if(!ev.length){ tr.push('<tr><td><b>'+esc(pair[1])+'</b></td><td>'+esc(b.text)+'</td><td colspan="2" class="miss">no evidence reference captured</td></tr>'); return; }
+      ev.forEach(function(e,j){
+        tr.push('<tr><td>'+(j===0?('<b>'+esc(pair[1])+'</b>'):'')+'</td><td>'+(j===0?esc(b.text):'')+'</td>'+
+          '<td>'+esc(e.source||'')+'</td><td style="color:var(--mut)">'+esc(e.ref||'')+'</td></tr>');
+      });
+    });
+  });
+  var trBlock='<div class="block"><div class="sec">Every claim, and where it comes from</div><div class="card"><table>'+
+    '<tr><th>Block</th><th>Claim</th><th>Source</th><th>Reference</th></tr>'+tr.join('')+'</table></div></div>';
+
+  var recs=(D.recommendations||[]).map(function(r){
+    var L=LEV[r.lever]||[r.lever||'',''];
+    return '<tr><td><b>'+esc(r.move)+'</b>'+(r.precondition?('<br><span style="color:var(--mut)">First: '+esc(r.precondition)+'</span>'):'')+'</td>'+
+      '<td><span class="lever '+L[1]+'">'+esc(L[0])+'</span></td><td>'+esc(r.horizon||'')+'</td>'+
+      '<td>'+esc(r.decision||'')+(r.owner?('<br><span style="color:var(--mut)">'+esc(r.owner)+(r.by?(' · '+esc(r.by)):'')+'</span>'):'')+'</td></tr>';
+  }).join('');
+  var recBlock=recs?('<div class="block"><div class="sec">The moves behind the resolution</div><div class="card"><table>'+
+    '<tr><th>Move</th><th>Lever</th><th>Horizon</th><th>Decision</th></tr>'+recs+'</table></div></div>'):'';
+
+  var bs=(D.blindSpots||[]).map(function(b){
+    return '<tr><td><b>'+esc(b.gap)+'</b></td><td>'+esc(b.changes||'')+'</td><td style="color:var(--mut)">'+esc(b.closeWith||'')+'</td></tr>';
+  }).join('');
+  var bsBlock=bs?('<div class="block"><div class="sec">Not assessed</div><div class="card"><table>'+
+    '<tr><th>Gap</th><th>What it would change</th><th>Close it with</th></tr>'+bs+'</table></div></div>'):'';
+
+  var rev=D.advisorReview?('<div class="block"><div class="sec">Advisor pass</div><div class="card rev"><b style="color:var(--txt)">Verdict:</b> '+
+    esc(D.advisorReview.verdict||'')+(D.advisorReview.openMajors&&D.advisorReview.openMajors.length?('<br>Open, accepted: '+esc(D.advisorReview.openMajors.join(' · '))):'')+'</div></div>'):
+    '<div class="block"><div class="sec">Advisor pass</div><div class="card rev">Not recorded. Run opex-advisor before this goes to a client.</div></div>';
+  document.getElementById('v-trace').innerHTML=trBlock+recBlock+bsBlock+rev;
+
+  /* One slide, always. Measure, then binary-search the type scale until the summary fits.
+     Never scales up past 1: a short summary keeps the standard sizes and simply ends early. */
+  var art=document.getElementById('art'), view=document.getElementById('view'), sheet=document.getElementById('v-summary');
+  var FIT_MIN=0.62;
+  function overflows(){ return sheet.scrollHeight > view.clientHeight + 1; }
+  function setFs(v){ art.style.setProperty('--fs', v.toFixed(4)); }
+  function fit(){
+    if(sheet.classList.contains('hide')) return;      /* the trace view scrolls, it is not a slide */
+    setFs(1);
+    if(!overflows()){ art.removeAttribute('data-fit'); return; }
+    var lo=FIT_MIN, hi=1, mid;
+    for(var i=0;i<14;i++){ mid=(lo+hi)/2; setFs(mid); if(overflows()) hi=mid; else lo=mid; }
+    setFs(lo);
+    if(overflows()){ art.setAttribute('data-fit','overflow');
+      if(window.console&&console.warn) console.warn('exec-sum: content does not fit one slide even at the minimum scale ('+FIT_MIN+'). Cut it.'); }
+    else art.setAttribute('data-fit',lo.toFixed(2));
+  }
+  var rt; window.addEventListener('resize',function(){ clearTimeout(rt); rt=setTimeout(fit,120); });
+  if(document.fonts&&document.fonts.ready&&document.fonts.ready.then) document.fonts.ready.then(fit);
+  fit();
+
+  function seg(id,attr,cb){var box=document.getElementById(id);box.querySelectorAll('button').forEach(function(b){b.onclick=function(){box.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});b.classList.add('on');cb(b.getAttribute(attr));};});}
+  seg('theme','data-s',function(t){document.getElementById('art').setAttribute('data-t',t);});
+  seg('viewseg','data-v',function(v){
+    document.getElementById('v-summary').classList.toggle('hide',v!=='summary');
+    document.getElementById('v-trace').classList.toggle('hide',v!=='trace');
+    if(v==='summary') fit();
+  });
+})();
+</script>
+</body></html>

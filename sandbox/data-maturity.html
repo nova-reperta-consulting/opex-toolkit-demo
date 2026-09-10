@@ -1,0 +1,1442 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Data Readiness Read-out</title>
+<style>
+  *{box-sizing:border-box}
+  :root{--page:#FFF}
+  html,body{margin:0;height:100vh;overflow:hidden}
+  body{background:var(--page);font-family:'Aptos','Segoe UI',system-ui,sans-serif;transition:background .25s}
+  /* ===== BRAND THEME (inlined from templates/brand.css — do not hand-edit the tokens) ===== */
+  #art{--navy:#0B2347;--slate:#364156;--steel:#7991AD;--green:#1C7A4A;--accent:#6EB1D1;--sky:#A9D5E6;
+      --slate-10:rgba(54,65,86,.09);--navy-10:rgba(11,35,71,.10);--green-10:rgba(28,122,74,.10);
+      --rag-green:#2F8F6B;--rag-amber:#D49A3A;--rag-red:#D2645A;--rag-na:#9AA4B0;
+      --rag-green-text:#2F8F6B;--rag-amber-text:#B97F22;--rag-red-text:#C2483D;--rag-na-text:#6B7480;
+      --tint-green:rgba(47,143,107,.12);--tint-amber:rgba(212,154,58,.16);--tint-red:rgba(210,100,90,.13);
+      --navy-fill:#0B2347;
+      --wf-total:#0B2347;--wf-loss:#C0405A;--wf-value-c:#1C7A4A;
+      --tint-value:rgba(28,122,74,.075);--tint-loss:rgba(192,64,90,.08);
+      --ink:#15243A;--txt:#46505C;--mut:#7A838F;--line:#E1E6EE;--card:#FFF;--bg:#FFF;
+      --ui:11px;--rowpad:0px;
+      --fs-micro:calc(var(--ui)*.78);--fs-small:calc(var(--ui)*.88);--fs-body:var(--ui);
+      --fs-lead:calc(var(--ui)*1.1);--fs-sect:calc(var(--ui)*1.22);
+      --lh-tight:1.25;--lh-ui:1.4;--lh-prose:1.55;
+      --sh:0 1px 2px rgba(20,30,50,.04),0 14px 32px -24px rgba(20,30,50,.30);
+      width:100%;max-width:2200px;margin:0 auto;height:100vh;overflow:hidden;position:relative;
+      display:flex;flex-direction:column;background:var(--bg);color:var(--ink);padding:76px 40px 12px 98px}
+  #art[data-t="dark"]{--bg:#16202C;--card:#1E2937;--ink:#EAEFF5;--txt:#C4CEDA;--mut:#94A1B2;--line:#2A3744;
+      --navy-fill:#243246;--accent:#8FC7E8;--steel:#93A9C4;
+      --wf-total:#5B85B8;--wf-loss:#D9647C;--wf-value-c:#4FA97C;
+      --tint-value:rgba(79,169,124,.15);--tint-loss:rgba(217,100,124,.15);
+      --rag-green:#5FBF94;--rag-amber:#E8B96A;--rag-red:#F0968C;--rag-na:#9AA8B8;
+      --rag-green-text:#5FBF94;--rag-amber-text:#E8B96A;--rag-red-text:#F0968C;--rag-na-text:#9AA8B8;
+      --tint-green:rgba(95,191,148,.15);--tint-amber:rgba(232,185,106,.15);--tint-red:rgba(240,150,140,.14);
+      --sh:0 1px 2px rgba(0,0,0,.4),0 14px 32px -24px rgba(0,0,0,.6)}
+  body:has(#art[data-t="dark"]){--page:#0E1620}
+  .nr-rail{position:absolute;left:0;top:0;bottom:0;width:52px;background:var(--navy-fill)}
+  .toprow{position:absolute;top:22px;left:0;right:40px;display:flex;justify-content:space-between;align-items:center;gap:14px;z-index:3}
+  .tags{display:flex;align-items:center;gap:11px;min-width:0;flex:none;white-space:nowrap}
+  .nr-pill{display:inline-flex;align-items:center;gap:11px;background:var(--green);padding:10px 22px 10px 14px;border-radius:0 9px 9px 0}
+  .nr-pill img{height:21px;filter:brightness(0) invert(1)}
+  .nr-pill b{color:#fff;font-size:13px;font-weight:700;letter-spacing:.3px}
+  .nr-track{background:#E3E8EF;color:var(--navy);font-weight:700;font-size:11.5px;letter-spacing:.8px;padding:9px 16px;border-radius:8px}
+  #art[data-t="dark"] .nr-track{background:#243246;color:#EAEFF5}
+  .seg{display:flex;background:var(--slate-10);border-radius:999px;padding:3px}
+  .seg button{font-size:12px;font-weight:600;border:none;background:transparent;color:var(--mut);padding:6px 13px;border-radius:999px;cursor:pointer;white-space:nowrap;font-family:inherit}
+  .seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--sh)}
+  .seg button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  .ctrls{display:flex;gap:9px;flex:0 1 auto;min-width:0;justify-content:flex-end}
+  h1{font-size:clamp(20px,1.85vw,28px);font-weight:700;color:var(--navy);letter-spacing:-.2px;line-height:1.24;margin:0;max-width:1300px}
+  #art[data-t="dark"] h1{color:#EAEFF5}
+  h1 .hl{color:var(--green)}
+  #art[data-t="dark"] h1 .hl{color:#5FBF94}
+  .subrow{display:flex;align-items:baseline;gap:16px;margin:6px 0 12px}
+  .subt{font-size:15px;font-weight:600;color:var(--accent)}
+  #view{flex:1;min-height:0;position:relative;overflow:hidden}
+  #vinner{position:absolute;top:0;left:0;width:100%;transform-origin:top left;padding-bottom:14px}
+
+  /* ══ THE MAIN SLIDE: visual left, insights right (the house layout) ══ */
+  .slide{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);
+    gap:calc(var(--ui)*2.6);align-items:start}
+  .slide.one{grid-template-columns:minmax(0,1fr)}
+  .slide.wide{grid-template-columns:minmax(0,.92fr) minmax(0,1.18fr)}
+  .sech{margin:0 0 calc(var(--ui)*1.05);font-size:var(--fs-sect);font-weight:700;color:var(--ink);
+    line-height:var(--lh-tight);padding-bottom:calc(var(--ui)*.55);border-bottom:1px solid var(--steel)}
+  .col-vis,.col-ins{min-width:0}
+
+  /* ── insight panel ── */
+  .col-ins{font-size:var(--ui)}
+  .inswrap{display:flex;flex-direction:column;gap:1.15em}
+  .ins .inh{display:flex;align-items:flex-start;gap:.65em;margin-bottom:.4em}
+  .ins .inum{flex:none;width:1.6em;height:1.6em;border-radius:50%;background:var(--wf-total);color:#fff;
+    font-size:.84em;font-weight:800;display:inline-flex;align-items:center;justify-content:center;margin-top:.15em}
+  .ins .inh b{font-size:1.1em;font-weight:700;color:var(--ink);line-height:1.35}
+  .ins .chip{display:inline-flex;align-items:center;font-size:.8em;font-weight:700;
+    padding:.1em .55em;border-radius:99px;vertical-align:.1em;white-space:nowrap;line-height:1.5}
+  .ins .chip.good{background:var(--tint-value);color:var(--wf-value-c)}
+  .ins .chip.neu{background:var(--tint-amber);color:var(--rag-amber-text)}
+  .ins .chip.poor{background:var(--tint-loss);color:var(--wf-loss)}
+  .ins ul{margin:0;padding-left:2.9em;list-style:none}
+  .ins li{position:relative;font-size:1em;color:var(--txt);line-height:var(--lh-prose);margin-bottom:.25em}
+  .ins li::before{content:"";position:absolute;left:-.9em;top:.6em;width:.33em;height:.33em;border-radius:50%;background:var(--mut)}
+  .ins .inev{margin:.4em 0 0 2.9em;font-size:.88em;color:var(--mut);font-style:italic}
+
+  /* ── dependency map ── */
+  .mapwrap svg{display:block;width:100%;height:auto}
+  .lnk{fill:none;stroke-width:2;opacity:.42;transition:opacity .15s}
+  .nodelabel{font-size:16px;fill:var(--ink)}
+  .nodesub{font-size:13.5px;fill:var(--mut)}
+  .axcap{font-size:15px;letter-spacing:1.1px;text-transform:uppercase;fill:var(--ink);font-weight:700}
+  .badge{font-size:12px;font-weight:800;fill:#fff}
+  .axpill{fill:#E8ECF2}
+  #art[data-t="dark"] .axpill{fill:#243246}
+  .gnode{cursor:pointer}
+  svg.dim .lnk{opacity:.07} svg.dim .gnode{opacity:.3}
+  svg.dim .lnk.hot{opacity:.95} svg.dim .gnode.hot{opacity:1}
+
+  /* ── dot plot ── */
+  .dotrow{display:grid;grid-template-columns:calc(var(--ui)*14) 1fr;gap:calc(var(--ui)*1.4);
+    align-items:center;padding:calc(var(--ui)*.6 + var(--rowpad)) 0;border-top:1px solid var(--line)}
+  .dotrow:first-child{border-top:0}
+  .dotrow.sep{border-top:2px solid var(--steel)}
+  .seplab{font-size:var(--fs-micro);color:var(--steel);margin-top:2px}
+  .dotlab{font-size:var(--fs-body);color:var(--txt)}
+  .track{position:relative;height:calc(var(--ui)*3.6)}
+  .track::before{content:"";position:absolute;left:0;width:50%;top:0;bottom:0;
+    background:var(--tint-loss);border-radius:4px 0 0 4px}
+  .tick{position:absolute;top:0;bottom:0;width:1px;background:var(--line)}
+  .tick.bar{background:transparent;width:0;border-left:2px dashed var(--steel);z-index:1}
+  .dot{position:absolute;width:calc(var(--ui)*1.15);height:calc(var(--ui)*1.15);border-radius:50%;
+    transform:translate(-50%,-50%);border:2px solid var(--card);cursor:help;z-index:2}
+  .dot:hover{transform:translate(-50%,-50%) scale(1.25)}
+  .d1{background:var(--rag-red)} .d2{background:var(--rag-amber)}
+  .d3,.d4,.d5{background:var(--rag-green)}
+  .scaleline{display:grid;grid-template-columns:calc(var(--ui)*14) 1fr;gap:calc(var(--ui)*1.4);margin-top:6px}
+  .scalenums{position:relative;height:calc(var(--ui)*1.5);font-size:var(--fs-micro);color:var(--mut)}
+  .scalenums span{position:absolute;transform:translateX(-50%)}
+
+  /* ── process rows ── */
+  .phead,.prow{display:grid;grid-template-columns:1fr calc(var(--ui)*5) calc(var(--ui)*10.5) 1.15fr;
+    gap:calc(var(--ui)*1.1);align-items:center}
+  .phead{padding-bottom:calc(var(--ui)*.6);font-size:var(--fs-micro);color:var(--mut);
+    font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+  .prow{padding:calc(var(--ui)*.8 + var(--rowpad)) 0;border-top:1px solid var(--line)}
+  .pn{font-weight:600;color:var(--ink);font-size:var(--fs-body)}
+  .pf{text-align:right;font-variant-numeric:tabular-nums;color:var(--mut);font-size:var(--fs-small)}
+  .pv{text-align:center}
+  .pl{display:flex;flex-wrap:wrap;gap:calc(var(--ui)*.35)}
+  .chip2{display:inline-block;border-radius:99px;padding:.18em .8em;font-size:var(--fs-small);font-weight:700;white-space:nowrap}
+  .k1{background:var(--tint-red);color:var(--rag-red-text)}
+  .k2{background:var(--tint-amber);color:var(--rag-amber-text)}
+  .k3,.k4,.k5{background:var(--tint-green);color:var(--rag-green-text)}
+  .dp{display:inline-flex;align-items:baseline;gap:.4em;border-radius:4px;padding:.18em .65em;
+    font-size:var(--fs-small);border:1px solid transparent}
+  .dp b{font-weight:800}
+  .dp1{background:var(--tint-red);color:var(--rag-red-text)}
+  .dp2{background:var(--tint-amber);color:var(--rag-amber-text)}
+  .dp3,.dp4,.dp5{background:var(--tint-green);color:var(--rag-green-text)}
+  .dp.bind{border-color:currentColor}
+  .dp{cursor:pointer}
+
+  /* ── data point cards (quiet: no shadow, no side stripe) ── */
+  .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:calc(var(--ui)*1.5)}
+  .card{border:1px solid var(--line);border-radius:10px;padding:calc(var(--ui)*1.1) calc(var(--ui)*1.2) calc(var(--ui)*.9);
+    background:transparent;cursor:pointer;transition:border-color .12s,background .12s}
+  .card:hover{border-color:var(--steel);background:var(--slate-10)}
+  .chead{display:flex;justify-content:space-between;align-items:flex-start;gap:.7em}
+  .cname{font-weight:700;font-size:var(--fs-lead);color:var(--ink);line-height:1.25;min-height:2.5em}
+  .csys{font-size:var(--fs-micro);color:var(--mut);margin-bottom:calc(var(--ui)*1)}
+  .mini{display:grid;grid-template-columns:repeat(5,1fr);gap:calc(var(--ui)*.45);align-items:end;
+    height:calc(var(--ui)*4.2 + var(--rowpad)*2);position:relative;margin-bottom:5px}
+  .mini::before{content:"";position:absolute;left:0;right:0;bottom:60%;border-top:2px dashed var(--steel);opacity:.6}
+  .mb{border-radius:3px 3px 0 0;min-height:3px;cursor:help;transition:filter .12s}
+  .mb:hover{filter:brightness(1.12) saturate(1.2)}
+  .mb1{background:var(--rag-red)} .mb2{background:var(--rag-amber)}
+  .mb3,.mb4,.mb5{background:var(--rag-green)}
+  .mlab{display:grid;grid-template-columns:repeat(5,1fr);gap:calc(var(--ui)*.45);
+    font-size:var(--fs-micro);color:var(--mut);text-align:center}
+  .cfoot{margin-top:calc(var(--ui)*.9);padding-top:calc(var(--ui)*.7);border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;gap:.7em;font-size:var(--fs-small)}
+  .hold{color:var(--mut)} .hold b{color:var(--ink);font-weight:700}
+  .ownm{color:var(--mut);white-space:nowrap;display:inline-flex;align-items:center;gap:.4em;font-size:var(--fs-micro);cursor:help}
+  .ownm i{width:.7em;height:.7em;border-radius:2px;background:var(--rag-green);display:inline-block}
+  .ownm.weak i{background:var(--rag-amber)}
+  .prov{display:inline-block;width:.5em;height:.5em;border-radius:50%;background:var(--steel);margin-right:.5em;vertical-align:.1em}
+  .prov.meas{background:var(--green)}
+
+  /* ── repairs ── */
+  .fix{display:grid;grid-template-columns:calc(var(--ui)*14) 1fr calc(var(--ui)*13);
+    gap:calc(var(--ui)*.6) calc(var(--ui)*1.6);padding:calc(var(--ui)*1 + var(--rowpad)) 0;border-top:1px solid var(--line)}
+  .fix:first-child{border-top:0}
+  .fl{font-weight:700;color:var(--ink);font-size:var(--fs-body)}
+  .fs{font-size:var(--fs-small);color:var(--mut);margin-top:1px}
+  .fb{font-size:var(--fs-small);color:var(--rag-amber-text);font-weight:700;margin-bottom:1px}
+  .fneed{margin-bottom:calc(var(--ui)*.6);font-size:var(--fs-body);color:var(--txt);line-height:var(--lh-prose)}
+  .fneed:last-child{margin-bottom:0}
+  .fr{font-size:var(--fs-small);color:var(--mut);text-align:right;line-height:var(--lh-ui)}
+
+  /* ── review ── */
+  .q{border-top:1px solid var(--line);padding:calc(var(--ui)*1.1) 0;max-width:92ch}
+  .q:first-child{border-top:0}
+  .qh{font-weight:700;color:var(--ink);font-size:var(--fs-lead);margin-bottom:2px}
+  .qb{color:var(--txt);font-size:var(--fs-body);line-height:var(--lh-prose)}
+
+  /* ── maturity profile: radar left, dimension rows right ── */
+  .radarwrap{display:flex;align-items:center;justify-content:center}
+  .radarwrap svg{width:100%;height:auto;max-width:calc(var(--ui)*44)}
+  .rlab{font-size:15px;fill:var(--ink);font-weight:600}
+  .rtick{font-size:12px;fill:var(--mut)}
+  .drow{padding:calc(var(--ui)*.8) 0;border-top:1px solid var(--line);cursor:help}
+  .drow:first-child{border-top:0}
+  .drh{display:flex;align-items:center;gap:.7em}
+  .dnm{font-weight:700;color:var(--ink);font-size:var(--fs-lead);flex:1;min-width:0}
+  .dsc{font-weight:700;font-size:var(--fs-small);border-radius:99px;padding:.15em .7em;white-space:nowrap}
+  .dsc.lo{background:var(--tint-amber);color:var(--rag-amber-text)}
+  .dsc.hi{background:var(--tint-green);color:var(--rag-green-text)}
+  .dsc.blk{background:var(--tint-red);color:var(--rag-red-text)}
+  .dmeter{display:flex;gap:.32em;flex:none}
+  .dmeter i{width:.62em;height:.62em;border-radius:50%;background:var(--line);display:block}
+  .dmeter i.on.lo{background:var(--rag-amber)}
+  .dmeter i.on.hi{background:var(--rag-green)}
+  .dmeter i.on.blk{background:var(--rag-red)}
+  .dtx{font-size:var(--fs-body);color:var(--txt);line-height:var(--lh-prose);margin-top:.3em}
+  .ovbox{display:flex;align-items:center;gap:calc(var(--ui)*1.3);margin-top:calc(var(--ui)*.6);
+    border:1px solid var(--line);border-left:4px solid var(--steel);border-radius:12px;
+    background:var(--slate-10);padding:calc(var(--ui)*1) calc(var(--ui)*1.3)}
+  .ovbox.hi{border-left-color:var(--rag-green)} .ovbox.lo{border-left-color:var(--rag-amber)}
+  .ovbox.blk{border-left-color:var(--rag-red)}
+  .ovnum{flex:none;text-align:center;line-height:1}
+  .ovnum b{font-size:calc(var(--ui)*2.6);font-weight:700;letter-spacing:-1px;display:block}
+  .ovnum.hi b{color:var(--rag-green-text)} .ovnum.lo b{color:var(--rag-amber-text)}
+  .ovnum.blk b{color:var(--rag-red-text)}
+  .ovnum span{font-size:var(--fs-micro);color:var(--mut);display:block;margin-top:.25em}
+  .ovk{font-size:var(--fs-micro);letter-spacing:.9px;text-transform:uppercase;color:var(--steel);font-weight:700}
+  .ovw{font-size:var(--fs-lead);font-weight:700;color:var(--ink);margin:.05em 0 .2em}
+  .ovt{font-size:var(--fs-small);color:var(--txt);line-height:var(--lh-prose)}
+
+  /* ── the drill-down panel ── */
+  #ovl{position:fixed;inset:0;background:rgba(11,25,45,.42);z-index:70;display:none;
+    align-items:center;justify-content:center;padding:34px}
+  #ovl.on{display:flex}
+  .mdl{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    width:min(760px,94vw);max-height:86vh;overflow:auto;box-shadow:0 30px 70px -30px rgba(5,15,35,.6);
+    font-size:clamp(13px,1.3vh + 3px,17.5px)}
+  .mhead{display:flex;justify-content:space-between;align-items:flex-start;gap:1em;
+    padding:1.1em 1.35em .85em;border-bottom:1px solid var(--line)}
+  .mtit{font-size:1.26em;font-weight:700;color:var(--ink);line-height:1.22}
+  .msub{font-size:.85em;color:var(--mut);margin-top:.2em}
+  .mx{appearance:none;border:1px solid var(--line);background:transparent;color:var(--mut);
+    width:2em;height:2em;border-radius:50%;cursor:pointer;font-size:1.1em;line-height:1;flex:none;font-family:inherit}
+  .mx:hover{color:var(--ink);border-color:var(--steel)}
+  .mbody{padding:.95em 1.35em 1.3em}
+  .mh2{font-size:.75em;letter-spacing:.8px;text-transform:uppercase;color:var(--steel);
+    font-weight:700;margin:1.15em 0 .45em}
+  .mh2:first-child{margin-top:0}
+  .mrow{display:grid;grid-template-columns:11em 2.6em 1fr;gap:.8em;align-items:baseline;
+    padding:.36em 0;border-top:1px solid var(--line)}
+  .mrow:first-of-type{border-top:0}
+  .mrow.own{border-top:2px solid var(--steel);margin-top:.4em;padding-top:.55em}
+  .mcl{font-weight:600;color:var(--ink)}
+  .mcl small{display:block;font-weight:400;color:var(--steel);font-size:.8em;line-height:1.3}
+  .msc{font-weight:800;text-align:center;border-radius:99px;padding:.1em 0}
+  .m1{background:var(--tint-red);color:var(--rag-red-text)}
+  .m2{background:var(--tint-amber);color:var(--rag-amber-text)}
+  .m3,.m4,.m5{background:var(--tint-green);color:var(--rag-green-text)}
+  .mtx{color:var(--txt);line-height:var(--lh-prose)}
+  .mtx em{color:var(--mut);font-style:italic;display:block;margin-top:.05em;font-size:.9em}
+
+  .mdep{display:grid;grid-template-columns:1fr 4.5em 9em;gap:.8em;align-items:baseline;
+    padding:.3em 0;border-top:1px solid var(--line);color:var(--txt)}
+  .mdep:first-of-type{border-top:0}
+  .mdep .r{text-align:right;font-variant-numeric:tabular-nums;color:var(--mut)}
+  .mdep .b{color:var(--rag-red-text);font-weight:600;font-size:.9em}
+  .mfix{background:var(--tint-amber);border-radius:9px;padding:.55em .8em;
+    color:var(--txt);line-height:1.5}
+  .mscale{margin-top:1em;padding-top:.65em;border-top:1px solid var(--line);
+    font-size:.76em;color:var(--mut);line-height:1.45}
+
+  /* ── the hover card ── */
+  #tip{position:fixed;z-index:60;max-width:330px;background:var(--card);border:1px solid var(--line);
+    border-radius:10px;box-shadow:0 12px 34px -14px rgba(10,20,40,.45);padding:10px 13px;
+    font-size:13px;color:var(--txt);line-height:1.5;pointer-events:none;opacity:0;transition:opacity .1s}
+  #tip.on{opacity:1}
+  #tip .th{display:flex;align-items:baseline;justify-content:space-between;gap:.9em;margin-bottom:3px}
+  #tip .th b{color:var(--ink);font-size:13px;font-weight:700}
+  #tip .ts{font-weight:800;font-size:12.5px;white-space:nowrap}
+  #tip .tc{font-size:11.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:4px}
+
+  #ft{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:10px;
+    font-size:clamp(9.5px,0.75vw,12px);color:var(--mut)}
+  #ft .l{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .legend{display:flex;gap:1.1em;flex-wrap:wrap;row-gap:.25em}
+  .lp{display:inline-flex;align-items:center;gap:.5em;font-size:0.95em;font-weight:600;color:var(--txt)}
+  .lp i{width:.75em;height:.75em;border-radius:2px;display:inline-block;flex:none}
+  .conf{font-size:0.88em;letter-spacing:.5px;font-weight:600;white-space:nowrap;flex:none}
+  /* The band where the row still fits on one line, but only just: the tabs give up a little
+     padding before anything is allowed to collide. The working copy is the tight case, because
+     it carries the padlock and Export on the same row. */
+  @media (max-width:1460px){
+    .toprow{gap:10px}
+    .seg{padding:2px}
+    .seg button{padding:5px 9px;font-size:11.5px}
+    .nr-track{font-size:11px;padding:8px 12px}
+  }
+  @media (max-width:1320px){
+    .seg button{padding:5px 7px;font-size:11px}
+    .nr-pill{padding:9px 16px 9px 11px}
+  }
+  /* collapsed / narrow: the top row joins the flow instead of floating over the title */
+  @media (max-width:1240px){
+    #art{padding:18px 20px 12px 60px}
+    .nr-rail{width:34px}
+    .toprow{position:static;right:auto;top:auto;flex-wrap:wrap;row-gap:10px;margin-bottom:16px}
+    .tags,.ctrls{flex-wrap:wrap;row-gap:8px}
+    .nr-pill{padding:8px 16px 8px 10px;border-radius:9px}
+    .nr-pill img{height:18px} .nr-pill b{font-size:11.5px}
+    .nr-track{font-size:10.5px;padding:7px 12px}
+    .seg button{padding:5px 11px;font-size:11.5px}
+    h1{font-size:clamp(18px,2.6vw,24px)}
+    .subrow{gap:8px}
+    .slide{grid-template-columns:minmax(0,1fr);gap:calc(var(--ui)*1.6)}
+    .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="art" data-t="light">
+  <div class="nr-rail"></div>
+  <div class="toprow">
+    <div class="tags">
+      <div class="nr-pill"><img alt="Nova Reperta" src="data:image/png;base64,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"><b>OPEX QUICKSCAN</b></div>
+      <div class="nr-track">DATA · DATA MATURITY</div>
+    </div>
+    <div class="ctrls">
+      <!-- The six views are fixed methodology, so the tab bar is static markup.
+           The script only moves the "on" class. -->
+      <div class="seg" id="views">
+        <button data-v="o" class="on">Overview</button>
+        <button data-v="x">Maturity profile</button>
+        <button data-v="m">Maturity assessment</button>
+        <button data-v="p">Processes</button>
+        <button data-v="d">Data points</button>
+        <button data-v="f">Critical repairs</button>
+      </div>
+      <div class="seg" id="theme"><button data-s="light" class="on">Light</button><button data-s="dark">Dark</button></div>
+      
+    </div>
+  </div>
+  <h1 id="title"></h1>
+  <div class="subrow"><div class="subt" id="subt"></div></div>
+  <div id="view"><div id="vinner"></div></div>
+  <div id="ft">
+    <div class="l"><span id="src"></span><div class="legend" id="lg"></div></div>
+    <span class="conf">Sample data · Northwind Assurance is fictional</span>
+  </div>
+  <div id="tip"></div>
+  <div id="ovl"></div>
+</div>
+
+<script>
+/* ============ ONLY THIS OBJECT CHANGES PER TEAM ============ */
+/* scripts/render_data_maturity.py replaces everything between the markers below with the
+   `data` block of a capture JSON. Keep the marker comments exactly as they are. */
+const DATA = /* DATA */ {
+  "team": "Claims Handling",
+  "period": "Sep 2026",
+  "keyMessage": {
+    "o": "Three data points hold back <span class=\"hl\">18,5 of the 38,0 FTE mapped</span>: the settlement lives in a private spreadsheet, the adjuster's finding in prose, and cover in a system nobody has open",
+    "x": "Maturity is strongest in <span class=\"hl\">currency and accuracy</span>; structure and ownership are what hold the team back",
+    "m": "The data is mostly there and mostly right. It is <span class=\"hl\">not structured for a machine</span>, and it is not owned",
+    "p": "Only <span class=\"hl\">7,0 of the 38,0 FTE</span> mapped sits on data an assistant could run on today",
+    "d": "Three of ten data points clear what AI needs, and <span class=\"hl\">nobody is named as owner</span> on six of the other seven",
+    "f": "Every blocked process clears with <span class=\"hl\">a single repair</span> - not one of them is held back by two data points at once"
+  },
+  "sources": {
+    "o": "Data owner sessions 7 Sep 2026 · team session 8 Sep 2026 · claims system extract",
+    "x": "Data owner sessions 7 Sep 2026 · team session 8 Sep 2026 · claims system extract",
+    "m": "Data owner sessions 7 Sep 2026 · team session 8 Sep 2026 · claims system extract",
+    "d": "Data owner sessions 7 Sep 2026 · team session 8 Sep 2026 · claims system extract",
+    "f": "Data owner sessions 7 Sep 2026 · team session 8 Sep 2026 · claims system extract",
+    "p": "Process baseline · FTE from the activity map (MAE), Sep 2026"
+  },
+  "insights": {
+    "o": [
+      {
+        "num": 1,
+        "h": "Settlement calculation",
+        "chip": [
+          "blocked",
+          "poor"
+        ],
+        "b": [
+          "Carries the 7,0 FTE of settlement work, the largest activity in the team.",
+          "It lives in a personal spreadsheet on a shared drive, one file per handler.",
+          "The arithmetic is right. Nothing else about it is: no owner, no structure, no way to read it as a set."
+        ],
+        "ev": "Data owner sessions, 7 Sep 2026"
+      },
+      {
+        "num": 2,
+        "h": "Adjuster reports",
+        "chip": [
+          "blocked",
+          "poor"
+        ],
+        "b": [
+          "PDFs on an e-mail thread, one per instructed file, 6,5 FTE leaning on them.",
+          "The finding is written in prose, so there is no field a system could read it from.",
+          "This is the same data behind the 3,0 FTE of chasing in the process map."
+        ],
+        "ev": "Data owner sessions, 7 Sep 2026"
+      },
+      {
+        "num": 3,
+        "h": "Policy cover",
+        "chip": [
+          "blocked",
+          "fair"
+        ],
+        "b": [
+          "Properly structured, complete and current - it is the policy record itself.",
+          "It fails on one thing only: it sits in a second system that has to be opened on every file.",
+          "That single gap is the 1,8 FTE the activity map already put a number on."
+        ],
+        "ev": "Data owner sessions, 7 Sep 2026"
+      }
+    ],
+    "m": [
+      {
+        "h": "Currency is the strength, and it is unusual",
+        "chip": [
+          "good"
+        ],
+        "b": [
+          "The claims system refreshes overnight and nobody keeps a private copy to correct it.",
+          "Reserve, status and fraud flags are all current by construction.",
+          "Worth protecting: most teams we scan have a shadow spreadsheet somewhere."
+        ],
+        "ev": "Data owner sessions, 7 Sep 2026"
+      },
+      {
+        "h": "Structure is where it stops",
+        "chip": [
+          "poor"
+        ],
+        "b": [
+          "Four of the ten data points hold their content as prose, an image or a private sheet.",
+          "A human reads those in seconds. A system cannot read them at all.",
+          "Every one of the blocked processes is blocked on exactly this."
+        ],
+        "ev": "Data owner sessions, 7 Sep 2026"
+      },
+      {
+        "h": "Six of ten have no named owner",
+        "chip": [
+          "poor"
+        ],
+        "b": [
+          "Ownership is the lowest-scoring criterion across the whole grid.",
+          "Where something is owned - cover, repair estimates, fraud indicators - it also scores well elsewhere.",
+          "Naming an owner costs nothing and is the precondition for every repair below."
+        ],
+        "ev": "Data owner sessions, 7 Sep 2026"
+      }
+    ],
+    "p": [
+      {
+        "h": "7,0 of 38,0 FTE is ready today",
+        "chip": [
+          "fair"
+        ],
+        "b": [
+          "Only agreeing the repair route (4,0 FTE) and screening for fraud (3,0 FTE) run on data that clears the bar.",
+          "Both sit on systems built for the job: RepairPortal and the fraud flags in ClaimsCore.",
+          "Everything else waits on one of four repairs."
+        ],
+        "ev": "Process baseline · FTE from the activity map (MAE), Sep 2026"
+      },
+      {
+        "h": "The two biggest activities are both blocked",
+        "chip": [
+          "blocked"
+        ],
+        "b": [
+          "Settlement (7,0 FTE) and adjuster follow-up (6,5 FTE) are the two largest, and neither is reachable.",
+          "Together they are more than a third of everything mapped.",
+          "Fixing those two data points moves more work than the other eight combined."
+        ],
+        "ev": "Data owner sessions, 7 Sep 2026"
+      }
+    ],
+    "f": [
+      {
+        "h": "Four repairs unlock 24,0 FTE",
+        "chip": [
+          "good"
+        ],
+        "b": [
+          "Settlement into the claim, adjuster findings as fields, cover on the claim record, documents indexed at scanning.",
+          "Those four repairs between them release settlement, adjuster follow-up, cover checking and registration.",
+          "Three of the four are already on the opportunity list, so nothing new has to be argued."
+        ],
+        "ev": "Data owner sessions, 7 Sep 2026"
+      },
+      {
+        "h": "Claim status is the one that gates the AI answer",
+        "chip": [
+          "fair"
+        ],
+        "b": [
+          "The status is accurate, complete and current. It is simply written for handlers, not for customers.",
+          "Twelve internal workflow codes, none of which means anything to the person ringing in.",
+          "Map them onto four states a customer would recognise and the 4,0 FTE of status calls becomes answerable."
+        ],
+        "ev": "Data owner sessions, 7 Sep 2026"
+      }
+    ]
+  },
+  "objects": {
+    "settleme": {
+      "n": "Settlement calculation",
+      "sh": "Settlement calcula…",
+      "sy": "Personal spreadsheet",
+      "c": [
+        2,
+        2,
+        3,
+        3,
+        4
+      ],
+      "g": 1,
+      "m": 0,
+      "num": 1,
+      "fix": "Move the settlement calculation into the claim, so the numbers live where the decision is recorded.",
+      "why": [
+        "It lives in a personal spreadsheet on a shared drive. You can open one file; you cannot read them as a set.",
+        "Each handler has shaped their own sheet, so the same figure sits in a different cell in every file.",
+        "The sheet is filled for every settlement - the calculation itself is never skipped.",
+        "The arithmetic is right; what varies is which version of the sheet was used.",
+        "It is done at the moment of settlement, so it is never out of date."
+      ],
+      "whyg": "No owner. The sheet was built by a handler who has since left, and everyone copies theirs from the last one.",
+      "seed": {
+        "inScopeBecause": "17% of team FTE leans on it",
+        "dependentFte": 7.0,
+        "activities": [
+          {
+            "id": "act-08",
+            "name": "Calculate and approve the settlement",
+            "fte": 7.0
+          }
+        ],
+        "maeSaid": [
+          "unreliable"
+        ],
+        "hypothesis": "Completeness / Accuracy & consistency",
+        "toProbe": "The MAE recorded this as unreliable. That word covers both an empty field and a wrong one - separate the two: which is it, and on how many records?"
+      }
+    },
+    "reserve": {
+      "n": "Reserve",
+      "sh": "Reserve",
+      "sy": "ClaimsCore",
+      "c": [
+        4,
+        4,
+        4,
+        3,
+        4
+      ],
+      "g": 3,
+      "m": 0,
+      "num": 2,
+      "fix": "",
+      "why": [
+        "Held as a field on the claim in ClaimsCore and readable across the whole book.",
+        "A single amount in a numeric field, with a history of changes behind it.",
+        "Every open claim carries a reserve; the system will not let you skip it.",
+        "It is right at the moment it is set, but it is only revisited when the adjuster report lands.",
+        "It refreshes overnight with the rest of the claim."
+      ],
+      "whyg": "Claims Handling owns it in practice and the finance controller checks it monthly, but nobody is named.",
+      "seed": {
+        "inScopeBecause": "17% of team FTE leans on it",
+        "dependentFte": 7.0,
+        "activities": [
+          {
+            "id": "act-08",
+            "name": "Calculate and approve the settlement",
+            "fte": 7.0
+          }
+        ],
+        "maeSaid": [
+          "reliable"
+        ],
+        "hypothesis": null,
+        "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
+      }
+    },
+    "adjuster": {
+      "n": "Adjuster reports",
+      "sh": "Adjuster reports",
+      "sy": "Email attachments",
+      "c": [
+        2,
+        1,
+        3,
+        4,
+        2
+      ],
+      "g": 2,
+      "m": 0,
+      "num": 3,
+      "fix": "Have the adjusters submit through a form rather than as an attachment, so the finding is a field.",
+      "why": [
+        "Attachments on an e-mail thread. Finding one means finding the right mail first.",
+        "A PDF written in prose. There is no field a system could read the finding from.",
+        "A report arrives for every instructed file, eventually.",
+        "The adjusters are professionals and the reports are accurate; what varies is the layout.",
+        "They arrive late - the chasing in the process map is exactly this."
+      ],
+      "whyg": "Nobody. The adjuster network is managed commercially, not as a data source.",
+      "seed": {
+        "inScopeBecause": "15% of team FTE leans on it",
+        "dependentFte": 6.5,
+        "activities": [
+          {
+            "id": "act-05",
+            "name": "Instruct and follow up the loss adjuster",
+            "fte": 6.5
+          }
+        ],
+        "maeSaid": [
+          "unreliable"
+        ],
+        "hypothesis": "Completeness / Accuracy & consistency",
+        "toProbe": "The MAE recorded this as unreliable. That word covers both an empty field and a wrong one - separate the two: which is it, and on how many records?"
+      }
+    },
+    "policyco": {
+      "n": "Policy cover",
+      "sh": "Policy cover",
+      "sy": "PolicyHub",
+      "c": [
+        2,
+        4,
+        5,
+        4,
+        5
+      ],
+      "g": 4,
+      "m": 0,
+      "num": 4,
+      "fix": "Expose cover as a service so it can be shown on the claim record instead of looked up.",
+      "why": [
+        "It sits in PolicyHub, a second system that has to be opened on every single file.",
+        "Properly structured: cover, limits and excesses are all fields.",
+        "Complete for every policy - it is the policy record itself.",
+        "Accurate; it is what the customer bought.",
+        "Current to the day a policy changes."
+      ],
+      "whyg": "Underwriting owns it and the ownership is written down.",
+      "seed": {
+        "inScopeBecause": "12% of team FTE leans on it",
+        "dependentFte": 5.0,
+        "activities": [
+          {
+            "id": "act-03",
+            "name": "Check cover against the policy",
+            "fte": 5.0
+          }
+        ],
+        "maeSaid": [
+          "reliable"
+        ],
+        "hypothesis": null,
+        "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
+      }
+    },
+    "claimdoc": {
+      "n": "Claim documents",
+      "sh": "Claim documents",
+      "sy": "Central scanning",
+      "c": [
+        3,
+        2,
+        3,
+        4,
+        2
+      ],
+      "g": 2,
+      "m": 0,
+      "num": 5,
+      "fix": "Index the documents at the point of scanning, so the claim knows what it has before a human looks.",
+      "why": [
+        "Everything reaches the central scanning queue, and from there the claim - eventually.",
+        "Scanned images with a file name. Nothing inside them is readable by a system.",
+        "Most documents arrive, but the file is often opened before they do.",
+        "What arrives is what was sent; the content is not in question.",
+        "Attached by hand, often days after the claim is opened."
+      ],
+      "whyg": "Central scanning runs the queue but nobody owns what lands on a claim.",
+      "seed": {
+        "inScopeBecause": "11% of team FTE leans on it",
+        "dependentFte": 4.5,
+        "activities": [
+          {
+            "id": "act-02",
+            "name": "Register the claim and open the file",
+            "fte": 4.5
+          }
+        ],
+        "maeSaid": [
+          "unreliable"
+        ],
+        "hypothesis": "Completeness / Accuracy & consistency",
+        "toProbe": "The MAE recorded this as unreliable. That word covers both an empty field and a wrong one - separate the two: which is it, and on how many records?"
+      }
+    },
+    "repaires": {
+      "n": "Repair estimates",
+      "sh": "Repair estimates",
+      "sy": "RepairPortal",
+      "c": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "g": 3,
+      "m": 0,
+      "num": 6,
+      "fix": "",
+      "why": [
+        "Held in RepairPortal and readable per claim and per garage.",
+        "Line items with parts, labour and hours as separate fields.",
+        "Every network repair carries one before work starts.",
+        "The garages price to an agreed schedule, so the estimates are consistent.",
+        "Submitted before the repair, so it is current by construction."
+      ],
+      "whyg": "The repair network manager owns it, though the responsibility is not written down anywhere.",
+      "seed": {
+        "inScopeBecause": "10% of team FTE leans on it",
+        "dependentFte": 4.0,
+        "activities": [
+          {
+            "id": "act-07",
+            "name": "Agree the repair route with the garage",
+            "fte": 4.0
+          }
+        ],
+        "maeSaid": [
+          "reliable"
+        ],
+        "hypothesis": null,
+        "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
+      }
+    },
+    "recovery": {
+      "n": "Recovery evidence",
+      "sh": "Recovery evidence",
+      "sy": "Scattered across the file",
+      "c": [
+        2,
+        1,
+        2,
+        3,
+        3
+      ],
+      "g": 1,
+      "m": 0,
+      "num": 7,
+      "fix": "Assemble the recovery pack from what the claim already holds, rather than rebuilding it by hand.",
+      "why": [
+        "Scattered across the file: some in the claim, some in mail, some in the adjuster report.",
+        "There is no recovery record at all - the pack is built in a spreadsheet each time.",
+        "Whether the evidence is there depends on who handled the claim.",
+        "What is found is right; the risk is what is never found.",
+        "It is gathered at the point of recovery, so it reflects the file as it stands."
+      ],
+      "whyg": "Nobody. Claims Handling and Finance Control both build recovery files and neither owns the outcome.",
+      "seed": {
+        "inScopeBecause": "8% of team FTE leans on it",
+        "dependentFte": 3.5,
+        "activities": [
+          {
+            "id": "act-11",
+            "name": "Recover from the third party",
+            "fte": 3.5
+          }
+        ],
+        "maeSaid": [
+          "unreliable"
+        ],
+        "hypothesis": "Completeness / Accuracy & consistency",
+        "toProbe": "The MAE recorded this as unreliable. That word covers both an empty field and a wrong one - separate the two: which is it, and on how many records?"
+      }
+    },
+    "fraudind": {
+      "n": "Fraud indicators",
+      "sh": "Fraud indicators",
+      "sy": "ClaimsCore",
+      "c": [
+        4,
+        3,
+        3,
+        3,
+        4
+      ],
+      "g": 3,
+      "m": 0,
+      "num": 8,
+      "fix": "",
+      "why": [
+        "Held as flags on the claim in ClaimsCore.",
+        "A fixed checklist of yes/no flags, which is readable, if coarse.",
+        "The checklist is run on every file, so the flags are always set.",
+        "The flags are set consistently, but they were designed for motor and are used on everything.",
+        "Set at assessment and refreshed with the claim."
+      ],
+      "whyg": "The fraud team owns the indicator list and reviews it yearly.",
+      "seed": {
+        "inScopeBecause": "7% of team FTE leans on it",
+        "dependentFte": 3.0,
+        "activities": [
+          {
+            "id": "act-06",
+            "name": "Screen for fraud indicators",
+            "fte": 3.0
+          }
+        ],
+        "maeSaid": [
+          "reliable"
+        ],
+        "hypothesis": null,
+        "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
+      }
+    },
+    "complexi": {
+      "n": "Complexity indicators",
+      "sh": "Complexity indicat…",
+      "sy": "ClaimsCore",
+      "c": [
+        4,
+        3,
+        2,
+        2,
+        4
+      ],
+      "g": 2,
+      "m": 0,
+      "num": 9,
+      "fix": "Record what a handler can take on, and triage on that as well as on complexity.",
+      "why": [
+        "A complexity score sits on the claim and is readable.",
+        "One numeric band, which is structured but thin.",
+        "The score is set on every file, but it says nothing about who can handle it.",
+        "The bands were set years ago and no longer separate the hard files from the routine ones.",
+        "Set at registration and never revisited."
+      ],
+      "whyg": "Nobody owns the banding. It was inherited from the previous claims system.",
+      "seed": {
+        "inScopeBecause": "6% of team FTE leans on it",
+        "dependentFte": 2.5,
+        "activities": [
+          {
+            "id": "act-04",
+            "name": "Triage the claim by complexity",
+            "fte": 2.5
+          }
+        ],
+        "maeSaid": [
+          "reliable"
+        ],
+        "hypothesis": null,
+        "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
+      }
+    },
+    "claimstat": {
+      "n": "Claim status",
+      "sh": "Claim status",
+      "sy": "ClaimsCore",
+      "c": [
+        4,
+        2,
+        4,
+        4,
+        5
+      ],
+      "g": 2,
+      "m": 0,
+      "num": 10,
+      "fix": "Map the twelve internal workflow codes onto the four states a customer would recognise, and name an owner.",
+      "why": [
+        "The status sits on the claim and is readable across the book.",
+        "Twelve internal workflow codes written for handlers. None of them means anything to a customer.",
+        "Every claim carries a status at all times.",
+        "The status is accurate - it is what drives the handler's own worklist.",
+        "It updates the moment the handler moves the file."
+      ],
+      "whyg": "No owner. The codes came with the system and nobody has revisited what they are for.",
+      "seed": {
+        "inScopeBecause": "named by opportunity o-04, tell the customer what happened without them asking",
+        "dependentFte": 2.0,
+        "activities": [
+          {
+            "id": "act-10",
+            "name": "Handle customer queries during the claim",
+            "fte": 2.0
+          }
+        ],
+        "maeSaid": [
+          "reliable"
+        ],
+        "hypothesis": "Structure",
+        "toProbe": "The status exists, but does it mean anything to a customer?"
+      }
+    }
+  },
+  "processes": [
+    {
+      "n": "Calculate and approve the settlement",
+      "f": 7.0,
+      "u": [
+        "settleme",
+        "reserve"
+      ]
+    },
+    {
+      "n": "Instruct and follow up the loss adjuster",
+      "f": 6.5,
+      "u": [
+        "adjuster"
+      ]
+    },
+    {
+      "n": "Check cover against the policy",
+      "f": 5.0,
+      "u": [
+        "policyco"
+      ]
+    },
+    {
+      "n": "Register the claim and open the file",
+      "f": 4.5,
+      "u": [
+        "claimdoc"
+      ]
+    },
+    {
+      "n": "Agree the repair route with the garage",
+      "f": 4.0,
+      "u": [
+        "repaires"
+      ]
+    },
+    {
+      "n": "Recover from the third party",
+      "f": 3.5,
+      "u": [
+        "recovery"
+      ]
+    },
+    {
+      "n": "Screen for fraud indicators",
+      "f": 3.0,
+      "u": [
+        "fraudind"
+      ]
+    },
+    {
+      "n": "Triage the claim by complexity",
+      "f": 2.5,
+      "u": [
+        "complexi"
+      ]
+    },
+    {
+      "n": "Handle customer queries during the claim",
+      "f": 2.0,
+      "u": [
+        "claimstat"
+      ]
+    }
+  ]
+} /* /DATA */;
+var TEAM=DATA.team, PERIOD=DATA.period;
+/* ========================================================== */
+
+/* Fixed methodology constants — the same for every team. */
+var CRIT=["Availability & access","Structure & granularity","Completeness","Accuracy & consistency","Timeliness"];
+var SHORT=["Avail","Struct","Compl","Accur","Timel"];
+var VERD={1:"Blocked",2:"Assist only",3:"Runs with controls",4:"Runs as-is",5:"Build on it"};
+
+var D=DATA.objects, P=DATA.processes;
+var KEYS=Object.keys(D);
+function sc(k){return Math.min.apply(null,D[k].c)}
+function bindNames(k){var c=D[k].c,s=sc(k),r=[];
+  for(var i=0;i<5;i++)if(c[i]===s)r.push(CRIT[i].split(" ")[0]);return r.join(" and ")}
+function needs(k){var c=D[k].c,r=[];for(var i=0;i<5;i++)if(c[i]<3)r.push(CRIT[i].split(" ")[0].toLowerCase());return r}
+function pScore(p){return Math.min.apply(null,p.u.map(sc))}
+function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;")}
+function css(v){return getComputedStyle(document.getElementById("art")).getPropertyValue(v).trim()}
+function bandHex(s){return s>=3?css("--rag-green"):(s===2?css("--rag-amber"):css("--rag-red"))}
+function bandCls(s){return s>=3?"good":(s===2?"neu":"poor")}
+
+var used={};P.forEach(function(p){p.u.forEach(function(k){used[k]=(used[k]||0)+1})});
+var agg={ok:0,mid:0,blk:0};
+P.forEach(function(p){var s=pScore(p);agg[s>=3?"ok":(s===2?"mid":"blk")]+=p.f});
+var TOT=P.reduce(function(a,p){return a+p.f},0);
+
+/* ── the hover card ─────────────────────────────────────── */
+var TIPS=[],tipEl;
+function tip(title,label,score,body){
+  TIPS.push('<div class="tc">'+esc(label)+'</div><div class="th"><b>'+esc(title)+'</b>'+
+    (score?'<span class="ts" style="color:'+bandHex(score)+'">'+score+' of 5</span>':'')+'</div>'+esc(body));
+  return TIPS.length-1;
+}
+function wireTips(){
+  tipEl=document.getElementById("tip");
+  var host=document.getElementById("vinner");
+  host.addEventListener("mouseover",function(e){
+    var t=e.target.closest?e.target.closest("[data-tip]"):null;
+    if(!t)return;tipEl.innerHTML=TIPS[+t.getAttribute("data-tip")];tipEl.classList.add("on");place(e);});
+  host.addEventListener("mousemove",function(e){if(tipEl.classList.contains("on"))place(e);});
+  host.addEventListener("click",function(e){
+    var t=e.target.closest?e.target.closest("[data-dp]"):null;
+    if(t)openDP(t.getAttribute("data-dp"));});
+  host.addEventListener("keydown",function(e){
+    if(e.key!=="Enter"&&e.key!==" ")return;
+    var t=e.target.closest?e.target.closest("[data-dp]"):null;
+    if(t){e.preventDefault();openDP(t.getAttribute("data-dp"));}});
+  host.addEventListener("mouseout",function(e){
+    var t=e.target.closest?e.target.closest("[data-tip]"):null;
+    if(t)tipEl.classList.remove("on");});
+  function place(e){
+    var w=tipEl.offsetWidth,h=tipEl.offsetHeight,x=e.clientX+16,y=e.clientY+16;
+    if(x+w>innerWidth-12)x=e.clientX-w-16;
+    if(y+h>innerHeight-12)y=e.clientY-h-16;
+    tipEl.style.left=Math.max(8,x)+"px";tipEl.style.top=Math.max(8,y)+"px";}
+}
+
+/* ── the drill-down: everything known about one data point ─────────────── */
+var LEVEL={1:"Blocks everything. Nothing runs on this.",
+ 2:"Human in the loop only. A person has to check every record.",
+ 3:"Runs with controls, once an exception route is built around the known gaps.",
+ 4:"Runs as-is. Reliable enough to act on without a routine check.",
+ 5:"Strong enough for others to build on."};
+/* In the client build the edit layer below is cut out entirely, so this stays false and HOOK
+   stays empty - no editor identifier survives anywhere in the file the client receives. */
+var EDITING=false, HOOK={};
+function openDP(k){
+  var o=D[k],s=sc(k),deps=P.filter(function(p){return p.u.indexOf(k)>-1});
+  var h='<div class="mdl" role="dialog" aria-modal="true" aria-label="'+esc(o.n)+'">'+
+    '<div class="mhead"><div><div class="mtit">'+esc(o.n)+'</div><div class="msub">'+esc(o.sy)+
+    ' · used by '+deps.length+(deps.length===1?" process":" processes")+' · '+
+    (o.m?"score measured from an extract":"scored from interview evidence")+
+    '</div></div><span class="chip2 k'+s+'" style="margin-top:.2em">'+VERD[s]+
+    '</span><button class="mx" id="mx" aria-label="Close">&times;</button></div><div class="mbody">'+
+    '';
+  if(EDITING && HOOK.panel){
+    h+=HOOK.panel(k);
+  }else{
+    h+='<div class="mh2">Evaluation criteria</div>';
+    o.c.forEach(function(v,i){
+      h+='<div class="mrow"><div class="mcl">'+CRIT[i]+(v===s?'<small>the lowest of the five</small>':'')+
+         '</div><div class="msc m'+v+'">'+v+'</div><div class="mtx">'+esc(o.why[i])+
+         (v===s?'<em>'+LEVEL[v]+'</em>':'')+'</div></div>';
+    });
+    h+='<div class="mrow own"><div class="mcl">Ownership &amp; governance<small>outside the verdict</small></div>'+
+       '<div class="msc m'+o.g+'">'+o.g+'</div><div class="mtx">'+esc(o.whyg)+'</div></div>';
+  }
+  h+='<div class="mh2">Depending processes</div>';
+  deps.sort(function(a,b){return b.f-a.f}).forEach(function(p){
+    var ps=pScore(p),binds=(ps<3&&sc(k)===ps);
+    h+='<div class="mdep"><div>'+esc(p.n)+'</div><div class="r">'+p.f.toFixed(1)+' FTE</div>'+
+       '<div class="'+(binds?"b":"r")+'">'+(binds?"held back by this":VERD[ps])+'</div></div>';
+  });
+  h+=(EDITING ? '' :
+      '<div class="mh2">Key improvement areas</div>'+
+      (s>=3?'<div class="mtx">Nothing. It already reaches the bar, so no repair is needed here.</div>'
+           :'<div class="mfix"><b>Needs '+needs(k).join(", ")+'.</b> '+esc(o.fix)+'</div>'))+
+     '<div class="mscale"><b>The scale:</b> 1 blocks everything · 2 a person checks every record · '+
+     '3 runs with controls · 4 runs as-is · 5 strong enough to build on. '+
+     'Ownership is scored the same way but kept out of the verdict, because it decides whether the data keeps working rather than whether it works today.</div>'+
+     '</div></div>';
+  var ov=document.getElementById("ovl");ov.innerHTML=h;ov.classList.add("on");
+  document.getElementById("tip").classList.remove("on");
+  document.getElementById("mx").onclick=closeDP;
+  
+  ov.onclick=function(e){if(e.target===ov)closeDP()};
+}
+function closeDP(){var ov=document.getElementById("ovl");ov.classList.remove("on");ov.innerHTML=""}
+
+
+addEventListener("keydown",function(e){if(e.key==="Escape")closeDP()});
+
+/* ── the visuals ────────────────────────────────────────── */
+function mapSVG(H){
+  H=H||560;
+  var PX=374,PW=15,DX=786,DW=15,TOP=52,BOT=18,VBW=1200;
+  var pGap=12,avail=H-TOP-BOT-pGap*(P.length-1),y=TOP,pn=[];
+  P.forEach(function(p){var h=Math.max(20,avail*p.f/TOT);pn.push({y:y,h:h});y+=h+pGap});
+  var order=KEYS.slice(),dh=32,dGap=13,dTot=order.length*dh+(order.length-1)*dGap,dy=(H-dTot)/2+4,dn={};
+  order.forEach(function(k){dn[k]={y:dy,h:dh};dy+=dh+dGap});
+  var s='<text class="axcap" x="18" y="20">Processes</text>'+
+        '<text class="axcap" x="'+(DX+DW+31)+'" y="20">Data points</text>';
+  P.forEach(function(p,i){
+    var ay=pn[i].y+pn[i].h/2;
+    p.u.forEach(function(k){
+      var by=dn[k].y+dn[k].h/2,x1=PX+PW,x2=DX,mx=(x1+x2)/2;
+      s+='<path class="lnk" data-p="'+i+'" data-d="'+k+'" stroke="'+bandHex(sc(k))+'" d="M'+x1+','+ay+
+         ' C'+mx+','+ay+' '+mx+','+by+' '+x2+','+by+'"/>';
+    });
+  });
+  P.forEach(function(p,i){
+    var a=pn[i],v=pScore(p),bind=p.u.filter(function(k){return sc(k)===v});
+    var t=tip(p.n,VERD[v]+" · "+p.f.toFixed(1)+" FTE",0,
+      v>=3?"Everything this process leans on reaches the bar.":
+      "Held back by "+bind.map(function(k){return D[k].sh}).join(" and ")+".");
+    s+='<g class="gnode" data-p="'+i+'" data-tip="'+t+'">'+
+       '<rect x="'+PX+'" y="'+a.y+'" width="'+PW+'" height="'+a.h+'" rx="4" fill="'+bandHex(v)+'"/>'+
+       '<text class="nodelabel" x="'+(PX-14)+'" y="'+(a.y+a.h/2-2)+'" text-anchor="end">'+esc(p.n)+'</text>'+
+       '<text class="nodesub" x="'+(PX-14)+'" y="'+(a.y+a.h/2+16)+'" text-anchor="end">'+p.f.toFixed(1)+' FTE</text></g>';
+  });
+  order.forEach(function(k){
+    var b=dn[k],v=sc(k),cy=b.y+b.h/2,star=(D[k].num<=4);
+    var t=tip(D[k].n,D[k].sy+" · used by "+(used[k]||0)+" processes",v,
+      v>=3?"Clears the bar. Nothing here blocks a process.":
+      "Lowest on "+bindNames(k).toLowerCase()+". "+D[k].why[D[k].c.indexOf(v)]);
+    s+='<g class="gnode" data-d="'+k+'" data-dp="'+k+'" data-tip="'+t+'">'+
+       '<rect x="'+DX+'" y="'+b.y+'" width="'+DW+'" height="'+b.h+'" rx="4" fill="'+bandHex(v)+'"/>';
+    var tx=DX+DW+13;
+    if(star){ s+='<circle cx="'+(tx+9)+'" cy="'+(cy-5)+'" r="9.5" fill="'+css("--wf-total")+'"/>'+
+      '<text class="badge" x="'+(tx+9)+'" y="'+(cy-1)+'" text-anchor="middle">'+D[k].num+'</text>'; tx+=25; }
+    s+='<text class="nodelabel" x="'+tx+'" y="'+(cy-2)+'">'+esc(D[k].sh)+'</text>'+
+       '<text class="nodesub" x="'+(DX+DW+13)+'" y="'+(cy+16)+'">'+
+       (v>=3?'clears the bar':'held back by '+bindNames(k).toLowerCase())+'</text></g>';
+  });
+  return '<div class="mapwrap"><svg viewBox="0 0 '+VBW+' '+H+'" role="img" aria-label="Dependency map: '+
+    P.length+' processes linked to the '+KEYS.length+' data points they use.">'+s+'</svg></div>';
+}
+function capPills(svg){
+  var NS="http://www.w3.org/2000/svg";
+  [].forEach.call(svg.querySelectorAll(".axcap"),function(t){
+    var b=t.getBBox(),padX=15,padY=9,h=b.height+padY*2;
+    var r=document.createElementNS(NS,"rect");
+    r.setAttribute("class","axpill");
+    r.setAttribute("x",(b.x-padX).toFixed(1));
+    r.setAttribute("y",(b.y-padY).toFixed(1));
+    r.setAttribute("width",(b.width+padX*2).toFixed(1));
+    r.setAttribute("height",h.toFixed(1));
+    r.setAttribute("rx",(h/2).toFixed(1));
+    t.parentNode.insertBefore(r,t);
+  });
+}
+function wireMap(){
+  var svg=document.querySelector(".mapwrap svg");if(!svg)return;
+  capPills(svg);
+  var links=svg.querySelectorAll(".lnk"),nodes=svg.querySelectorAll(".gnode");
+  function clear(){svg.classList.remove("dim");
+    [].forEach.call(links,function(l){l.classList.remove("hot")});
+    [].forEach.call(nodes,function(n){n.classList.remove("hot")});}
+  [].forEach.call(nodes,function(n){
+    n.addEventListener("mouseenter",function(){
+      clear();svg.classList.add("dim");n.classList.add("hot");
+      var pi=n.getAttribute("data-p"),dk=n.getAttribute("data-d");
+      [].forEach.call(links,function(l){
+        if(!((pi!==null&&l.getAttribute("data-p")===pi)||(dk!==null&&l.getAttribute("data-d")===dk)))return;
+        l.classList.add("hot");
+        var sel=pi!==null?'[data-d="'+l.getAttribute("data-d")+'"]':'[data-p="'+l.getAttribute("data-p")+'"]';
+        var g=svg.querySelector("g.gnode"+sel);if(g)g.classList.add("hot");
+      });
+    });
+    n.addEventListener("mouseleave",clear);
+  });
+}
+function dotPlot(){
+  var rows=CRIT.map(function(c,i){return {label:c,i:i,sep:false}});
+  rows.push({label:"Ownership & governance",i:5,sep:true});
+  var h="";
+  rows.forEach(function(row){
+    var byVal={};KEYS.forEach(function(k){
+      var v=row.i<5?D[k].c[row.i]:D[k].g;(byVal[v]=byVal[v]||[]).push(k)});
+    var d="";
+    [1,2,3,4,5].forEach(function(v){
+      var arr=byVal[v]||[],n=arr.length;
+      arr.forEach(function(k,j){
+        var t=tip(D[k].n,row.label,v,row.i<5?D[k].why[row.i]:D[k].whyg);
+        d+='<span class="dot d'+v+'" data-dp="'+k+'" data-tip="'+t+'" style="left:'+((v-1)/4*100)+
+           '%;top:calc(50% + '+((j-(n-1)/2)*1.35)+'em)"></span>';
+      });
+    });
+    var t="";[0,25,50,75,100].forEach(function(pc){t+='<span class="tick" style="left:'+pc+'%"></span>'});
+    t+='<span class="tick bar" style="left:50%"></span>';
+    h+='<div class="dotrow'+(row.sep?" sep":"")+'"><div class="dotlab">'+row.label+
+       (row.sep?'<div class="seplab">Scored, but outside the verdict</div>':'')+
+       '</div><div class="track">'+t+d+'</div></div>';
+  });
+  var sn="";[1,2,3,4,5].forEach(function(v){
+    sn+='<span style="left:'+((v-1)/4*100)+'%">'+v+(v===3?" · what AI needs":"")+'</span>'});
+  return '<div data-stretch>'+h+'</div><div class="scaleline"><div></div><div class="scalenums">'+sn+'</div></div>';
+}
+function processList(){
+  return '<div class="phead"><div>Process</div><div class="pf">FTE</div><div class="pv">Readiness</div><div>Leans on</div></div>'+
+   '<div data-stretch>'+P.map(function(p){var s=pScore(p);
+    return '<div class="prow"><div class="pn">'+esc(p.n)+'</div>'+
+     '<div class="pf">'+p.f.toFixed(1)+'</div>'+
+     '<div class="pv"><span class="chip2 k'+s+'">'+VERD[s]+'</span></div>'+
+     '<div class="pl">'+p.u.map(function(k){var v=sc(k);
+       var t=tip(D[k].n,CRIT[D[k].c.indexOf(v)]||"Lowest of the five",v,
+         v>=3?"Clears the bar, so it does not hold this process back.":D[k].why[D[k].c.indexOf(v)]);
+       return '<span class="dp dp'+v+(v===s?" bind":"")+'" data-dp="'+k+'" data-tip="'+t+'">'+esc(D[k].sh)+' <b>'+v+'</b></span>'}).join("")+
+     '</div></div>';
+  }).join("")+'</div>';
+}
+function cardGrid(){
+  return '<div class="cards" data-stretch data-rows="2">'+KEYS.map(function(k){
+    var o=D[k],s=sc(k);
+    var bars=o.c.map(function(v,i){
+      var t=tip(o.n,CRIT[i],v,o.why[i]);
+      return '<div class="mb mb'+v+'" data-tip="'+t+'" style="height:'+(v/5*100)+'%"></div>'}).join("");
+    var gt=tip(o.n,"Ownership & governance",o.g,o.whyg);
+    return '<div class="card" data-dp="'+k+'" tabindex="0" role="button"><div class="chead"><div class="cname"><span class="prov'+(o.m?" meas":"")+
+     '"></span>'+esc(o.n)+'</div><span class="chip2 k'+s+'">'+VERD[s]+'</span></div>'+
+     '<div class="csys">'+esc(o.sy)+' · used by '+(used[k]||0)+(used[k]===1?" process":" processes")+'</div>'+
+     '<div class="mini">'+bars+'</div><div class="mlab">'+SHORT.map(function(t){return "<span>"+t+"</span>"}).join("")+'</div>'+
+     '<div class="cfoot"><span class="hold">'+(s>=4?"Nothing holds it back":
+        (s===3?'At the bar on <b>'+bindNames(k).toLowerCase()+'</b>':'Held back by <b>'+bindNames(k).toLowerCase()+'</b>'))+
+     '</span><span class="ownm'+(o.g<=2?" weak":"")+'" data-tip="'+gt+'"><i></i>Owner '+o.g+'/5</span></div></div>';
+  }).join("")+'</div>';
+}
+function repairList(){
+  return '<div data-stretch>'+P.filter(function(p){return pScore(p)<3}).sort(function(a,b){return b.f-a.f}).map(function(p){
+    var weak=p.u.filter(function(k){return sc(k)<3});
+    return '<div class="fix"><div><div class="fl">'+esc(p.n)+'</div><div class="fs">'+p.f.toFixed(1)+' FTE waiting</div></div>'+
+     '<div>'+weak.map(function(k){
+       return '<div class="fneed"><div class="fb">'+esc(D[k].sh)+' — needs '+needs(k).join(", ")+'</div>'+esc(D[k].fix)+'</div>'
+     }).join("")+'</div><div class="fr">'+
+     (weak.length===1?"Clears with this one repair":"Clears only when all "+weak.length+" are done")+'</div></div>';
+  }).join("")+'</div>';
+}
+/* ── maturity profile ─────────────────────────────────────── */
+var LVLW={1:"Blocked",2:"Assist only",3:"Runs with controls",4:"Runs as-is",5:"Build on it"};
+var RSHORT=["Availability","Structure","Completeness","Accuracy","Timeliness","Ownership"];
+function avg(get){var t=0;KEYS.forEach(function(k){t+=get(k)});return t/KEYS.length}
+function profile(){
+  return [0,1,2,3,4].map(function(i){return {k:CRIT[i],s:RSHORT[i],v:avg(function(k){return D[k].c[i]})}})
+   .concat([{k:"Ownership & governance",s:RSHORT[5],v:avg(function(k){return D[k].g})}]);
+}
+function bandOf(v){return v<2?"blk":(v<3?"lo":"hi")}
+var PROF_ONE={
+ "Availability & access":"Six of the eight come straight out of a system. The exceptions are repair invoices, which somebody has to forward by hand, and the claims archive, where pulling a set needs a request to IT.",
+ "Structure & granularity":"Four of the eight sit below the bar and two of those score 1. In every case the fact the work needs is written into prose: the assessor's finding, the garage's invoice, the handler's call note.",
+ "Completeness":"The mandatory fields are filled everywhere. It is the optional ones the work actually relies on that are not, and fraud flags are set on only a fraction of the files that should carry one.",
+ "Accuracy & consistency":"The claim file has one definition in one system and it is the number everyone quotes. Accuracy drops where sources meet: assessors differ across garage networks, and invoice totals disagree with their own line items.",
+ "Timeliness":"Most data is written as the work happens, on the same day. Two exceptions pull the score down: reserving parameters refresh quarterly, and fraud flags were last updated three months ago.",
+ "Ownership & governance":"Repair invoices has nobody named against it at all, and three more run on one person's habit with nothing written down. Where the data is fresh and correct, that is diligence rather than a control."};
+function critVal(k,i){return i<5?D[k].c[i]:D[k].g}
+function critDetail(i){
+  var lows=KEYS.filter(function(k){return critVal(k,i)<3})
+    .sort(function(a,b){return critVal(a,i)-critVal(b,i)})
+    .map(function(k){return D[k].sh+" "+critVal(k,i)});
+  if(!lows.length) return "All eight data points reach the bar on this one.";
+  return "Below the bar: "+lows.join(", ")+". The other "+(KEYS.length-lows.length)+" reach 3 or better.";
+}
+function radar(P6){
+  var W=580,H=440,CX=290,CY=210,R=142,pts=[],ax="",rings="";
+  function xy(i,r){var a=(-90+i*60)*Math.PI/180;return [CX+Math.cos(a)*r,CY+Math.sin(a)*r]}
+  [1,2,3,4,5].forEach(function(step){
+    var r=R*step/5,p=[];for(var i=0;i<6;i++)p.push(xy(i,r).map(function(n){return n.toFixed(1)}).join(","));
+    rings+='<polygon points="'+p.join(" ")+'" fill="none" stroke="'+(step===5?css("--steel"):css("--line"))+
+      '" stroke-width="'+(step===5?1.4:1)+'"/>';
+    rings+='<text class="rtick" x="'+(CX+5)+'" y="'+(CY-r+4).toFixed(1)+'">'+step+'</text>';
+  });
+  for(var i=0;i<6;i++){var e=xy(i,R),l=xy(i,R+30);
+    ax+='<line x1="'+CX+'" y1="'+CY+'" x2="'+e[0].toFixed(1)+'" y2="'+e[1].toFixed(1)+
+        '" stroke="'+css("--line")+'" stroke-width="1"/>';
+    var an=i===0||i===3?"middle":(i<3?"start":"end");
+    ax+='<text class="rlab" x="'+l[0].toFixed(1)+'" y="'+(l[1]+(i===0?-4:i===3?12:4)).toFixed(1)+
+        '" text-anchor="'+an+'">'+RSHORT[i]+'</text>';
+    pts.push(xy(i,R*P6[i].v/5));}
+  var poly=pts.map(function(p){return p[0].toFixed(1)+","+p[1].toFixed(1)}).join(" ");
+  var dots=pts.map(function(p,i){var v=P6[i].v,t=tip(P6[i].k,"Average of the eight data points",0,
+      v.toFixed(1)+" of 5, "+LVLW[Math.floor(v)].toLowerCase()+". "+critDetail(i));
+    return '<g data-tip="'+t+'" style="cursor:help">'+
+      '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="17" fill="transparent"/>'+
+      '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="7" fill="'+
+      (v<2?css("--rag-red"):v<3?css("--rag-amber"):css("--rag-green"))+
+      '" stroke="'+css("--card")+'" stroke-width="2"/></g>'}).join("");
+  return '<div class="radarwrap"><svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Maturity profile across the six criteria">'+
+    rings+ax+'<polygon points="'+poly+'" fill="'+css("--accent")+'" fill-opacity=".2" stroke="'+
+    css("--wf-total")+'" stroke-width="2.2"/>'+dots+'</svg></div>';
+}
+function maturityRadar(){
+  var P6=profile(),ov=P6.reduce(function(a,d){return a+d.v},0)/6,b=bandOf(ov);
+  return radar(P6)+
+    '<div class="ovbox '+b+'"><div class="ovnum '+b+'"><b>'+ov.toFixed(1)+'</b><span>of 5</span></div>'+
+    '<div><div class="ovk">Overall maturity</div><div class="ovw">'+LVLW[Math.floor(ov)]+'</div>'+
+    '<div class="ovt">Averaged across the six. The data can be reached and is broadly right. '+
+    'Structure and ownership are what hold it back, and they are two different repairs.</div></div></div>';
+}
+function maturityRows(){
+  var P6=profile(),ov=P6.reduce(function(a,d){return a+d.v},0)/6;
+  var h='<div>'+P6.map(function(d,idx){
+    var b=bandOf(d.v),f=Math.floor(d.v),t=tip(d.k,"Average of the eight data points",0,critDetail(idx));
+    var m="";for(var i=1;i<=5;i++)m+='<i class="'+(i<=f?"on "+b:"")+'"></i>';
+    return '<div class="drow" data-tip="'+t+'"><div class="drh"><span class="dnm">'+d.k+'</span>'+
+      '<span class="dsc '+b+'">'+d.v.toFixed(1)+' / 5</span><span class="dmeter">'+m+'</span></div>'+
+      '<div class="dtx">'+PROF_ONE[d.k]+'</div></div>';
+  }).join("")+'</div>';
+  return h;
+}
+
+function ins(list){
+  return '<div class="inswrap">'+list.map(function(o,i){
+    return '<div class="ins"><div class="inh"><span class="inum">'+(o.num||i+1)+'</span><b>'+o.h+
+      (o.chip?' <span class="chip '+o.chip[1]+'">'+o.chip[0]+'</span>':'')+'</b></div>'+
+      '<ul>'+o.b.map(function(t){return "<li>"+t+"</li>"}).join("")+'</ul>'+
+      (o.ev?'<div class="inev">'+o.ev+'</div>':'')+'</div>';
+  }).join("")+'</div>';
+}
+
+/* ── the views ──────────────────────────────────────────── */
+/* Everything that varies per team — action titles, insight blocks, source lines —
+   comes from the capture. What stays here is methodology: the reading instructions,
+   the section headings and the legends, which are the same for every team. */
+var KM=DATA.keyMessage||{}, INS=DATA.insights||{}, SRC=DATA.sources||{};
+var SRCTAIL={
+ x:" Each criterion is the average of its data points, so this is the profile of the team's data rather than the readiness verdict. Hover a dimension for the detail behind it.",
+ d:" A green dot on the name means the score was measured from an extract rather than described in an interview."
+};
+function srcOf(k){var s=SRC[k]||SRC.all||"",t=SRCTAIL[k]||"";
+  if(s&&t&&!/[.!?]$/.test(s))s+=".";
+  return (s?"Source: "+s:"")+t}
+var NUMW=["","one","two","three","four","five","six","seven","eight","nine","ten"];
+function NW(n){return NUMW[n]||String(n)}
+var LG3=[["Nothing runs","--rag-red"],["A person checks every case","--rag-amber"],["Runs with controls or better","--rag-green"]];
+var LG2=[["Below the bar","--rag-amber"],["At or above the bar","--rag-green"]];
+
+var VIEWS={
+ o:{label:"Overview",
+   title:"Where this team's readiness is lost",
+   meth:'A process inherits the score of the <b>weakest data point it leans on</b>. Hover for the reason, <b>click a data point</b> for its full assessment.',
+   sech:"Mapping from processes to data points", vis:function(){return mapSVG()}, after:wireMap,
+   insh:"Insights and where the readiness is lost", ins:INS.o||[],
+   src:srcOf("o"), lg:LG3},
+
+ x:{label:"Maturity profile",
+   title:"The team's data across the six criteria",
+   wide:true, sech:"Overall maturity profile", vis:maturityRadar,
+   insh:"Dimension insights", insRaw:maturityRows,
+   src:srcOf("x"),
+   lg:LG2},
+
+ m:{label:"Maturity assessment",
+   title:"Where the weakness sits across the six criteria",
+   meth:'Anchors say <b>what can be deployed</b>, not how good the data is. Hover a dot for the finding, <b>click it</b> for the whole data point.',
+   sech:"Where the weakness sits", vis:dotPlot,
+   insh:"Insights and key sources of weakness", ins:INS.m||[],
+   src:srcOf("m"),
+   lg:[["Below the bar","--rag-red"],["At or above the bar","--rag-green"]]},
+
+ p:{label:"Processes",
+   title:"What the team's processes can run on today",
+   meth:'The <b>binding data point</b> is outlined on each row. Hover for the finding, <b>click it</b> for its full assessment.',
+   sech:"Readiness by process", vis:processList,
+   insh:"Insights and where the FTE sits", ins:INS.p||[],
+   src:srcOf("p"), lg:LG3},
+
+ d:{label:"Data points", one:true,
+   title:"The evidence behind every score",
+   meth:'Each card takes the <b>lowest of its five bars</b>, and the dashed line is what AI needs. Hover a bar for the finding, <b>click the card</b> for the full assessment.',
+   sech:"The "+NW(KEYS.length)+" data points this team works on, and the evidence behind every score",
+   vis:cardGrid,
+   src:srcOf("d"), lg:LG3},
+
+ f:{label:"Critical repairs",
+   title:"What it would take to unblock the work",
+   meth:'A process clears only when <b>every</b> data point it leans on reaches the bar.',
+   sech:"What it would take, largest first", vis:repairList,
+   insh:"Insights and how to sequence it", ins:INS.f||[],
+   src:srcOf("f"),
+   lg:[["Data point below the bar","--rag-amber"]]}
+};
+
+var ORDER=["o","x","m","p","d","f"],cur="o";
+
+function render(){
+  var V=VIEWS[cur];TIPS=[];
+  document.getElementById("title").innerHTML=((DATA.keyMessage||{})[cur])||V.title;
+  document.getElementById("subt").textContent=TEAM+" · "+PERIOD;
+  var body='<div class="slide'+(V.one?" one":"")+(V.wide?" wide":"")+'"><section class="col-vis"><h2 class="sech">'+V.sech+'</h2>'+V.vis()+'</section>';
+  if(!V.one) body+='<section class="col-ins"><h2 class="sech">'+V.insh+'</h2>'+(V.insRaw?V.insRaw():ins(V.ins))+'</section>';
+  var vi=document.getElementById("vinner");
+  vi.style.setProperty("--rowpad","0px");
+  vi.style.transform="scale(1)";vi.style.width="100%";
+  vi.innerHTML=body+'</div>';
+  document.getElementById("src").innerHTML=V.src;
+  document.getElementById("lg").innerHTML=(V.lg||[]).map(function(l){
+    return '<span class="lp"><i style="background:'+css(l[1])+'"></i>'+l[0]+'</span>'}).join("");
+  if(V.after) V.after();
+  fitUI(); sizeMap(); stretch(); fit();
+}
+/* Solve the type scale UP to the largest that still fits, rather than setting it small
+   and shrinking the slide afterwards. A binary search, so it is monotonic and terminates. */
+function setUI(v){document.getElementById("art").style.setProperty("--ui",v.toFixed(2)+"px")}
+function fitsAt(v){
+  var vi=document.getElementById("vinner"),vw=document.getElementById("view");
+  setUI(v);return vi.scrollHeight<=vw.clientHeight;
+}
+function fitUI(){
+  var lo=11,hi=22;
+  if(fitsAt(hi))return;
+  for(var i=0;i<11;i++){var mid=(lo+hi)/2;if(fitsAt(mid))lo=mid;else hi=mid;}
+  setUI(lo);
+}
+/* the map fills whatever height the frame leaves it */
+function sizeMap(){
+  var wrap=document.querySelector(".mapwrap");if(!wrap)return;
+  var vw=document.getElementById("view"),col=document.querySelector(".col-vis");
+  var top=wrap.getBoundingClientRect().top-vw.getBoundingClientRect().top;
+  var avail=vw.clientHeight-top-28,colW=col.clientWidth;
+  if(avail<220||colW<200)return;
+  var H=Math.max(420,Math.min(1180,Math.round(avail*1200/colW)));
+  wrap.outerHTML=mapSVG(H);
+  wireMap();
+}
+/* a list-shaped visual spreads its rows into the free height instead of stacking at the top */
+function stretch(){
+  var el=document.querySelector("[data-stretch]");if(!el)return;
+  var vw=document.getElementById("view");
+  var free=vw.clientHeight-(el.getBoundingClientRect().bottom-vw.getBoundingClientRect().top)-26;
+  var rows=+(el.getAttribute("data-rows")||el.children.length);
+  if(free<12||!rows)return;
+  document.getElementById("vinner").style.setProperty("--rowpad",Math.min(64,free/rows/2).toFixed(1)+"px");
+}
+/* monotonic fit: shrink until the slide clears the frame, never enlarge past 1 */
+function fit(){
+  var vi=document.getElementById("vinner"),vw=document.getElementById("view"),s=1;
+  for(var i=0;i<14;i++){
+    var h=vi.scrollHeight*s;
+    if(h<=vw.clientHeight+0.5) break;
+    s=Math.max(.45,s*(vw.clientHeight/h)*0.995);
+    vi.style.width=(100/s)+"%";vi.style.transform="scale("+s+")";
+  }
+}
+function seg(id,attr,cb){var box=document.getElementById(id);
+  [].forEach.call(box.querySelectorAll("button"),function(b){b.onclick=function(){
+    [].forEach.call(box.querySelectorAll("button"),function(x){x.classList.remove("on")});
+    b.classList.add("on");cb(b.getAttribute(attr));};});}
+seg("views","data-v",function(v){cur=v;render();});
+seg("theme","data-s",function(t){document.getElementById("art").setAttribute("data-t",t);render();});
+addEventListener("resize",function(){render()});
+wireTips();
+render();
+</script>
+</body>
+</html>

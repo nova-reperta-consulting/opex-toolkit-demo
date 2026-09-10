@@ -100,6 +100,14 @@ nav a.lk:hover{color:var(--ink)}
 .art.soon{opacity:.55}
 .art.soon .body{padding-top:19px}
 
+.grp{margin-top:38px}
+.grp:first-of-type{margin-top:30px}
+.grp h3{font-size:13px;font-weight:600;letter-spacing:-.005em;color:var(--ink);
+  display:flex;align-items:center;gap:11px}
+.grp h3::after{content:"";flex:1;height:1px;background:var(--hairline-soft)}
+.grp .gs{font-size:12.5px;color:var(--ink-3);margin-top:5px;max-width:70ch}
+.grp .grid{margin-top:16px}
+
 .notice{margin:0 auto;max-width:1180px;padding:0 var(--pad)}
 .notice .in{display:flex;gap:13px;align-items:flex-start;padding:16px 18px;
   border:1px solid rgba(229,160,60,.3);border-radius:12px;background:rgba(229,160,60,.06)}
@@ -116,20 +124,20 @@ footer .in{max-width:1180px;margin:0 auto;padding:24px var(--pad) 44px;display:f
   <a class="mark" href="../index.html">Nova Reperta <span>· Operational Excellence</span></a>
   <span class="sp"></span>
   <span class="chip">Sample data only</span>
+  <a class="lk" href="../engagement-dashboard.html">The dashboard</a>
   <a class="lk" href="../opex-constellation.html">How it works</a>
   <a class="lk" href="../index.html">Home</a>
 </div></nav>
 
 <section class="hero"><div class="wrap">
-  <span class="eyebrow"><span class="dot"></span>First stage · six analyses</span>
+  <span class="eyebrow"><span class="dot"></span>Thirteen analyses, one team</span>
   <h1>Northwind Assurance</h1>
-  <p class="sub">A mid-size non-life insurer that does not exist. We ran the first stage of the
-  engagement on its <b>Claims Handling</b> team so there is something complete to look at: one set of
-  facts, six analyses, and a single story they all support. <b>Every figure and quote here is
-  invented.</b></p>
+  <p class="sub">A mid-size non-life insurer that does not exist. We ran the engagement on its
+  <b>Claims Handling</b> team so there is something complete to look at: one set of facts, thirteen
+  analyses, and a single story they all support. <b>Every figure and quote here is invented.</b></p>
   <div class="cta">
-    <a class="btn p" href="ote-waterfall.html">Start with where the hours go →</a>
-    <a class="btn s" href="../index.html">Back to the start</a>
+    <a class="btn p" href="exec-sum.html">Start with the conclusion →</a>
+    <a class="btn s" href="../engagement-dashboard.html">Open the dashboard</a>
   </div>
 </div></section>
 
@@ -138,10 +146,10 @@ footer .in{max-width:1180px;margin:0 auto;padding:24px var(--pad) 44px;display:f
     <div class="s">plus Customer Service and Finance Control, partly</div></div>
   <div class="stat"><div class="v">42 people</div><div class="k">Whose work we mapped</div>
     <div class="s">across 12 activities and 21 tasks</div></div>
-  <div class="stat"><div class="v">~16 people</div><div class="k">Worth of time lost</div>
+  <div class="stat"><div class="v">16,1 people</div><div class="k">Worth of time avoidable</div>
     <div class="s">with 6 improvements that answer it</div></div>
-  <div class="stat"><div class="v">8</div><div class="k">Problems measured</div>
-    <div class="s">6 of them carry a hard number</div></div>
+  <div class="stat"><div class="v">32%</div><div class="k">Of paid time adds value</div>
+    <div class="s">the rest is absence, waiting and rework</div></div>
 </div>
 
 <section class="finding"><div class="wrap">
@@ -162,87 +170,155 @@ footer .in{max-width:1180px;margin:0 auto;padding:24px var(--pad) 44px;display:f
 
 <section class="analyses"><div class="wrap">
   <div class="kicker">The evidence</div>
-  <h2>The six analyses</h2>
+  <h2>Thirteen analyses, one set of facts</h2>
   <p class="lede">Each one opens exactly as you would receive it. The working copy is the same document
   with the editing tools switched on — that is the version we use live in a session with your team.</p>
 
-  <div class="grid">
+  <div class="grp">
+    <h3>What we concluded</h3>
+    <div class="gs">The answer we gave, and the questions we set out to answer in the first place.</div>
+    <div class="grid">
+    <div class="art">
+      <div class="thumb"><img src="../assets/execsum.jpg" alt="" loading="lazy"></div>
+      <div class="body">
+        <div class="lens" style="color:var(--spine)">The conclusion</div>
+        <h3>What we told them</h3>
+        <p>One page: what we found, why it matters, what to do about it and who decides what by when. Every line traces back to the analysis behind it.</p>
+        <div class="links"><a href="exec-sum.html">Open</a></div>
+      </div>
+    </div>
+    <div class="art">
+      <div class="thumb"><img src="../assets/hypo.jpg" alt="" loading="lazy"></div>
+      <div class="body">
+        <div class="lens" style="color:var(--spine)">The questions</div>
+        <h3>The questions behind it all</h3>
+        <p>Eleven things we set out to test, each one naming the analysis that would settle it. Ten came back confirmed and one is still running.</p>
+        <div class="links"><a href="hypothesis-tree.html">Open</a><a class="alt" href="hypothesis-tree.WORKING.html">Working copy</a></div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div class="grp">
+    <h3>Where the time goes</h3>
+    <div class="gs">How much effort the work takes today, and how much of it is avoidable.</div>
+    <div class="grid">
     <div class="art">
       <div class="thumb"><img src="../assets/ote.jpg" alt="" loading="lazy"></div>
       <div class="body">
         <div class="lens" style="color:var(--spine)">Time and capacity</div>
         <h3>Where the hours go</h3>
-        <p>Start from the hours you pay for and take away holidays, absence, meetings, waiting and rework,
-        step by step, until what is left is the time actually spent on claims. Here that is a third of it.</p>
+        <p>Start from the hours you pay for and take away holidays, absence, meetings, waiting and rework, step by step, until what is left is the time actually spent on claims. Here that is a third of it.</p>
         <div class="links"><a href="ote-waterfall.html">Open</a><a class="alt" href="ote-waterfall.WORKING.html">Working copy</a></div>
       </div>
     </div>
-
     <div class="art">
       <div class="thumb"><img src="../assets/mae.jpg" alt="" loading="lazy"></div>
       <div class="body">
         <div class="lens" style="color:var(--spine)">The work itself</div>
         <h3>Effort per activity</h3>
-        <p>Everything the team does, what each one costs in people, what drives the volume, which systems
-        carry it, and how much of that effort is avoidable. This is the one that puts a number on the problem.</p>
+        <p>Everything the team does, what each one costs in people, what drives the volume, which systems carry it, and how much of that effort is avoidable.</p>
         <div class="links"><a href="mae.html">Open</a><a class="alt" href="mae.WORKING.html">Working copy</a></div>
       </div>
     </div>
+    <div class="art">
+      <div class="thumb"><img src="../assets/oppreg.jpg" alt="" loading="lazy"></div>
+      <div class="body">
+        <div class="lens" style="color:var(--spine)">Where to start</div>
+        <h3>Where to improve first</h3>
+        <p>Every activity placed by effort and by how much of it could be improved, with the specific fix behind each one. Click any card to see the problems and the opportunity.</p>
+        <div class="links"><a href="opportunity-register.html">Open</a></div>
+      </div>
+    </div>
+    <div class="art">
+      <div class="thumb"><img src="../assets/orgbase.jpg" alt="" loading="lazy"></div>
+      <div class="body">
+        <div class="lens" style="color:var(--spine)">The organisation</div>
+        <h3>Who sits where</h3>
+        <p>The teams in scope, their headcount and how much of each manager’s time actually goes on managing rather than on the work itself.</p>
+        <div class="links"><a href="org-baseline.html">Open</a><a class="alt" href="org-baseline.WORKING.html">Working copy</a></div>
+      </div>
+    </div>
+    </div>
+  </div>
 
+  <div class="grp">
+    <h3>How the work runs</h3>
+    <div class="gs">The claim from both sides: how it moves internally, and what the customer sees.</div>
+    <div class="grid">
     <div class="art">
       <div class="thumb"><img src="../assets/procmap.jpg" alt="" loading="lazy"></div>
       <div class="body">
         <div class="lens" style="color:var(--proc)">The process</div>
         <h3>The process, end to end</h3>
-        <p>A claim from first notice to closure, step by step, with the measured problems marked on the
-        steps where they happen and the improvements that answer them.</p>
+        <p>A claim from first notice to closure, step by step, with the measured problems marked on the steps where they happen and the improvements that answer them.</p>
         <div class="links"><a href="process-map.html">Open</a><a class="alt" href="process-map.WORKING.html">Working copy</a></div>
       </div>
     </div>
+    <div class="art">
+      <div class="thumb"><img src="../assets/blueprint.jpg" alt="" loading="lazy"></div>
+      <div class="body">
+        <div class="lens" style="color:var(--proc)">The customer view</div>
+        <h3>The service, from outside</h3>
+        <p>The same claim seen from the customer’s side: what they do, what they see us do, and everything that happens out of their sight. Two of the three biggest losses sit right on that line.</p>
+        <div class="links"><a href="service-blueprint.html">Open</a><a class="alt" href="service-blueprint.WORKING.html">Working copy</a></div>
+      </div>
+    </div>
+    <div class="art">
+      <div class="thumb"><img src="../assets/raci.jpg" alt="" loading="lazy"></div>
+      <div class="body">
+        <div class="lens" style="color:var(--mgmt)">Who decides</div>
+        <h3>Who decides what</h3>
+        <p>Every activity against every role, filled in live with the team. It found triage with no owner at all and settlement with two.</p>
+        <div class="links"><a href="raci-diagnostic.html">Open</a><a class="alt" href="raci-diagnostic.WORKING.html">Working copy</a></div>
+      </div>
+    </div>
+    <div class="art">
+      <div class="thumb"><img src="../assets/datamat.jpg" alt="" loading="lazy"></div>
+      <div class="body">
+        <div class="lens" style="color:var(--spine)">The data</div>
+        <h3>Is the data ready</h3>
+        <p>Ten data points scored on whether a machine could actually use them: reachable, structured, complete, accurate, current and owned. Only a fifth of the work clears the bar today.</p>
+        <div class="links"><a href="data-maturity.html">Open</a><a class="alt" href="data-maturity.WORKING.html">Working copy</a></div>
+      </div>
+    </div>
+    </div>
+  </div>
 
+  <div class="grp">
+    <h3>How the team runs</h3>
+    <div class="gs">The management system and the people inside it.</div>
+    <div class="grid">
     <div class="art">
       <div class="thumb"><img src="../assets/wheel.jpg" alt="" loading="lazy"></div>
       <div class="body">
         <div class="lens" style="color:var(--mgmt)">Management</div>
         <h3>How the team is run</h3>
-        <p>The way the team is steered day to day, scored across five parts. It is where the "measures
-        plenty, steers on almost none of it" conclusion comes from.</p>
+        <p>The way the team is steered day to day, scored across five parts. It is where the “measures plenty, steers on almost none of it” conclusion comes from.</p>
         <div class="links"><a href="performance-wheel.html">Open</a><a class="alt" href="performance-wheel.WORKING.html">Working copy</a></div>
       </div>
     </div>
-
     <div class="art">
       <div class="thumb"><img src="../assets/skills.jpg" alt="" loading="lazy"></div>
       <div class="body">
         <div class="lens" style="color:var(--mgmt)">Management</div>
         <h3>How skills are built</h3>
-        <p>The same five questions asked about competence. Real technical skill, generously shared, and
-        nothing written down — so it travels only where people happen to sit.</p>
+        <p>The same five questions asked about competence. Real technical skill, generously shared, and nothing written down — so it travels only where people happen to sit.</p>
         <div class="links"><a href="skills-wheel.html">Open</a><a class="alt" href="skills-wheel.WORKING.html">Working copy</a></div>
       </div>
     </div>
-
     <div class="art">
       <div class="thumb"><img src="../assets/baro.jpg" alt="" loading="lazy"></div>
       <div class="body">
         <div class="lens" style="color:var(--mind)">The people</div>
         <h3>What the team says</h3>
-        <p>An anonymous survey of the team, 34 of 42 answering. You see the full spread of answers to every
-        statement, not just an average.</p>
+        <p>An anonymous survey of the team, 34 of 42 answering. You see the full spread of answers to every statement, not just an average.</p>
         <div class="links"><a href="team-barometer.html">Open</a><a class="alt" href="team-barometer.WORKING.html">Working copy</a></div>
       </div>
     </div>
-
-    <div class="art soon">
-      <div class="body">
-        <div class="lens" style="color:var(--ink-3)">Still being built</div>
-        <h3>Five more on the way</h3>
-        <p>A view of how the organisation is structured, the service seen from the customer's side, a
-        session on who decides what, the executive summary, and the set of questions the whole engagement
-        set out to answer. All on this same example, appearing here as they land.</p>
-      </div>
     </div>
   </div>
+
 </div></section>
 
 <div class="notice"><div class="in"><span class="d"></span>
