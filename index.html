@@ -61,6 +61,33 @@ nav a.lk:hover{color:var(--ink)}
 .btn.p:hover{background:#5C92FF;transform:translateY(-1px)}
 .btn.s{border:1px solid var(--hairline);color:var(--ink);background:var(--ground-2)}
 .btn.s:hover{border-color:#2E4674;background:var(--surface)}
+
+/* -- Thirteen analyses, six lenses ------------------------------------
+   Chips in three bands, in the order the analyses are run. The lens colours
+   are the methodology's own (M.dims), lifted for a dark ground. */
+.lenses{padding:clamp(46px,7vw,84px) 0;border-top:1px solid var(--hairline-soft)}
+.lenses .lede{max-width:68ch}
+.lns-band{margin-top:26px}
+.lns-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+  padding-bottom:9px;margin-bottom:13px;border-bottom:1px solid var(--hairline-soft)}
+.lns-h b{font-size:13.5px;letter-spacing:-.01em}
+.lns-h em{font-style:normal;color:var(--ink-3);font-size:12.5px}
+.lns-chips{display:flex;flex-wrap:wrap;gap:8px}
+.lns-chips a{display:inline-flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);
+  background:var(--surface);border:1px solid var(--hairline);border-radius:9px;
+  padding:9px 13px;font-size:13.5px;transition:.15s}
+.lns-chips a:hover{background:var(--surface-2);border-color:var(--blue);transform:translateY(-1px)}
+.lns-chips i{width:7px;height:7px;border-radius:50%;flex:none;background:var(--ink-3)}
+.lns-chips s{text-decoration:none;color:var(--ink-3);font-family:var(--mono);
+  font-size:var(--fs-105);letter-spacing:.07em;text-transform:uppercase}
+.lns-foot{display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  margin-top:30px;padding-top:22px;border-top:1px solid var(--hairline-soft)}
+.lns-foot span{color:var(--ink-3);font-size:13px}
+@media(max-width:640px){
+  .lns-chips a{font-size:12.5px;padding:8px 11px}
+  .lns-h{gap:0;flex-direction:column;align-items:flex-start}
+}
+
 .frame{border:1px solid var(--hairline);border-radius:13px;overflow:hidden;background:var(--surface);
   box-shadow:0 40px 90px -44px rgba(0,0,0,.92),0 0 0 1px rgba(255,255,255,.02)}
 .frame .bar{display:flex;gap:6px;padding:10px 13px;background:var(--ground-2);
@@ -221,7 +248,7 @@ footer .in{max-width:1180px;margin:0 auto;padding:24px var(--pad) 44px;display:f
     tool that already knows the method — so the work moves faster and the answers stay consistent.</p>
     <div class="cta">
       <a class="btn p" href="engagement-dashboard.html">Open the live dashboard →</a>
-      <a class="btn s" href="sandbox/index.html">See the live demo environment</a>
+      <a class="btn s" href="opex-constellation.html">See the whole toolkit →</a>
     </div>
     <p class="micro">Everything on this site uses invented data. Northwind Assurance is a company we made up.</p>
     <div class="shot"><div class="frame">
@@ -264,6 +291,49 @@ footer .in{max-width:1180px;margin:0 auto;padding:24px var(--pad) 44px;display:f
       <img src="assets/ote.jpg" alt="Where a team's paid hours actually end up, step by step" loading="lazy"></div>
   </div>
 </div></div></section>
+
+<section class="lenses"><div class="wrap">
+  <div class="kicker">The evidence</div>
+  <h2>Thirteen analyses, six lenses</h2>
+  <p class="lede">Every one of them is finished and open on the worked example. Three establish the
+  facts, seven score the six lenses we assess a team on, and three frame the work and close it.</p>
+
+  <div class="lns-band">
+    <div class="lns-h"><b>First, the facts</b><em>who is there, what they do, where the hours go</em></div>
+    <div class="lns-chips">
+      <a href="sandbox/org-baseline.html"><i></i>Org structure &amp; FTE</a>
+      <a href="sandbox/mae.html"><i></i>Team activity map (MAE)</a>
+      <a href="sandbox/ote-waterfall.html"><i></i>Where the time goes (OTE)</a>
+    </div>
+  </div>
+
+  <div class="lns-band">
+    <div class="lns-h"><b>Then the six lenses</b><em>each one scored 1&ndash;5, each score backed by an analysis</em></div>
+    <div class="lns-chips">
+      <a href="sandbox/process-map.html"><i style="background:#6E9BF5"></i>Process map <s>Processes</s></a>
+      <a href="sandbox/service-blueprint.html"><i style="background:#E8736A"></i>Service blueprint <s>Customer</s></a>
+      <a href="sandbox/performance-wheel.html"><i style="background:#4FC08D"></i>Performance wheel <s>Mgmt systems</s></a>
+      <a href="sandbox/skills-wheel.html"><i style="background:#4FC08D"></i>Skills wheel <s>Mgmt systems</s></a>
+      <a href="sandbox/data-maturity.html"><i style="background:#E5A03C"></i>Data maturity <s>Data &amp; AI</s></a>
+      <a href="sandbox/team-barometer.html"><i style="background:#A98BE0"></i>Team barometer <s>Mindset</s></a>
+      <a href="sandbox/raci-diagnostic.html"><i style="background:#46BFB2"></i>RACI diagnostic <s>Organisation</s></a>
+    </div>
+  </div>
+
+  <div class="lns-band">
+    <div class="lns-h"><b>Around them, the frame</b><em>what we set out to test, and what we concluded</em></div>
+    <div class="lns-chips">
+      <a href="sandbox/hypothesis-tree.html"><i style="background:var(--blue-2)"></i>Hypothesis tree</a>
+      <a href="sandbox/opportunity-register.html"><i style="background:var(--blue-2)"></i>Opportunities &amp; levers</a>
+      <a href="sandbox/exec-sum.html"><i style="background:var(--blue-2)"></i>Executive summary</a>
+    </div>
+  </div>
+
+  <div class="lns-foot">
+    <a class="btn p" href="opex-constellation.html">Open the toolkit map &rarr;</a>
+    <span>Everything we can run, including what is still being built.</span>
+  </div>
+</div></section>
 
 <section class="teams"><div class="wrap">
   <div class="kicker">The approach</div>
