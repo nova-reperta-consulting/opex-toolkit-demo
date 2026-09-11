@@ -6,6 +6,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
+  /* Type scale — one place, not case by case. Every size below 12px is a token and the
+     whole small end lifts on a narrow screen, so nothing drops under 11px on a phone. */
+  --fs-7:7.5px; --fs-8:8px; --fs-85:8.5px; --fs-9:9px; --fs-95:9.5px;
+  --fs-10:10px; --fs-105:10.5px; --fs-11:11px; --fs-115:11.5px;
+}
+@media (max-width:900px){
+  :root{
+    --fs-7:11px; --fs-8:11px; --fs-85:11px; --fs-9:11px; --fs-95:11px;
+    --fs-10:11.5px; --fs-105:12px; --fs-11:12px; --fs-115:12.5px;
+  }
+}
+
+:root{
   --ground:#050912; --ground-2:#080E1B; --surface:#0C1526; --surface-2:#111C31;
   --hairline:#1B2A47; --hairline-soft:#141F35;
   --ink:#EAF0FA; --ink-2:#93A4C4; --ink-3:#5A6A8C;
@@ -29,7 +42,7 @@ nav .in{max-width:1180px;margin:0 auto;padding:13px var(--pad);display:flex;alig
 nav .mark{font-weight:700;letter-spacing:-.02em;font-size:15px}
 nav .mark span{color:var(--ink-3);font-weight:500}
 nav .sp{flex:1}
-nav .chip{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+nav .chip{font-family:var(--mono);font-size:var(--fs-95);letter-spacing:.13em;text-transform:uppercase;
   color:var(--amber);border:1px solid rgba(229,160,60,.34);background:rgba(229,160,60,.08);
   border-radius:999px;padding:5px 11px;white-space:nowrap}
 nav a.lk{font-size:13.5px;color:var(--ink-2);text-decoration:none;transition:.15s}
@@ -37,7 +50,7 @@ nav a.lk:hover{color:var(--ink)}
 @media(max-width:640px){nav .chip{display:none}}
 
 /* ── shared bits ───────────────────────────────────────── */
-.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:10px;
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:var(--fs-10);
   letter-spacing:.15em;text-transform:uppercase;color:var(--ink-2);
   border:1px solid var(--hairline);border-radius:999px;padding:6px 14px;background:var(--ground-2)}
 .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--green);
@@ -53,7 +66,7 @@ nav a.lk:hover{color:var(--ink)}
 .frame .bar{display:flex;gap:6px;padding:10px 13px;background:var(--ground-2);
   border-bottom:1px solid var(--hairline)}
 .frame .bar i{width:9px;height:9px;border-radius:50%;background:#26344F;display:block}
-.kicker{font-family:var(--mono);font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--blue-2)}
+.kicker{font-family:var(--mono);font-size:var(--fs-95);letter-spacing:.15em;text-transform:uppercase;color:var(--blue-2)}
 
 /* ── hero ──────────────────────────────────────────────── */
 .hero{position:relative;padding:clamp(52px,8vw,100px) 0 clamp(36px,6vw,70px);text-align:center;
@@ -83,10 +96,10 @@ nav a.lk:hover{color:var(--ink)}
   padding:17px 17px 15px;display:flex;flex-direction:column;position:relative}
 .team .d{width:8px;height:8px;border-radius:50%;display:block}
 .team .n{font-size:15.5px;font-weight:600;margin-top:11px;letter-spacing:-.01em}
-.team .c{font-family:var(--mono);font-size:9px;letter-spacing:.13em;text-transform:uppercase;
+.team .c{font-family:var(--mono);font-size:var(--fs-9);letter-spacing:.13em;text-transform:uppercase;
   color:var(--ink-3);margin-top:6px}
 .team .t{font-size:12.5px;color:var(--ink-2);margin-top:11px;line-height:1.5;flex:1}
-.team .st{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+.team .st{font-family:var(--mono);font-size:var(--fs-9);letter-spacing:.12em;text-transform:uppercase;
   color:var(--ink-3);margin-top:14px}
 .team .st.live{color:var(--blue-2)}
 .teams .foot{margin-top:20px;font-size:12.5px;color:var(--ink-3);max-width:66ch}
@@ -174,7 +187,7 @@ nav a.lk:hover{color:var(--ink)}
 .steps h2{font-size:clamp(21px,2.9vw,30px);font-weight:600;letter-spacing:-.025em}
 .steps .row{display:grid;gap:14px;margin-top:28px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
 .step{border:1px solid var(--hairline);border-radius:12px;background:var(--ground-2);padding:18px 18px 16px}
-.step .n{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.step .n{font-family:var(--mono);font-size:var(--fs-9);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
 .step .t{font-size:13.5px;color:#B3C1DA;margin-top:8px;line-height:1.5}
 
 /* ── notice + footer ───────────────────────────────────── */
@@ -186,7 +199,7 @@ nav a.lk:hover{color:var(--ink)}
 .notice p b{color:#F2DFB8;font-weight:600}
 footer{margin-top:clamp(46px,7vw,80px);border-top:1px solid var(--hairline-soft)}
 footer .in{max-width:1180px;margin:0 auto;padding:24px var(--pad) 44px;display:flex;flex-wrap:wrap;
-  gap:10px 22px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  gap:10px 22px;font-family:var(--mono);font-size:var(--fs-10);letter-spacing:.1em;text-transform:uppercase;
   color:var(--ink-3)}
 </style></head><body>
 

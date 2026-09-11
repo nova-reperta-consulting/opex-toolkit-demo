@@ -6,6 +6,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
+  /* Type scale — one place, not case by case. Every size below 12px is a token and the
+     whole small end lifts on a narrow screen, so nothing drops under 11px on a phone. */
+  --fs-7:7.5px; --fs-8:8px; --fs-85:8.5px; --fs-9:9px; --fs-95:9.5px;
+  --fs-10:10px; --fs-105:10.5px; --fs-11:11px; --fs-115:11.5px;
+}
+@media (max-width:900px){
+  :root{
+    --fs-7:11px; --fs-8:11px; --fs-85:11px; --fs-9:11px; --fs-95:11px;
+    --fs-10:11.5px; --fs-105:12px; --fs-11:12px; --fs-115:12.5px;
+  }
+}
+
+:root{
   --ground:#050912; --ground-2:#080E1B; --surface:#0C1526; --surface-2:#111C31;
   --hairline:#1B2A47; --hairline-soft:#141F35;
   --ink:#EAF0FA; --ink-2:#93A4C4; --ink-3:#5A6A8C;
@@ -29,14 +42,14 @@ nav .in{max-width:1180px;margin:0 auto;padding:13px var(--pad);display:flex;alig
 nav .mark{font-weight:700;letter-spacing:-.02em;font-size:15px;text-decoration:none}
 nav .mark span{color:var(--ink-3);font-weight:500}
 nav .sp{flex:1}
-nav .chip{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+nav .chip{font-family:var(--mono);font-size:var(--fs-95);letter-spacing:.13em;text-transform:uppercase;
   color:var(--amber);border:1px solid rgba(229,160,60,.34);background:rgba(229,160,60,.08);
   border-radius:999px;padding:5px 11px;white-space:nowrap}
 nav a.lk{font-size:13.5px;color:var(--ink-2);text-decoration:none;transition:.15s}
 nav a.lk:hover{color:var(--ink)}
 @media(max-width:640px){nav .chip{display:none}}
 
-.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:10px;
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:var(--fs-10);
   letter-spacing:.15em;text-transform:uppercase;color:var(--ink-2);
   border:1px solid var(--hairline);border-radius:999px;padding:6px 14px;background:var(--ground-2)}
 .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--green);
@@ -47,7 +60,7 @@ nav a.lk:hover{color:var(--ink)}
 .btn.p:hover{background:#5C92FF;transform:translateY(-1px)}
 .btn.s{border:1px solid var(--hairline);color:var(--ink);background:var(--ground-2)}
 .btn.s:hover{border-color:#2E4674;background:var(--surface)}
-.kicker{font-family:var(--mono);font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--blue-2)}
+.kicker{font-family:var(--mono);font-size:var(--fs-95);letter-spacing:.15em;text-transform:uppercase;color:var(--blue-2)}
 
 .hero{position:relative;padding:clamp(44px,7vw,86px) 0 clamp(30px,5vw,54px);overflow:hidden}
 .hero::before{content:"";position:absolute;inset:-30% 30% 40% -10%;pointer-events:none;
@@ -65,9 +78,9 @@ nav a.lk:hover{color:var(--ink)}
   grid-template-columns:repeat(auto-fit,minmax(158px,1fr))}
 .stat{background:var(--ground);padding:26px clamp(18px,3vw,32px)}
 .stat .v{font-size:clamp(21px,2.8vw,30px);font-weight:700;letter-spacing:-.03em}
-.stat .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+.stat .k{font-family:var(--mono);font-size:var(--fs-95);letter-spacing:.14em;text-transform:uppercase;
   color:var(--ink-3);margin-top:8px}
-.stat .s{font-size:11.5px;color:var(--ink-2);margin-top:6px}
+.stat .s{font-size:var(--fs-115);color:var(--ink-2);margin-top:6px}
 
 .finding{padding:clamp(46px,7vw,86px) 0}
 .finding h2{font-size:clamp(21px,2.9vw,30px);font-weight:600;letter-spacing:-.025em;margin-top:12px}
@@ -88,7 +101,7 @@ nav a.lk:hover{color:var(--ink)}
   border-bottom:1px solid var(--hairline-soft)}
 .art .thumb img{width:100%;height:100%;object-fit:cover;object-position:top center}
 .art .body{padding:17px 17px 15px;display:flex;flex-direction:column;flex:1}
-.art .lens{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase}
+.art .lens{font-family:var(--mono);font-size:var(--fs-9);letter-spacing:.14em;text-transform:uppercase}
 .art h3{font-size:16.5px;font-weight:600;margin-top:7px;letter-spacing:-.015em}
 .art p{font-size:12.5px;color:var(--ink-2);margin-top:9px;flex:1;line-height:1.55}
 .art .links{display:flex;gap:9px;margin-top:15px;flex-wrap:wrap}
@@ -116,7 +129,7 @@ nav a.lk:hover{color:var(--ink)}
 .notice p b{color:#F2DFB8;font-weight:600}
 footer{margin-top:clamp(42px,6vw,74px);border-top:1px solid var(--hairline-soft)}
 footer .in{max-width:1180px;margin:0 auto;padding:24px var(--pad) 44px;display:flex;flex-wrap:wrap;
-  gap:10px 22px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  gap:10px 22px;font-family:var(--mono);font-size:var(--fs-10);letter-spacing:.1em;text-transform:uppercase;
   color:var(--ink-3)}
 </style></head><body>
 
