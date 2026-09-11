@@ -2609,7 +2609,7 @@ function loadFile(inp){
 }
 function adopt(o){
   E=normalise(o); derivePlan(); save();
-  MODE='live'; go('overview'); toast('Engagement loaded — '+(E.client||E.id));
+  MODE='live'; go('exec'); toast('Engagement loaded — '+(E.client||E.id));
 }
 /* older files used five types plus a separate AI toggle; fold them into the three */
 const OLD_TYPES={'ai-enabled-opex':'ai-first-redesign','future-state':'ai-first-redesign'};
@@ -2829,8 +2829,8 @@ function closeSidebar(){ $('#sidebar')?.classList.remove('open'); $('#sb-scrim')
 function go(k){
   closeSidebar();
   /* an unknown key used to render a silent blank page — land somewhere real instead.
-     'scope' arrives here from older bookmarks: it was folded into the overview. */
-  if(!PAGES[k]) k = MODE==='live'?'overview' : MODE==='setup'?'s1' : 'start';
+     'scope' arrives here from older bookmarks: it was folded into the wave setup. */
+  if(!PAGES[k]) k = MODE==='live'?'exec' : MODE==='setup'?'s1' : 'start';
   PAGE=k;
   if(!E && k!=='start' && k!=='how'){ k=PAGE='start'; }
   renderShell();
@@ -2851,7 +2851,7 @@ function loadSample(){
   try{ localStorage.removeItem(LS_DEMO); }catch(e){}
   E=normalise(JSON.parse(JSON.stringify(window.__NR_ENGAGEMENT__)));
   derivePlan(); save(); MODE = E.status==='configuring' ? 'setup' : 'live';
-  go(MODE==='setup'?'s1':'overview');
+  go(MODE==='setup'?'s1':'exec');
 }
 
 /* field binder — writes state without re-rendering, so typing keeps focus */
@@ -8423,7 +8423,7 @@ window.__NR_ENGAGEMENT__ = {
    "lead": "",
    "email": "",
    "priority": 5,
-   "inScope": false,
+   "inScope": true,
    "depth": null,
    "note": "",
    "placements": [
@@ -9512,7 +9512,7 @@ window.__NR_ENGAGEMENT__ = {
   try{ o=JSON.parse(localStorage.getItem(LS_ENG)||'null'); }catch(e){}
   try{ demoOff=localStorage.getItem(LS_DEMO)==='1'; }catch(e){}
   if(!o && !demoOff && typeof window.__NR_ENGAGEMENT__!=='undefined') o=window.__NR_ENGAGEMENT__;
-  if(o){ E=normalise(o); derivePlan(); MODE = E.status==='configuring' ? 'setup' : 'live'; go(MODE==='setup'?'s1':'overview'); }
+  if(o){ E=normalise(o); derivePlan(); MODE = E.status==='configuring' ? 'setup' : 'live'; go(MODE==='setup'?'s1':'exec'); }
   else go('start');
 })();
 </script>
