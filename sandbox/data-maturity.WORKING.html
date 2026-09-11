@@ -5,6 +5,20 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Data Readiness Read-out</title>
 <style>
+/* Type scale — one place, not case by case. Every size below 12px is a token; the
+   whole small end lifts on a narrow screen so nothing drops under 11px on a phone. */
+:root{
+  --fs-65:6.5px; --fs-7:7px; --fs-75:7.5px; --fs-8:8px; --fs-85:8.5px; --fs-9:9px;
+  --fs-95:9.5px; --fs-10:10px; --fs-105:10.5px; --fs-11:11px; --fs-115:11.5px;
+}
+@media (max-width:760px){
+  :root{
+    --fs-65:11px; --fs-7:11px; --fs-75:11px; --fs-8:11px; --fs-85:11px; --fs-9:11px;
+    --fs-95:11px; --fs-10:11.5px; --fs-105:12px; --fs-11:12px; --fs-115:12.5px;
+  }
+}
+</style>
+<style>
   *{box-sizing:border-box}
   :root{--page:#FFF}
   html,body{margin:0;height:100vh;overflow:hidden}
@@ -41,7 +55,7 @@
   .nr-pill{display:inline-flex;align-items:center;gap:11px;background:var(--green);padding:10px 22px 10px 14px;border-radius:0 9px 9px 0}
   .nr-pill img{height:21px;filter:brightness(0) invert(1)}
   .nr-pill b{color:#fff;font-size:13px;font-weight:700;letter-spacing:.3px}
-  .nr-track{background:#E3E8EF;color:var(--navy);font-weight:700;font-size:11.5px;letter-spacing:.8px;padding:9px 16px;border-radius:8px}
+  .nr-track{background:#E3E8EF;color:var(--navy);font-weight:700;font-size:var(--fs-115);letter-spacing:.8px;padding:9px 16px;border-radius:8px}
   #art[data-t="dark"] .nr-track{background:#243246;color:#EAEFF5}
   .seg{display:flex;background:var(--slate-10);border-radius:999px;padding:3px}
   .seg button{font-size:12px;font-weight:600;border:none;background:transparent;color:var(--mut);padding:6px 13px;border-radius:999px;cursor:pointer;white-space:nowrap;font-family:inherit}
@@ -288,7 +302,7 @@
   #tip .th{display:flex;align-items:baseline;justify-content:space-between;gap:.9em;margin-bottom:3px}
   #tip .th b{color:var(--ink);font-size:13px;font-weight:700}
   #tip .ts{font-weight:800;font-size:12.5px;white-space:nowrap}
-  #tip .tc{font-size:11.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:4px}
+  #tip .tc{font-size:var(--fs-115);color:var(--mut);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:4px}
 
   #ft{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:10px;
     font-size:clamp(9.5px,0.75vw,12px);color:var(--mut)}
@@ -303,11 +317,11 @@
   @media (max-width:1460px){
     .toprow{gap:10px}
     .seg{padding:2px}
-    .seg button{padding:5px 9px;font-size:11.5px}
-    .nr-track{font-size:11px;padding:8px 12px}
+    .seg button{padding:5px 9px;font-size:var(--fs-115)}
+    .nr-track{font-size:var(--fs-11);padding:8px 12px}
   }
   @media (max-width:1320px){
-    .seg button{padding:5px 7px;font-size:11px}
+    .seg button{padding:5px 7px;font-size:var(--fs-11)}
     .nr-pill{padding:9px 16px 9px 11px}
   }
   /* collapsed / narrow: the top row joins the flow instead of floating over the title */
@@ -317,9 +331,9 @@
     .toprow{position:static;right:auto;top:auto;flex-wrap:wrap;row-gap:10px;margin-bottom:16px}
     .tags,.ctrls{flex-wrap:wrap;row-gap:8px}
     .nr-pill{padding:8px 16px 8px 10px;border-radius:9px}
-    .nr-pill img{height:18px} .nr-pill b{font-size:11.5px}
-    .nr-track{font-size:10.5px;padding:7px 12px}
-    .seg button{padding:5px 11px;font-size:11.5px}
+    .nr-pill img{height:18px} .nr-pill b{font-size:var(--fs-115)}
+    .nr-track{font-size:var(--fs-105);padding:7px 12px}
+    .seg button{padding:5px 11px;font-size:var(--fs-115)}
     h1{font-size:clamp(18px,2.6vw,24px)}
     .subrow{gap:8px}
     .slide{grid-template-columns:minmax(0,1fr);gap:calc(var(--ui)*1.6)}
@@ -1559,5 +1573,42 @@ addEventListener("resize",function(){render()});
 wireTips();
 render();
 </script>
+<style>
+/* ── READ MODE · narrow screens ──────────────────────────────────────────────
+   This artifact normally scales its whole body down so the page fits one screen.
+   On a phone that turns 13px type into 4px. Below 760px the scaling is switched
+   off and the page simply flows and scrolls at its real size. Desktop is
+   untouched — every rule here lives inside the media query. */
+@media (max-width:760px){
+  html,body{height:auto!important;overflow:auto!important}
+  #art,#pw,#pm{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;padding:12px 14px 22px 34px!important}
+  #view{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;flex:none!important;position:static!important}
+  #vinner{position:static!important;transform:none!important;width:100%!important;
+    padding-bottom:14px!important}
+  .nr-rail{width:22px!important}
+  .toprow{position:static!important;top:auto!important;right:auto!important;left:auto!important;
+    margin:0 0 10px!important;flex-wrap:wrap!important;gap:8px 10px!important;justify-content:flex-start!important}
+  .tags{flex-wrap:wrap!important;gap:8px!important;margin-left:-34px!important}
+  .ctrls{flex-wrap:wrap!important;gap:8px!important;flex:1 1 100%!important}
+  #ft{position:static!important;flex-wrap:wrap!important;row-gap:6px!important;margin-top:14px!important}
+  h1{font-size:19px!important;max-width:none!important}
+  .grid,.classic,.cols-grid{grid-template-columns:1fr!important}
+  table{min-width:0!important}
+  .tbl-wrap,.wrap-x{overflow-x:auto!important}
+}
+</style>
+<style>/* READ-MODE TYPE FLOOR — nothing under 11px once the page stops scaling */
+
+@media (max-width:760px){
+  #ft{font-size:11px!important}
+  .conf,.lp,.li,.nr-track,.nr-foot,.lbl,.note{font-size:11px!important}
+  .inum,.chip,.inev,.num,.wf-num,.vnum{font-size:11px!important}
+  #ft b,.legend b,.l b{font-size:11px!important}
+  /* a row label truncated to '…' is worse than a wrapped one once the page flows */
+  [style*="ellipsis"]{white-space:normal!important;text-overflow:clip!important;overflow:visible!important}
+}
+</style>
 </body>
 </html>

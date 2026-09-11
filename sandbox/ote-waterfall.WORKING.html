@@ -18,6 +18,20 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>OTE Waterfall (Top-Down)</title>
 <style>
+/* Type scale — one place, not case by case. Every size below 12px is a token; the
+   whole small end lifts on a narrow screen so nothing drops under 11px on a phone. */
+:root{
+  --fs-65:6.5px; --fs-7:7px; --fs-75:7.5px; --fs-8:8px; --fs-85:8.5px; --fs-9:9px;
+  --fs-95:9.5px; --fs-10:10px; --fs-105:10.5px; --fs-11:11px; --fs-115:11.5px;
+}
+@media (max-width:760px){
+  :root{
+    --fs-65:11px; --fs-7:11px; --fs-75:11px; --fs-8:11px; --fs-85:11px; --fs-9:11px;
+    --fs-95:11px; --fs-10:11.5px; --fs-105:12px; --fs-11:12px; --fs-115:12.5px;
+  }
+}
+</style>
+<style>
   *{box-sizing:border-box}
   :root{--page:#FFF}
   html,body{margin:0;height:100vh;overflow:hidden}
@@ -75,7 +89,7 @@
   .nr-pill{display:inline-flex;align-items:center;gap:11px;background:var(--green);padding:10px 22px 10px 14px;border-radius:0 9px 9px 0}
   .nr-pill img{height:21px;filter:brightness(0) invert(1)}
   .nr-pill b{color:#fff;font-size:13px;font-weight:700;letter-spacing:.3px}
-  .nr-track{background:#E3E8EF;color:var(--navy);font-weight:700;font-size:11.5px;letter-spacing:.8px;padding:9px 16px;border-radius:8px}
+  .nr-track{background:#E3E8EF;color:var(--navy);font-weight:700;font-size:var(--fs-115);letter-spacing:.8px;padding:9px 16px;border-radius:8px}
   #art[data-t="dark"] .nr-track{background:#243246;color:#EAEFF5}
   .seg{display:flex;background:var(--slate-10);border-radius:999px;padding:3px}
   .seg button{font-size:12px;font-weight:600;border:none;background:transparent;color:var(--mut);padding:6px 13px;border-radius:999px;cursor:pointer;white-space:nowrap}
@@ -86,7 +100,7 @@
   h1 .hl{color:var(--green)}
   .subrow{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:8px 0 14px}
   .subt{font-size:15px;font-weight:600;color:var(--accent)}
-  .methodline{font-size:11.5px;color:var(--mut);text-align:right;line-height:1.5}
+  .methodline{font-size:var(--fs-115);color:var(--mut);text-align:right;line-height:1.5}
   .methodline b{color:var(--txt);font-weight:600}
   #view{flex:1;min-height:0;position:relative;overflow:hidden}
   #vinner{position:absolute;top:0;left:0;width:100%;transform-origin:top left;padding-bottom:20px}
@@ -268,10 +282,10 @@
 
   /* bucket tooltip: a definition, not a repeat of what the row already shows */
   #tip{position:fixed;z-index:80;max-width:330px;background:var(--navy-fill,#0B2347);color:#fff;
-    font-size:11.5px;line-height:1.5;padding:9px 12px;border-radius:8px;pointer-events:none;
+    font-size:var(--fs-115);line-height:1.5;padding:9px 12px;border-radius:8px;pointer-events:none;
     box-shadow:0 14px 32px -14px rgba(0,0,0,.55);opacity:0;transition:opacity .12s}
   #tip.on{opacity:1}
-  #tip b{display:block;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:#9FC7E8;margin-bottom:3px}
+  #tip b{display:block;font-size:var(--fs-10);letter-spacing:.5px;text-transform:uppercase;color:#9FC7E8;margin-bottom:3px}
   #art[data-t="dark"] #tip{background:#0B1729}
   .wf-row[data-tip] .wf-bar,.wf-row[data-tip] .wf-label{cursor:help}
   /* a thin bar is a tiny hit target, so widen the hit area without changing what is drawn */
@@ -283,7 +297,7 @@
   .lp i{width:.75em;height:.75em;border-radius:2px;display:inline-block;flex:none}
   .conf{font-size:0.88em;letter-spacing:.5px;font-weight:600;white-space:nowrap;flex:none}
   .gapbox{margin-top:12px;border-left:3px solid var(--rag-amber);background:var(--tint-amber);
-    border-radius:0 10px 10px 0;padding:10px 14px;font-size:11.5px;color:var(--txt);line-height:1.5}
+    border-radius:0 10px 10px 0;padding:10px 14px;font-size:var(--fs-115);color:var(--txt);line-height:1.5}
   .gapbox.ok{border-left-color:var(--rag-green);background:var(--tint-green)}
   .gapbox b{display:block;font-size:12px;color:var(--ink);margin-bottom:3px}
   .gapbox ul{margin:0;padding-left:16px} .gapbox li{margin-bottom:2px}
@@ -301,7 +315,7 @@
   #art.editing h1:hover{outline:2px solid var(--accent);outline-offset:4px;border-radius:4px}
   #art.editing .nr-locked{opacity:.5;filter:saturate(.7);cursor:help;
     transition:opacity .15s,filter .15s}
-  .lockchip{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;
+  .lockchip{display:inline-flex;align-items:center;gap:4px;font-size:var(--fs-9);font-weight:800;letter-spacing:.4px;text-transform:uppercase;
     color:var(--mut);background:var(--slate-10);padding:2px 8px;border-radius:999px;margin-left:8px;vertical-align:middle}
   .lockchip svg{width:9px;height:9px}
   #art:not(.editing) .lockchip{display:none}
@@ -325,18 +339,18 @@
 
   /* ── the calculator: one section at a time, in the intake's order ───────────────────────── */
   #ed.calc .edb{padding:0;overflow:hidden;display:flex;flex-direction:column}
-  #ed .live{flex:none;margin:14px 18px 0;background:var(--green-10);border-radius:9px;padding:9px 12px;font-size:11.5px;color:var(--txt);line-height:1.5}
+  #ed .live{flex:none;margin:14px 18px 0;background:var(--green-10);border-radius:9px;padding:9px 12px;font-size:var(--fs-115);color:var(--txt);line-height:1.5}
   #ed .live b{font-size:15px;font-weight:800;color:var(--green)}
   #ed .steps{flex:none;display:flex;gap:5px;flex-wrap:wrap;padding:11px 18px 0}
   #ed.big .steps{display:none}
-  #ed .step{font-size:10.5px;font-weight:700;padding:4px 9px;border-radius:99px;cursor:pointer;border:0;font-family:inherit;
+  #ed .step{font-size:var(--fs-105);font-weight:700;padding:4px 9px;border-radius:99px;cursor:pointer;border:0;font-family:inherit;
     background:var(--slate-10);color:var(--mut);white-space:nowrap}
   #ed .step.on{background:var(--navy-fill);color:#fff}
   #ed .step:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   #ed .secwrap{flex:1;min-height:0;display:flex;overflow:hidden}
   #ed .secrail{display:none;width:186px;flex:none;border-right:1px solid var(--line);padding:12px 0;overflow:auto;background:var(--slate-10)}
   #ed.big .secrail{display:block}
-  #ed .secrail .step{display:block;width:calc(100% - 16px);margin:2px 8px;border-radius:7px;padding:8px 10px;font-size:11.5px;white-space:normal;line-height:1.3;text-align:left}
+  #ed .secrail .step{display:block;width:calc(100% - 16px);margin:2px 8px;border-radius:7px;padding:8px 10px;font-size:var(--fs-115);white-space:normal;line-height:1.3;text-align:left}
   #ed .seccol{flex:1;min-width:0;overflow:auto;padding:14px 18px 4px}
   #ed.big .seccol{padding:18px 26px 8px}
   #ed .sec{display:none}
@@ -346,27 +360,27 @@
 
   /* the help block: the question you read out loud, and the rules behind it */
   #ed .help{background:var(--slate-10);border:1px solid var(--line);border-left:3px solid var(--accent);
-    border-radius:0 9px 9px 0;padding:11px 13px;margin:0 0 14px;font-size:11.5px;color:var(--txt);line-height:1.55}
+    border-radius:0 9px 9px 0;padding:11px 13px;margin:0 0 14px;font-size:var(--fs-115);color:var(--txt);line-height:1.55}
   #ed.big .help{margin:0;position:sticky;top:0}
   #ed .help .ask{display:block;font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.4;text-align:left}
   #ed .help .ask:before{content:"\201C"} #ed .help .ask:after{content:"\201D"}
   #ed .askbtn{display:flex;align-items:flex-start;gap:10px;width:100%;background:none;border:0;padding:0;cursor:pointer;font:inherit;text-align:left}
   #ed .askbtn .chev{flex:none;width:18px;height:18px;border-radius:5px;background:var(--slate-10);color:var(--mut);
     font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;margin-top:1px}
-  #ed .help .hmore{display:block;font-size:10.5px;color:var(--mut);margin-top:4px}
+  #ed .help .hmore{display:block;font-size:var(--fs-105);color:var(--mut);margin-top:4px}
   #ed .help ul{margin:8px 0 0;padding-left:1.05em}
   #ed .help li{margin-bottom:4px}
   #ed .help .flag{display:block;margin-top:8px;padding-top:7px;border-top:1px dashed var(--line);color:var(--rag-amber-text);font-weight:600}
   #ed .secnav{display:flex;gap:8px;align-items:center}
   #ed .edh{flex:none;position:relative;padding:14px 20px 12px;border-bottom:1px solid var(--line);background:var(--slate-10)}
   #ed .edh .row{display:flex;align-items:center;gap:9px;padding-right:40px}
-  #ed .edh .kind{flex:none;font-size:8.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:var(--navy-fill);padding:3px 7px;border-radius:5px}
+  #ed .edh .kind{flex:none;font-size:var(--fs-85);font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:var(--navy-fill);padding:3px 7px;border-radius:5px}
   #ed .edh h3{margin:0;font-size:15px;font-weight:800;color:var(--ink);line-height:1.25}
   #ed .edh .x{position:absolute;top:12px;right:15px;width:26px;height:26px;border:0;background:none;font-size:19px;color:var(--mut);cursor:pointer;border-radius:6px}
   #ed .edb{flex:1;min-height:0;overflow:auto;padding:16px 20px}
   #ed .edf{flex:none;display:flex;gap:8px;align-items:center;padding:14px 20px;border-top:1px solid var(--line);background:var(--slate-10)}
   #ed .edf .sp{flex:1}
-  #ed .f{margin-bottom:12px} #ed .f label{display:block;font-size:10px;font-weight:700;color:var(--txt);margin:0 0 4px}
+  #ed .f{margin-bottom:12px} #ed .f label{display:block;font-size:var(--fs-10);font-weight:700;color:var(--txt);margin:0 0 4px}
   #ed .f input,#ed .f textarea{width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:12.5px;color:var(--ink);background:var(--card)}
   #ed .f textarea{min-height:84px;resize:vertical;line-height:1.5}
   #ed .metablock{border:1px solid var(--line);border-radius:10px;padding:11px 12px 2px;margin-bottom:12px;background:var(--slate-10)}
@@ -381,32 +395,32 @@
   #ed .cselwrap.on .cselmenu{display:block}
   #ed .cselopt{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12.5px;color:var(--ink)}
   #ed .cselopt:hover{background:var(--slate-10)} #ed .cselopt.sel{background:var(--accent-10)}
-  #ed .cselopt .tag{font-size:11px;color:var(--mut)}
+  #ed .cselopt .tag{font-size:var(--fs-11);color:var(--mut)}
   #ed .kmprev{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--slate-10);
     font-size:16px;font-weight:700;color:var(--navy);letter-spacing:-.2px;line-height:1.3;min-height:44px}
   #art[data-t="dark"] #ed .kmprev,#ed .kmprev .dk{color:#EAEFF5}
   #ed .kmprev .hl{color:var(--green)}
-  #ed .kmhints{border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-top:12px;font-size:11px;color:var(--txt);line-height:1.7}
-  #ed .kmhints b{display:block;font-size:9.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);margin-bottom:3px}
-  #ed .kchip{font-family:ui-monospace,Consolas,monospace;font-size:10.5px;background:var(--slate-10);padding:1px 5px;border-radius:4px;white-space:nowrap}
-  #ed .kmhl{font-size:11px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);
+  #ed .kmhints{border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-top:12px;font-size:var(--fs-11);color:var(--txt);line-height:1.7}
+  #ed .kmhints b{display:block;font-size:var(--fs-95);letter-spacing:.5px;text-transform:uppercase;color:var(--mut);margin-bottom:3px}
+  #ed .kchip{font-family:ui-monospace,Consolas,monospace;font-size:var(--fs-105);background:var(--slate-10);padding:1px 5px;border-radius:4px;white-space:nowrap}
+  #ed .kmhl{font-size:var(--fs-11);font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);
     padding:5px 10px;border-radius:7px;margin-top:6px;display:inline-flex;align-items:center;gap:5px;cursor:pointer}
   #ed .kmhl .swch{width:10px;height:10px;border-radius:3px;background:var(--green);display:inline-block}
-  #ed .grp{font-size:9.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--mut);margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+  #ed .grp{font-size:var(--fs-95);font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--mut);margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid var(--line)}
   #ed .grp:first-child{margin-top:0}
   #ed .frow{display:flex;gap:9px} #ed .frow .f{flex:1}
   #ed .mtx{width:100%;border-collapse:collapse;margin-bottom:12px}
-  #ed .mtx th{background:none;color:var(--mut);font-size:9px;padding:0 4px 5px;text-align:center;letter-spacing:.4px}
+  #ed .mtx th{background:none;color:var(--mut);font-size:var(--fs-9);padding:0 4px 5px;text-align:center;letter-spacing:.4px}
   #ed .mtx th:first-child{text-align:left}
-  #ed .mtx td{padding:2px 3px;border:none;font-size:11.5px;color:var(--txt)}
+  #ed .mtx td{padding:2px 3px;border:none;font-size:var(--fs-115);color:var(--txt)}
   #ed .mtx td:first-child{white-space:nowrap;padding-right:8px}
   #ed .mtx.wtbl td:first-child{white-space:normal;line-height:1.35;padding:3px 8px 3px 0;cursor:help}
   /* the prompting examples are a tooltip in the drawer, where there is no room, and read out
      loud from the page once the panel is expanded */
   #ed .mtx.wtbl em{display:none}
   #ed.big .mtx.wtbl td:first-child{cursor:default}
-  #ed.big .mtx.wtbl em{display:block;font-style:normal;font-size:10.5px;color:var(--mut);margin-top:1px;line-height:1.3}
-  #ed .mtx input{width:100%;padding:5px 6px;border:1px solid var(--line);border-radius:6px;font:inherit;font-size:11.5px;color:var(--ink);background:var(--card);text-align:center}
+  #ed.big .mtx.wtbl em{display:block;font-style:normal;font-size:var(--fs-105);color:var(--mut);margin-top:1px;line-height:1.3}
+  #ed .mtx input{width:100%;padding:5px 6px;border:1px solid var(--line);border-radius:6px;font:inherit;font-size:var(--fs-115);color:var(--ink);background:var(--card);text-align:center}
   #ed .live{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--green-10);margin-bottom:14px;font-size:12px;color:var(--txt);line-height:1.6}
   #ed .live b{color:var(--ink);font-weight:700}
   #ed .live .warn{color:var(--rag-red-text);font-weight:700}
@@ -421,7 +435,7 @@
     .slide{grid-template-columns:1fr;gap:20px}
     .otebox{margin-left:0}
     .rec{grid-template-columns:1fr}
-    .wf-label{width:104px;font-size:10px}
+    .wf-label{width:104px;font-size:var(--fs-10)}
     .wf-sep{margin-left:104px}
   }
 </style></head>
@@ -2387,4 +2401,41 @@ const DATA = /* DATA */ {
 /*</EDIT>*/
 })();
 </script>
+<style>
+/* ── READ MODE · narrow screens ──────────────────────────────────────────────
+   This artifact normally scales its whole body down so the page fits one screen.
+   On a phone that turns 13px type into 4px. Below 760px the scaling is switched
+   off and the page simply flows and scrolls at its real size. Desktop is
+   untouched — every rule here lives inside the media query. */
+@media (max-width:760px){
+  html,body{height:auto!important;overflow:auto!important}
+  #art,#pw,#pm{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;padding:12px 14px 22px 34px!important}
+  #view{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;flex:none!important;position:static!important}
+  #vinner{position:static!important;transform:none!important;width:100%!important;
+    padding-bottom:14px!important}
+  .nr-rail{width:22px!important}
+  .toprow{position:static!important;top:auto!important;right:auto!important;left:auto!important;
+    margin:0 0 10px!important;flex-wrap:wrap!important;gap:8px 10px!important;justify-content:flex-start!important}
+  .tags{flex-wrap:wrap!important;gap:8px!important;margin-left:-34px!important}
+  .ctrls{flex-wrap:wrap!important;gap:8px!important;flex:1 1 100%!important}
+  #ft{position:static!important;flex-wrap:wrap!important;row-gap:6px!important;margin-top:14px!important}
+  h1{font-size:19px!important;max-width:none!important}
+  .grid,.classic,.cols-grid{grid-template-columns:1fr!important}
+  table{min-width:0!important}
+  .tbl-wrap,.wrap-x{overflow-x:auto!important}
+}
+</style>
+<style>/* READ-MODE TYPE FLOOR — nothing under 11px once the page stops scaling */
+
+@media (max-width:760px){
+  #ft{font-size:11px!important}
+  .conf,.lp,.li,.nr-track,.nr-foot,.lbl,.note{font-size:11px!important}
+  .inum,.chip,.inev,.num,.wf-num,.vnum{font-size:11px!important}
+  #ft b,.legend b,.l b{font-size:11px!important}
+  /* a row label truncated to '…' is worse than a wrapped one once the page flows */
+  [style*="ellipsis"]{white-space:normal!important;text-overflow:clip!important;overflow:visible!important}
+}
+</style>
 </body></html>

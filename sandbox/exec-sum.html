@@ -11,6 +11,20 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Executive summary</title>
 <style>
+/* Type scale — one place, not case by case. Every size below 12px is a token; the
+   whole small end lifts on a narrow screen so nothing drops under 11px on a phone. */
+:root{
+  --fs-65:6.5px; --fs-7:7px; --fs-75:7.5px; --fs-8:8px; --fs-85:8.5px; --fs-9:9px;
+  --fs-95:9.5px; --fs-10:10px; --fs-105:10.5px; --fs-11:11px; --fs-115:11.5px;
+}
+@media (max-width:760px){
+  :root{
+    --fs-65:11px; --fs-7:11px; --fs-75:11px; --fs-8:11px; --fs-85:11px; --fs-9:11px;
+    --fs-95:11px; --fs-10:11.5px; --fs-105:12px; --fs-11:12px; --fs-115:12.5px;
+  }
+}
+</style>
+<style>
   *{box-sizing:border-box}
   :root{--page:#FFF}
   html,body{margin:0;height:100vh;overflow:hidden}
@@ -37,7 +51,7 @@
   .tags{display:flex;align-items:center;gap:11px}
   .nr-pill{display:inline-flex;align-items:center;gap:11px;background:var(--green);padding:10px 22px 10px 14px;border-radius:0 9px 9px 0}
   .nr-pill img{height:21px;filter:brightness(0) invert(1)} .nr-pill b{color:#fff;font-size:13px;font-weight:700;letter-spacing:.3px}
-  .nr-track{background:#E3E8EF;color:var(--navy);font-weight:700;font-size:11.5px;letter-spacing:.8px;padding:9px 16px;border-radius:8px}
+  .nr-track{background:#E3E8EF;color:var(--navy);font-weight:700;font-size:var(--fs-115);letter-spacing:.8px;padding:9px 16px;border-radius:8px}
   #art[data-t="dark"] .nr-track{background:#243246;color:#EAEFF5}
   .ctrls{display:flex;align-items:center;gap:10px}
   .seg{display:flex;background:var(--slate-10);border-radius:999px;padding:3px}
@@ -53,7 +67,7 @@
   .row{display:grid;grid-template-columns:1fr;gap:0;align-items:start;margin-bottom:calc(22px*var(--fs))}
   .row.labelled{grid-template-columns:112px 1fr;gap:18px}
   .row:last-child{margin-bottom:0}
-  .lbl{font-size:11px;font-weight:700;letter-spacing:.6px;color:var(--navy2);padding-top:2px;text-align:right}
+  .lbl{font-size:var(--fs-11);font-weight:700;letter-spacing:.6px;color:var(--navy2);padding-top:2px;text-align:right}
   #art[data-t="dark"] .lbl{color:var(--accent)}
   .blk{max-width:1240px}
   .blk.boxed{background:var(--slate-10);border-radius:10px;padding:calc(16px*var(--fs)) calc(20px*var(--fs)) calc(17px*var(--fs));margin-top:2px}
@@ -80,20 +94,20 @@
 
   /* ---- evidence trace ---- */
   .block{margin-bottom:16px;max-width:1500px}
-  .sec{margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:.9px;color:var(--mut);text-transform:uppercase}
+  .sec{margin:0 0 8px;font-size:var(--fs-11);font-weight:700;letter-spacing:.9px;color:var(--mut);text-transform:uppercase}
   .card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh)}
   table{width:100%;border-collapse:collapse;font-size:12.3px}
-  th{text-align:left;font-size:10.5px;letter-spacing:.7px;text-transform:uppercase;color:var(--mut);font-weight:700;padding:8px 10px;border-bottom:1px solid var(--line)}
+  th{text-align:left;font-size:var(--fs-105);letter-spacing:.7px;text-transform:uppercase;color:var(--mut);font-weight:700;padding:8px 10px;border-bottom:1px solid var(--line)}
   td{padding:8px 10px;border-bottom:1px solid var(--line);color:var(--txt);vertical-align:top;line-height:1.42}
   tr:last-child td{border-bottom:none}
   td b{color:var(--ink)}
-  .lever{font-size:10.5px;font-weight:700;letter-spacing:.4px;padding:3px 9px;border-radius:999px;color:#fff;white-space:nowrap}
+  .lever{font-size:var(--fs-105);font-weight:700;letter-spacing:.4px;padding:3px 9px;border-radius:999px;color:#fff;white-space:nowrap}
   .lv-process{background:#D08A3C} .lv-auto{background:#3D7FB8} .lv-acc{background:#6EB1D1} .lv-enh{background:#8B6FBF}
   #art[data-t="dark"] .lv-process{background:#E0A469} #art[data-t="dark"] .lv-auto{background:#6FA6D6}
   #art[data-t="dark"] .lv-acc{background:#8FC7E8} #art[data-t="dark"] .lv-enh{background:#A992D6}
   .rev{font-size:11.8px;color:var(--mut);line-height:1.5;padding:10px 14px}
   .miss{color:var(--rag-red-text)}
-  #ft{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:11px;color:var(--mut)}
+  #ft{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:var(--fs-11);color:var(--mut)}
   .conf{font-size:0.88em;letter-spacing:.5px;font-weight:600}
   .hide{display:none}
   @media (max-width:820px){
@@ -510,4 +524,41 @@ const DATA = /* DATA */ {
   });
 })();
 </script>
+<style>
+/* ── READ MODE · narrow screens ──────────────────────────────────────────────
+   This artifact normally scales its whole body down so the page fits one screen.
+   On a phone that turns 13px type into 4px. Below 760px the scaling is switched
+   off and the page simply flows and scrolls at its real size. Desktop is
+   untouched — every rule here lives inside the media query. */
+@media (max-width:760px){
+  html,body{height:auto!important;overflow:auto!important}
+  #art,#pw,#pm{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;padding:12px 14px 22px 34px!important}
+  #view{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;flex:none!important;position:static!important}
+  #vinner{position:static!important;transform:none!important;width:100%!important;
+    padding-bottom:14px!important}
+  .nr-rail{width:22px!important}
+  .toprow{position:static!important;top:auto!important;right:auto!important;left:auto!important;
+    margin:0 0 10px!important;flex-wrap:wrap!important;gap:8px 10px!important;justify-content:flex-start!important}
+  .tags{flex-wrap:wrap!important;gap:8px!important;margin-left:-34px!important}
+  .ctrls{flex-wrap:wrap!important;gap:8px!important;flex:1 1 100%!important}
+  #ft{position:static!important;flex-wrap:wrap!important;row-gap:6px!important;margin-top:14px!important}
+  h1{font-size:19px!important;max-width:none!important}
+  .grid,.classic,.cols-grid{grid-template-columns:1fr!important}
+  table{min-width:0!important}
+  .tbl-wrap,.wrap-x{overflow-x:auto!important}
+}
+</style>
+<style>/* READ-MODE TYPE FLOOR — nothing under 11px once the page stops scaling */
+
+@media (max-width:760px){
+  #ft{font-size:11px!important}
+  .conf,.lp,.li,.nr-track,.nr-foot,.lbl,.note{font-size:11px!important}
+  .inum,.chip,.inev,.num,.wf-num,.vnum{font-size:11px!important}
+  #ft b,.legend b,.l b{font-size:11px!important}
+  /* a row label truncated to '…' is worse than a wrapped one once the page flows */
+  [style*="ellipsis"]{white-space:normal!important;text-overflow:clip!important;overflow:visible!important}
+}
+</style>
 </body></html>

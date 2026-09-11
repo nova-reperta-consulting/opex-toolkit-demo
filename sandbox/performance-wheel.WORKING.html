@@ -2,6 +2,20 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Performance Wheel</title>
 <style>
+/* Type scale — one place, not case by case. Every size below 12px is a token; the
+   whole small end lifts on a narrow screen so nothing drops under 11px on a phone. */
+:root{
+  --fs-65:6.5px; --fs-7:7px; --fs-75:7.5px; --fs-8:8px; --fs-85:8.5px; --fs-9:9px;
+  --fs-95:9.5px; --fs-10:10px; --fs-105:10.5px; --fs-11:11px; --fs-115:11.5px;
+}
+@media (max-width:760px){
+  :root{
+    --fs-65:11px; --fs-7:11px; --fs-75:11px; --fs-8:11px; --fs-85:11px; --fs-9:11px;
+    --fs-95:11px; --fs-10:11.5px; --fs-105:12px; --fs-11:12px; --fs-115:12.5px;
+  }
+}
+</style>
+<style>
   *{box-sizing:border-box}
   :root{--page:#FFF}
   html,body{margin:0;height:100vh;overflow:hidden}
@@ -21,7 +35,7 @@
   .nr-pill{display:inline-flex;align-items:center;gap:11px;background:var(--green);padding:10px 22px 10px 14px;border-radius:0 9px 9px 0}
   .nr-pill img{height:21px;filter:brightness(0) invert(1)}
   .nr-pill b{color:#fff;font-size:13px;font-weight:700;letter-spacing:.3px}
-  .nr-track{background:#E3E8EF;color:var(--navy);font-weight:700;font-size:11.5px;letter-spacing:.8px;padding:9px 16px;border-radius:8px}
+  .nr-track{background:#E3E8EF;color:var(--navy);font-weight:700;font-size:var(--fs-115);letter-spacing:.8px;padding:9px 16px;border-radius:8px}
   #pw[data-t="dark"] .nr-track{background:#243246;color:#EAEFF5}
   .seg{display:flex;background:var(--slate-10);border-radius:999px;padding:3px}
   .seg button{font-size:12px;font-weight:600;border:none;background:transparent;color:var(--mut);padding:6px 14px;border-radius:999px;cursor:pointer}
@@ -68,7 +82,7 @@
   .chev .ct{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:600;line-height:1.2}
   .chev .cq2{font-size:12px;color:var(--txt);line-height:1.32;opacity:.85}
   .nb{flex:none;width:22px;height:22px;border-radius:50%;color:#fff;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
-  .chpill{align-self:flex-start;font-size:11.5px;font-weight:600;padding:2px 10px;border-radius:999px;margin-top:3px}
+  .chpill{align-self:flex-start;font-size:var(--fs-115);font-weight:600;padding:2px 10px;border-radius:999px;margin-top:3px}
   /* footer: source + legend bottom-left, trademark bottom-right */
   #ft{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:12px;font-size:clamp(9.5px,0.75vw,12px);color:var(--mut)}
   #ft .l{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
@@ -81,11 +95,11 @@
   .classic>svg{align-self:center}
   .cl-col{display:flex;flex-direction:column;gap:14px}
   .cl-h{display:flex;align-items:center;gap:8px;margin-bottom:1px}
-  .cl-num{flex:none;display:inline-flex;width:19px;height:19px;border-radius:50%;background:var(--navy);color:#fff;font-size:11px;font-weight:700;align-items:center;justify-content:center}
+  .cl-num{flex:none;display:inline-flex;width:19px;height:19px;border-radius:50%;background:var(--navy);color:#fff;font-size:var(--fs-11);font-weight:700;align-items:center;justify-content:center}
   #pw[data-t="dark"] .cl-num{background:var(--accent);color:var(--navy)}
   .cl-n{font-size:13.5px;font-weight:700;color:var(--navy)}
   #pw[data-t="dark"] .cl-n{color:#EAEFF5}
-  .cl-q{font-size:11.5px;font-style:italic;color:var(--mut);margin:0 0 4px 27px}
+  .cl-q{font-size:var(--fs-115);font-style:italic;color:var(--mut);margin:0 0 4px 27px}
   .classic .ins{margin-left:27px}
   .classic .ladd{margin:3px 0 9px 27px;max-width:200px}
   .classic .ins li{font-size:12.5px;line-height:1.4}
@@ -123,20 +137,20 @@
   #ed.on{display:flex}
   #ed .edh{flex:none;position:relative;padding:14px 20px 12px;border-bottom:1px solid var(--line);background:var(--slate-10)}
   #ed .edh .row{display:flex;align-items:center;gap:9px;padding-right:40px}
-  #ed .edh .kind{flex:none;font-size:8.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:var(--navy);padding:3px 7px;border-radius:5px}
+  #ed .edh .kind{flex:none;font-size:var(--fs-85);font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:var(--navy);padding:3px 7px;border-radius:5px}
   #ed .edh h3{margin:0;font-size:15px;font-weight:800;color:var(--ink);line-height:1.25}
   #ed .edh .x{position:absolute;top:12px;right:15px;width:26px;height:26px;border:0;background:none;font-size:19px;color:var(--mut);cursor:pointer;border-radius:6px}
   #ed .edb{flex:1;min-height:0;overflow:auto;padding:16px 20px}
   #ed .edf{flex:none;display:flex;gap:8px;align-items:center;padding:14px 20px;border-top:1px solid var(--line);background:var(--slate-10)}
   #ed .edf .sp{flex:1}
   #ed .f{margin-bottom:11px} #ed .f:last-child{margin-bottom:0}
-  #ed .f label{display:block;font-size:9.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);margin:0 0 5px}
+  #ed .f label{display:block;font-size:var(--fs-95);font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);margin:0 0 5px}
   #ed .f input,#ed .f textarea,#ed .f select{width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:12.5px;color:var(--ink);background:var(--card)}
   #ed .f input:focus,#ed .f textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(110,177,209,.18)}
   #ed .f textarea{min-height:56px;resize:none;overflow:hidden;line-height:1.5}
-  #ed .cap{display:block;font-size:10px;color:var(--mut);font-weight:400;margin-top:4px;letter-spacing:0;text-transform:none}
+  #ed .cap{display:block;font-size:var(--fs-10);color:var(--mut);font-weight:400;margin-top:4px;letter-spacing:0;text-transform:none}
   #ed .cap2{font-weight:400;color:var(--mut);letter-spacing:0;text-transform:none;margin-left:4px}
-  #ed .edq{font-size:11px;color:var(--mut);margin-top:6px}
+  #ed .edq{font-size:var(--fs-11);color:var(--mut);margin-top:6px}
   #ed .segblk{border:1px solid var(--line);border-left:4px solid var(--rag-na);border-radius:10px;padding:12px 14px;margin-bottom:12px;background:var(--card)}
   #ed .sgh{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:9px}
   #ed .sgh .snm{font-size:13px;font-weight:800;color:var(--ink)}
@@ -150,18 +164,18 @@
   #ed .sc-seg button.on[data-v="4"],#ed .sc-seg button.on[data-v="5"]{background:var(--rag-green)}
   .nr-toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(6px);background:var(--navy);color:#fff;font-size:12.5px;font-weight:600;line-height:1.45;padding:11px 18px;border-radius:10px;z-index:99;max-width:520px;text-align:center;opacity:0;pointer-events:none;transition:.25s}
   .nr-toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
-  .lockchip{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--mut);background:var(--slate-10);border-radius:999px;padding:3px 10px;margin-left:9px;vertical-align:2px}
+  .lockchip{display:inline-flex;align-items:center;gap:5px;font-size:var(--fs-95);font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--mut);background:var(--slate-10);border-radius:999px;padding:3px 10px;margin-left:9px;vertical-align:2px}
   .lockchip svg{width:10px;height:10px}
   #ed .wbtn{font-size:12px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:8px;cursor:pointer}
   #ed .wbtn.pri{background:var(--navy);color:#fff;border-color:var(--navy)}
   /*</EDIT>*/
 /*<EDIT>*/
   /* action-title editor extensions — the house standard (editable-deliverable.md) */
-  .kmhl{font-size:11px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:5px 10px;border-radius:7px;margin:6px 0 2px;display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+  .kmhl{font-size:var(--fs-11);font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:5px 10px;border-radius:7px;margin:6px 0 2px;display:inline-flex;align-items:center;gap:5px;cursor:pointer}
   .kmhl .swch{width:10px;height:10px;border-radius:3px;background:var(--green);display:inline-block}
-  .kmhints{border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-top:10px;font-size:11px;color:var(--txt);line-height:1.7}
-  .kmhints b{display:block;font-size:9.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);margin-bottom:3px}
-  .kchip{font-family:ui-monospace,Consolas,monospace;font-size:10.5px;background:var(--slate-10);padding:1px 5px;border-radius:4px;white-space:nowrap}
+  .kmhints{border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-top:10px;font-size:var(--fs-11);color:var(--txt);line-height:1.7}
+  .kmhints b{display:block;font-size:var(--fs-95);letter-spacing:.5px;text-transform:uppercase;color:var(--mut);margin-bottom:3px}
+  .kchip{font-family:ui-monospace,Consolas,monospace;font-size:var(--fs-105);background:var(--slate-10);padding:1px 5px;border-radius:4px;white-space:nowrap}
 /*</EDIT>*/
 </style></head>
 <body>
@@ -577,4 +591,41 @@ const DATA = /* DATA */ {
   render();
 })();
 </script>
+<style>
+/* ── READ MODE · narrow screens ──────────────────────────────────────────────
+   This artifact normally scales its whole body down so the page fits one screen.
+   On a phone that turns 13px type into 4px. Below 760px the scaling is switched
+   off and the page simply flows and scrolls at its real size. Desktop is
+   untouched — every rule here lives inside the media query. */
+@media (max-width:760px){
+  html,body{height:auto!important;overflow:auto!important}
+  #art,#pw,#pm{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;padding:12px 14px 22px 34px!important}
+  #view{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;flex:none!important;position:static!important}
+  #vinner{position:static!important;transform:none!important;width:100%!important;
+    padding-bottom:14px!important}
+  .nr-rail{width:22px!important}
+  .toprow{position:static!important;top:auto!important;right:auto!important;left:auto!important;
+    margin:0 0 10px!important;flex-wrap:wrap!important;gap:8px 10px!important;justify-content:flex-start!important}
+  .tags{flex-wrap:wrap!important;gap:8px!important;margin-left:-34px!important}
+  .ctrls{flex-wrap:wrap!important;gap:8px!important;flex:1 1 100%!important}
+  #ft{position:static!important;flex-wrap:wrap!important;row-gap:6px!important;margin-top:14px!important}
+  h1{font-size:19px!important;max-width:none!important}
+  .grid,.classic,.cols-grid{grid-template-columns:1fr!important}
+  table{min-width:0!important}
+  .tbl-wrap,.wrap-x{overflow-x:auto!important}
+}
+</style>
+<style>/* READ-MODE TYPE FLOOR — nothing under 11px once the page stops scaling */
+
+@media (max-width:760px){
+  #ft{font-size:11px!important}
+  .conf,.lp,.li,.nr-track,.nr-foot,.lbl,.note{font-size:11px!important}
+  .inum,.chip,.inev,.num,.wf-num,.vnum{font-size:11px!important}
+  #ft b,.legend b,.l b{font-size:11px!important}
+  /* a row label truncated to '…' is worse than a wrapped one once the page flows */
+  [style*="ellipsis"]{white-space:normal!important;text-overflow:clip!important;overflow:visible!important}
+}
+</style>
 </body></html>
