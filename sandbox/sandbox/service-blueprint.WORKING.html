@@ -1,0 +1,3084 @@
+<!doctype html>
+<!-- ============================================================================
+  SERVICE BLUEPRINT  ·  the customer axis over the process baseline
+  Lanes come from task.visibility, columns from journey.stages (baseline/2026.9).
+  Replace ONLY the /* DATA */ block. Three views: Blueprint / Journey / Painpoints.
+  <style>
+/* Type scale — one place, not case by case. Every size below 12px is a token; the
+   whole small end lifts on a narrow screen so nothing drops under 11px on a phone. */
+:root{
+  --fs-65:6.5px; --fs-7:7px; --fs-75:7.5px; --fs-8:8px; --fs-85:8.5px; --fs-9:9px;
+  --fs-95:9.5px; --fs-10:10px; --fs-105:10.5px; --fs-11:11px; --fs-115:11.5px;
+}
+@media (max-width:760px){
+  :root{
+    --fs-65:11px; --fs-7:11px; --fs-75:11px; --fs-8:11px; --fs-85:11px; --fs-9:11px;
+    --fs-95:11px; --fs-10:11.5px; --fs-105:12px; --fs-11:12px; --fs-115:12.5px;
+  }
+}
+</style>
+<style> inlined from templates/brand.css (canonical). Logo inlined.
+============================================================================ -->
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Service Blueprint</title>
+<style>
+  *{box-sizing:border-box}
+  :root{--page:#FFF}
+  html,body{margin:0;height:100vh;overflow:hidden}
+  body{background:var(--page);font-family:'Aptos','Segoe UI',system-ui,sans-serif}
+  #art{--navy:#0B2347;--slate:#364156;--green:#1C7A4A;--accent:#6EB1D1;--navy2:#16315B;--rag-green:#2F8F6B;--rag-amber:#D49A3A;--rag-red:#D2645A;--rag-na:#9AA4B0;--rag-green-text:#2F8F6B;--rag-amber-text:#B97F22;--rag-red-text:#C2483D;--rag-na-text:#6B7480;--tint-green:rgba(47,143,107,.12);--tint-amber:rgba(212,154,58,.16);--tint-red:rgba(210,100,90,.13);--tint-na:rgba(154,164,176,.16);--navy-fill:#0B2347;
+      --slate-10:rgba(54,65,86,.09);--navy-10:rgba(11,35,71,.10);--green-10:rgba(28,122,74,.10);
+      --soft:#F5F7FB;--muted:#7A838F;--ink:#15243A;--txt:#46505C;--mut:#7A838F;--line:#E1E6EE;--card:#FFF;--bg:#FFF;
+      --sh:0 1px 2px rgba(20,30,50,.04),0 14px 32px -24px rgba(20,30,50,.30);
+      width:100%;max-width:2200px;margin:0 auto;height:100vh;overflow:hidden;position:relative;
+      display:flex;flex-direction:column;background:var(--bg);color:var(--ink);padding:76px 40px 12px 98px}
+  #art[data-t="dark"]{--soft:#141E2A;--muted:#94A1B2;--bg:#16202C;--card:#1E2937;--ink:#EAEFF5;--txt:#C4CEDA;--mut:#94A1B2;--line:#2A3744;--navy-fill:#243246;--accent:#8FC7E8;--steel:#93A9C4;--rag-green:#5FBF94;--rag-amber:#E8B96A;--rag-red:#F0968C;--rag-na:#9AA8B8;--rag-green-text:#5FBF94;--rag-amber-text:#E8B96A;--rag-red-text:#F0968C;--rag-na-text:#9AA8B8;--tint-green:rgba(95,191,148,.15);--tint-amber:rgba(232,185,106,.15);--tint-red:rgba(240,150,140,.14);--tint-na:rgba(148,161,178,.15);--sh:0 1px 2px rgba(0,0,0,.4),0 14px 32px -24px rgba(0,0,0,.6)}
+  body:has(#art[data-t="dark"]){--page:#0E1620}
+  .nr-rail{position:absolute;left:0;top:0;bottom:0;width:52px;background:var(--navy-fill)}
+  .toprow{position:absolute;top:22px;left:0;right:40px;display:flex;justify-content:space-between;align-items:center;gap:14px;z-index:3}
+  .tags{display:flex;align-items:center;gap:11px}
+  .nr-pill{display:inline-flex;align-items:center;gap:11px;background:var(--green);padding:10px 22px 10px 14px;border-radius:0 9px 9px 0}
+  .nr-pill img{height:21px;filter:brightness(0) invert(1)} .nr-pill b{color:#fff;font-size:13px;font-weight:700;letter-spacing:.3px}
+  .nr-track{background:#E3E8EF;color:var(--navy);font-weight:700;font-size:var(--fs-115);letter-spacing:.8px;padding:9px 16px;border-radius:8px}
+  #art[data-t="dark"] .nr-track{background:#243246;color:#EAEFF5}
+  .seg{display:flex;background:var(--slate-10);border-radius:999px;padding:3px}
+  .seg button{font-size:12px;font-weight:600;border:none;background:transparent;color:var(--mut);padding:6px 14px;border-radius:999px;cursor:pointer}
+  .seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--sh)}
+  h1{font-size:clamp(20px,1.85vw,28px);font-weight:700;color:var(--navy);letter-spacing:-.2px;line-height:1.24;margin:0 0 16px;max-width:1300px}
+  #art[data-t="dark"] h1{color:#EAEFF5} h1 .hl{color:var(--green)}
+  #view{flex:1;min-height:0;position:relative;overflow:auto}
+  .board{display:grid;gap:10px}
+  .colhead{display:grid;gap:10px;margin-bottom:6px}
+  .stage{background:var(--navy2);color:#fff;font-size:12px;font-weight:700;letter-spacing:.4px;padding:9px 12px;border-radius:8px;text-align:center}
+  .lane{display:grid;gap:10px;align-items:stretch}
+  .lanelabel{display:flex;align-items:center;font-size:12px;font-weight:700;color:var(--navy);background:var(--slate-10);border-radius:8px;padding:0 12px}
+  #art[data-t="dark"] .lanelabel{color:#EAEFF5}
+  .cell{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh);padding:11px 13px;font-size:12.5px;color:var(--txt);line-height:1.4}
+  .cell b{color:var(--ink);display:block;margin-bottom:3px;font-size:13px}
+  .cell.empty{background:transparent;border:1px dashed var(--line);box-shadow:none}
+  #ft{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:var(--fs-11);color:var(--mut)}
+  .conf{font-size:0.88em;letter-spacing:.5px;font-weight:600}
+  /* ── service blueprint ── */
+  #art{--steel:#7991AD}   /* the dark palette defines it; the light one does not */
+  .ctrls{display:flex;gap:9px;flex:none}
+  .subrow{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:6px 0 14px}
+  .subt{font-size:15px;font-weight:600;color:var(--accent)}
+  .stamp{font-size:var(--fs-11);color:var(--mut)}
+  #view{flex:1;min-height:0;position:relative;overflow:hidden}
+  #vinner{position:absolute;top:0;left:0;width:100%;transform-origin:top left;padding-bottom:20px}
+  /* on the canvas the inner box is a flex column that fills the frame and scrolls inside itself */
+  #art.canvasview #vinner{position:absolute;inset:0;padding-bottom:0;display:flex;flex-direction:column}
+  #art.canvasview #view{overflow:hidden}
+
+  .bp{display:grid;gap:1px;align-content:stretch;background:var(--line);
+      border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .bp>*{background:var(--card)}
+
+  /* the column heads: a stage, its number, and the work that maps to it */
+  .hd{background:var(--navy2);color:#fff;font-size:12px;font-weight:700;letter-spacing:.2px;
+      padding:9px 11px;line-height:1.3}
+  .hd .n{opacity:.6;font-weight:800;margin-right:5px}
+  .hd small{display:block;font-weight:400;opacity:.68;font-size:var(--fs-95);margin-top:3px;
+      letter-spacing:.1px;line-height:1.35}
+  .hd.off{background:#8A7B58}
+
+  /* the rail: what each row is, and what it answers */
+  .lbl{background:var(--slate-10);display:flex;align-items:flex-start;gap:8px;padding:9px 11px;
+       font-size:var(--fs-11);font-weight:700;color:var(--navy);line-height:1.25}
+  #art[data-t="dark"] .lbl{color:#EAEFF5}
+  .lbl .ic{flex:none;width:15px;height:15px;margin-top:1px;color:var(--accent)}
+  .lbl .ic svg{width:15px;height:15px;display:block}
+  .lbl em{display:block;font-style:normal;font-weight:400;font-size:var(--fs-95);color:var(--mut);
+          margin-top:2px;letter-spacing:.1px;line-height:1.35}
+  .lbl.acc{box-shadow:inset 3px 0 0 var(--l-col)}
+
+  .cell{padding:9px 11px;font-size:12px;color:var(--txt);line-height:1.4}
+  .cell.none{background:var(--soft)}
+  .cell.off{background:rgba(180,150,70,.05)}
+
+  /* a lane cell groups its steps by the team that performs them - but only names the team when
+     the row actually holds more than one, or the name would repeat in every cell and say nothing */
+  .grp{display:block;font-size:var(--fs-11);font-weight:700;color:var(--ink);margin-bottom:3px}
+  .grp+.stp{margin-top:0}
+  .stp{position:relative;padding-left:9px;font-size:var(--fs-115);color:var(--txt);line-height:1.4}
+  .stp:before{content:'';position:absolute;left:0;top:6px;width:3px;height:3px;border-radius:50%;
+              background:var(--mut)}
+  .stp+.stp{margin-top:3px}
+  .stp b{display:inline;font-weight:600;color:var(--txt);font-size:var(--fs-115)}
+  .stp .sys{display:block;font-size:var(--fs-95);color:var(--mut);letter-spacing:.1px}
+  .grp2{margin-top:8px}
+
+  /* what the customer does: chips, read left to right, with the flow between them */
+  .jstep{display:inline-flex;align-items:center;gap:6px;background:var(--card);
+         border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:var(--fs-11);
+         font-weight:600;color:var(--ink);line-height:1.3}
+  .jwrap{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .jarr{color:var(--rag-green);flex:none}
+  .jarr svg{width:15px;height:9px;display:block}
+  .cell.jrow{background:rgba(47,143,107,.04);position:relative}
+  .jnext{position:absolute;right:-10px;top:15px;z-index:2;
+         background:var(--card);border-radius:50%;padding:3px 2px;line-height:0}
+
+  /* how they feel: a track, not a rating. The dot says good or bad, the note says their word. */
+  .cell.feelrow{position:relative;overflow:visible}
+  .feel{position:relative;display:flex;align-items:center;gap:8px;height:20px}
+  .feel:before{content:'';position:absolute;left:-11px;right:-12px;top:10px;height:1px;
+               background:var(--mut);opacity:.3;z-index:0}
+  .feel i{position:relative;z-index:1;width:9px;height:9px;border-radius:50%;flex:none;
+          font-style:normal;box-shadow:0 0 0 3px var(--card)}
+  .feel .ft{position:relative;z-index:1;font-size:var(--fs-105);line-height:1.35;color:var(--txt);
+            background:var(--card);padding-right:4px}
+  .feel .ft b{display:block;font-size:var(--fs-11);font-weight:700;color:var(--ink)}
+  .feel.pos i{background:var(--rag-green)} .feel.neu i{background:var(--rag-na)}
+  .feel.neg i{background:var(--rag-red)}
+  .feel.non i{background:transparent;border:1.5px dashed var(--rag-na)}
+  .cell.feelrow{padding-top:14px}
+
+  /* touchpoints: what they meet it through. A channel is not a system. */
+  .chs{display:flex;gap:6px;flex-wrap:wrap}
+  .ch{display:inline-flex;align-items:center;gap:5px;background:var(--slate-10);border-radius:7px;
+      padding:4px 8px;font-size:var(--fs-105);font-weight:600;color:var(--ink)}
+  .ch svg{width:12px;height:12px;display:block;color:var(--mut);flex:none}
+  .ch.non{background:transparent;border:1px dashed var(--line);color:var(--mut);font-weight:400;font-style:italic}
+
+  .sysc{display:flex;gap:6px;flex-wrap:wrap}
+  .sysc span{background:var(--navy-10);border-radius:6px;padding:3px 8px;font-size:var(--fs-105);
+             font-weight:600;color:var(--navy)}
+  #art[data-t="dark"] .sysc span{background:#243246;color:#EAEFF5}
+
+  .pncell{background:rgba(210,100,90,.055)}
+  .pn{position:relative;padding-left:13px;font-size:var(--fs-11);color:var(--rag-red-text);line-height:1.4}
+  .pn:before{content:'\25B4';position:absolute;left:0;top:-1px;font-size:var(--fs-11)}
+  .pn+.pn{margin-top:4px}
+  .pn b{font-weight:700}
+  .pn.nq{color:var(--mut);font-style:italic}
+
+  .divider{grid-column:1/-1;background:var(--navy-fill);height:2px;padding:0}
+  .dlbl{grid-column:1/-1;background:var(--card);padding:3px 11px 5px;font-size:var(--fs-95);letter-spacing:.9px;
+        text-transform:uppercase;color:var(--navy);font-weight:700}
+  #art[data-t="dark"] .dlbl{color:var(--accent)}
+
+  /* journey view */
+  .jgrid{display:grid;gap:13px}
+  .jcard{background:var(--card);border:1px solid var(--line);border-radius:13px;box-shadow:var(--sh);padding:13px 15px;
+         display:flex;flex-direction:column}
+  .jcard.hot{border-color:var(--rag-red);border-width:1.5px}
+  .jcard.hot h3::after{content:' · nobody meets them';font-size:var(--fs-105);font-weight:600;color:var(--rag-red-text)}
+  .jcard h3{margin:0 0 3px;font-size:13.5px;color:var(--navy);font-weight:700}
+  #art[data-t="dark"] .jcard h3{color:#EAEFF5}
+  .want{font-size:12px;color:var(--txt);font-style:italic;line-height:1.4;margin:0 0 9px}
+  .jrow{font-size:var(--fs-115);color:var(--txt);padding:6px 0;border-top:1px solid var(--line);line-height:1.4}
+  .jrow i{font-style:normal;display:block;font-size:var(--fs-9);letter-spacing:.7px;text-transform:uppercase;color:var(--mut);margin-bottom:1px}
+  .jrow.brk{color:var(--rag-red-text)} .jrow.brk i{color:var(--rag-red-text);opacity:.8}
+  .behind{margin-top:auto;padding-top:9px;font-size:var(--fs-10);color:var(--steel);letter-spacing:.2px}
+
+  /* painpoints view */
+  table{border-collapse:collapse;width:100%}
+  th{text-align:left;font-size:var(--fs-10);letter-spacing:.6px;text-transform:uppercase;color:var(--mut);font-weight:700;
+     padding:0 18px 8px 0;border-bottom:2px solid var(--line)}
+  td{font-size:12.5px;color:var(--txt);padding:10px 18px 10px 0;border-bottom:1px solid var(--line);vertical-align:top}
+  td b{color:var(--ink)}
+  .stagetag{font-size:var(--fs-10);font-weight:700;padding:2px 8px;border-radius:999px;background:var(--navy-10);color:var(--navy);white-space:nowrap}
+  #art[data-t="dark"] .stagetag{background:#243246;color:#EAEFF5}
+
+  #ft{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:10px;font-size:var(--fs-11);color:var(--mut)}
+  #ft .l{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .legend{display:flex;gap:9px;flex-wrap:wrap}
+  .lp{font-size:.95em;font-weight:600;padding:.2em .8em;border-radius:999px;display:inline-flex;align-items:center;gap:5px}
+  .lp i{width:8px;height:8px;border-radius:50%;font-style:normal}
+  .conf{font-size:.88em;letter-spacing:.5px;font-weight:600}
+  @media (max-width:760px){
+    #art{padding:14px 18px 10px 42px}
+    .nr-rail{width:24px}
+    .toprow{position:static;margin:0 0 12px;flex-wrap:wrap;justify-content:flex-start;gap:10px 12px}
+    .tags{flex-wrap:wrap;gap:8px;margin-left:-42px}
+    .ctrls{flex-wrap:wrap;gap:8px;flex:1 1 100%}
+  }
+
+/*<EDIT>*/
+  /* ---- WORKING MODE. Stripped entirely from a client read-out. ---- */
+  .wgrp{display:flex;align-items:center;gap:8px;position:relative}
+  .wchip{font-size:var(--fs-10);font-weight:800;letter-spacing:.4px;text-transform:uppercase;
+    padding:3px 9px;border-radius:999px;background:rgba(212,154,58,.16);color:#8A5F17;white-space:nowrap}
+  .wchip.bad{background:rgba(210,100,90,.14);color:#C2483D}
+  .wchip.ok{background:rgba(47,143,107,.13);color:#1F6B50}
+  /* the gear = the whole edit affordance */
+  #wgear{width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;
+    border:1px solid var(--line);background:var(--card);border-radius:9px;cursor:pointer;
+    color:var(--mut);transition:color .15s,border-color .15s,background .15s,transform .3s}
+  #wgear:hover{color:var(--ink);border-color:var(--accent)}
+  #wgear svg{width:17px;height:17px;display:block}
+  #wgear.unlocked{color:#fff;background:var(--rag-amber);border-color:var(--rag-amber)}
+  #wgear.live{color:#fff;background:var(--green);border-color:var(--green)}
+  #wgear.unlocked:hover,#wgear.live:hover{filter:brightness(1.06)}
+  #wgear.blocked{color:#fff;background:var(--rag-red);border-color:var(--rag-red)}
+  #wsave{font-size:12px;font-weight:700;border:1px solid var(--navy-fill);background:var(--navy-fill);color:#fff;
+    padding:8px 15px;border-radius:8px;cursor:pointer;white-space:nowrap;display:none}
+  #wsave.show{display:inline-block}
+  #wsave:disabled{opacity:.45;cursor:default}
+  /* the popover - replaces the native title tooltip, which is slow and ugly */
+  #wpop{position:absolute;top:44px;right:0;width:330px;z-index:10;
+    background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px;
+    box-shadow:0 22px 50px -20px rgba(11,35,71,.45);
+    opacity:0;visibility:hidden;transform:translateY(-5px);transition:opacity .16s,transform .16s,visibility .16s;
+    text-align:left;cursor:default}
+  .wgrp:hover #wpop,#wpop.pin{opacity:1;visibility:visible;transform:translateY(0)}
+  #wpop:after{content:'';position:absolute;top:-6px;right:12px;width:10px;height:10px;background:var(--card);
+    border-left:1px solid var(--line);border-top:1px solid var(--line);transform:rotate(45deg)}
+  #wpop h4{margin:0 0 3px;font-size:12.5px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:7px}
+  #wpop h4 i{width:7px;height:7px;border-radius:50%;background:var(--rag-amber);flex:none;font-style:normal}
+  #wpop h4.live i{background:var(--rag-green)}
+  #wpop h4.on i{background:var(--rag-amber)}
+  #wpop .lockbtn{width:100%;margin-top:10px;padding:9px 12px;border-radius:8px;border:1px solid var(--navy);
+    background:var(--navy-fill);color:#fff;font-size:12px;font-weight:800;cursor:pointer;transition:.14s}
+  #wpop .lockbtn:hover{filter:brightness(1.08)}
+  #wpop .lockbtn.on{background:var(--card);color:var(--navy)}
+  #wpop p{margin:6px 0 0;font-size:var(--fs-115);line-height:1.55;color:var(--txt)}
+  #wpop .cmd{margin:10px 0 0;padding:9px 11px;background:var(--soft);border:1px solid var(--line);
+    border-radius:8px;font-family:ui-monospace,monospace;font-size:var(--fs-11);color:var(--ink);
+    display:flex;align-items:center;gap:8px;justify-content:space-between}
+  #wpop .cmd b{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #wpop .cmd button{border:none;background:var(--navy-fill);color:#fff;font-size:var(--fs-95);font-weight:700;
+    padding:4px 8px;border-radius:5px;cursor:pointer;flex:none}
+  #wpop .fine{margin-top:10px;font-size:var(--fs-10);color:var(--mut);line-height:1.5}
+  #wpop ul{margin:7px 0 0;padding-left:16px}
+  #wpop li{font-size:var(--fs-115);line-height:1.6;color:var(--txt)}
+  #art.editing .swt{cursor:grab;position:relative;padding-left:19px}
+  #art.editing .swt:active{cursor:grabbing}
+  #art.editing .swt:before{content:'\2059';position:absolute;left:6px;top:50%;transform:translateY(-50%);
+    font-size:var(--fs-11);letter-spacing:-1px;color:var(--line);line-height:1;transition:color .15s}
+  #art.editing .swt:hover{border-color:var(--accent);box-shadow:0 2px 10px -4px rgba(11,35,71,.35)}
+  #art.editing .swt:hover:before{color:var(--accent)}
+  .swt.drag{opacity:.35;transform:scale(.98)}
+  #art.editing .swcell.drop{outline:2px dashed var(--accent);outline-offset:-3px;background:rgba(110,177,209,.10)}
+  /* the activity picker - shown when a task is dropped into a phase that holds several activities */
+  /* --- v2026.7 edit controls: adds, dropdowns, structured magnitude --- */
+  .hidden{display:none !important}
+  #ed .frow{display:flex;gap:9px} #ed .frow .f{flex:1;min-width:0}
+  #ed textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;
+    font-size:12.5px;line-height:1.5;color:var(--ink);background:var(--card);resize:vertical;min-height:56px}
+  #ed textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(110,177,209,.16)}
+  #ed .srcnew{display:flex;gap:6px;margin-top:6px}
+  #ed .srcnew input{flex:1;min-width:0;padding:7px 9px;border:1px solid var(--line);border-radius:7px;font:inherit;font-size:12.5px;background:var(--card);color:var(--ink)}
+  #ed .srcnew input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(110,177,209,.16)}
+  #ed select:focus,#ed input:focus{outline:none;border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(110,177,209,.16)}
+  #ed .quote{margin-top:8px;padding:9px 11px;border-left:3px solid var(--rag-red);
+    background:rgba(214,69,65,.06);border-radius:0 7px 7px 0;font-size:var(--fs-115);color:var(--ink);line-height:1.45}
+  #ed .quote span{color:var(--mut)}
+  #ed .addbox{margin-top:12px;padding:12px;border:1px dashed var(--line);border-radius:9px;background:var(--soft)}
+  #ed .addbox h6{margin:0 0 9px;font-size:var(--fs-95);font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--mut)}
+  #ed .wbtn.wide{width:100%;margin-top:4px}
+  #ed .chks{display:flex;flex-direction:column;gap:5px;max-height:190px;overflow:auto}
+  #ed .chk{display:flex;align-items:center;gap:8px;padding:6px 9px;border:1px solid var(--line);
+    border-radius:7px;font-size:12px;color:var(--ink);cursor:pointer;background:var(--card)}
+  #ed .chk:hover{border-color:var(--accent);background:rgba(110,177,209,.07)}
+  #ed .chk i{color:var(--mut);font-style:normal;font-size:var(--fs-11)}
+  #ed .pn2.soft{border-left-color:var(--mut);opacity:.85}
+  #ed .pn2m{font-size:var(--fs-105);margin-top:3px;color:var(--mut)}
+  #ed .pn2m .okv{color:var(--green);font-weight:700}
+  #ed .pn2m .badv{color:var(--rag-red);font-weight:600}
+  #ed .edkind.new{background:var(--green)} #ed .edkind.opp{background:var(--accent)}
+  /* the + affordances. Only ever visible in the working copy - the client build has no edit layer. */
+  .cellplus{position:absolute;top:4px;right:4px;width:19px;height:19px;line-height:1;padding:0;
+    border:1px dashed var(--line);background:var(--card);color:var(--mut);border-radius:6px;
+    font-size:13px;font-weight:700;cursor:pointer;opacity:0;transition:.14s;z-index:4}
+  #art.editing .swcell{position:relative}
+  #art.editing .swcell:hover .cellplus{opacity:1}
+  .cellplus:hover{border-style:solid;border-color:var(--accent);color:var(--accent);
+    background:rgba(110,177,209,.12);transform:scale(1.1)}
+  .hdrplus{margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.35);background:transparent;
+    color:#fff;border-radius:999px;font-size:var(--fs-95);font-weight:700;cursor:pointer;opacity:.62;transition:.14s}
+  .hdrplus:hover{opacity:1;background:rgba(255,255,255,.16);border-color:#fff}
+  .tabadd{display:inline-flex;align-items:center;gap:6px;margin:10px 0 16px;padding:7px 13px;cursor:pointer;
+    border:1px dashed var(--line);background:transparent;color:var(--mut);border-radius:8px;
+    font-size:12px;font-weight:600;transition:.14s}
+  .tabadd:hover{border-color:var(--accent);color:var(--navy);background:rgba(110,177,209,.06)}
+  .hintbtns{margin-left:12px;display:inline-flex;gap:6px}
+  .hintbtns button{padding:3px 10px;border:1px solid var(--line);background:var(--card);color:var(--ink);
+    border-radius:999px;font-size:var(--fs-105);font-weight:700;cursor:pointer;transition:.14s}
+  .hintbtns button:hover{border-color:var(--accent);color:var(--accent);background:rgba(110,177,209,.10)}
+  #apick{position:fixed;left:50%;top:50%;transform:translate(-50%,-48%);width:440px;max-height:78vh;overflow:auto;
+    background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px 16px;
+    box-shadow:0 30px 70px -30px rgba(11,35,71,.55);z-index:95;display:none}
+  #apick.on{display:block}
+  #apick .apk-h{font-size:15px;font-weight:800;color:var(--ink);line-height:1.35}
+  #apick .apk-s{font-size:12px;color:var(--muted);margin:5px 0 14px}
+  #apick .apk-lbl{font-size:var(--fs-95);font-weight:800;letter-spacing:.6px;text-transform:uppercase;
+    color:var(--muted);margin:14px 0 6px}
+  #apick .apk-g{display:flex;flex-direction:column;gap:6px}
+  #apick .apk-r{text-align:left;display:flex;flex-direction:column;gap:2px;padding:10px 12px;cursor:pointer;
+    background:var(--soft);border:1px solid var(--line);border-radius:9px;transition:.13s}
+  #apick .apk-r:hover{border-color:var(--accent);background:rgba(110,177,209,.10);transform:translateX(2px)}
+  #apick .apk-n{font-size:13px;font-weight:700;color:var(--ink)}
+  #apick .apk-m{font-size:var(--fs-11);color:var(--muted)}
+  #apick .apk-x{margin-top:14px;width:100%;padding:8px;border:1px solid var(--line);background:transparent;
+    border-radius:8px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer}
+  #apick .apk-x:hover{color:var(--ink);border-color:var(--muted)}
+  #toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,10px);z-index:96;opacity:0;
+    background:var(--navy-fill);color:#fff;font-size:12.5px;font-weight:600;padding:10px 16px;border-radius:9px;
+    box-shadow:0 14px 34px -16px rgba(11,35,71,.6);transition:.18s;pointer-events:none;max-width:520px}
+  #toast.on{opacity:1;transform:translate(-50%,0)}
+  #ed{position:fixed;top:0;right:0;bottom:0;width:410px;max-width:92vw;overflow:hidden;background:var(--card);border-left:1px solid var(--line);
+    box-shadow:-18px 0 44px -24px rgba(11,35,71,.4);z-index:90;display:none;flex-direction:column;
+    transform:translateX(14px);opacity:0;transition:transform .18s,opacity .18s}
+  #ed.on{display:flex;transform:none;opacity:1}
+  #ed .edh{padding:14px 20px 12px;border-bottom:1px solid var(--line);background:var(--soft);flex:none;position:relative}
+  #ed .edrow{display:flex;align-items:center;gap:9px;padding-right:56px;min-width:0}
+  #ed .edkind{flex:none;font-size:var(--fs-85);font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#fff;
+    background:var(--navy-fill);padding:3px 7px;border-radius:5px;line-height:1.4;white-space:nowrap;align-self:center}
+  #ed .edkind.pain{background:var(--rag-red)} #ed .edkind.act{background:var(--green)}
+  #ed h3{margin:0;font-size:15px;font-weight:800;color:var(--ink);line-height:1.25;min-width:0;
+    overflow-wrap:anywhere}
+  #ed .sub{font-size:var(--fs-105);color:var(--mut);margin-top:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  #ed .sub .id{font-family:ui-monospace,monospace;font-size:var(--fs-95);font-weight:700;background:#EEF2F7;
+    color:var(--navy);padding:2px 6px;border-radius:5px}
+  #ed .edb{flex:1;min-height:0;overflow:auto;padding:16px 22px 22px}
+  #ed .grp{margin-bottom:18px}
+  #ed .grp>h5{margin:0 0 9px;font-size:var(--fs-95);font-weight:800;letter-spacing:.5px;text-transform:uppercase;
+    color:var(--mut);display:flex;align-items:center;gap:7px}
+  #ed .grp>h5:after{content:'';flex:1;height:1px;background:var(--line)}
+  #ed label{display:block;font-size:var(--fs-10);font-weight:700;color:var(--txt);margin:0 0 4px}
+  #ed .f{margin-bottom:10px}
+  #art.editing h1{cursor:pointer;transition:.12s}
+  #art.editing h1:hover{outline:2px solid var(--accent);outline-offset:4px;border-radius:8px}
+  #ed .prev{margin-top:7px;padding:9px 11px;border-radius:8px;background:var(--soft);font-size:12.5px;font-weight:700;color:var(--navy);line-height:1.4}
+  #ed .prev .hl{color:var(--green)}
+  .nr-toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(6px);background:var(--navy-fill);color:#fff;font-size:12.5px;font-weight:600;line-height:1.45;padding:11px 18px;border-radius:10px;z-index:99;max-width:520px;text-align:center;opacity:0;pointer-events:none;transition:.25s}
+  .nr-toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+  #ed input,#ed select,#ed textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;
+    font-size:12.5px;font-family:inherit;color:var(--ink);background:var(--card);transition:border-color .15s}
+  #ed input:focus,#ed select:focus,#ed textarea:focus{outline:none;border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(110,177,209,.13)}
+  #ed select{appearance:none;-webkit-appearance:none;-moz-appearance:none;padding-right:32px;cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='12'%20height='12'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%237A8794'%20stroke-width='2.6'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpolyline%20points='6%209%2012%2015%2018%209'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;background-size:11px}
+  #ed select:hover{border-color:var(--accent)}
+  .pm-wrap select, #art select, #ed select, select{box-sizing:border-box}
+  select{appearance:none;-webkit-appearance:none;-moz-appearance:none;
+    padding:8px 32px 8px 10px;border:1px solid var(--line);border-radius:8px;
+    font-size:12.5px;font-family:inherit;line-height:1.3;color:var(--ink);background-color:var(--card);
+    background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='12'%20height='12'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%237A8794'%20stroke-width='2.6'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpolyline%20points='6%209%2012%2015%2018%209'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;background-size:11px;
+    cursor:pointer;transition:border-color .15s,box-shadow .15s}
+  select:hover{border-color:var(--accent)}
+  select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(110,177,209,.13)}
+  /* custom dropdown (a styled shell over a hidden native <select>) */
+  #ed .cselwrap{position:relative}
+  #ed .cselwrap>select{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;margin:0}
+  #ed .cseltrg{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;
+    padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);
+    font:inherit;font-size:12.5px;color:var(--ink);cursor:pointer;text-align:left;transition:border-color .13s}
+  #ed .cseltrg:hover{border-color:var(--accent)}
+  #ed .cselwrap.on .cseltrg{border-color:var(--accent);box-shadow:0 0 0 3px rgba(110,177,209,.13)}
+  #ed .cseltrg .clab{display:flex;align-items:center;gap:7px;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  #ed .cseltrg svg{color:var(--mut);flex:none}
+  #ed .cselmenu{display:none;position:absolute;left:0;right:0;top:calc(100% + 5px);z-index:20;
+    max-height:250px;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:10px;
+    box-shadow:0 16px 34px -16px rgba(11,35,71,.5);padding:4px}
+  #ed .cselmenu.up{top:auto;bottom:calc(100% + 5px)}
+  #ed .cselwrap.on .cselmenu{display:block}
+  #ed .cselgrp{font-size:var(--fs-95);font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);padding:9px 10px 4px}
+  #ed .cselopt{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 10px;
+    border-radius:6px;cursor:pointer;font-size:12.5px;color:var(--ink)}
+  #ed .cselopt:hover{background:var(--soft)}
+  #ed .cselopt.sel{background:rgba(110,177,209,.10)}
+  #ed .cselopt .clab{display:flex;align-items:center;gap:7px;min-width:0}
+  #ed .cselopt svg{color:var(--accent);flex:none}
+  #ed .cselopt .ctag{font-size:var(--fs-11);color:var(--mut);flex:none}
+  #ed .cdot{width:7px;height:7px;border-radius:50%;flex:none;display:inline-block}
+  #ed .cdot.green{background:var(--green)} #ed .cdot.amber{background:var(--rag-amber)} #ed .cdot.slate{background:var(--mut)}
+  #ed input.warn{border-color:var(--rag-red);background:rgba(210,100,90,.05)}
+  #ed textarea{min-height:84px;resize:vertical;line-height:1.5;overflow:hidden}
+  #ed .metablock{border:1px solid var(--line);border-radius:10px;padding:12px 12px 2px;background:var(--soft);margin-bottom:12px}
+  #ed .metablock .frow{margin-bottom:0}
+  #ed .addtoggle{width:100%;margin-top:8px;border-style:dashed;color:var(--mut);font-weight:600;font-size:12px}
+  #ed .taskcard{display:block;width:100%;text-align:left;border:none;border-left:2px solid var(--accent);
+    background:rgba(110,177,209,.06);border-radius:0 8px 8px 0;padding:7px 11px;margin:0 0 6px;cursor:pointer;transition:.13s}
+  #ed .taskcard:hover{background:rgba(110,177,209,.15);transform:translateX(2px)}
+  #ed .tc-n{font-size:12px;font-weight:700;color:var(--ink);line-height:1.3}
+  #ed .tc-m{font-size:var(--fs-95);color:var(--mut);margin-top:2px;display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+  #ed .tc-pain{color:var(--rag-red);font-weight:700}
+  #ed .addtoggle:hover{border-color:var(--accent);color:var(--navy);background:rgba(110,177,209,.06)}
+  #ed .edmenu{position:absolute;top:15px;right:47px;width:26px;height:26px;border:none;background:none;font-size:18px;line-height:1;color:var(--mut);cursor:pointer;border-radius:6px}
+  #ed .edmenu:hover{background:var(--line);color:var(--ink)}
+  #ed .edmenupop{position:absolute;top:42px;right:44px;background:var(--card);border:1px solid var(--line);border-radius:9px;box-shadow:0 14px 32px -14px rgba(11,35,71,.45);padding:5px;z-index:6;display:none;min-width:150px}
+  #ed .edmenupop.on{display:block}
+  #ed .edmenupop button{display:block;width:100%;text-align:left;padding:8px 11px;border:none;background:none;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;border-radius:6px}
+  #ed .edmenupop button:hover{background:var(--soft)}
+  #ed .edmenupop button.danger{color:var(--rag-red)}
+  #ed .edmenupop button.danger:hover{background:rgba(210,100,90,.09)}
+  #ed .row{display:flex;gap:9px}
+  #ed .hint{font-size:var(--fs-10);color:var(--mut);line-height:1.5;margin-top:5px}
+  #ed .hint.bad{color:var(--rag-red)}
+  #ed .pn2{font-size:var(--fs-115);padding:9px 11px;border-left:2px solid var(--rag-red);background:rgba(210,100,90,.05);
+    border-radius:0 8px 8px 0;margin:0 0 7px;line-height:1.45;cursor:pointer;transition:background .15s}
+  #ed .pn2:hover{background:rgba(210,100,90,.11)}
+  #ed .pn2 b{color:var(--ink);font-weight:700}
+  #ed .pn2 .m{color:var(--rag-red);font-weight:800}
+  #ed .pn2 .q{color:var(--mut);font-style:italic}
+  #ed .none{font-size:var(--fs-11);color:var(--mut);padding:10px 0}
+  #ed .edf{flex:none;padding:14px 22px;border-top:1px solid var(--line);background:var(--soft);
+    display:flex;gap:8px;align-items:center}
+  #ed .edf .sp{flex:1}
+  #ed .close{position:absolute;top:12px;right:15px;width:26px;height:26px;border:none;background:none;
+    font-size:19px;line-height:1;color:var(--mut);cursor:pointer;border-radius:6px}
+  #ed .close:hover{background:var(--line);color:var(--ink)}
+  .wbtn{font-size:12px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);
+    padding:8px 14px;border-radius:8px;cursor:pointer;transition:border-color .15s,background .15s}
+  .wbtn:hover{border-color:var(--accent)}
+  .wbtn.pri{background:var(--navy-fill);color:#fff;border-color:var(--navy-fill)}
+  .wbtn.pri:hover{background:#16315B}
+  .wbtn.danger{color:var(--rag-red);border-color:rgba(210,100,90,.4)}
+  .wbtn.danger:hover{background:rgba(210,100,90,.08)}
+  /* rows you can act on */
+  .swlane[draggable]{cursor:grab}
+  .swlane.ldrag{opacity:.35}
+  .swlane.lover{outline:2px dashed var(--accent);outline-offset:-2px}
+  .swlane .grip{font-size:var(--fs-10);color:var(--mut);flex:none;letter-spacing:-1px}
+  #art.editing .swch{cursor:grab}
+  .swch.pdrag{opacity:.4}
+  .swch.pover{outline:2px dashed var(--accent);outline-offset:2px}
+  #art.editing .pchev{cursor:grab}
+  .pchev.pdrag{opacity:.4}
+  .pchev.pover .pcolh{outline:2px dashed var(--accent);outline-offset:-3px}
+  .swch .pgrip{font-size:var(--fs-10);color:rgba(255,255,255,.55);margin-right:5px;letter-spacing:-1px}
+  #art.editing .orow:not(.ohd),#art.editing .preg:not(.preh){cursor:pointer}
+  #art.editing .orow:not(.ohd):hover,#art.editing .preg:not(.preh):hover{background:rgba(110,177,209,.10)}
+/*</EDIT>*/
+/*<EDIT>*/
+  /* action-title editor extensions — the house standard (editable-deliverable.md) */
+  .kmhl{font-size:var(--fs-11);font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:5px 10px;border-radius:7px;margin:6px 0 2px;display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+  .kmhl .swch{width:10px;height:10px;border-radius:3px;background:var(--green);display:inline-block}
+  .kmhints{border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-top:10px;font-size:var(--fs-11);color:var(--txt);line-height:1.7}
+  .kmhints b{display:block;font-size:var(--fs-95);letter-spacing:.5px;text-transform:uppercase;color:var(--mut);margin-bottom:3px}
+  .kchip{font-family:ui-monospace,Consolas,monospace;font-size:var(--fs-105);background:var(--slate-10);padding:1px 5px;border-radius:4px;white-space:nowrap}
+/*</EDIT>*/
+
+/*<EDIT>*/
+  /* ---- service-blueprint edit affordances -------------------------------------------------
+     Two paired rules, from the editable-deliverable standard: what can be edited announces
+     itself with the accent outline; what stays locked dims and explains itself on click. ---- */
+  #art.editing .ed-on{cursor:pointer}
+  #art.editing .ed-on:hover{outline:2px solid var(--accent);outline-offset:1px;border-radius:6px}
+  #art.editing h1.ed-on:hover{outline-offset:5px}
+  #art.editing .nr-locked{opacity:.5;filter:saturate(.35);cursor:help}
+  .stp+.stp{margin-top:7px}
+  .bp .cell{position:relative}
+  #art.editing .cellplus{opacity:0}
+  #art.editing .bp .cell:hover .cellplus{opacity:1}
+  .cellplus{position:absolute;top:4px;right:4px;width:19px;height:19px;line-height:1;padding:0;
+    border:1px dashed var(--line);background:var(--card);color:var(--mut);border-radius:6px;
+    font-size:13px;font-weight:700;cursor:pointer;opacity:0;transition:.14s;z-index:4}
+  .cellplus:hover{border-style:solid;border-color:var(--accent);color:var(--accent);
+    background:rgba(110,177,209,.12);transform:scale(1.1)}
+  #ed .lockchip{display:inline-flex;align-items:center;gap:5px;margin:2px 0 10px;padding:3px 8px;
+    border-radius:999px;background:var(--slate-10);color:var(--mut);font-size:var(--fs-95);font-weight:800;
+    letter-spacing:.4px;text-transform:uppercase;cursor:help}
+  #ed .lockchip svg{width:11px;height:11px}
+  #ed .mrow{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:var(--fs-115);color:var(--mut)}
+  #ed .mrow b{color:var(--ink);font-weight:600;text-align:right;min-width:0}
+  #ed .metablock{padding:10px 12px}
+  #ed .hintbtns{margin:7px 0 0;display:flex;gap:6px;flex-wrap:wrap}
+  #ed .prev{border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:13px;
+    font-weight:700;color:var(--navy);line-height:1.35;background:var(--soft)}
+  #art[data-t="dark"] #ed .prev{color:#EAEFF5}
+  #ed .prev .hl{color:var(--green)}
+  #ed .pn2{border-left:3px solid var(--rag-red);padding:6px 10px;margin-bottom:6px;
+    background:rgba(214,69,65,.06);border-radius:0 7px 7px 0;font-size:var(--fs-115);color:var(--ink);line-height:1.45}
+/*</EDIT>*/
+
+</style>
+<!--<EDIT>-->
+<!-- ==============================================================================================
+  NR CANVAS SHELL  ·  canonical, shared, instrument-agnostic
+  Source of truth: diagnostic-skill-builder/templates/canvas-shell.html
+  Synced into a leaf skill's assets/ by scripts/sync-brand.sh; drift is gated by check-brand.sh.
+  DO NOT EDIT A SYNCED COPY - edit the canonical file and re-sync.
+
+  WHAT THIS IS. The working surface for any instrument whose deliverable is wider than a slide:
+  a service blueprint, a swimlane process map, an AI opportunity heatmap. It is a grid you
+  navigate rather than a picture you take in at a glance - columns scroll, the rail and the
+  column heads stay put, rows collapse, cards open.
+
+  It also owns the SLIDE PICKER. The one-page deliverable is not "the canvas, shrunk"; it is the
+  part of the canvas that carries the argument, chosen deliberately. The picker is where that
+  choice is made and where its consequences are shown.
+
+  WHAT IT IS NOT. It holds no instrument logic: no baseline, no gate, no delta. An instrument
+  supplies a MODEL and a set of HOOKS, and gets back a rendered canvas.
+
+  ── THE MODEL ────────────────────────────────────────────────────────────────────────────────
+  {
+    columns: [ {id, tag, label, sub, kind:'normal'|'off'} ],
+    rows:    [ {id, label, sub, icon, accent, kind:'cards'|'track',
+                divider:'line of visibility'|null, count} ],
+    cells:   { "rowId|colId": {cards:[cardId], track:{tone,label}} },
+    cards:   { cardId: {title, meta, accent, flags:[], tags:[{text,kind}], } },
+    filters: [ {k, label, flag} ],        // flag null = everything
+    slide:   { rows:[rowId], cols:[colId] }
+  }
+  Tones: 'positive' | 'neutral' | 'negative'. Tag kinds: 'ch' | 'sys' | 'pain' | 'warn' | ''.
+
+  ── THE HOOKS (all optional) ──────────────────────────────────────────────────────────────────
+  {
+    onCard(cardId),  onColumn(colId),  onRow(rowId),   // a click, when editing is unlocked
+    onAdd(rowId, colId),                                // the + affordance in a cell
+    canAdd(rowId, colId) -> bool,
+    detail(cardId) -> {kind, title, id, rows:[{k,v}], notes:[{body,strong,meta,tone}]},
+    onSlideChange(slide),
+    suggestSlide() -> {rows:[], cols:[]},
+    slideWarnings(slide) -> [string]
+  }
+  NRCanvas.mount({model, hooks, host, editing}) renders; NRCanvas.redraw() re-renders in place.
+============================================================================================== -->
+<style>
+  /* ── the canvas ────────────────────────────────────────────────────────────────────────── */
+  .nc-wrap{display:flex;flex-direction:column;min-height:0;flex:1}
+  .nc-bar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;padding:0 22px 10px 0}
+  .nc-chip{font-size:var(--fs-11);font-weight:600;border:1px solid var(--line);background:var(--card);
+           color:var(--txt);padding:5px 11px;border-radius:999px;cursor:pointer;transition:.13s;
+           white-space:nowrap}
+  .nc-chip:hover{border-color:var(--accent);color:var(--accent)}
+  .nc-chip.on{background:var(--navy-fill);border-color:var(--navy-fill);color:#fff}
+  .nc-chip .n{opacity:.65;margin-left:5px;font-weight:700}
+
+  .nc-scroll{position:relative;overflow:auto;flex:1;min-height:0;border-top:1px solid var(--line)}
+  .nc-grid{display:grid;position:relative;min-width:max-content;grid-auto-rows:min-content;
+           align-content:start}
+  .nc-rail,.nc-colh,.nc-corner{position:sticky;background:var(--card)}
+  .nc-rail{left:0;z-index:3}
+  .nc-colh{top:0;z-index:4}
+  .nc-corner{left:0;top:0;z-index:6}
+
+  .nc-corner{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:11px 13px}
+  .nc-corner b{display:block;font-size:var(--fs-11);font-weight:800;color:var(--ink);letter-spacing:.2px}
+  .nc-corner span{font-size:var(--fs-95);color:var(--mut)}
+
+  .nc-colh{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:11px 13px}
+  .nc-colh .t{font-size:var(--fs-95);font-weight:800;color:var(--accent);letter-spacing:.6px}
+  .nc-colh b{display:block;font-size:13px;font-weight:700;color:var(--ink);line-height:1.25;margin:1px 0 3px}
+  .nc-colh em{display:block;font-style:normal;font-size:var(--fs-95);color:var(--mut);line-height:1.35}
+  .nc-colh.off{background:rgba(180,150,70,.07)}
+  .nc-colh.off b{color:#8A7B58}
+  .nc-colh.dim,.nc-rail.dim,.nc-cell.dim,.nc-track.dim{opacity:.38}
+
+  .nc-rail{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px 12px;
+           display:flex;gap:8px;align-items:flex-start;cursor:pointer;user-select:none}
+  .nc-rail:hover{background:var(--soft)}
+  .nc-rail .ic{flex:none;width:15px;height:15px;margin-top:1px;color:var(--accent)}
+  .nc-rail .ic svg{width:15px;height:15px;display:block}
+  .nc-rail b{display:block;font-size:var(--fs-115);font-weight:700;color:var(--ink);line-height:1.25}
+  .nc-rail em{display:block;font-style:normal;font-size:var(--fs-95);color:var(--mut);margin-top:2px;line-height:1.35}
+  .nc-rail .cnt{margin-left:auto;font-size:var(--fs-95);font-weight:700;color:var(--mut);
+                background:var(--slate-10);border-radius:999px;padding:2px 7px;flex:none}
+  .nc-rail .chev{margin-left:auto;color:var(--mut);flex:none;transition:transform .16s}
+  .nc-rail.closed .chev{transform:rotate(-90deg)}
+  .nc-rail.acc{box-shadow:inset 3px 0 0 var(--rc)}
+
+  .nc-cell{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:9px;
+           min-height:46px;position:relative}
+  .nc-cell.off{background:rgba(180,150,70,.04)}
+  .nc-cell.empty{background:var(--soft)}
+
+  /* ── cards ─────────────────────────────────────────────────────────────────────────────── */
+  .nc-card{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:8px 10px;
+           box-shadow:0 1px 2px rgba(20,30,50,.04);transition:.13s;position:relative}
+  .nc-card+.nc-card{margin-top:7px}
+  .nc-card b{display:block;font-size:var(--fs-115);font-weight:600;color:var(--ink);line-height:1.35}
+  .nc-card .who{display:block;font-size:var(--fs-95);color:var(--mut);margin-top:3px}
+  .nc-card .tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+  .nc-card.act{cursor:pointer}
+  .nc-card.act:hover{border-color:var(--accent);transform:translateY(-1px);
+                     box-shadow:0 6px 16px -8px rgba(11,35,71,.35)}
+  .nc-card.hide{display:none}
+  .nc-tag{font-size:var(--fs-9);font-weight:700;padding:2px 6px;border-radius:5px;background:var(--slate-10);
+          color:var(--txt)}
+  .nc-tag.ch{background:rgba(110,177,209,.16);color:#1F5C7A}
+  .nc-tag.sys{background:var(--navy-10);color:var(--navy)}
+  .nc-tag.pain{background:var(--tint-red);color:var(--rag-red-text)}
+  .nc-tag.warn{background:var(--tint-amber);color:var(--rag-amber-text)}
+  #art[data-t="dark"] .nc-tag.ch{background:rgba(143,199,232,.16);color:#8FC7E8}
+  #art[data-t="dark"] .nc-tag.sys{background:#243246;color:#EAEFF5}
+
+  /* ── a track row: a line through the columns, not a chart ──────────────────────────────── */
+  .nc-track{border-bottom:1px solid var(--line);border-right:1px solid var(--line);position:relative;
+            height:96px}
+  .nc-track svg{position:absolute;left:0;right:0;top:0;height:56px;width:100%;pointer-events:none;
+                overflow:visible}
+  /* the dot is drawn in PIXELS, never inside the stretched svg, or a circle becomes an ellipse */
+  .nc-dot{position:absolute;left:50%;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;
+          box-shadow:0 0 0 3px var(--card);z-index:2}
+  .nc-tlab{position:absolute;left:11px;right:11px;bottom:10px;font-size:var(--fs-10);line-height:1.35;
+           color:var(--txt)}
+  .nc-tlab b{display:block;font-size:var(--fs-105);color:var(--ink);font-weight:600}
+
+  .nc-div{grid-column:1/-1;height:0;position:relative;z-index:1}
+  .nc-div i{position:absolute;left:0;right:0;top:-1px;height:2px;background:var(--navy-fill);font-style:normal}
+  .nc-divl{position:sticky;left:0;display:inline-block;background:var(--card);padding:5px 12px;
+           font-size:var(--fs-9);letter-spacing:.9px;text-transform:uppercase;color:var(--navy);font-weight:800;
+           border-bottom:1px solid var(--line);border-right:1px solid var(--line);z-index:3}
+  #art[data-t="dark"] .nc-divl{color:var(--accent)}
+
+  .nc-plus{position:absolute;top:5px;right:5px;width:19px;height:19px;line-height:1;padding:0;
+           border:1px dashed var(--line);background:var(--card);color:var(--mut);border-radius:6px;
+           font-size:13px;font-weight:700;cursor:pointer;opacity:0;transition:.14s;z-index:4}
+  .nc-cell:hover .nc-plus{opacity:1}
+  .nc-plus:hover{border-style:solid;border-color:var(--accent);color:var(--accent);
+                 background:rgba(110,177,209,.12);transform:scale(1.1)}
+
+  /* ── the slide picker ──────────────────────────────────────────────────────────────────── */
+  .nc-pk{position:absolute;top:6px;right:6px;width:17px;height:17px;border-radius:5px;
+         border:1.5px solid var(--line);background:var(--card);cursor:pointer;display:none;
+         align-items:center;justify-content:center;z-index:5}
+  .nc-picking .nc-pk{display:flex}
+  .nc-pk.on{background:var(--green);border-color:var(--green)}
+  .nc-pk svg{width:11px;height:11px;color:#fff;opacity:0}
+  .nc-pk.on svg{opacity:1}
+  .nc-rail .nc-pk{top:8px;right:8px}
+  .nc-picking .nc-rail .cnt,.nc-picking .nc-rail .chev{display:none}
+
+  #ncbar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);
+         box-shadow:0 -14px 34px -22px rgba(11,35,71,.5);padding:11px 22px 11px 66px;z-index:20;
+         display:none;align-items:center;gap:12px;flex-wrap:wrap}
+  .nc-picking #ncbar{display:flex}
+  #ncbar .txt{font-size:var(--fs-115);color:var(--txt);line-height:1.5;flex:1;min-width:220px}
+  #ncbar .txt b{color:var(--ink)}
+  #ncbar .warn{display:block;color:var(--rag-red-text);font-weight:600}
+  .nc-btn{font-size:12px;font-weight:700;border:1px solid var(--navy-fill);background:var(--navy-fill);
+          color:#fff;padding:8px 15px;border-radius:8px;cursor:pointer;white-space:nowrap}
+  .nc-btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+  .nc-btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* ── the detail panel ──────────────────────────────────────────────────────────────────── */
+  #ncdp{position:fixed;top:0;right:0;bottom:0;width:390px;max-width:92vw;background:var(--card);
+        border-left:1px solid var(--line);box-shadow:-18px 0 44px -24px rgba(11,35,71,.4);z-index:40;
+        display:none;flex-direction:column;transform:translateX(14px);opacity:0;transition:.18s}
+  #ncdp.on{display:flex;transform:none;opacity:1}
+  #ncdp .h{padding:15px 20px 13px;border-bottom:1px solid var(--line);background:var(--soft);position:relative}
+  #ncdp .k{font-size:var(--fs-85);font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#fff;
+           background:var(--navy-fill);padding:3px 7px;border-radius:5px;display:inline-block}
+  #ncdp h3{margin:7px 0 0;font-size:15px;font-weight:800;color:var(--ink);line-height:1.3;padding-right:34px}
+  #ncdp .id{font-family:ui-monospace,monospace;font-size:var(--fs-95);color:var(--mut);margin-top:5px;display:block}
+  #ncdp .x{position:absolute;top:12px;right:14px;border:none;background:none;font-size:22px;line-height:1;
+           color:var(--mut);cursor:pointer}
+  #ncdp .b{flex:1;overflow:auto;padding:16px 20px 22px}
+  #ncdp .r{display:flex;justify-content:space-between;gap:12px;padding:7px 0;
+           border-bottom:1px solid var(--line);font-size:var(--fs-115);color:var(--mut)}
+  #ncdp .r b{color:var(--ink);font-weight:600;text-align:right}
+  #ncdp h4{margin:16px 0 7px;font-size:var(--fs-95);font-weight:800;letter-spacing:.6px;text-transform:uppercase;
+           color:var(--mut)}
+  #ncdp .note{border-left:3px solid var(--rag-na);background:var(--soft);border-radius:0 7px 7px 0;
+              padding:8px 11px;font-size:var(--fs-115);color:var(--ink);line-height:1.45;margin-bottom:7px}
+  #ncdp .note.negative{border-left-color:var(--rag-red);background:rgba(214,69,65,.06)}
+  #ncdp .note b{display:block;font-size:12px;margin-top:3px}
+  #ncdp .note .m{font-size:var(--fs-10);color:var(--mut);margin-top:3px}
+  #ncov{position:fixed;inset:0;background:rgba(11,35,71,.18);z-index:35;display:none}
+  #ncov.on{display:block}
+
+  #ncprev{position:fixed;inset:0;background:rgba(11,35,71,.55);z-index:60;display:none;
+          align-items:center;justify-content:center;padding:34px}
+  #ncprev.on{display:flex}
+  #ncprev .box{background:var(--card);border-radius:14px;padding:20px 22px;width:min(1180px,94vw);
+               max-height:92vh;overflow:auto;box-shadow:0 40px 90px -40px rgba(0,0,0,.6)}
+  #ncprev h2{margin:0 0 3px;font-size:15px;color:var(--ink)}
+  #ncprev .sub{font-size:var(--fs-115);color:var(--mut);margin-bottom:14px}
+  .nc-mini{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:9px;
+           overflow:hidden}
+  .nc-mini>*{background:var(--card);padding:6px 8px;font-size:var(--fs-95);color:var(--txt);line-height:1.3}
+  .nc-mini .mh{background:var(--navy2);color:#fff;font-weight:700;font-size:var(--fs-10)}
+  .nc-mini .mh.off{background:#8A7B58}
+  .nc-mini .mr{background:var(--slate-10);font-weight:700;color:var(--navy);font-size:var(--fs-95)}
+  #art[data-t="dark"] .nc-mini .mr{color:#EAEFF5}
+  .nc-mini .mc b{display:block;font-weight:600;color:var(--ink);font-size:var(--fs-95)}
+  .nc-mini .mc.none{background:var(--soft)}
+</style>
+<script>
+/* NRCanvas - the shared canvas renderer. Instrument-agnostic by construction: it never reads a
+   field it has not defined above, and every decision it cannot make on its own is a hook. */
+var NRCanvas = (function(){
+  var M=null, H={}, HOST=null, EDITING=false, PICKING=false, FILTER=null, CLOSED={};
+
+  var ICONS={
+    journey:'<path d="M4 12h12"/><path d="M13 8l4 4-4 4"/><circle cx="4" cy="12" r="1.6"/>',
+    feel:'<circle cx="12" cy="12" r="8"/><path d="M9 14.5s1.2 1.2 3 1.2 3-1.2 3-1.2"/><path d="M9.5 9.5h.01"/><path d="M14.5 9.5h.01"/>',
+    touch:'<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18.5h2"/>',
+    front:'<circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/>',
+    back:'<rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="M3.5 10h17"/>',
+    support:'<circle cx="12" cy="12" r="3"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4"/>',
+    systems:'<ellipse cx="12" cy="6" rx="7.5" ry="3"/><path d="M4.5 6v12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3V6"/><path d="M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/>',
+    pain:'<path d="M12 4.5 21 19H3z"/><path d="M12 10v4"/><path d="M12 16.6h.01"/>'
+  };
+  var CHEV='<svg class="chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+  var TICK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  var TONE={positive:'var(--rag-green)',neutral:'var(--rag-na)',negative:'var(--rag-red)'};
+  var TONEY={positive:14,neutral:28,negative:42};
+
+  function esc(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function cell(r,c){ return (M.cells||{})[r+'|'+c] || {}; }
+  function cardsOf(r,c){ return (cell(r,c).cards||[]).map(function(id){
+    var x=(M.cards||{})[id]; return x?Object.assign({id:id},x):null; }).filter(Boolean); }
+  function onSlide(kind,id){ var s=M.slide||{rows:[],cols:[]};
+    return (kind==='r'?s.rows:s.cols).indexOf(id)>=0; }
+  function passes(card){ if(!FILTER) return true; return (card.flags||[]).indexOf(FILTER)>=0; }
+
+  function icon(k){ return '<span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '+
+    'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[k]||'')+'</svg></span>'; }
+
+  /* ── filters ─────────────────────────────────────────────────────────────────────────── */
+  function counts(flag){
+    if(!flag) return Object.keys(M.cards||{}).length;
+    var n=0; for(var k in (M.cards||{})) if(((M.cards[k].flags)||[]).indexOf(flag)>=0) n++;
+    return n;
+  }
+  function bar(){
+    return (M.filters||[]).map(function(f){
+      return '<button class="nc-chip'+((f.flag||null)===FILTER?' on':'')+'" data-flag="'+
+        esc(f.flag||'')+'">'+esc(f.label)+'<span class="n">'+counts(f.flag||null)+'</span></button>';
+    }).join('');
+  }
+
+  /* ── the grid ────────────────────────────────────────────────────────────────────────── */
+  function railHtml(row){
+    var dim=PICKING&&!onSlide('r',row.id);
+    return '<div class="nc-rail'+(row.accent?' acc':'')+(CLOSED[row.id]?' closed':'')+(dim?' dim':'')+
+      '" data-row="'+esc(row.id)+'"'+(row.accent?' style="--rc:'+row.accent+'"':'')+'>'+
+      icon(row.icon)+'<span><b>'+esc(row.label)+'</b>'+(row.sub?'<em>'+esc(row.sub)+'</em>':'')+'</span>'+
+      (row.count!=null?'<span class="cnt">'+row.count+'</span>':'')+CHEV+
+      '<span class="nc-pk'+(onSlide('r',row.id)?' on':'')+'" data-pk="r:'+esc(row.id)+'">'+TICK+'</span></div>';
+  }
+  function cardHtml(card){
+    var act=EDITING&&H.onCard;
+    return '<div class="nc-card'+(act?' act':'')+(passes(card)?'':' hide')+
+      '" data-card="'+esc(card.id)+'"'+(card.accent?' style="border-left:3px solid '+card.accent+'"':'')+'>'+
+      '<b>'+esc(card.title)+'</b>'+
+      (card.meta?'<span class="who">'+esc(card.meta)+'</span>':'')+
+      ((card.tags||[]).length?'<div class="tags">'+card.tags.map(function(t){
+        return '<span class="nc-tag '+esc(t.kind||'')+'">'+esc(t.text)+'</span>';}).join('')+'</div>':'')+
+      '</div>';
+  }
+  function trackCell(row,col,i){
+    var c=cell(row.id,col.id).track;
+    var dim=PICKING&&!onSlide('c',col.id);
+    if(!c) return '<div class="nc-track'+(col.kind==='off'?' off':'')+(dim?' dim':'')+'"></div>';
+    var y=TONEY[c.tone]!=null?TONEY[c.tone]:28, col2=TONE[c.tone]||'var(--rag-na)';
+    var prev=(M.columns[i-1]&&cell(row.id,M.columns[i-1].id).track)||null;
+    var next=(M.columns[i+1]&&cell(row.id,M.columns[i+1].id).track)||null;
+    var py=prev?(TONEY[prev.tone]!=null?TONEY[prev.tone]:28):y;
+    var ny=next?(TONEY[next.tone]!=null?TONEY[next.tone]:28):y;
+    var a=(py+y)/2, b=(ny+y)/2;
+    return '<div class="nc-track'+(col.kind==='off'?' off':'')+(dim?' dim':'')+'">'+
+      '<svg viewBox="0 0 100 56" preserveAspectRatio="none">'+
+        '<path d="M0 '+a+' C25 '+a+' 25 '+y+' 50 '+y+' C75 '+y+' 75 '+b+' 100 '+b+'" fill="none" '+
+        'stroke="'+col2+'" stroke-width="1.8" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>'+
+      '<span class="nc-dot" style="top:'+y+'px;background:'+col2+'"></span>'+
+      (c.label?'<div class="nc-tlab"><b>'+esc(c.label)+'</b></div>':'')+'</div>';
+  }
+
+  function grid(){
+    var cols=M.columns||[], rows=M.rows||[];
+    var h='<div class="nc-corner">'+(M.cornerTitle?'<b>'+esc(M.cornerTitle)+'</b>':'')+
+          (M.cornerSub?'<span>'+esc(M.cornerSub)+'</span>':'')+'</div>';
+    cols.forEach(function(c){
+      var dim=PICKING&&!onSlide('c',c.id);
+      h+='<div class="nc-colh'+(c.kind==='off'?' off':'')+(dim?' dim':'')+'" data-col="'+esc(c.id)+'">'+
+        (c.tag?'<span class="t">'+esc(c.tag)+'</span>':'')+'<b>'+esc(c.label)+'</b>'+
+        (c.sub?'<em>'+esc(c.sub)+'</em>':'')+
+        '<span class="nc-pk'+(onSlide('c',c.id)?' on':'')+'" data-pk="c:'+esc(c.id)+'">'+TICK+'</span></div>';
+    });
+    rows.forEach(function(r){
+      if(r.divider) h+='<div class="nc-div"><i></i></div><div class="nc-divl">'+esc(r.divider)+'</div>'+
+        cols.map(function(){return '<div style="height:0"></div>';}).join('');
+      h+=railHtml(r);
+      cols.forEach(function(c,i){
+        var dim=PICKING&&!onSlide('c',c.id);
+        if(r.kind==='track'){ h+=CLOSED[r.id]
+          ? '<div class="nc-cell empty'+(dim?' dim':'')+'"></div>' : trackCell(r,c,i); return; }
+        if(CLOSED[r.id]){ h+='<div class="nc-cell empty'+(dim?' dim':'')+'"></div>'; return; }
+        var list=cardsOf(r.id,c.id);
+        var plus=(EDITING&&H.onAdd&&(!H.canAdd||H.canAdd(r.id,c.id)))
+          ? '<button class="nc-plus" data-add="'+esc(r.id)+'|'+esc(c.id)+'" title="Add">+</button>' : '';
+        h+='<div class="nc-cell'+(c.kind==='off'?' off':'')+(list.length?'':' empty')+(dim?' dim':'')+'">'+
+           list.map(cardHtml).join('')+plus+'</div>';
+      });
+    });
+    return h;
+  }
+
+  function draw(){
+    var cols=M.columns||[];
+    HOST.querySelector('.nc-bar').innerHTML=bar();
+    var g=HOST.querySelector('.nc-grid');
+    g.style.gridTemplateColumns='210px repeat('+cols.length+',minmax(230px,1fr))';
+    g.innerHTML=grid();
+    bind();
+    pickbar();
+  }
+
+  function bind(){
+    HOST.querySelectorAll('.nc-chip').forEach(function(b){
+      b.onclick=function(){ FILTER=b.getAttribute('data-flag')||null; draw(); };});
+    HOST.querySelectorAll('.nc-rail').forEach(function(r){
+      r.onclick=function(e){
+        if(e.target.closest('.nc-pk')) return;
+        var id=r.getAttribute('data-row');
+        if(EDITING&&H.onRow&&e.altKey){ H.onRow(id); return; }
+        CLOSED[id]=!CLOSED[id]; draw(); };});
+    HOST.querySelectorAll('.nc-colh').forEach(function(c){
+      c.onclick=function(e){
+        if(e.target.closest('.nc-pk')) return;
+        if(EDITING&&H.onColumn) H.onColumn(c.getAttribute('data-col')); };});
+    HOST.querySelectorAll('.nc-card').forEach(function(c){
+      c.onclick=function(){ var id=c.getAttribute('data-card');
+        if(EDITING&&H.onCard) H.onCard(id); else openDetail(id); };});
+    HOST.querySelectorAll('.nc-plus').forEach(function(p){
+      p.onclick=function(e){ e.stopPropagation();
+        var v=p.getAttribute('data-add').split('|'); H.onAdd(v[0],v[1]); };});
+    HOST.querySelectorAll('.nc-pk').forEach(function(p){
+      p.onclick=function(e){ e.stopPropagation();
+        var v=p.getAttribute('data-pk').split(':'), kind=v[0], id=v.slice(1).join(':');
+        var s=M.slide=M.slide||{rows:[],cols:[]};
+        var arr=kind==='r'?s.rows:s.cols, i=arr.indexOf(id);
+        if(i>=0) arr.splice(i,1); else arr.push(id);
+        if(H.onSlideChange) H.onSlideChange(s);
+        draw(); };});
+  }
+
+  /* ── the detail panel (read-only: editing instruments open their own) ─────────────────── */
+  function openDetail(id){
+    if(!H.detail) return;
+    var d=H.detail(id); if(!d) return;
+    var dp=document.getElementById('ncdp');
+    dp.innerHTML='<div class="h"><button class="x" id="ncdpx">&times;</button>'+
+      (d.kind?'<span class="k">'+esc(d.kind)+'</span>':'')+'<h3>'+esc(d.title)+'</h3>'+
+      (d.id?'<span class="id">'+esc(d.id)+'</span>':'')+'</div><div class="b">'+
+      (d.rows||[]).map(function(r){
+        return '<div class="r"><span>'+esc(r.k)+'</span><b>'+(r.raw?r.v:esc(r.v))+'</b></div>';}).join('')+
+      ((d.notes||[]).length||d.notesTitle
+        ? '<h4>'+esc(d.notesTitle||'Detail')+'</h4>'+
+          ((d.notes||[]).length
+            ? d.notes.map(function(n){
+                return '<div class="note '+esc(n.tone||'')+'">'+esc(n.body)+
+                  (n.strong?'<b>'+esc(n.strong)+'</b>':'')+
+                  (n.meta?'<div class="m">'+esc(n.meta)+'</div>':'')+'</div>';}).join('')
+            : '<div style="font-size:var(--fs-115);color:var(--mut)">'+esc(d.notesEmpty||'Nothing captured here.')+'</div>')
+        : '')+'</div>';
+    dp.classList.add('on'); document.getElementById('ncov').classList.add('on');
+    document.getElementById('ncdpx').onclick=closeDetail;
+  }
+  function closeDetail(){
+    document.getElementById('ncdp').classList.remove('on');
+    document.getElementById('ncov').classList.remove('on');
+  }
+
+  /* ── the slide picker ────────────────────────────────────────────────────────────────── */
+  function pickbar(){
+    var el=document.getElementById('ncbar'); if(!el) return;
+    var s=M.slide||{rows:[],cols:[]};
+    var n=0;
+    (M.rows||[]).forEach(function(r){ if(s.rows.indexOf(r.id)<0) return;
+      (M.columns||[]).forEach(function(c){ if(s.cols.indexOf(c.id)<0) return;
+        n+=cardsOf(r.id,c.id).length; }); });
+    var total=Object.keys(M.cards||{}).length;
+    var warn=(H.slideWarnings?H.slideWarnings(s):[]).map(function(w){
+      return '<span class="warn">'+w+'</span>';}).join('');
+    el.querySelector('.txt').innerHTML='<b>'+s.cols.length+'</b> column'+(s.cols.length===1?'':'s')+
+      ' and <b>'+s.rows.length+'</b> row'+(s.rows.length===1?'':'s')+' on the slide, holding <b>'+
+      n+'</b> of '+total+'.'+warn;
+  }
+  function setPicking(on){
+    PICKING=!!on; document.body.classList.toggle('nc-picking',PICKING); draw();
+  }
+  function preview(){
+    var s=M.slide||{rows:[],cols:[]};
+    var cols=(M.columns||[]).filter(function(c){return s.cols.indexOf(c.id)>=0;});
+    var rows=(M.rows||[]).filter(function(r){return s.rows.indexOf(r.id)>=0;});
+    var h='<h2>What the one-pager becomes</h2><div class="sub">'+cols.length+' columns &middot; '+
+      rows.length+' rows &middot; the shape, not the finished render</div>'+
+      '<div class="nc-mini" style="grid-template-columns:120px repeat('+cols.length+',1fr)">'+
+      '<div class="mr">'+esc(M.cornerTitle||'')+'</div>'+
+      cols.map(function(c){return '<div class="mh'+(c.kind==='off'?' off':'')+'">'+esc(c.label)+'</div>';}).join('');
+    rows.forEach(function(r){
+      var lists=cols.map(function(c){
+        return r.kind==='track' ? [(cell(r.id,c.id).track||{}).label||''] :
+          cardsOf(r.id,c.id).map(function(x){return x.title;}); });
+      if(!lists.some(function(l){return l.filter(Boolean).length;})) return;
+      h+='<div class="mr">'+esc(r.label)+'</div>';
+      lists.forEach(function(l){
+        var v=l.filter(Boolean);
+        h+='<div class="mc'+(v.length?'':' none')+'">'+v.map(function(x){
+          return '<b>'+esc(x)+'</b>';}).join('')+'</div>'; });
+    });
+    h+='</div><div style="margin-top:14px;font-size:var(--fs-115);color:var(--mut)">'+
+      'The real one-pager keeps the brand frame, the action title and the source line.</div>'+
+      '<div style="margin-top:14px;text-align:right"><button class="nc-btn" id="ncpvx">Close</button></div>';
+    document.getElementById('ncprevbox').innerHTML=h;
+    document.getElementById('ncprev').classList.add('on');
+    document.getElementById('ncpvx').onclick=function(){
+      document.getElementById('ncprev').classList.remove('on');};
+  }
+
+  function mount(o){
+    M=o.model; H=o.hooks||{}; HOST=o.host; EDITING=!!o.editing;
+    HOST.innerHTML='<div class="nc-bar"></div><div class="nc-scroll"><div class="nc-grid"></div></div>';
+    HOST.classList.add('nc-wrap');
+    if(!document.getElementById('ncdp')){
+      var f=document.createElement('div');
+      f.innerHTML='<div id="ncov"></div><div id="ncdp"></div>'+
+        '<div id="ncprev"><div class="box" id="ncprevbox"></div></div>'+
+        '<div id="ncbar"><div class="txt"></div>'+
+        '<button class="nc-btn ghost" id="ncall">Everything</button>'+
+        '<button class="nc-btn ghost" id="ncsug">What I would pick</button>'+
+        '<button class="nc-btn" id="ncpv">Preview the slide</button>'+
+        '<button class="nc-btn ghost" id="ncdone">Done</button></div>';
+      while(f.firstChild) HOST.parentNode.appendChild(f.firstChild);
+      document.getElementById('ncov').onclick=closeDetail;
+      window.addEventListener('keydown',function(e){ if(e.key==='Escape'){ closeDetail();
+        document.getElementById('ncprev').classList.remove('on'); }});
+      document.getElementById('ncall').onclick=function(){
+        M.slide={rows:(M.rows||[]).map(function(r){return r.id;}),
+                 cols:(M.columns||[]).map(function(c){return c.id;})};
+        if(H.onSlideChange) H.onSlideChange(M.slide); draw(); };
+      document.getElementById('ncsug').onclick=function(){
+        if(!H.suggestSlide) return;
+        M.slide=H.suggestSlide();
+        if(H.onSlideChange) H.onSlideChange(M.slide); draw(); };
+      document.getElementById('ncpv').onclick=preview;
+      document.getElementById('ncdone').onclick=function(){ setPicking(false); };
+    }
+    draw();
+  }
+
+  /* Every entry point tolerates being called before mount(): an instrument switching views or
+     toggling its lock has no reason to know whether the canvas happens to be on screen. */
+  return {mount:mount, redraw:function(m){ if(m) M=m; if(M&&HOST) draw(); },
+          setEditing:function(v){ EDITING=!!v; if(M&&HOST) draw(); },
+          setPicking:function(v){ if(M&&HOST) setPicking(v); },
+          isPicking:function(){return PICKING;},
+          model:function(){return M;}, closeDetail:closeDetail};
+})();
+</script>
+
+<!--</EDIT>-->
+</head>
+<body>
+<div id="art" data-t="light">
+  <div class="nr-rail"></div>
+  <div class="toprow">
+    <div class="tags">
+      <div class="nr-pill"><img alt="Nova Reperta" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEkAAAAvCAYAAACv3uebAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFxEAABcRAcom8z8AAAzdSURBVGhD7VoL9KVTFfdINXlNBnmOZzRUXolMnomIjEYpkhiP8mZFHsWEVnqoaJWKUIkQSS9KL1lSxptVaDBFXiPTPN3v27/faf0+e1/7nvmPaVXKX/Zad917z9lnn/Pt75z9+O2zwAIvYCqlvIbkBAAXm9ldZvYYgEcB3A7g2yT3Jvnqetz/BZHcEsAlAP5e5kNm9gSAC0huUst5QVIp5RUATgUws1LE/QCuA/AjfczsegBTMg+AJ0keX0p5aS33BUOllFcCuKh68O+b2ftIrlHzk1zLzPYG8JNqzNdLKYvV/MOe9PYBXJge9H4z2+Of2RUkR5jZvmb21zT+nFLKwjXvsKZSysR4QDO7heS6qW9hktuR/CiALwI408yOJ7l1KWXB4GuaZiMAdyU5R/UnGO5EclMA0/3B/iSPlvpkwK8GMCsePkhjAPwgG+xSihT1F5c1leTr+hMNVyqlLBLHDEBLcrfoI/leAE9UinkwHyuRmT3Stu0uMU5HL/Gf059suFIpZf3wZAC+V0pZSO1t224DYEZ6WLn4t5Ic0+v11iW5I4BLk6KebJpmY42dNGmSFH+Ntz9KcqV63mFFJI9yJTRt23a7iOSicvHRTvKIepxICpXLNzM478/C0JPcC0DXbma712OHFfnu0QPeS3IZtZEcHw8I4MvBS3J5M9vfzPYJXpdxgfMaye2dd42Io4b1kZM9MrM/+oNcHe0AzvA2Rdvrq02pB4Cb0/G6Po6RDDeAno85zWUvBOBa5705TTu8SMGjmXVeTXmYt71ECvO2W0spI9UeissEYKKPWRrAHd52YcgHcLnaZJcUH7wxzT1AJF9FcjOSY0muWff/L8kj7CvM7KaIaUi+DMBnAdwE4PNhY+JYVko6z+WMBPBbb7ss5AP4jrf9TX8ebtt2hzR/n0opByShF9T9w4VI7pMV5PQu9c2ePXtlAA+pIdsf5XhqM7MHpIju/ErQgOSnhe8fEgF8s+5/vhDJJbTT58yZswbJ1Uopq/r36mr3o3mimd2ngJPkhyPtIPn+eEYzO9LbFg8bJq/XKcn/NKWUY3OoTnK/1P+NvDBtZZI7k/wYgNNJfoTkFql/W5KHkDy4TjB7vd6G3n5wKWW02jyHejeAUwB8spQyTm+Z5J7Ot1GWkYnkYSZfDswBMNvM+h95OpI7Od8IHck0bhUzu8ef77HAlpqmeVOCWSb2lRSkB5YBdCFDKklvSCG95q/GKtSXkVQM8sHU3jeIbjd+qXYP/VeYNWvWSgB+mGV5/+9jDikuZNRE8oR6bCaFBZlfG0G21sxuDB69nOgHcHIaO3YuJYk8Ql1UoX1q65TkmM0vUvujpZRJOT8KV5qCOkW/nTtu2/btSiHUbmaHasEymGmsUolJZjaQb5E8KT3nAGnXCuJQ8qrjYWYDL4/kO8WnpJbkcQLkzKyPObn96TyhdheAP6tdyXIHmyTGbuHp/0W+9eNNdkoys/4Z1oL86Ixq23Y7AN3WNbNpsglt2+6UeM/U+FAIgD88/vjjizdNs0Wa4wYlrHLLTdMoOe3HNs+mpCAFiQB+HmPS2E5JpZTz6z49p7x4yADQ59FL7BoT8z3aZmb2eGLSGR9QUopQZ5Fc75klDnrDcAQAfu38U8zs4MjYZUfUT/JE75dNHJflKSWIlzc/JfkO+F1a+xQAT/nYTkkAPiebBeABAD8l+Z7I91yGkMkYf51OU9cRjQAmS6N6g3J70Z76Q0nhGh/T0Xtmmd0kmwe/PIi37eYK0Jhui3ukPBDoAZgLmtAuFazq8uapJO1a2a+01vOUf5nZgJJIrt22rRLdtarxI/zUmI9/mOQb+gxJ8P0yyGprmkah+m3R5/2hpK/4/6fatt06zaXJjgt+HUuXryi4M9RB8nppTGd0tUAz27OSt28sfF5KktHXWw/ZAK6Uc5CdSlN2MVFNpZSXkxRicFUwKopv23bA0A8oKUfV+m1m3VHx/k5JJHdIAm/zMGCMPKEbcfE+qO2fZO2cju3t06dPXzrNv1UcKdkpZfMk1yG5h3Z3zDWUkhQXmdlvggfAj8O+NE2zuSJpt2tb+Vyr63fbtrua2bFeFOiSYR8/WY6lnicraUqdepBcSp7A+zs3riAsG0AdpYhYg0genuU4OCYoQn0HDdEn8D3kKd4ZAMaculwrjVu48opX5eze47hRJJdN6cmnZRO1ZbNgt1MX6jjmOfqUGPX25yrUucs/1xHAzsh5vvMF1ayqySab2YCCgmSbHH9eaoi+UQDOUvCXZM1QLJaS2JOHGLeTHI12k+Ktur8m2aq8XkXgAL7Vtu2ONe8AlVLeLCxYhmpe1QV/K+ofqCD0er3Xy0OQ/JCMY9i0ocjjrjE5oq9JybZXVScowlZ60DTNpo4q9o9vpqZplIAP2VcTybcpQ/B0a1sd15rnBU/a6Tq+2a3/R0hnufqouiAIQp5quZr/+Uwkj1YwKZhjqGP9L1M+ozUBuLGOKZ7PpIsRvu7p2Yj/25QUouj6BjOT25yT2i+vx7h92cQz/bmMvUMXq4QxFVQhuyf7p981fyaHOd6iBLSUsmTVJ8+6nGRHnwODG+q3HIyv+RG3aSv4OkZUckY6kLjltGnTuh0nDNx5l8i8MSCUMaXX662nyVUiDk/jkXCnCBldr5/f5t5H7l/XWeQ+VwuZJA+VGwdwZynlNDO7U6Ufd78C7Y8IpCGNWcGT1Edc7iwAdztMEtjP8gpMXfZnBOpr3Xq5jkuf7WsW6YqN+B4h2cU+mtPMDjGzux2x0Jru8Gj7FvGrApPX1VFS0n3pzWvCe719RgcXPL3I/SLGUHBoZn9L42+KQE4eJNrnRQLB0hqWLqX8KvqUiphZl8qIoixEcsVYl5k9lKoiCjr7ShqCuohbmFfdUVOGTPqUOh8g+VpBA4p6IxHVThIwNmPGjGUjyPMoVtt5WeHLdRLq4F1HniSf5m78pBT3CA3tjkmkM56CTPQjNAZAF0171XW0B7fanbHmVjyOgUlJuuig9ieUu7nLFxKh47VOVHTNTKfg47ojAOATCiZD5lCRfVaSkLxr5R0kJLVf6g+ijDnaztIDSlFt224bpWPlUM7bf2PK8vN8UVD0vsM9t+vgDclp2/YdurzQ6/U2UNaeePWwi4WSZDcjPwyKYFGBcW3PdMySrGOqvv7Of1Yl1eTpgepTnT1SCSb6zGwAewrSkXXU72j/P5PkQDWm1+upNN1BowA+pV2jq3r+XztjADALInmgjGoq/1yT5YqSkpQmDYQvsmHqMzPNPQAFK1CONT2rktxQyniFzZmdqygZInU+gXJX+Odi4UwBscZOcqRgIOT3mx6xvaX4kWZ2u/PLmF6p3etyL1NNzYExRdZKX0JJ52a5osgpPcUalft0rLxvpuCg3CdvGsjq/JQ0Wd6tugx1WQDnOt+pXZcNFqnkrBptGTLxxHNF2Yzp06cLOewnpVFnT+VqwRS7Zrkebqzsv4WFx3Hr6maZAHzVRQsZ7ZzN1KlTl/Bq7+4xbynlEq1Fa5o5c+ZyeiHRMT8lCSpZxkvCfa8lQF98WmyGRh2kl/HT5ajL/QZGF3hmJYkc9dQN2G4XeNvN4Q119SV2sIA5wTLajV5olLs+2+XKu8VFq/OrR1G/bFxHCjWkSDO71W+9LSkPnPoVlugEdKXyoPkpSfFEB5XIPUe7zjDJDXwRwpj6+E0mDw26BDd5K0EQc8EefsFhs7wOufl53ZYF8DXn0U7SRS21daXtSoYKjf3bakHxopumGSvl1f26o5TMzKm1XG3Rc/TmFPTFm/US8ulqVx6keljwezQtgO27UpgqJwC+5NfrohQVSlL4ME7ewz2neE+ZF1pAcmPfPdfIU+piqJSnIFL9vq6TPTebq5gqEiaka3+aT6ChfssUpP7V/IauvLjWpNMw1ue9QN51UOJzROm4yTYMFAteJKdKSd0NshepogTuK6Xp4iQFggHq+W9VeeV5hAEJkNdx7R9DbwvP2pWnhZKqXd5KpWgH8UY6r0riXQlI/QLskiyNW1KBrwOFgnTVtqDmFNin4kftsZ9TivqVpx7dThLA7pcTFjOzE9y176rCghZNcnev+8eNtQ3M7DBXkL7XFojvCOhoL5KO83F7tW27fUqEJftQH6P0SfcOdlHhU/clfR6hAOuZmZDV/aT0+jmeU9IDqmxUSvmAFKA2r9TKSE4ws2N011oGXS7Xqy0TVMrRFWOP2tdUAKiykmp4nv4c7jI2l8fSTVmvxJzhChihHeNKUt+RrmB99tU6tJNcueP9auDGLmcd35UD6cx/lYQ/6ejJjXtNfrwXCrcxMylTO2G0AkLn0fER9r6SH62DtJMc8xZ8IixLl9jHS6GCQzzNOdCPsPolR1dwtAO3VzLucoQ6rO/lMSW/Rygz8IsSB9Rr/wcS5txQy6GnOwAAAABJRU5ErkJggg=="><b id="ctx">OPEX QUICKSCAN</b></div>
+      <div class="nr-track" id="lens">CLIENTS · SERVICE BLUEPRINT</div>
+    <!--<EDIT>-->
+      <div class="wgrp">
+        <span id="wnote"></span>
+        <button class="wbtn" id="wpick">Pick what goes on the slide</button>
+        <button class="wbtn" id="wstage">+ Stage</button>
+        <button class="wbtn" id="wmap">Map work</button>
+        <button id="wsave">Save</button>
+        <button id="wgear" aria-label="Editing"></button>
+        <div id="wpop"></div>
+      </div>
+<!--</EDIT>-->
+    
+    </div>
+    <div class="ctrls">
+      <div class="seg" id="views"></div>
+      <div class="seg" id="theme"><button data-s="light" class="on">Light</button><button data-s="dark">Dark</button></div>
+    </div>
+  </div>
+  <h1 id="title"></h1>
+  <div class="subrow"><div class="subt" id="subt"></div><div class="stamp" id="stamp"></div></div>
+  <div id="view"><div id="vinner"></div></div>
+<!--<EDIT>--><div id="ed"></div><div id="toast"></div><!--</EDIT>-->
+
+  <div id="ft">
+    <div class="l"><span id="src"></span><div class="legend" id="lg"></div></div>
+    <span class="conf">Sample data · Northwind Assurance is fictional</span>
+  </div>
+</div>
+<script>
+/* ============ ONLY THIS BLOCK CHANGES PER TEAM ============ */
+const DATA = /* DATA */ {
+  "context": "OPEX QUICKSCAN",
+  "lens": "CLIENTS · SERVICE BLUEPRINT",
+  "teamName": "Claims Handling",
+  "teamId": "claims-handling",
+  "teamActorId": "claims-handling",
+  "engagement": "Northwind Assurance",
+  "source": "Team lead, two coordinators and four handlers, 3-4 Sep 2026; Customer Service team lead, 4 Sep 2026; claims system and contact-centre report packs",
+  "baselineVersion": "baseline/2026.6",
+  "baselineStamp": "21bf379a6c203e79",
+  "baselinePath": "baseline.json",
+  "generatedAt": "2026-09-08",
+  "keyMessage": "Two of the three biggest losses sit **on the line of visibility**: the notification is typed twice as it crosses from the contact centre into claims (**2,5 FTE**), and **4,0 FTE** goes on answering customers who ring because nothing on their side tells them where the claim stands.",
+  "mappingUnit": "phase",
+  "coverage": {},
+  "stages": [
+    {
+      "id": "s1",
+      "name": "I report the damage",
+      "order": 1
+    },
+    {
+      "id": "s2",
+      "name": "I find out where I stand",
+      "order": 2
+    },
+    {
+      "id": "s3",
+      "name": "Someone assesses the damage",
+      "order": 3
+    },
+    {
+      "id": "s4",
+      "name": "My car gets repaired",
+      "order": 4
+    },
+    {
+      "id": "s5",
+      "name": "I get paid",
+      "order": 5
+    },
+    {
+      "id": "s6",
+      "name": "It is over",
+      "order": 6
+    }
+  ],
+  "actors": {
+    "claims-handling": {
+      "name": "Claims Handling",
+      "kind": "team"
+    },
+    "customer": {
+      "name": "The customer",
+      "kind": "customer"
+    },
+    "customer-service": {
+      "name": "Customer Service",
+      "kind": "team"
+    },
+    "finance-control": {
+      "name": "Finance Control",
+      "kind": "team"
+    }
+  },
+  "sources": [
+    {
+      "id": "src-01",
+      "label": "Team lead interview, Claims Handling",
+      "role": "Claims Handling"
+    },
+    {
+      "id": "src-02",
+      "label": "Coordinator interviews",
+      "role": "Claims Handling"
+    },
+    {
+      "id": "src-03",
+      "label": "Handler interviews across tenure",
+      "role": "Claims Handling"
+    },
+    {
+      "id": "src-04",
+      "label": "Claims system report pack, Jan-Aug 2026",
+      "role": ""
+    },
+    {
+      "id": "src-05",
+      "label": "Customer Service team lead interview",
+      "role": "Customer Service"
+    }
+  ],
+  "steps": [
+    {
+      "id": "c-01",
+      "stageId": "s1",
+      "visibility": "customer-action",
+      "actorId": "customer",
+      "name": "Report the damage by phone",
+      "system": null,
+      "channel": "phone",
+      "activityId": null,
+      "phaseId": null,
+      "unitName": null,
+      "pains": []
+    },
+    {
+      "id": "t-01",
+      "stageId": "s1",
+      "visibility": "frontstage",
+      "actorId": "customer-service",
+      "name": "Take the call and capture the circumstances",
+      "system": "Contact Centre",
+      "channel": "phone",
+      "activityId": "act-01",
+      "phaseId": "notification",
+      "unitName": "Notification",
+      "pains": []
+    },
+    {
+      "id": "t-02",
+      "stageId": "s1",
+      "visibility": "backstage",
+      "actorId": "customer-service",
+      "name": "Re-key the notification into the claims system",
+      "system": "ClaimsCore",
+      "channel": null,
+      "activityId": "act-01",
+      "phaseId": "notification",
+      "unitName": "Notification",
+      "pains": [
+        {
+          "id": "p-01",
+          "theme": "The same notification is typed twice, once by the contact centre and once into the claims system",
+          "magnitude": {
+            "value": 2.5,
+            "unit": "fte"
+          },
+          "magnitudeNote": "Estimated with the Customer Service team lead",
+          "dimension": "proc",
+          "sourceId": "src-05"
+        }
+      ]
+    },
+    {
+      "id": "c-02",
+      "stageId": "s2",
+      "visibility": "customer-action",
+      "actorId": "customer",
+      "name": "Send in the photos and the paperwork",
+      "system": null,
+      "channel": "e-mail",
+      "activityId": null,
+      "phaseId": null,
+      "unitName": null,
+      "pains": []
+    },
+    {
+      "id": "t-03",
+      "stageId": "s2",
+      "visibility": "backstage",
+      "actorId": "claims-handling",
+      "name": "Create the claim record",
+      "system": "ClaimsCore",
+      "channel": null,
+      "activityId": "act-02",
+      "phaseId": "registration",
+      "unitName": "Registration",
+      "pains": [
+        {
+          "id": "p-08",
+          "theme": "Documents arriving by mail are attached by hand, often days after the claim is opened",
+          "magnitude": {
+            "value": 1.5,
+            "unit": "fte"
+          },
+          "magnitudeNote": "Estimated with the coordinators",
+          "dimension": "proc",
+          "sourceId": "src-02"
+        }
+      ]
+    },
+    {
+      "id": "t-04",
+      "stageId": "s2",
+      "visibility": "backstage",
+      "actorId": "claims-handling",
+      "name": "Attach the documents received by mail",
+      "system": "ClaimsCore",
+      "channel": null,
+      "activityId": "act-02",
+      "phaseId": "registration",
+      "unitName": "Registration",
+      "pains": []
+    },
+    {
+      "id": "t-05",
+      "stageId": "s2",
+      "visibility": "backstage",
+      "actorId": "claims-handling",
+      "name": "Look up the policy and read the cover",
+      "system": "PolicyHub",
+      "channel": null,
+      "activityId": "act-03",
+      "phaseId": "registration",
+      "unitName": "Registration",
+      "pains": [
+        {
+          "id": "p-02",
+          "theme": "Cover cannot be read from the claim, so every file needs a second system open",
+          "magnitude": {
+            "value": 1.8,
+            "unit": "fte"
+          },
+          "magnitudeNote": "Estimated with the coordinators from observed handling time",
+          "dimension": "data",
+          "sourceId": "src-02"
+        }
+      ]
+    },
+    {
+      "id": "t-06",
+      "stageId": "s2",
+      "visibility": "backstage",
+      "actorId": "claims-handling",
+      "name": "Record the cover decision on the file",
+      "system": "ClaimsCore",
+      "channel": null,
+      "activityId": "act-03",
+      "phaseId": "registration",
+      "unitName": "Registration",
+      "pains": []
+    },
+    {
+      "id": "t-07",
+      "stageId": "s2",
+      "visibility": "backstage",
+      "actorId": "claims-handling",
+      "name": "Score the claim against the triage rules",
+      "system": "ClaimsCore",
+      "channel": null,
+      "activityId": "act-04",
+      "phaseId": "registration",
+      "unitName": "Registration",
+      "pains": [
+        {
+          "id": "p-06",
+          "theme": "Triage sends complex files to whoever is free rather than to who can handle them",
+          "magnitude": null,
+          "magnitudeNote": "Not quantified this round",
+          "dimension": "org",
+          "sourceId": "src-02"
+        }
+      ]
+    },
+    {
+      "id": "c-03",
+      "stageId": "s3",
+      "visibility": "customer-action",
+      "actorId": "customer",
+      "name": "Meet the adjuster",
+      "system": null,
+      "channel": "in person",
+      "activityId": null,
+      "phaseId": null,
+      "unitName": null,
+      "pains": []
+    },
+    {
+      "id": "t-08",
+      "stageId": "s3",
+      "visibility": "backstage",
+      "actorId": "claims-handling",
+      "name": "Select and instruct an adjuster",
+      "system": "Email",
+      "channel": null,
+      "activityId": "act-05",
+      "phaseId": "assessment",
+      "unitName": "Assessment",
+      "pains": [
+        {
+          "id": "p-03",
+          "theme": "Adjuster reports arrive late and are chased by hand",
+          "magnitude": {
+            "value": 3.0,
+            "unit": "fte"
+          },
+          "magnitudeNote": "Estimated from the chase volume the coordinators walked through",
+          "dimension": "proc",
+          "sourceId": "src-02"
+        }
+      ]
+    },
+    {
+      "id": "t-09",
+      "stageId": "s3",
+      "visibility": "backstage",
+      "actorId": "claims-handling",
+      "name": "Chase the adjuster report",
+      "system": "Email",
+      "channel": null,
+      "activityId": "act-05",
+      "phaseId": "assessment",
+      "unitName": "Assessment",
+      "pains": []
+    },
+    {
+      "id": "t-10",
+      "stageId": "s3",
+      "visibility": "backstage",
+      "actorId": "claims-handling",
+      "name": "Read the report and update the reserve",
+      "system": "ClaimsCore",
+      "channel": null,
+      "activityId": "act-05",
+      "phaseId": "assessment",
+      "unitName": "Assessment",
+      "pains": []
+    },
+    {
+      "id": "t-11",
+      "stageId": "s3",
+      "visibility": "support",
+      "actorId": "claims-handling",
+      "name": "Run the indicator checklist",
+      "system": "ClaimsCore",
+      "channel": null,
+      "activityId": "act-06",
+      "phaseId": "assessment",
+      "unitName": "Assessment",
+      "pains": []
+    },
+    {
+      "id": "t-12",
+      "stageId": "s3",
+      "visibility": "support",
+      "actorId": "claims-handling",
+      "name": "Refer a flagged file to investigation",
+      "system": "Email",
+      "channel": null,
+      "activityId": "act-06",
+      "phaseId": "assessment",
+      "unitName": "Assessment",
+      "pains": []
+    },
+    {
+      "id": "c-05",
+      "stageId": "s3",
+      "visibility": "customer-action",
+      "actorId": "customer",
+      "name": "Call again to ask where the claim stands",
+      "system": null,
+      "channel": "phone",
+      "activityId": null,
+      "phaseId": null,
+      "unitName": null,
+      "pains": []
+    },
+    {
+      "id": "t-19",
+      "stageId": "s3",
+      "visibility": "frontstage",
+      "actorId": "customer-service",
+      "name": "Answer status calls on open claims",
+      "system": "Contact Centre",
+      "channel": "phone",
+      "activityId": "act-10",
+      "phaseId": "assessment",
+      "unitName": "Assessment",
+      "pains": [
+        {
+          "id": "p-05",
+          "theme": "Customers call to ask where their claim is",
+          "magnitude": {
+            "value": 4.0,
+            "unit": "fte"
+          },
+          "magnitudeNote": "Call volume from the contact-centre report pack",
+          "dimension": "cust",
+          "sourceId": "src-05"
+        }
+      ]
+    },
+    {
+      "id": "c-04",
+      "stageId": "s4",
+      "visibility": "customer-action",
+      "actorId": "customer",
+      "name": "Drop the car at the network garage",
+      "system": null,
+      "channel": "in person",
+      "activityId": null,
+      "phaseId": null,
+      "unitName": null,
+      "pains": []
+    },
+    {
+      "id": "t-13",
+      "stageId": "s4",
+      "visibility": "frontstage",
+      "actorId": "claims-handling",
+      "name": "Book the vehicle into a network garage",
+      "system": "RepairPortal",
+      "channel": null,
+      "activityId": "act-07",
+      "phaseId": "assessment",
+      "unitName": "Assessment",
+      "pains": []
+    },
+    {
+      "id": "t-14",
+      "stageId": "s4",
+      "visibility": "backstage",
+      "actorId": "claims-handling",
+      "name": "Approve the repair estimate",
+      "system": "RepairPortal",
+      "channel": null,
+      "activityId": "act-07",
+      "phaseId": "assessment",
+      "unitName": "Assessment",
+      "pains": []
+    },
+    {
+      "id": "t-15",
+      "stageId": "s5",
+      "visibility": "backstage",
+      "actorId": "claims-handling",
+      "name": "Calculate the settlement",
+      "system": "Excel",
+      "channel": null,
+      "activityId": "act-08",
+      "phaseId": "settlement",
+      "unitName": "Settlement",
+      "pains": [
+        {
+          "id": "p-04",
+          "theme": "The settlement is calculated in a spreadsheet outside the claims system",
+          "magnitude": null,
+          "magnitudeNote": "Not quantified this round",
+          "dimension": "data",
+          "sourceId": "src-03"
+        }
+      ]
+    },
+    {
+      "id": "t-16",
+      "stageId": "s5",
+      "visibility": "support",
+      "actorId": "claims-handling",
+      "name": "Obtain the second signature above the limit",
+      "system": "Email",
+      "channel": null,
+      "activityId": "act-08",
+      "phaseId": "settlement",
+      "unitName": "Settlement",
+      "pains": []
+    },
+    {
+      "id": "t-17",
+      "stageId": "s5",
+      "visibility": "backstage",
+      "actorId": "claims-handling",
+      "name": "Record the settlement decision",
+      "system": "ClaimsCore",
+      "channel": null,
+      "activityId": "act-08",
+      "phaseId": "settlement",
+      "unitName": "Settlement",
+      "pains": []
+    },
+    {
+      "id": "t-18",
+      "stageId": "s5",
+      "visibility": "support",
+      "actorId": "finance-control",
+      "name": "Prepare and release the payment run",
+      "system": "Ledger",
+      "channel": null,
+      "activityId": "act-09",
+      "phaseId": "settlement",
+      "unitName": "Settlement",
+      "pains": []
+    },
+    {
+      "id": "c-06",
+      "stageId": "s5",
+      "visibility": "customer-action",
+      "actorId": "customer",
+      "name": "Receive the payment",
+      "system": null,
+      "channel": "bank",
+      "activityId": null,
+      "phaseId": null,
+      "unitName": null,
+      "pains": []
+    },
+    {
+      "id": "t-20",
+      "stageId": "s6",
+      "visibility": "support",
+      "actorId": "claims-handling",
+      "name": "Build and send the recovery file",
+      "system": "Excel",
+      "channel": null,
+      "activityId": "act-11",
+      "phaseId": "closure",
+      "unitName": "Closure",
+      "pains": [
+        {
+          "id": "p-07",
+          "theme": "Recovery files are built from scratch each time",
+          "magnitude": {
+            "value": 1.2,
+            "unit": "fte"
+          },
+          "magnitudeNote": "Estimated with the team lead",
+          "dimension": "proc",
+          "sourceId": "src-01"
+        }
+      ]
+    },
+    {
+      "id": "t-21",
+      "stageId": "s6",
+      "visibility": "backstage",
+      "actorId": "claims-handling",
+      "name": "Check the file is complete and close it",
+      "system": "ClaimsCore",
+      "channel": null,
+      "activityId": "act-12",
+      "phaseId": "closure",
+      "unitName": "Closure",
+      "pains": []
+    }
+  ],
+  "vocab": {
+    "magnitudeUnits": [
+      {
+        "key": "fte",
+        "label": "FTE",
+        "hint": "whole people",
+        "fte": 1.0
+      },
+      {
+        "key": "pct-time",
+        "label": "% of team time",
+        "hint": "share of this team's capacity",
+        "fte": "headcount"
+      },
+      {
+        "key": "hours-week",
+        "label": "hours / week",
+        "hint": "per person",
+        "fte": 0.02631578947368421
+      },
+      {
+        "key": "days-month",
+        "label": "days / month",
+        "hint": "per person",
+        "fte": 0.05454545454545454
+      },
+      {
+        "key": "minutes-case",
+        "label": "minutes / case",
+        "hint": "handling time",
+        "fte": null
+      },
+      {
+        "key": "days-lead",
+        "label": "days of lead time",
+        "hint": "elapsed, not effort",
+        "fte": null
+      },
+      {
+        "key": "pct-rework",
+        "label": "% rework / error rate",
+        "hint": "",
+        "fte": null
+      },
+      {
+        "key": "pct-volume",
+        "label": "% of volume",
+        "hint": "",
+        "fte": null
+      },
+      {
+        "key": "count-month",
+        "label": "cases / month",
+        "hint": "",
+        "fte": null
+      },
+      {
+        "key": "eur-year",
+        "label": "€ / year",
+        "hint": "",
+        "fte": null
+      }
+    ],
+    "channels": [
+      {
+        "key": "phone",
+        "label": "Phone"
+      },
+      {
+        "key": "email",
+        "label": "Email"
+      },
+      {
+        "key": "letter",
+        "label": "Letter"
+      },
+      {
+        "key": "portal",
+        "label": "Portal"
+      },
+      {
+        "key": "app",
+        "label": "App"
+      },
+      {
+        "key": "sms",
+        "label": "SMS"
+      },
+      {
+        "key": "in-person",
+        "label": "In person"
+      }
+    ],
+    "sentiments": [
+      {
+        "key": "positive",
+        "label": "It goes well for them"
+      },
+      {
+        "key": "neutral",
+        "label": "Neither here nor there"
+      },
+      {
+        "key": "negative",
+        "label": "It goes badly for them"
+      }
+    ],
+    "dimensions": [
+      {
+        "key": "proc",
+        "label": "Processes",
+        "icon": "P",
+        "color": "#2A4D8F",
+        "subs": [
+          "Process clarity & standardisation",
+          "Value-adding ratio",
+          "E2E handoff quality",
+          "Volume & demand variability",
+          "Exception & error rate"
+        ],
+        "short": "Process",
+        "radar": "Processes"
+      },
+      {
+        "key": "cust",
+        "label": "Customer",
+        "icon": "C",
+        "color": "#C0392B",
+        "subs": [
+          "Understanding of customer (segments) & expectations",
+          "Client satisfaction & quality of customer touchpoints",
+          "Demand understanding",
+          "Customer centricity in decisions"
+        ],
+        "short": "Customer",
+        "radar": "Customer"
+      },
+      {
+        "key": "mgmt",
+        "label": "Management systems",
+        "icon": "M",
+        "color": "#145530",
+        "subs": [
+          "KPI relevance & alignment",
+          "Performance management routines",
+          "Capacity & workload management",
+          "Decision rights & accountability",
+          "Continuous improvement structure"
+        ],
+        "short": "Mgmt sys",
+        "radar": [
+          "Management",
+          "systems"
+        ]
+      },
+      {
+        "key": "data",
+        "label": "Data, systems & integrations",
+        "icon": "D",
+        "color": "#B8620A",
+        "subs": [
+          "Data availability & completeness",
+          "Data quality & consistency",
+          "System integration maturity",
+          "Tooling fit",
+          "Analytics & reporting maturity"
+        ],
+        "short": "Data",
+        "radar": [
+          "Data, systems",
+          "& integrations"
+        ]
+      },
+      {
+        "key": "mind",
+        "label": "Mindset & behaviors",
+        "icon": "Mi",
+        "color": "#6B4E9E",
+        "subs": [
+          "Change openness",
+          "AI & digital appetite",
+          "Empowerment & initiative",
+          "Leadership modeling",
+          "Learning culture"
+        ],
+        "short": "Mindset",
+        "radar": [
+          "Mindset &",
+          "behaviors"
+        ]
+      },
+      {
+        "key": "org",
+        "label": "Organisation",
+        "icon": "O",
+        "color": "#2A8C82",
+        "subs": [
+          "Structural fit",
+          "E2E ownership",
+          "Spans & layers",
+          "Role clarity & specialisation",
+          "Capacity & skills mix"
+        ],
+        "short": "Org",
+        "radar": "Organisation"
+      }
+    ]
+  },
+  "editable": true
+};
+/* ========================================================= */
+(function(){
+  /* The four lanes are the visibility vocabulary of baseline/2026.9, in the order a blueprint is
+     read: down from the customer, across the line of visibility, into the back office. A lane with
+     no steps is not drawn — an absent lane is information, an empty one is noise. */
+  var LANES = [
+    {k:"customer-action", label:"Customer",      sub:"What the customer does",        icon:"journey", col:"var(--accent)"},
+    {k:"frontstage",      label:"Frontstage",    sub:"Our work they see",             icon:"front",   col:"var(--rag-green)"},
+    {k:"backstage",       label:"Backstage",     sub:"Our work they never see",       icon:"back",    col:"var(--steel)"},
+    {k:"support",         label:"Support",       sub:"Internal services carrying it", icon:"support", col:"var(--rag-na)"},
+    {k:"",                label:"Unclassified",  sub:"Nobody has been asked yet",     icon:"back",    col:"var(--rag-amber)"}
+  ];
+  /* the two lines a blueprint is defined by; a third would be noise */
+  var DIVIDERS = { "frontstage":"line of interaction", "backstage":"line of visibility" };
+  var OFF = "__off";
+
+  /* Hoisted so the render path below is byte-identical in the client build and the
+     working copy. In the client build the whole edit layer is stripped and these stay
+     inert: EA() adds no attributes, PLUSBTN() draws nothing, BINDEDITS() does nothing. */
+  var EDIT=false;   /* is the edit layer present at all?  */
+  var ON=false;     /* is editing active right now?       */
+  function EA(s){ return EDIT ? (" "+s) : ""; }
+  var PLUSBTN=function(){ return ""; };
+  var BINDEDITS=function(){};
+  var GEAR_SVG_I='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
+  var UNLOCK_SVG_I='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>';
+  var LOCK_SVG=GEAR_SVG_I;                     /* the trailing "not on the journey" column */
+
+  function esc(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function hl(t){return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1</span>');}
+
+  /* A magnitude is a number and a unit KEY; the key is a database value, not something a client
+     should ever read. model.json owns the labels and travels with the capture. */
+  var V = DATA.vocab || {};
+  function unitLabel(k){
+    var u=(V.magnitudeUnits||[]).filter(function(x){return x.key===k;})[0];
+    return (u&&u.label)||k||'';
+  }
+  function magText(m){
+    if(!m||m.value==null) return '';
+    var lb=unitLabel(m.unit);
+    return m.value+(String(lb).charAt(0)==='%'?'':' ')+lb;
+  }
+  /* the channel's label, from the same vocabulary the gate enforces */
+  function chLabel(k){
+    var c=(V.channels||[]).filter(function(x){return x.key===k;})[0];
+    return (c&&c.label)||(CH[k]&&CH[k][0])||k||'';
+  }
+
+  /* THE SLIDE SELECTION. The one-pager is not the canvas shrunk; it is the part of it that
+     carries the argument, picked in the working copy. An absent selection means everything, so a
+     capture written before the picker existed still renders exactly as it did. */
+  var SEL = DATA.slide || null;
+  function onSlideRow(k){ return !SEL || !SEL.rows || SEL.rows.indexOf(k)>=0; }
+  function onSlideCol(c){ return !SEL || !SEL.cols || SEL.cols.indexOf(c)>=0; }
+
+  var stages = (DATA.stages||[]).slice().sort(function(a,b){return (a.order||0)-(b.order||0);});
+  var steps  = DATA.steps||[];
+  var actors = DATA.actors||{};
+  var offSteps = steps.filter(function(s){return !s.stageId;});
+  var cols = stages.map(function(s){return s.id;});
+  if(offSteps.length) cols.push(OFF);
+  var allCols = cols.slice();                 /* the canvas shows everything; the slide shows the pick */
+  cols = cols.filter(onSlideCol);
+  stages = stages.filter(function(s){ return onSlideCol(s.id); });
+
+  function at(stageId, vis){
+    return steps.filter(function(s){
+      return (stageId===OFF ? !s.stageId : s.stageId===stageId) && (s.visibility||"")===vis;
+    });
+  }
+  function painsOf(s){ return s.pains||[]; }
+  function pinHtml(p){
+    var q = p.magnitude && p.magnitude.value!=null;
+    return '<span class="pin'+(q?'':' nq')+'">'+
+      (q ? esc(magText(p.magnitude)) : 'not quantified')+'</span>';
+  }
+  function cellHtml(list, off, lane, colId){
+    /* only the customer lane offers a +: the other lanes hold baseline steps, which are added
+       on the process map, not here. */
+    var plus = (lane==='customer-action') ? PLUSBTN(colId) : '';
+    if(!list.length) return '<div class="cell none'+(off?' off':'')+'">'+plus+'</div>';
+    return '<div class="cell'+(off?' off':'')+'">'+list.map(function(s){
+      var a = actors[s.actorId]||{};
+      var pins = painsOf(s).map(pinHtml).join(' ');
+      return '<div class="stp"'+EA('data-step="'+s.id+'"')+'><b>'+esc(s.name)+'</b>'+
+        (s.system?'<span class="sys">'+esc(s.system)+'</span>':'')+
+        (a.name && s.actorId!==DATA.teamActorId && s.visibility!=='customer-action'
+           ? '<span class="sys">'+esc(a.name)+'</span>' : '')+
+        pins+'</div>';
+    }).join('')+plus+'</div>';
+  }
+
+  /* ── view 1: the blueprint ───────────────────────────────────────────────────────────────
+     Nine rows, and each one answers a question the row before it raises. What the customer does,
+     how that leaves them feeling, what they meet it through — then the line of interaction, our
+     visible work, the line of visibility, and everything they never see. A row with nothing in it
+     is not drawn: an absent row is information, an empty one is noise. */
+
+  var IC = {
+    journey:'<path d="M4 12h12"/><path d="M13 8l4 4-4 4"/><circle cx="4" cy="12" r="1.6"/>',
+    feel:'<circle cx="12" cy="12" r="8"/><path d="M9 14.5s1.2 1.2 3 1.2 3-1.2 3-1.2"/><path d="M9.5 9.5h.01"/><path d="M14.5 9.5h.01"/>',
+    touch:'<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18.5h2"/>',
+    front:'<circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/>',
+    back:'<rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="M3.5 10h17"/>',
+    support:'<circle cx="12" cy="12" r="3"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4"/>',
+    systems:'<ellipse cx="12" cy="6" rx="7.5" ry="3"/><path d="M4.5 6v12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3V6"/><path d="M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/>',
+    pain:'<path d="M12 4.5 21 19H3z"/><path d="M12 10v4"/><path d="M12 16.6h.01"/>'
+  };
+  function icon(k){ return '<span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '+
+    'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+(IC[k]||'')+'</svg></span>'; }
+  var ARROW='<span class="jarr"><svg viewBox="0 0 22 9" fill="none" stroke="currentColor" stroke-width="1.6" '+
+    'stroke-linecap="round" stroke-linejoin="round"><path d="M1 4.5h17"/><path d="M15 1.5l3 3-3 3"/></svg></span>';
+
+  /* channel icons. A channel is what the customer touches; the system row below is what carries
+     our work. Answering "what do they see" with a system name is the mistake these two rows exist
+     to keep apart. */
+  var CH = {
+    phone:['Phone','<path d="M6 3.5h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a1.5 1.5 0 0 1-1.6 1.5C10.2 17.6 6.4 13.8 4.5 5.1A1.5 1.5 0 0 1 6 3.5z"/>'],
+    email:['Email','<rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.6 6.6 12 12.5l8.4-5.9"/>'],
+    letter:['Letter','<rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="M7 9h10M7 12.5h10M7 16h6"/>'],
+    portal:['Portal','<rect x="2.5" y="4.5" width="19" height="13" rx="2"/><path d="M2.5 8.5h19"/><path d="M8 20.5h8"/>'],
+    app:['App','<rect x="7" y="2.5" width="10" height="19" rx="2.4"/><path d="M10.8 18.6h2.4"/>'],
+    sms:['SMS','<path d="M20.5 12a7.5 7.5 0 0 1-11 6.7L4 20l1.4-4.2A7.5 7.5 0 1 1 20.5 12z"/>'],
+    'in-person':['In person','<circle cx="12" cy="7.5" r="3"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/>']
+  };
+  function chip(k){
+    var c=CH[k]; if(!c) return '';
+    return '<span class="ch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" '+
+      'stroke-linecap="round" stroke-linejoin="round">'+c[1]+'</svg>'+esc(chLabel(k))+'</span>';
+  }
+
+  function actorName(id){ return (actors[id]||{}).name || id || ''; }
+
+  /* group a lane's steps by the team that performs them. The team is NAMED only when the row as a
+     whole holds more than one - otherwise it is the same word in every cell, which the rail
+     already says. */
+  function laneCell(list, off, named){
+    if(!list.length) return '<div class="cell none'+(off?' off':'')+'"></div>';
+    var by={}, order=[];
+    list.forEach(function(s){ var k=s.actorId||''; if(!by[k]){by[k]=[];order.push(k);} by[k].push(s); });
+    var html=order.map(function(k,gi){
+      return (named?'<b class="grp'+(gi?' grp2':'')+'">'+esc(actorName(k))+'</b>':'')+
+        by[k].map(function(s){
+          return '<div class="stp"'+EA('data-step="'+s.id+'"')+'><b>'+esc(s.name)+'</b>'+
+                 (s.system&&!named?'<span class="sys">'+esc(s.system)+'</span>':'')+'</div>';
+        }).join('');
+    }).join('');
+    return '<div class="cell'+(off?' off':'')+'">'+html+'</div>';
+  }
+
+  function laneRow(L, out, ROWS){
+    if(!onSlideRow(L.k)) return out;                                  /* left off the slide */
+    var lists = cols.map(function(c){ return at(c,L.k); });
+    if(!lists.some(function(x){ return x.length; })) return out;       /* the row says nothing */
+    var actorsInRow={};
+    lists.forEach(function(l){ l.forEach(function(s){ actorsInRow[s.actorId||'']=1; }); });
+    var named = Object.keys(actorsInRow).length > 1;
+    if(DIVIDERS[L.k]){
+      ROWS.push('min-content'); ROWS.push('min-content');
+      out += '<div class="divider"></div><div class="dlbl">'+DIVIDERS[L.k]+'</div>';
+    }
+    ROWS.push('auto');            /* a lane holds the steps, so a lane takes the slack */
+    out += rail(L.icon, L.label, L.sub, L.col);
+    lists.forEach(function(l,x){ out += laneCell(l, cols[x]===OFF, named); });
+    return out;
+  }
+
+  function rail(ic, label, sub, col){
+    return '<div class="lbl'+(col?' acc':'')+'"'+(col?' style="--l-col:'+col+'"':'')+'>'+
+      icon(ic)+'<span>'+esc(label)+(sub?'<em>'+esc(sub)+'</em>':'')+'</span></div>';
+  }
+
+  function vBlueprint(){
+    if(!stages.length) return '<p style="color:var(--mut)">No journey stages captured yet — the columns of a blueprint are the customer’s journey, so there is nothing to draw.</p>';
+    var grid = 'minmax(132px,158px) repeat('+cols.length+',minmax(140px,1fr))';
+    var ROWS=[];                      /* filled as the rows are built, emitted as the row track */
+    var out = '';
+
+    /* --- the column heads: the stage, and the work that maps onto it --- */
+    ROWS.push('min-content');
+    out += '<div class="lbl" style="background:var(--card)"><span>Journey stage<em>'+
+           esc(unitWord(true))+' mapped onto it</em></span></div>';
+    stages.forEach(function(s){
+      out += '<div class="hd"'+EA('data-stage="'+s.id+'"')+'><span class="n">'+(s.order||'')+'.</span>'+
+             esc(s.name)+'<small>'+esc(unitsFor(s.id).join(' · ')||'no '+unitWord().toLowerCase()+' maps here')+'</small></div>';
+    });
+    if(offSteps.length && onSlideCol(OFF)) out += '<div class="hd off"'+EA('data-lock="off"')+'>Not on the journey<small>'+
+      esc(unitsFor(null).join(' · '))+'</small></div>';
+
+    /* --- what the customer does --- */
+    var anyDo = onSlideRow('customer-action') && cols.some(function(c){ return at(c,'customer-action').length; });
+    if(anyDo){
+      ROWS.push('min-content');
+      out += rail('journey','Customer journey','What the customer does');
+      cols.forEach(function(c,x){
+        var d=at(c,'customer-action');
+        out += '<div class="cell jrow'+(c===OFF?' off':'')+'">'+
+          (d.length
+            ? '<div class="jwrap">'+d.map(function(s,x){
+                return (x?ARROW:'')+'<span class="jstep"'+EA('data-step="'+s.id+'"')+'>'+esc(s.name)+'</span>';
+              }).join('')+PLUSBTN(c)+'</div>'
+            : '<span style="color:var(--mut);font-size:var(--fs-11);font-style:italic">nothing — they wait</span>'+PLUSBTN(c))+
+          (c!==OFF && x<stages.length-1 ? '<span class="jnext">'+ARROW+'</span>' : '')+
+          '</div>';
+      });
+    }
+
+    /* --- how they feel. The dot reads good or bad; the note is their own word. --- */
+    var anyFeel = onSlideRow('feel') && stages.some(function(s){ return s.sentiment; });
+    if(anyFeel){
+      var CLS={positive:'pos',neutral:'neu',negative:'neg'};
+      ROWS.push('min-content');
+      out += rail('feel','Customer experience','How they feel here');
+      cols.forEach(function(c){
+        if(c===OFF){ out += '<div class="cell none off"></div>'; return; }
+        var s=stages.filter(function(x){return x.id===c;})[0]||{};
+        var k=CLS[s.sentiment]||'non';
+        out += '<div class="cell feelrow"><div class="feel '+k+'"><i></i><span class="ft">'+
+          (s.sentimentNote?'<b>'+esc(s.sentimentNote)+'</b>':
+            (s.sentiment?esc(s.sentiment):'<span style="color:var(--mut);font-style:italic">not asked</span>'))+
+          '</span></div></div>';
+      });
+    }
+
+    /* --- what they meet it through --- */
+    var anyCh = onSlideRow('touch') && cols.some(function(c){ return channelsAt(c).length; });
+    if(anyCh){
+      ROWS.push('min-content');
+      out += rail('touch','Touchpoints','Channels they meet us on');
+      cols.forEach(function(c){
+        var ch=channelsAt(c), seen=at(c,'customer-action').concat(at(c,'frontstage'));
+        out += '<div class="cell'+(c===OFF?' off':'')+'">'+
+          (ch.length ? '<div class="chs">'+ch.map(chip).join('')+'</div>'
+            : (seen.length ? '<div class="chs"><span class="ch non">not recorded</span></div>'
+                           : '<div class="chs"><span class="ch non">no customer contact</span></div>'))+
+          '</div>';
+      });
+    }
+
+    /* --- the three lanes of our own work --- */
+    LANES.forEach(function(L){
+      if(L.k==='customer-action') return;            /* drawn above, as the journey */
+      out = laneRow(L, out, ROWS);
+    });
+
+    /* --- the systems that carry it --- */
+    var anySys = onSlideRow('systems') && cols.some(function(c){ return systemsAt(c).length; });
+    if(anySys){
+      ROWS.push('min-content');
+      out += rail('systems','Systems & data','What carries the work');
+      cols.forEach(function(c){
+        var sy=systemsAt(c);
+        out += '<div class="cell'+(c===OFF?' off':'')+'">'+
+          (sy.length?'<div class="sysc">'+sy.map(function(x){return '<span>'+esc(x)+'</span>';}).join('')+'</div>'
+                    :'<span style="color:var(--mut);font-size:var(--fs-11);font-style:italic">not recorded</span>')+
+          '</div>';
+      });
+    }
+
+    /* --- where it breaks --- */
+    var anyPain = onSlideRow('pain') && cols.some(function(c){ return painsAt(c).length; });
+    if(anyPain){
+      ROWS.push('min-content');
+      out += rail('pain','Key pain points','Where it breaks','var(--rag-red)');
+      cols.forEach(function(c){
+        var ps=painsAt(c);
+        out += '<div class="cell'+(ps.length?' pncell':' none')+(c===OFF?' off':'')+'">'+
+          ps.map(function(p){
+            var q=p.magnitude&&p.magnitude.value!=null;
+            return '<div class="pn'+(q?'':' nq')+'">'+esc(p.theme)+
+              (q?' <b>'+esc(magText(p.magnitude))+'</b>':'')+'</div>';
+          }).join('')+'</div>';
+      });
+    }
+
+    return '<div class="bp" data-stretch style="grid-template-columns:'+grid+
+           ';grid-template-rows:'+ROWS.join(' ')+'">'+out+'</div>';
+  }
+
+  /* ── the small derivations the rows above read from ─────────────────────────────────────── */
+  function unitWord(pl){ return DATA.mappingUnit==='phase' ? (pl?'Phases':'Phase')
+                                                            : (pl?'Activities':'Activity'); }
+  function unitsFor(stageId){
+    var seen={}, out=[];
+    steps.forEach(function(s){
+      if((stageId===null ? !!s.stageId : s.stageId!==stageId)) return;
+      var n=s.unitName||s.activityId; if(!n||seen[n]) return;
+      seen[n]=1; out.push(n);
+    });
+    return out;
+  }
+  function channelsAt(c){
+    var seen={}, out=[];
+    ['customer-action','frontstage'].forEach(function(v){
+      at(c,v).forEach(function(s){ if(s.channel&&!seen[s.channel]){seen[s.channel]=1;out.push(s.channel);} });
+    });
+    return out;
+  }
+  function systemsAt(c){
+    var seen={}, out=[];
+    LANES.forEach(function(L){ at(c,L.k).forEach(function(s){
+      if(s.system&&!seen[s.system]){seen[s.system]=1;out.push(s.system);} }); });
+    return out;
+  }
+  function painsAt(c){
+    var out=[];
+    LANES.forEach(function(L){ at(c,L.k).forEach(function(s){
+      (s.pains||[]).forEach(function(p){ out.push(p); }); }); });
+    return out;
+  }
+
+  /* ── view 2: the journey ─────────────────────────────────────────── */
+  function vJourney(){
+    if(!stages.length) return '<p style="color:var(--mut)">No journey stages captured yet.</p>';
+    var cards = stages.map(function(s){
+      var does  = at(s.id,'customer-action'),
+          meets = at(s.id,'frontstage'),
+          back  = at(s.id,'backstage').concat(at(s.id,'support'));
+      var breaks = [];
+      ['customer-action','frontstage','backstage','support',''].forEach(function(v){
+        at(s.id,v).forEach(function(st){ painsOf(st).forEach(function(p){ breaks.push(p); }); });
+      });
+      var sys = {};
+      back.forEach(function(b){ if(b.system) sys[b.system]=1; });
+      var sysList = Object.keys(sys);
+      var alone = !meets.length;      /* nobody frontstage: the customer is on their own here */
+      return '<div class="jcard'+(alone?' hot':'')+'">'+
+        '<h3>'+(s.order||'')+' · '+esc(s.name)+'</h3>'+
+        (s.want?'<p class="want">“'+esc(s.want)+'”</p>':'') +
+        '<div class="jrow"><i>They do</i>'+(does.length?does.map(function(d){return esc(d.name);}).join(', '):'— nothing; they wait')+'</div>'+
+        '<div class="jrow"><i>They meet</i>'+(meets.length?meets.map(function(d){return esc(d.name);}).join(', '):'— nobody')+'</div>'+
+        (breaks.length?'<div class="jrow brk"><i>Breaks</i>'+breaks.map(function(p){
+            return esc(p.theme)+(p.magnitude&&p.magnitude.value!=null?' ('+esc(magText(p.magnitude))+')':'');
+          }).join(' · ')+'</div>':'')+
+        '<div class="behind">'+back.length+' step'+(back.length===1?'':'s')+' behind the line'+
+          (sysList.length?' · '+esc(sysList.join(' · ')):'')+'</div>'+
+      '</div>';
+    }).join('');
+    return '<div class="jgrid"'+EA('data-lock="journey"')+' data-stretch style="grid-template-columns:repeat('+Math.min(stages.length,5)+',1fr)">'+cards+'</div>';
+  }
+
+  /* ── view 3: the pain points, ordered by journey stage ───────────── */
+  function vPains(){
+    var rows=[];
+    cols.forEach(function(c){
+      var st = c===OFF ? {name:'Not on the journey'} : stages.filter(function(x){return x.id===c;})[0]||{};
+      LANES.forEach(function(L){
+        at(c,L.k).forEach(function(s){
+          painsOf(s).forEach(function(p){
+            rows.push({stage:st.name||'', step:s.name, lane:L.label,
+                       actor:(actors[s.actorId]||{}).name||'', p:p});
+          });
+        });
+      });
+    });
+    if(!rows.length) return '<p style="color:var(--mut)">No pain points on this service yet.</p>';
+    return '<table'+EA('data-lock="pains"')+'><thead><tr><th>Journey stage</th><th>Step</th><th>Where</th><th>What hurts</th><th>How much</th></tr></thead><tbody>'+
+      rows.map(function(r){
+        var q = r.p.magnitude && r.p.magnitude.value!=null;
+        return '<tr><td><span class="stagetag">'+esc(r.stage)+'</span></td>'+
+          '<td><b>'+esc(r.step)+'</b>'+(r.actor?'<br><span style="color:var(--mut);font-size:var(--fs-11)">'+esc(r.actor)+'</span>':'')+'</td>'+
+          '<td>'+esc(r.lane)+'</td>'+
+          '<td>'+esc(r.p.theme)+(r.p.rootCause?'<br><b style="font-size:var(--fs-115)">'+esc(r.p.rootCause)+'</b>':'')+'</td>'+
+          '<td>'+(q?'<b>'+esc(magText(r.p.magnitude))+'</b>':'<span style="color:var(--mut);font-style:italic">not quantified</span>')+'</td></tr>';
+      }).join('')+'</tbody></table>';
+  }
+
+  var edp=document.getElementById('ed');
+  function closeEd(){ if(edp) edp.classList.remove('on'); }
+  function fld(l,id,v,ph,cls){ return '<div class="f"><label>'+esc(l)+'</label><input id="'+id+'" class="'+(cls||'')+
+    '" value="'+esc(v==null?'':v)+'" placeholder="'+esc(ph||'')+'"></div>'; }
+    function fldT(l,id,v,ph){ return '<div class="f"><label>'+esc(l)+'</label><textarea id="'+id+'" rows="3" placeholder="'+esc(ph||'')+'">'+esc(v==null?'':v)+'</textarea></div>'; }
+  var CHEVS='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+  var CHKS='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  function enhanceSelects(root){
+    (root||document).querySelectorAll('select:not([data-enh])').forEach(function(sel){
+      sel.setAttribute('data-enh','1');
+      var wrap=document.createElement('div'); wrap.className='cselwrap';
+      sel.parentNode.insertBefore(wrap, sel); wrap.appendChild(sel);
+      var trg=document.createElement('button'); trg.type='button'; trg.className='cseltrg';
+      var menu=document.createElement('div'); menu.className='cselmenu'; wrap.appendChild(trg); wrap.appendChild(menu);
+      function dot(o){ var d=o.getAttribute('data-dot'); return d?'<span class="cdot '+d+'"></span>':''; }
+      function tag(o){ var t=o.getAttribute('data-tag'); return t?'<span class="ctag">'+esc(t)+'</span>':''; }
+      function row(o){ return '<div class="cselopt'+(o.selected?' sel':'')+'" data-i="'+o.index+'">'+
+        '<span class="clab">'+dot(o)+esc(o.textContent)+'</span>'+(o.selected?CHKS:tag(o))+'</div>'; }
+      function draw(){
+        var o=sel.options[sel.selectedIndex];
+        trg.innerHTML='<span class="clab">'+(o?dot(o)+esc(o.textContent):'')+'</span>'+CHEVS;
+        var h='';
+        Array.prototype.forEach.call(sel.children,function(c){
+          if(c.tagName==='OPTION') h+=row(c);
+          else if(c.tagName==='OPTGROUP'){ h+='<div class="cselgrp">'+esc(c.label)+'</div>';
+            Array.prototype.forEach.call(c.children,function(x){ h+=row(x); }); } });
+        menu.innerHTML=h;
+        menu.querySelectorAll('.cselopt').forEach(function(r){ r.onclick=function(e){ e.stopPropagation();
+          sel.selectedIndex=+r.getAttribute('data-i'); sel.dispatchEvent(new Event('change',{bubbles:true}));
+          wrap.classList.remove('on'); draw(); }; });
+      }
+      trg.onclick=function(e){ e.stopPropagation();
+        var isOpen=wrap.classList.contains('on');
+        document.querySelectorAll('.cselwrap.on').forEach(function(w){ w.classList.remove('on'); });
+        if(!isOpen){ wrap.classList.add('on');
+          var edb=wrap.closest('.edb');
+          if(edb){ var tr=trg.getBoundingClientRect(), er=edb.getBoundingClientRect();
+            menu.classList.toggle('up', (er.bottom-tr.bottom)<200 && (tr.top-er.top)>(er.bottom-tr.bottom)); } } };
+      sel.addEventListener('change', draw); draw();
+    });
+  }
+  document.addEventListener('click',function(){ document.querySelectorAll('.cselwrap.on').forEach(function(w){ w.classList.remove('on'); }); });
+
+  function panelShell(kind,title,sub,body,foot,menu){
+    var mb = (menu&&menu.length)
+      ? '<button class="edmenu" id="edmenu" title="More">&#8943;</button>'+
+        '<div class="edmenupop" id="edmenupop">'+menu.map(function(m){
+           return '<button class="'+(m.danger?'danger':'')+'" id="'+m.id+'">'+esc(m.label)+'</button>';}).join('')+'</div>'
+      : '';
+    edp.innerHTML =
+      '<div class="edh"><button class="close" id="edx">&times;</button>'+mb+
+        '<div class="edrow"><span class="edkind '+esc(kind.cls)+'">'+esc(kind.label)+'</span>'+
+          '<h3>'+esc(title)+'</h3></div>'+
+        (sub?'<div class="sub">'+sub+'</div>':'')+'</div>'+
+      '<div class="edb">'+body+'</div>'+
+      '<div class="edf">'+foot+'</div>';
+    edp.classList.add('on');
+    edp.querySelector('#edx').onclick=closeEd;
+    if(menu&&menu.length){ var g=edp.querySelector('#edmenu'), pop=edp.querySelector('#edmenupop');
+      g.onclick=function(e){ e.stopPropagation(); pop.classList.toggle('on'); };
+      pop.onclick=function(e){ e.stopPropagation(); };
+      document.addEventListener('click',function(){ pop.classList.remove('on'); }); }
+    edp.querySelectorAll('textarea').forEach(function(t){    // 1. auto-grow every textarea
+      function g(){ t.style.height='auto'; t.style.height=Math.max(84,t.scrollHeight+2)+'px'; }
+      t.addEventListener('input',g); requestAnimationFrame(g);
+    });
+    enhanceSelects(edp);                          // 2. styled custom dropdowns over the native selects
+  }
+
+  var edp=document.getElementById('ed');
+  function closeEd(){ if(edp) edp.classList.remove('on'); }
+  function fld(l,id,v,ph,cls){ return '<div class="f"><label>'+esc(l)+'</label><input id="'+id+'" class="'+(cls||'')+
+    '" value="'+esc(v==null?'':v)+'" placeholder="'+esc(ph||'')+'"></div>'; }
+    function fldT(l,id,v,ph){ return '<div class="f"><label>'+esc(l)+'</label><textarea id="'+id+'" rows="3" placeholder="'+esc(ph||'')+'">'+esc(v==null?'':v)+'</textarea></div>'; }
+  var CHEVS='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+  var CHKS='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  function enhanceSelects(root){
+    (root||document).querySelectorAll('select:not([data-enh])').forEach(function(sel){
+      sel.setAttribute('data-enh','1');
+      var wrap=document.createElement('div'); wrap.className='cselwrap';
+      sel.parentNode.insertBefore(wrap, sel); wrap.appendChild(sel);
+      var trg=document.createElement('button'); trg.type='button'; trg.className='cseltrg';
+      var menu=document.createElement('div'); menu.className='cselmenu'; wrap.appendChild(trg); wrap.appendChild(menu);
+      function dot(o){ var d=o.getAttribute('data-dot'); return d?'<span class="cdot '+d+'"></span>':''; }
+      function tag(o){ var t=o.getAttribute('data-tag'); return t?'<span class="ctag">'+esc(t)+'</span>':''; }
+      function row(o){ return '<div class="cselopt'+(o.selected?' sel':'')+'" data-i="'+o.index+'">'+
+        '<span class="clab">'+dot(o)+esc(o.textContent)+'</span>'+(o.selected?CHKS:tag(o))+'</div>'; }
+      function draw(){
+        var o=sel.options[sel.selectedIndex];
+        trg.innerHTML='<span class="clab">'+(o?dot(o)+esc(o.textContent):'')+'</span>'+CHEVS;
+        var h='';
+        Array.prototype.forEach.call(sel.children,function(c){
+          if(c.tagName==='OPTION') h+=row(c);
+          else if(c.tagName==='OPTGROUP'){ h+='<div class="cselgrp">'+esc(c.label)+'</div>';
+            Array.prototype.forEach.call(c.children,function(x){ h+=row(x); }); } });
+        menu.innerHTML=h;
+        menu.querySelectorAll('.cselopt').forEach(function(r){ r.onclick=function(e){ e.stopPropagation();
+          sel.selectedIndex=+r.getAttribute('data-i'); sel.dispatchEvent(new Event('change',{bubbles:true}));
+          wrap.classList.remove('on'); draw(); }; });
+      }
+      trg.onclick=function(e){ e.stopPropagation();
+        var isOpen=wrap.classList.contains('on');
+        document.querySelectorAll('.cselwrap.on').forEach(function(w){ w.classList.remove('on'); });
+        if(!isOpen){ wrap.classList.add('on');
+          var edb=wrap.closest('.edb');
+          if(edb){ var tr=trg.getBoundingClientRect(), er=edb.getBoundingClientRect();
+            menu.classList.toggle('up', (er.bottom-tr.bottom)<200 && (tr.top-er.top)>(er.bottom-tr.bottom)); } } };
+      sel.addEventListener('change', draw); draw();
+    });
+  }
+  document.addEventListener('click',function(){ document.querySelectorAll('.cselwrap.on').forEach(function(w){ w.classList.remove('on'); }); });
+
+  function panelShell(kind,title,sub,body,foot,menu){
+    var mb = (menu&&menu.length)
+      ? '<button class="edmenu" id="edmenu" title="More">&#8943;</button>'+
+        '<div class="edmenupop" id="edmenupop">'+menu.map(function(m){
+           return '<button class="'+(m.danger?'danger':'')+'" id="'+m.id+'">'+esc(m.label)+'</button>';}).join('')+'</div>'
+      : '';
+    edp.innerHTML =
+      '<div class="edh"><button class="close" id="edx">&times;</button>'+mb+
+        '<div class="edrow"><span class="edkind '+esc(kind.cls)+'">'+esc(kind.label)+'</span>'+
+          '<h3>'+esc(title)+'</h3></div>'+
+        (sub?'<div class="sub">'+sub+'</div>':'')+'</div>'+
+      '<div class="edb">'+body+'</div>'+
+      '<div class="edf">'+foot+'</div>';
+    edp.classList.add('on');
+    edp.querySelector('#edx').onclick=closeEd;
+    if(menu&&menu.length){ var g=edp.querySelector('#edmenu'), pop=edp.querySelector('#edmenupop');
+      g.onclick=function(e){ e.stopPropagation(); pop.classList.toggle('on'); };
+      pop.onclick=function(e){ e.stopPropagation(); };
+      document.addEventListener('click',function(){ pop.classList.remove('on'); }); }
+    edp.querySelectorAll('textarea').forEach(function(t){    // 1. auto-grow every textarea
+      function g(){ t.style.height='auto'; t.style.height=Math.max(84,t.scrollHeight+2)+'px'; }
+      t.addEventListener('input',g); requestAnimationFrame(g);
+    });
+    enhanceSelects(edp);                          // 2. styled custom dropdowns over the native selects
+  }
+
+
+/*<EDIT>*/
+  /* ================= WORKING COPY (never shipped to a client) =================
+     NO SERVER. The browser collects edits into a DELTA and exports it. The delta is applied by
+     apply_delta.py, which runs the ONE gate (check_baseline.validate) and mints every ID. So the
+     browser never validates, never mints an id, and never re-projects the baseline - it updates
+     its own view optimistically and the truth is re-derived on apply.
+
+     What this instrument owns is thin, and that is the point: the blueprint holds no steps of its
+     own. It owns the JOURNEY (the columns), the VISIBILITY of each step (the lanes), and the
+     mapping between them. Everything else on screen belongs to the process baseline and is locked
+     here, with a toast that says where the change is actually made.
+     ========================================================================== */
+  var DELTA=[], KM=null;
+  EDIT = !!DATA.editable;
+
+  var V = DATA.vocab || {};
+  var UNITCOLL = (DATA.mappingUnit==='phase') ? 'phases' : 'activities';
+
+  function esc2(x){return String(x==null?'':x);}
+  function pushOp(op){ DELTA.push(op); wsave(); }
+
+  /* ---- the refusal a consultant must SEE. A click that silently does nothing reads as a bug,
+         so every locked region says why it is locked and where the change is really made. ---- */
+  var _tt=null;
+  function toast(m){
+    var t=document.getElementById('toast'); if(!t) return;
+    t.innerHTML=m; t.classList.add('on');
+    clearTimeout(_tt); _tt=setTimeout(function(){t.classList.remove('on');},4200);
+  }
+  function wnote(t,bad){var e=document.getElementById('wnote');if(!e)return;
+    e.textContent=t||''; e.className=t?('wchip'+(bad?' bad':' ok')):'';}
+
+  /* ---- vocabularies. A field with a fixed set of values is a DROPDOWN, never a text box. ---- */
+  function opts(list, sel, blank){
+    var o = blank ? '<option value="">'+esc(blank)+'</option>' : '';
+    return o + (list||[]).map(function(x){
+      return '<option value="'+esc(x.key)+'"'+(x.key===sel?' selected':'')+'>'+esc(x.label)+'</option>';
+    }).join('');
+  }
+  function sel(label, id, list, val, blank, hint){
+    return '<div class="f"><label>'+esc(label)+'</label>'+
+           '<select id="'+id+'">'+opts(list,val,blank)+'</select>'+
+           (hint?'<div class="hint">'+hint+'</div>':'')+'</div>';
+  }
+  var LANEVOCAB = LANES.filter(function(L){return L.k;}).map(function(L){
+    return {key:L.k, label:L.label};
+  });
+  var LANEHINT = {
+    'customer-action':'The customer performs this step themselves.',
+    'frontstage':'We perform it, and the customer sees it happen. The test is <b>seen</b>, not important.',
+    'backstage':'We perform it and they never see it. A meticulous assessment nobody witnesses is backstage.',
+    'support':'A system or an internal service carrying the rest. A person doing judgement is backstage.'
+  };
+  function stageVocab(){
+    return stages.map(function(s){ return {key:s.id, label:(s.order||'')+' · '+s.name}; });
+  }
+  function sourceVocab(){
+    return (DATA.sources||[]).map(function(x){
+      return {key:x.id, label:(x.label||x.id)+(x.role?' · '+x.role:'')};
+    });
+  }
+
+  /* ---- magnitude: a number and a unit, or nothing. Half a magnitude is not a magnitude. ---- */
+  function magField(m){
+    return '<div class="frow">'+
+      '<div class="f"><label>How big is it?</label>'+
+        '<input id="q_val" type="number" step="any" value="'+esc(m&&m.value!=null?m.value:'')+'" placeholder="e.g. 11"></div>'+
+      '<div class="f"><label>Unit</label><select id="q_unit">'+
+        opts(V.magnitudeUnits, m&&m.unit, '— pick a unit —')+'</select></div></div>';
+  }
+  function readMag(){
+    var v=edp.querySelector('#q_val'), u=edp.querySelector('#q_unit');
+    var val=v&&v.value!==''?+v.value:null, unit=u?u.value:null;
+    if(val==null||!unit) return null;
+    return {value:val, unit:unit};
+  }
+
+  /* ---- the header: gear, popover, export ---- */
+  function wsave(){
+    var g=document.getElementById('wgear'), b=document.getElementById('wsave'), pop=document.getElementById('wpop');
+    if(!g||!b||!pop) return;
+    var n=DELTA.length+(KM!=null?1:0)+(SLIDE?1:0);
+    g.classList.toggle('unlocked', ON && !n);
+    g.classList.toggle('live', ON && n>0);
+    b.className = ON ? 'show' : '';
+    b.disabled = !n;
+    b.textContent = n ? ('Export '+n+' change'+(n>1?'s':'')) : 'No changes';
+    wnote(ON ? (n ? (n+' unsaved') : 'editing') : '');
+    pop.innerHTML =
+      '<h4 class="'+(ON?(n?'live':'on'):'')+'"><i></i>'+(ON?'Editing unlocked':'Editing locked')+
+        (ON&&n?' &mdash; '+n+' unsaved change'+(n>1?'s':''):'')+'</h4>'+
+      '<button class="lockbtn'+(ON?' on':'')+'" id="wlock">'+
+        (ON?'&#128275; Lock editing':'&#128274; Unlock to edit')+'</button>'+
+      (ON
+        ? '<ul>'+
+            '<li><b>Click a step</b> to set what the customer sees of it.</li>'+
+            '<li><b>Click a column</b> to rename a journey stage; <b>+ Stage</b> adds one.</li>'+
+            '<li><b>+</b> in the Customer lane captures a step the customer performs.</li>'+
+            '<li><b>Map work</b> moves a '+esc(DATA.mappingUnit||'phase')+' to another column.</li>'+
+          '</ul>'+
+          '<p>Your edits collect here. Hit <b>Export</b> and hand the file to Claude (or run '+
+          '<code>apply_delta.py</code>) &mdash; it validates every change against the baseline before writing.</p>'
+        : '<p>The blueprint is <b>locked</b> so nothing changes by accident. Unlock when you want to '+
+          'classify steps, name journey stages, or capture what the customer does.</p>')+
+      '<p class="fine"><b>This is not the client version.</b> Send <code>service-blueprint.html</code> instead.</p>';
+    var lb=document.getElementById('wlock');
+    if(lb) lb.onclick=function(e){ e.stopPropagation(); setEditing(!ON); };
+  }
+  function exportDelta(){
+    if(!DELTA.length&&KM==null&&!SLIDE) return;
+    if(!DATA.baselineStamp){
+      toast('This blueprint was rendered without a baseline stamp, so <b>apply_delta cannot tell '+
+            'whether the baseline has moved</b> since. Re-seed with <code>seed_blueprint.py</code> '+
+            'before editing, or the apply will overwrite whatever changed meanwhile.');
+      return;
+    }
+    var d={ deltaId:'D-'+new Date().toISOString().slice(0,10)+'-blueprint-'+(DATA.teamId||'team'),
+            author:'consultant',
+            baseline:DATA.baselinePath||null,
+            baselineVersion:DATA.baselineStamp||null,   // the CONTENT stamp: apply_delta refuses a
+                                                        // delta drawn against a baseline that moved
+            baselineContract:DATA.baselineVersion||null,
+            teamId:DATA.teamId||null,
+            instrument:'service-blueprint',
+            source:{kind:'service-blueprint artifact',
+                    ref:(DATA.teamName||'')+' · '+new Date().toISOString().slice(0,10)},
+            proposals:DELTA, challenges:[] };
+    if(KM!=null) d.keyMessage=KM;
+    /* The slide selection is the instrument's own, not the baseline's, so it rides alongside the
+       proposals rather than inside them. apply_capture.py writes it back into the capture; the
+       one-pager reads it from there. */
+    if(SLIDE) d.slide=SLIDE;
+    var blob=new Blob([JSON.stringify(d,null,1)],{type:'application/json'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=d.deltaId+'.json';
+    a.click();
+    wnote('exported','ok');
+  }
+
+  /* ---- the action title. Always editable, in the sidebar, with the end formatting visible. ---- */
+  function suggestTitle(){
+    var c=DATA.coverage||{}, unit=DATA.mappingUnit||'phase';
+    var alone=stages.filter(function(s){ return !at(s.id,'frontstage').length; });
+    var bits=[];
+    if(alone.length) bits.push('The customer is **alone** at '+
+      (alone.length===1 ? 'the ' + alone[0].name.toLowerCase() + ' stage'
+                        : '**'+alone.length+' of '+stages.length+'** journey stages')+
+      ': they meet nobody there');
+    if(c.unitsUnmapped) bits.push('and **'+c.unitsUnmapped+'** '+unit+
+      (c.unitsUnmapped>1?'s':'')+' of our work never touches their journey at all');
+    if(!bits.length) bits.push('The customer meets us at every stage of the journey; **'+
+      (c.customerActions||0)+'** of the '+(c.tasksTotal||0)+' steps are theirs to perform');
+    return bits.join(', ')+'.';
+  }
+  function openTitle(){ if(!ON) return;
+    panelShell({cls:'',label:'Narrative'},'Action title','the conclusion, not the topic',
+      '<div class="f"><label>Action title</label><textarea id="f_km">'+esc(DATA.keyMessage||'')+'</textarea>'+
+        '<div class="hintbtns"><button class="kmhl" id="km_hl" title="Wrap the selected words in **…** so they render green"><span class="swch"></span>Highlight selection</button>'+
+        '<button id="km_sg" title="Compose a first line from the numbers this blueprint computed">Suggest a starting title</button></div></div>'+
+      '<div class="f"><label>Preview — exactly as it renders</label><div class="prev" id="km_prev"></div></div>'+
+      '<div class="kmhints"><b>Formatting</b><span class="kchip">**11 days**</span> &rarr; <span style="color:var(--green);font-weight:700">11 days</span> — green highlight for the load-bearing numbers and words.<br>'+
+      'Everything else renders <span style="color:var(--navy);font-weight:700">bold navy</span> automatically — no HTML needed (tags are not interpreted).<br>'+
+      '<b style="margin-top:7px">Good title checklist</b>The conclusion, not the topic · ≥2 numbers · one structural implication · no hedging.</div>',
+      '<span style="flex:1"></span><button class="wbtn" id="km_c">Cancel</button><button class="wbtn pri" id="km_ok">Apply</button>');
+    var kmt=edp.querySelector('#f_km'), kmp=edp.querySelector('#km_prev');
+    function prev(){ kmp.innerHTML=hl(kmt.value||''); }
+    function grow(){ kmt.style.height='auto'; kmt.style.height=(kmt.scrollHeight+2)+'px'; }
+    prev(); kmt.addEventListener('input',prev); kmt.addEventListener('input',grow); setTimeout(grow,10);
+    edp.querySelector('#km_sg').onclick=function(){
+      kmt.value=suggestTitle(); kmt.dispatchEvent(new Event('input',{bubbles:true})); kmt.focus(); };
+    edp.querySelector('#km_hl').onclick=function(){
+      var s=kmt.selectionStart, e2=kmt.selectionEnd, v=kmt.value;
+      if(s===e2){ kmt.focus(); return; }
+      var slice=v.slice(s,e2);
+      if(/^\*\*[\s\S]*\*\*$/.test(slice)){ kmt.value=v.slice(0,s)+slice.slice(2,-2)+v.slice(e2); kmt.setSelectionRange(s,e2-4); }
+      else { kmt.value=v.slice(0,s)+'**'+slice+'**'+v.slice(e2); kmt.setSelectionRange(s,e2+4); }
+      kmt.dispatchEvent(new Event('input',{bubbles:true})); kmt.focus(); };
+    edp.querySelector('#km_c').onclick=closeEd;
+    edp.querySelector('#km_ok').onclick=function(){
+      var km=kmt.value.trim();
+      if(km!==(DATA.keyMessage||'')){ DATA.keyMessage=km; KM=km;
+        document.getElementById('title').innerHTML=hl(km); }
+      wsave(); closeEd(); };
+  }
+
+  /* ---- a STEP. The one question this instrument asks: does the customer see this happen? ---- */
+  function stepById(id){ return steps.filter(function(s){return s.id===id;})[0]; }
+  /* only a step the customer performs or sees has a channel - work they never meet has none */
+  function SEEN(v){ return v==='customer-action' || v==='frontstage'; }
+  function openStep(id){
+    if(!ON) return;
+    var s=stepById(id); if(!s) return;
+    var a=actors[s.actorId]||{};
+    var stage=stages.filter(function(x){return x.id===s.stageId;})[0];
+    var mine=(s.actorId===DATA.teamActorId);
+    // Who performs a step decides which lanes are even possible. The customer's own steps are
+    // customer actions and nothing else; ours are never customer actions. Offering the impossible
+    // option and refusing it afterwards is worse than not offering it at all.
+    var isCust=(a.kind==='customer');
+    var vocab = isCust ? LANEVOCAB.filter(function(L){return L.key==='customer-action';})
+                       : LANEVOCAB.filter(function(L){return L.key!=='customer-action';});
+    var body =
+      sel('Does the customer see this happen?','f_vis',vocab,s.visibility||'',
+          isCust?null:'— not classified yet —',
+          '<span id="vishint">'+(LANEHINT[s.visibility]||'One question, and only one. Not “is it important”.')+'</span>')+
+      (isCust?'<div class="lockchip" id="lk_vis">'+LOCK_SVG+'this step is the customer\u2019s own</div>':'')+
+      '<div id="chwrap" class="'+(SEEN(s.visibility)?'':'hidden')+'">'+
+        sel('What do they meet it through','f_ch',V.channels||[],s.channel||'','— not recorded —',
+            'The channel is what the <b>customer touches</b>. The system below is what carries our '+
+            'work. Answering the first with the second is the mistake these two fields keep apart.')+
+      '</div>'+
+      '<div class="f"><label>System that carries it</label><input id="f_sys" value="'+esc(s.system||'')+'" placeholder="e.g. Guidewire"></div>'+
+      '<div class="metablock">'+
+        '<div class="mrow"><span>Step</span><b>'+esc(s.name)+'</b></div>'+
+        '<div class="mrow"><span>Performed by</span><b>'+esc(a.name||s.actorId||'—')+'</b></div>'+
+        '<div class="mrow"><span>Journey stage</span><b>'+esc(stage?stage.name:'not on the journey')+'</b></div>'+
+        '<div class="lockchip" id="lk_step">'+LOCK_SVG+'locked — these come from the baseline</div>'+
+      '</div>'+
+      '<div class="addbox"><h6>Pain at this step</h6>'+
+        (s.pains&&s.pains.length
+          ? s.pains.map(function(p){ return '<div class="pn2">'+esc(p.theme)+
+              (p.magnitude&&p.magnitude.value!=null?' <b>'+esc(p.magnitude.value+' '+(p.magnitude.unit||''))+'</b>':
+               '<span class="pn2m">not quantified</span>')+'</div>'; }).join('')
+          : '<p class="fine">Nothing captured here yet.</p>')+
+        '<button class="wbtn wide" id="f_addpain">Capture a pain point</button></div>';
+    panelShell({cls:mine?'':'act', label:'Step'}, s.name,
+      '<span class="id">'+esc(s.id)+'</span>'+(s.activityId?'<span class="id">'+esc(s.activityId)+'</span>':''),
+      body, '<span style="flex:1"></span><button class="wbtn" id="s_c">Cancel</button><button class="wbtn pri" id="s_ok">Apply</button>');
+    var vs=edp.querySelector('#f_vis');
+    vs.addEventListener('change',function(){
+      edp.querySelector('#vishint').innerHTML = LANEHINT[vs.value] || 'Unclassified is an honest answer; it shows as a question on the face.';
+      // a step that moves behind the line of visibility loses its channel, because there is
+      // nothing left for the customer to meet it through
+      var w=edp.querySelector('#chwrap');
+      if(w) w.classList.toggle('hidden', !SEEN(vs.value)); });
+    var lv=edp.querySelector('#lk_vis');
+    if(lv) lv.onclick=function(){
+      toast('The customer performs this step, so it sits above the line of interaction and nowhere '+
+            'else. Change who performs it on the process map if that is wrong.'); };
+    edp.querySelector('#lk_step').onclick=function(){
+      toast('A step’s name, who performs it and which activity it belongs to are the <b>process baseline’s</b>. '+
+            'Change them on the process map, then re-seed this blueprint.'); };
+    edp.querySelector('#f_addpain').onclick=function(){ openPain(s); };
+    edp.querySelector('#s_c').onclick=closeEd;
+    edp.querySelector('#s_ok').onclick=function(){
+      var v=vs.value, sy=edp.querySelector('#f_sys').value.trim()||null, ch={};
+      var cf=edp.querySelector('#f_ch'), cv=(SEEN(v)&&cf)?(cf.value||null):null;
+      if(v!==(s.visibility||'')) ch.visibility=v||null;
+      if(sy!==(s.system||null)) ch.system=sy;
+      if(cv!==(s.channel||null)) ch.channel=cv;
+      if(Object.keys(ch).length){
+        // unreachable through the dropdown above; kept because a lane that lies is the one
+        // thing this instrument must never write
+        if(ch.visibility==='customer-action' && !isCust){
+          toast('This step is performed by <b>'+esc(a.name||'us')+'</b>, so it cannot be a customer '+
+                'action. Add the customer\u2019s own step with <b>+</b> in the Customer lane instead.');
+          return;
+        }
+        if(ch.visibility && ch.visibility!=='customer-action' && isCust){
+          toast('This step is performed by the customer, so it stays above the line of interaction.');
+          return;
+        }
+        Object.keys(ch).forEach(function(k){ s[k]=ch[k]; });
+        pushOp({op:'update', coll:'tasks', id:s.id, changes:ch});
+        draw();
+      }
+      closeEd(); };
+  }
+
+  /* ---- a PAIN. It lands on the baseline like any other, with a dimension and a source. ---- */
+  function openPain(s){
+    if(!ON) return;
+    panelShell({cls:'pain',label:'Pain point'}, 'What breaks here', esc(s.name),
+      '<div class="f"><label>What hurts</label><textarea id="p_theme" placeholder="e.g. the customer hears nothing between sending photos and the settlement letter"></textarea></div>'+
+      magField(null)+
+      sel('Who feels it','p_dim',[{key:'cust',label:'The customer'},{key:'proc',label:'Only the operation'}],'cust',null,
+          'The customer feels it → it reaches the Clients lens. Only we feel it → it stays a process pain.')+
+      '<div class="f"><label>Who told you</label>'+
+        '<input id="p_src" list="srclist" placeholder="e.g. Anne Vereecken, claims team lead, 14 Aug">'+
+        '<datalist id="srclist">'+sourceVocab().map(function(x){
+            return '<option value="'+esc(x.label)+'"></option>'; }).join('')+'</datalist>'+
+        '<div class="hint">A name, in plain language. Every pain carries a source, or it is an '+
+        'impression rather than a finding. <code>apply_delta.py</code> matches it to an existing '+
+        'source or registers a new one — the browser never mints an id.</div></div>',
+      '<span style="flex:1"></span><button class="wbtn" id="p_c">Cancel</button><button class="wbtn pri" id="p_ok">Capture</button>');
+    edp.querySelector('#p_c').onclick=closeEd;
+    edp.querySelector('#p_ok').onclick=function(){
+      var th=edp.querySelector('#p_theme').value.trim();
+      if(!th){ toast('A pain needs to say what hurts.'); return; }
+      var src=edp.querySelector('#p_src').value.trim();
+      if(!src){ toast('A pain without a source is an impression. Say who told you.'); return; }
+      var mag=readMag(), rec={activityId:s.activityId||null, theme:th,
+                              dimension:edp.querySelector('#p_dim').value, sourceLabel:src};
+      if(mag) rec.magnitude=mag; else rec.magnitudeNote='not quantified';
+      (s.pains=s.pains||[]).push({theme:th, magnitude:mag, dimension:rec.dimension});
+      pushOp({op:'add', coll:'pains', record:rec});
+      draw(); closeEd(); };
+  }
+
+  /* ---- a JOURNEY STAGE. The columns, in the customer's words. ---- */
+  function openStage(id){
+    if(!ON) return;
+    var s=id?stages.filter(function(x){return x.id===id;})[0]:null;
+    panelShell({cls:'',label:'Journey stage'}, s?s.name:'A new stage',
+      s?'<span class="id">'+esc(s.id)+'</span>':'in the customer’s words, not ours',
+      '<div class="f"><label>Stage name</label><input id="j_name" value="'+esc(s?s.name:'')+'" placeholder="e.g. Get it assessed"></div>'+
+      '<div class="f"><label>What they are trying to do</label><textarea id="j_want" placeholder="e.g. I need to know what happens to my car.">'+esc(s&&s.want?s.want:'')+'</textarea>'+
+        '<div class="hint">Their sentence, first person. It is what the Journey view puts under the stage name.</div></div>'+
+      sel('How does the customer feel here','j_feel',V.sentiments||[],s?(s.sentiment||''):'','— not asked yet —',
+          'Three readings, not a five-point scale: this instrument rates nothing. The note below '+
+          'carries their own word for it.')+
+      '<div class="f"><label>In their words</label><input id="j_note" value="'+esc(s&&s.sentimentNote?s.sentimentNote:'')+'" placeholder="e.g. Disconnected, hears nothing">'+
+        '<div class="hint">Short. It is what the experience track prints under the dot.</div></div>'+
+      '<div class="f"><label>Position</label><input id="j_order" type="number" min="1" step="1" value="'+esc(s?(s.order||''):(stages.length+1))+'"></div>'+
+      (s?'':'<p class="fine">A new stage is minted by <code>apply_delta.py</code>; everything after it shifts along.</p>'),
+      '<span style="flex:1"></span><button class="wbtn" id="j_c">Cancel</button><button class="wbtn pri" id="j_ok">'+(s?'Apply':'Add stage')+'</button>');
+    edp.querySelector('#j_c').onclick=closeEd;
+    edp.querySelector('#j_ok').onclick=function(){
+      var nm=edp.querySelector('#j_name').value.trim();
+      if(!nm){ toast('A journey stage needs a name the customer would recognise.'); return; }
+      var want=edp.querySelector('#j_want').value.trim()||null;
+      var ord=+edp.querySelector('#j_order').value||null;
+      var feel=edp.querySelector('#j_feel').value||null;
+      var note=edp.querySelector('#j_note').value.trim()||null;
+      if(note && !feel){
+        toast('You have their word for it but not whether it goes well or badly. The track is '+
+              'drawn from that reading, so it needs both.');
+        return;
+      }
+      if(s){
+        var ch={};
+        if(nm!==s.name) ch.name=nm;
+        if(want!==(s.want||null)) ch.want=want;
+        if(ord!==(s.order||null)) ch.order=ord;
+        if(feel!==(s.sentiment||null)) ch.sentiment=feel;
+        if(note!==(s.sentimentNote||null)) ch.sentimentNote=note;
+        if(Object.keys(ch).length){
+          Object.keys(ch).forEach(function(k){ s[k]=ch[k]; });
+          pushOp({op:'update', coll:'journey', id:s.id, changes:ch});
+          resort(); draw();
+        }
+      } else {
+        // A LOCAL id so the view can draw it now. apply_delta mints the real one; this file is a
+        // view, not the record, so the placeholder never leaves the browser except as a name.
+        var tmp={id:'NEW'+(stages.length+1), name:nm, want:want, order:ord||stages.length+1,
+                 sentiment:feel, sentimentNote:note, _new:true};
+        stages.push(tmp);
+        pushOp({op:'add', coll:'journey',
+                record:{name:nm, want:want, order:tmp.order, sentiment:feel, sentimentNote:note}});
+        resort(); draw();
+      }
+      closeEd(); };
+  }
+
+  /* ---- MAP THE WORK. A step's column comes from its unit, so the mapping is edited per unit,
+         never per step - otherwise one click would silently move everything beside it. ---- */
+  function unitsOf(){
+    var seen={}, out=[];
+    steps.forEach(function(s){
+      var u = (UNITCOLL==='activities') ? s.activityId : (s.phaseId||s.activityId);
+      if(!u || seen[u]) return;
+      seen[u]=1;
+      var mine=steps.filter(function(x){
+        return ((UNITCOLL==='activities')?x.activityId:(x.phaseId||x.activityId))===u; });
+      out.push({id:u, name:(s.unitName||u), n:mine.length, stageId:mine[0].stageId||''});
+    });
+    return out;
+  }
+  function openUnits(){
+    if(!ON) return;
+    var us=unitsOf();
+    panelShell({cls:'act',label:'Mapping'}, 'Map the work onto the journey',
+      esc(us.length)+' '+esc(DATA.mappingUnit||'phase')+(us.length===1?'':'s')+' · a column each',
+      us.map(function(u,i){
+        return sel(u.name+'  ('+u.n+' step'+(u.n===1?'':'s')+')','u_'+i,stageVocab(),u.stageId,
+                   '— not on the journey —');
+      }).join('')+
+      '<p class="fine">Work that maps to no stage sits in the trailing <b>Not on the journey</b> column. '+
+      'That is a finding, not an error — ask why it exists before deciding it should not.</p>',
+      '<span style="flex:1"></span><button class="wbtn" id="u_c">Cancel</button><button class="wbtn pri" id="u_ok">Apply</button>');
+    edp.querySelector('#u_c').onclick=closeEd;
+    edp.querySelector('#u_ok').onclick=function(){
+      var n=0;
+      us.forEach(function(u,i){
+        var v=edp.querySelector('#u_'+i).value||null;
+        if(v===(u.stageId||null)) return;
+        steps.forEach(function(s){
+          var su=(UNITCOLL==='activities')?s.activityId:(s.phaseId||s.activityId);
+          if(su===u.id) s.stageId=v; });
+        pushOp({op:'update', coll:UNITCOLL, id:u.id, changes:{journeyStageId:v}});
+        n++;
+      });
+      if(n){ recount(); draw(); }
+      closeEd(); };
+  }
+
+  /* ---- THE CUSTOMER'S OWN STEPS. The baseline never held them; surfacing them is half the job. */
+  function customerActor(){
+    var k=Object.keys(actors).filter(function(i){return (actors[i]||{}).kind==='customer';})[0];
+    return k?{id:k,name:actors[k].name}:null;
+  }
+  function addCustomerStep(stageId){
+    if(!ON) return;
+    var cust=customerActor();
+    var acts={}, order=[];
+    steps.forEach(function(s){ if(s.activityId && !acts[s.activityId]){
+      acts[s.activityId]=s.unitName||s.activityId; order.push(s.activityId); } });
+    var actVocab=order.map(function(i){return {key:i,label:acts[i]};});
+    var stg=stages.filter(function(x){return x.id===stageId;})[0];
+    panelShell({cls:'new',label:'Customer step'}, 'What does the customer do here?',
+      stg?esc(stg.name):'',
+      '<div class="f"><label>The step, in their words</label><input id="c_name" placeholder="e.g. Sends photos and documents"></div>'+
+      sel('What do they do it through','c_ch',V.channels||[],'','— not recorded —')+
+      (cust
+        ? '<div class="metablock"><div class="mrow"><span>Performed by</span><b>'+esc(cust.name)+'</b></div></div>'
+        : '<div class="f"><label>Who is the customer</label><input id="c_who" placeholder="e.g. Policyholder">'+
+          '<div class="hint">This baseline has no customer actor yet. Naming them here adds one (kind <code>customer</code>, no FTE).</div></div>')+
+      sel('Part of which work','c_act',actVocab,null,'— pick the activity it belongs to —',
+          'A step belongs to an activity, so the baseline knows where it sits. Pick the one the customer is dealing with.'),
+      '<span style="flex:1"></span><button class="wbtn" id="c_c">Cancel</button><button class="wbtn pri" id="c_ok">Add step</button>');
+    edp.querySelector('#c_c').onclick=closeEd;
+    edp.querySelector('#c_ok').onclick=function(){
+      var nm=edp.querySelector('#c_name').value.trim();
+      if(!nm){ toast('The step needs a name.'); return; }
+      var aid=edp.querySelector('#c_act').value;
+      if(!aid){ toast('Pick the activity this step belongs to, so it lands somewhere on the baseline.'); return; }
+      var who=cust?cust.name:(edp.querySelector('#c_who').value.trim());
+      if(!who){ toast('Name the customer — the person on the other side of the line.'); return; }
+      if(!cust){
+        pushOp({op:'add', coll:'actors', record:{name:who, kind:'customer'}});
+        actors['NEWCUST']={name:who, kind:'customer'};
+      }
+      var lid='NEWSTEP'+(steps.length+1);
+      var cch=edp.querySelector('#c_ch').value||null;
+      steps.push({id:lid, stageId:stageId||null, visibility:'customer-action', channel:cch,
+                  actorId:cust?cust.id:'NEWCUST', name:nm, system:null, activityId:aid, pains:[], _new:true});
+      pushOp({op:'add', coll:'tasks',
+              record:{activityId:aid, actorName:who, name:nm, visibility:'customer-action',
+                      channel:cch}});
+      recount(); draw(); closeEd(); };
+  }
+
+  /* ---- keeping the local view honest between edits ---- */
+  function resort(){
+    stages.sort(function(a,b){return (a.order||0)-(b.order||0);});
+    recount();
+  }
+  function recount(){
+    offSteps = steps.filter(function(s){return !s.stageId;});
+    cols = stages.map(function(s){return s.id;});
+    if(offSteps.length) cols.push(OFF);
+    var c=DATA.coverage||(DATA.coverage={});
+    c.tasksTotal=steps.length;
+    c.classified=steps.filter(function(s){return s.visibility;}).length;
+    c.customerActions=steps.filter(function(s){return s.visibility==='customer-action';}).length;
+    var us=unitsOf();
+    c.unitsMapped=us.filter(function(u){return u.stageId;}).length;
+    c.unitsUnmapped=us.filter(function(u){return !u.stageId;}).length;
+  }
+
+  /* ---- what is editable announces itself; what is locked dims and explains itself ---- */
+  var LOCKS = {
+    stamp:'The coverage line is <b>computed</b> from the steps below it. Classify a step and it moves on its own.',
+    off:'The <b>Not on the journey</b> column is derived: it holds work that maps to no stage. Use <b>Map work</b> to put it on one.',
+    pains:'This view is the <b>same pains the process map holds</b>, ordered by journey stage. Capture a new one on the step it happens at, in the Blueprint view.',
+    journey:'The Journey view is <b>read from the blueprint</b>. Edit the stage on its column in the Blueprint view.'
+  };
+  function bindLocks(root){
+    (root||document).querySelectorAll('[data-lock]').forEach(function(el){
+      el.classList.add('nr-locked');
+      el.onclick=function(e){ e.stopPropagation(); toast(LOCKS[el.getAttribute('data-lock')]||'Locked.'); };
+    });
+  }
+  function bindEdits(){
+    if(!ON) return;
+    document.querySelectorAll('#vinner [data-step]').forEach(function(el){
+      el.classList.add('ed-on');
+      el.onclick=function(e){ e.stopPropagation(); openStep(el.getAttribute('data-step')); };
+    });
+    document.querySelectorAll('#vinner [data-stage]').forEach(function(el){
+      el.classList.add('ed-on');
+      el.onclick=function(e){ e.stopPropagation(); openStage(el.getAttribute('data-stage')); };
+    });
+    document.querySelectorAll('#vinner [data-addcust]').forEach(function(el){
+      el.onclick=function(e){ e.stopPropagation();
+        var v=el.getAttribute('data-addcust'); addCustomerStep(v===OFF?null:v); };
+    });
+    var t=document.getElementById('title');
+    if(t){ t.classList.add('ed-on'); t.onclick=openTitle; }
+    bindLocks(document);
+  }
+
+  function setEditing(on){
+    ON=!!on;
+    document.getElementById('art').classList.toggle('editing',ON);
+    /* the canvas is re-mounted by the draw() below, with `editing` passed in - telling the shell
+       separately would just be a second source of truth */
+    var g=document.getElementById('wgear');
+    if(g) g.innerHTML = ON ? UNLOCK_SVG_I : GEAR_SVG_I;
+    draw();
+    wsave();
+  }
+  window.__setEditing=setEditing;
+
+
+  /* ── THE CANVAS ────────────────────────────────────────────────────────────────────────────
+     The working surface. The one-pager is not this, shrunk: it is the part of this that carries
+     the argument, chosen in the picker below. Everything here is a projection of the same capture
+     the client read-out renders from, so the two cannot disagree.
+     The shell (NRCanvas) is shared and instrument-agnostic; what follows is the blueprint's own
+     model, its hooks, and nothing else. */
+
+  var CROWS = [
+    {id:'feel',            kind:'track', icon:'feel',    label:'Customer experience', sub:'How they feel here'},
+    {id:'customer-action', kind:'cards', icon:'journey', label:'Customer journey',    sub:'What the customer does',        accent:'var(--accent)'},
+    {id:'frontstage',      kind:'cards', icon:'front',   label:'Frontstage',          sub:'Our work they see',             accent:'var(--rag-green)', divider:'line of interaction'},
+    {id:'backstage',       kind:'cards', icon:'back',    label:'Backstage',           sub:'Our work they never see',       accent:'var(--steel)',     divider:'line of visibility'},
+    {id:'support',         kind:'cards', icon:'support', label:'Support',             sub:'Internal services carrying it', accent:'var(--rag-na)'},
+    {id:'',                kind:'cards', icon:'back',    label:'Unclassified',        sub:'Nobody has been asked yet',     accent:'var(--rag-amber)'}
+  ];
+  var LANEACCENT={};
+  CROWS.forEach(function(r){ LANEACCENT[r.id]=r.accent; });
+
+  function cardFlags(s){
+    var f=[];
+    if(!s.visibility) f.push('unclassified');
+    if(s.visibility==='customer-action'||s.visibility==='frontstage'){
+      f.push('seen');
+      if(!s.channel) f.push('nochannel');
+    }
+    if((s.pains||[]).length) f.push('pain');
+    return f;
+  }
+  function cardTags(s){
+    var t=[];
+    if(s.channel) t.push({text:chLabel(s.channel), kind:'ch'});
+    if(s.system)  t.push({text:s.system, kind:'sys'});
+    (s.pains||[]).forEach(function(p){
+      t.push({text:(p.magnitude&&p.magnitude.value!=null)?magText(p.magnitude):'pain', kind:'pain'});});
+    if(!s.visibility) t.push({text:'not classified', kind:'warn'});
+    return t;
+  }
+
+  function canvasModel(){
+    var m={columns:[],rows:[],cells:{},cards:{},
+           cornerTitle:'Journey stage', cornerSub:unitWord(true)+' mapped onto it',
+           filters:[
+             {k:'all',   label:'Everything',      flag:null},
+             {k:'unc',   label:'Unclassified',    flag:'unclassified'},
+             {k:'seen',  label:'What they meet',  flag:'seen'},
+             {k:'pain',  label:'Where it breaks', flag:'pain'},
+             {k:'noch',  label:'No channel yet',  flag:'nochannel'}
+           ],
+           slide: DATA.slide || defaultSlide()};
+    stages.forEach(function(s){
+      m.columns.push({id:s.id, kind:'normal', tag:'STAGE '+(s.order||''), label:s.name,
+                      sub:unitsFor(s.id).join(' · ')||'no '+unitWord().toLowerCase()+' maps here'});
+    });
+    if(offSteps.length) m.columns.push({id:OFF, kind:'off', label:'Not on the journey',
+                                        sub:unitsFor(null).join(' · ')});
+
+    /* only the teams doing OUR work: with one team, its name on every card says nothing the rail
+       has not already said */
+    var ours={};
+    steps.forEach(function(s){ if(s.actorId && (actors[s.actorId]||{}).kind!=='customer') ours[s.actorId]=1; });
+    var named=Object.keys(ours).length>1;
+
+    CROWS.forEach(function(r){
+      var any=false;
+      m.columns.forEach(function(c){
+        var key=r.id+'|'+c.id;
+        if(r.kind==='track'){
+          if(c.kind==='off') return;
+          var st=stages.filter(function(x){return x.id===c.id;})[0]||{};
+          if(st.sentiment){ any=true;
+            m.cells[key]={track:{tone:st.sentiment, label:st.sentimentNote||''}}; }
+          return;
+        }
+        var list=at(c.id,r.id);
+        if(!list.length) return;
+        any=true;
+        m.cells[key]={cards:list.map(function(s){
+          m.cards[s.id]={title:s.name,
+                         meta:(named&&r.id!=='customer-action')?actorName(s.actorId):null,
+                         accent:LANEACCENT[r.id], flags:cardFlags(s), tags:cardTags(s)};
+          return s.id; })};
+      });
+      if(!any) return;
+      var n=m.columns.reduce(function(a,c){return a+((m.cells[r.id+'|'+c.id]||{}).cards||[]).length;},0);
+      m.rows.push(Object.assign({}, r, {count:r.kind==='track'?null:n}));
+    });
+    /* a divider belongs to the first row actually drawn under it, not to a row that was skipped */
+    var seen={};
+    m.rows.forEach(function(r){
+      if(!r.divider) return;
+      if(seen[r.divider]) { r.divider=null; return; }
+      seen[r.divider]=1;
+    });
+    return m;
+  }
+
+  /* the deterministic starting pick: every column the customer reaches, the rows that carry the
+     finding. Composed from what the data says, never a guess. */
+  function defaultSlide(){
+    var rows=['feel','customer-action','frontstage','backstage'];
+    if(steps.some(function(s){return s.visibility==='support';})) rows.push('support');
+    if(steps.some(function(s){return !s.visibility;})) rows.push('');
+    return {rows:rows, cols:stages.map(function(s){return s.id;}).concat(offSteps.length?[OFF]:[])};
+  }
+
+  var CHOOKS={
+    onCard:   function(id){ openStep(id); },
+    onColumn: function(id){ if(id!==OFF) openStage(id);
+                            else toast('The <b>Not on the journey</b> column is derived: it holds work '+
+                                       'that maps to no stage. Use <b>Map work</b> to put it on one.'); },
+    onAdd:    function(rowId,colId){ addCustomerStep(colId===OFF?null:colId); },
+    canAdd:   function(rowId){ return rowId==='customer-action'; },
+    detail:   function(id){
+      var s=stepById(id); if(!s) return null;
+      var r=CROWS.filter(function(x){return x.id===(s.visibility||'');})[0]||{label:'Unclassified'};
+      var st=stages.filter(function(x){return x.id===s.stageId;})[0];
+      return {kind:r.label, title:s.name, id:s.id+(s.activityId?' · '+s.activityId:''),
+        rows:[
+          {k:'Journey stage', v:st?st.name:'not on the journey'},
+          {k:'Performed by',  v:actorName(s.actorId)},
+          {k:'The customer',  v:s.visibility==='customer-action'?'does this themselves':
+                               s.visibility==='frontstage'?'sees this happen':
+                               s.visibility?'never sees this':'has not been asked'},
+          {k:'They meet it through', v:s.channel?chLabel(s.channel):'—'},
+          {k:'Carried by',    v:s.system||'—'},
+          {k:'Part of',       v:s.unitName||s.activityId||'—'}
+        ],
+        notesTitle:'Where it breaks', notesEmpty:'Nothing captured at this step.',
+        notes:(s.pains||[]).map(function(p){
+          return {body:p.theme, tone:'negative',
+                  strong:(p.magnitude&&p.magnitude.value!=null)?magText(p.magnitude):'',
+                  meta:(p.dimension==='cust'?'the customer feels it':'only the operation feels it')+
+                       (p.sourceId?' · '+p.sourceId:'')};})};
+    },
+    suggestSlide: defaultSlide,
+    onSlideChange: function(s){ DATA.slide=s; SLIDE=s; wsave(); },
+    slideWarnings: function(s){
+      var w=[], real=s.cols.filter(function(c){return c!==OFF;});
+      if(real.length>5) w.push('Past five columns the text on the slide drops below 11px. '+
+                               'Consider splitting the journey across two slides.');
+      if(s.rows.indexOf('customer-action')<0) w.push('Without the customer row it is a process map, '+
+                               'not a service blueprint.');
+      if(s.rows.length&&!s.cols.length) w.push('No columns picked, so there is no slide to render.');
+      return w;
+    }
+  };
+
+  var SLIDE=null;
+  function drawCanvas(){
+    NRCanvas.mount({model:canvasModel(), hooks:CHOOKS,
+                    host:document.getElementById('canvashost'), editing:ON});
+  }
+
+  /* ---- the two hoisted stubs the shared render path calls, now given their real bodies ---- */
+  PLUSBTN = function(stageId){
+    if(!ON) return '';        // locked means locked: not drawn, not hidden-but-clickable
+    return '<button class="cellplus" data-addcust="'+esc(stageId==null?OFF:stageId)+'"'+
+           ' title="Add a step the customer performs here">+</button>';
+  };
+  BINDEDITS = function(){
+    if(cur==='canvas'){ drawCanvas(); return; }   /* the shell binds its own affordances */
+    bindEdits();
+  };
+
+  function bootEdit(){
+    if(!EDIT) return;
+    /* The canvas is the working copy's first view and its default: this is where the work is done.
+       The other three are the client read-out, shown here so you can see what you are about to
+       hand over without leaving the file.
+       This runs in bootEdit rather than at load because `var VIEWS` is hoisted but its VALUE is
+       not - the edit layer is spliced in above the line that fills it. */
+    VIEWS.unshift(['canvas','Canvas',function(){ return '<div id="canvashost"></div>'; }]);
+    cur='canvas';
+    document.getElementById('views').innerHTML = VIEWS.map(function(v,i){
+      return '<button data-v="'+v[0]+'"'+(i===0?' class="on"':'')+'>'+v[1]+'</button>';}).join('');
+    seg('views','data-v',function(v){ cur=v; draw(); });
+    var g=document.getElementById('wgear'), b=document.getElementById('wsave'),
+        pop=document.getElementById('wpop'), grp=document.querySelector('.wgrp');
+    if(g) g.onclick=function(e){ e.stopPropagation(); setEditing(!ON); };
+    if(b) b.onclick=exportDelta;
+    if(pop) pop.onclick=function(e){ e.stopPropagation(); };
+    if(grp) grp.onclick=function(e){ e.stopPropagation(); };
+    var pk=document.getElementById('wpick');
+    if(pk) pk.onclick=function(){
+      if(cur!=='canvas'){ toast('The picker lives on the <b>Canvas</b>, where you can see what you '+
+                                'are choosing between.'); return; }
+      NRCanvas.setPicking(!NRCanvas.isPicking());
+      pk.textContent=NRCanvas.isPicking()?'Back to the canvas':'Pick what goes on the slide'; };
+    var mw=document.getElementById('wmap');
+    if(mw) mw.onclick=function(){ ON ? openUnits() : toast('Unlock editing first — the padlock, top right.'); };
+    var ms=document.getElementById('wstage');
+    if(ms) ms.onclick=function(){ ON ? openStage(null) : toast('Unlock editing first — the padlock, top right.'); };
+    window.addEventListener('keydown',function(e){ if(e.key==='Escape') closeEd(); });
+    setEditing(false);
+  }
+/*</EDIT>*/
+
+
+  var VIEWS=[['bp','Blueprint',vBlueprint],['journey','Journey',vJourney],['pains','Painpoints',vPains]];
+  var cur='bp';
+
+  document.getElementById('ctx').textContent  = DATA.context||'OPEX QUICKSCAN';
+  document.getElementById('lens').textContent = DATA.lens||'CLIENTS · SERVICE BLUEPRINT';
+  document.getElementById('title').innerHTML  = hl(DATA.keyMessage||'');
+  document.getElementById('subt').textContent = DATA.teamName||'';
+  document.getElementById('views').innerHTML  = VIEWS.map(function(v,i){
+    return '<button data-v="'+v[0]+'"'+(i===0?' class="on"':'')+'>'+v[1]+'</button>';}).join('');
+
+  function drawMeta(){
+    var c = DATA.coverage||{};
+    document.getElementById('src').innerHTML = DATA.source
+      ? '<b style="color:var(--txt)">Source:</b> '+esc(DATA.source) : '';
+    var bits=[], unit=DATA.mappingUnit||'phase';
+    if(DATA.baselineVersion) bits.push(DATA.baselineVersion);
+    if(c.tasksTotal) bits.push(c.classified+' of '+c.tasksTotal+' steps classified');
+    if(c.unitsUnmapped) bits.push(c.unitsUnmapped+' '+unit+(c.unitsUnmapped>1?'s':'')+' off the journey');
+    if(SEL && SEL.cols && SEL.cols.length < allCols.length)
+      bits.push(SEL.cols.length+' of '+allCols.length+' stages shown');
+    var stel=document.getElementById('stamp');
+    stel.textContent = bits.join(' · ');
+    if(EDIT) stel.setAttribute('data-lock','stamp');
+    /* the legend belongs to the blueprint; the other views carry their own meaning */
+    document.getElementById('lg').innerHTML = (cur==='bp')
+      ? (stages.some(function(s){return s.sentiment;})
+          ? '<span class="lp"><i style="background:var(--rag-green)"></i>goes well for them</span>'+
+            '<span class="lp"><i style="background:var(--rag-na)"></i>neither</span>'+
+            '<span class="lp"><i style="background:var(--rag-red)"></i>goes badly</span>' : '')+
+        (cols.some(function(c){return painsAt(c).length;})
+          ? '<span class="lp" style="color:var(--rag-red-text)">&#9652; pain point</span>' : '')
+      : '';
+  }
+
+  /* Monotonic binary-search fit: the largest scale whose content still fits the frame, capped at
+     1.0 so a short view fills rather than magnifies. Same fit every instrument uses. */
+  function fit(){
+    var view=document.getElementById('view'), inner=document.getElementById('vinner');
+    inner.style.transform='scale(1)'; inner.style.width='100%';
+    var prev=inner.querySelector('[data-stretch]');
+    if(prev) prev.style.minHeight='';          /* measure unstretched, or it only ever grows */
+    var availH=view.clientHeight, availW=view.clientWidth;
+    if(!availH||!availW) return;
+    var lo=0.4, hi=1.0, best=0.4;
+    for(var i=0;i<18;i++){
+      var mid=(lo+hi)/2;
+      inner.style.width=(100/mid)+'%';
+      inner.style.transform='scale('+mid+')';
+      var fits = inner.scrollHeight*mid <= availH+0.5;
+      if(fits){ best=mid; lo=mid; } else { hi=mid; }
+    }
+    inner.style.width=(100/best)+'%';
+    inner.style.transform='scale('+best+')';
+    /* the fit is capped at 1.0 so a short view never magnifies - so a short view also never
+       fills the slide. Let the marked element take the slack instead. */
+    var grow=inner.querySelector('[data-stretch]');
+    if(grow && best>=0.999){
+      var slack = availH - inner.scrollHeight;
+      if(slack > 6) grow.style.minHeight = (grow.offsetHeight + slack) + 'px';
+    }
+  }
+  function draw(){
+    var v=VIEWS.filter(function(x){return x[0]===cur;})[0];
+    document.getElementById('art').classList.toggle('canvasview', cur==='canvas');
+    document.getElementById('vinner').innerHTML = v ? v[2]() : '';
+    drawMeta(); BINDEDITS();
+    /* the canvas SCROLLS; scaling it to fit the frame is exactly the thing it exists to stop */
+    if(cur!=='canvas'){ fit(); }
+    else { var vi=document.getElementById('vinner');
+           vi.style.transform='none'; vi.style.width='100%'; }
+  }
+  function seg(id,attr,cb){
+    var box=document.getElementById(id);
+    box.querySelectorAll('button').forEach(function(b){
+      b.onclick=function(){
+        box.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});
+        b.classList.add('on'); cb(b.getAttribute(attr));
+      };
+    });
+  }
+  seg('views','data-v',function(v){ cur=v; draw(); });
+  seg('theme','data-s',function(t){ document.getElementById('art').setAttribute('data-t',t); fit(); });
+  window.addEventListener('resize',fit);
+  draw();
+/*<EDIT>*/
+  bootEdit();
+/*</EDIT>*/
+
+})();
+</script>
+<style>
+/* ── READ MODE · narrow screens ──────────────────────────────────────────────
+   This artifact normally scales its whole body down so the page fits one screen.
+   On a phone that turns 13px type into 4px. Below 760px the scaling is switched
+   off and the page simply flows and scrolls at its real size. Desktop is
+   untouched — every rule here lives inside the media query. */
+@media (max-width:760px){
+  html,body{height:auto!important;overflow:auto!important}
+  #art,#pw,#pm{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;padding:12px 14px 22px 34px!important}
+  #view{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;flex:none!important;position:static!important}
+  #vinner{position:static!important;transform:none!important;width:100%!important;
+    padding-bottom:14px!important}
+  .nr-rail{width:22px!important}
+  .toprow{position:static!important;top:auto!important;right:auto!important;left:auto!important;
+    margin:0 0 10px!important;flex-wrap:wrap!important;gap:8px 10px!important;justify-content:flex-start!important}
+  .tags{flex-wrap:wrap!important;gap:8px!important;margin-left:-34px!important}
+  .ctrls{flex-wrap:wrap!important;gap:8px!important;flex:1 1 100%!important}
+  #ft{position:static!important;flex-wrap:wrap!important;row-gap:6px!important;margin-top:14px!important}
+  h1{font-size:19px!important;max-width:none!important}
+  .grid,.classic,.cols-grid{grid-template-columns:1fr!important}
+  table{min-width:0!important}
+  .tbl-wrap,.wrap-x{overflow-x:auto!important}
+}
+</style>
+<style>/* READ-MODE TYPE FLOOR — nothing under 11px once the page stops scaling */
+
+@media (max-width:760px){
+  #ft{font-size:11px!important}
+  .conf,.lp,.li,.nr-track,.nr-foot,.lbl,.note{font-size:11px!important}
+  .inum,.chip,.inev,.num,.wf-num,.vnum{font-size:11px!important}
+  #ft b,.legend b,.l b{font-size:11px!important}
+  /* a row label truncated to '…' is worse than a wrapped one once the page flows */
+  [style*="ellipsis"]{white-space:normal!important;text-overflow:clip!important;overflow:visible!important}
+}
+</style>
+</body></html>

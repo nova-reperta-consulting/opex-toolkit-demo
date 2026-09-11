@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Northwind Assurance · a worked example</title>
-<meta name="description" content="A complete operational excellence engagement, read end to end: a claims team of 42 people, six finished analyses, and one story they all support. Sample data only.">
+<title>Nova Reperta · Operational excellence, delivered on an AI-enabled system</title>
+<meta name="description" content="Nova Reperta runs full operational excellence engagements on an AI-enabled delivery system: see every analysis we can run, what each one produces, and a complete worked example. Sample data only.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -22,8 +22,7 @@
   --ground:#050912; --ground-2:#080E1B; --surface:#0C1526; --surface-2:#111C31;
   --hairline:#1B2A47; --hairline-soft:#141F35;
   --ink:#EAF0FA; --ink-2:#93A4C4; --ink-3:#5A6A8C;
-  --blue:#4E86F7; --blue-2:#79A6FF; --green:#4FC08D; --amber:#E5A03C;
-  --proc:#5B8CE8; --mgmt:#47B37C; --mind:#A98BE0; --spine:#8FA8CE;
+  --blue:#4E86F7; --blue-2:#79A6FF; --green:#4FC08D; --violet:#A98BE0; --amber:#E5A03C;
   --sans:'Hanken Grotesk','Segoe UI',system-ui,-apple-system,sans-serif;
   --mono:'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
   --pad:clamp(20px,5vw,56px);
@@ -36,10 +35,11 @@ img{max-width:100%;height:auto;display:block}
 a{color:inherit}
 .wrap{max-width:1180px;margin:0 auto;padding:0 var(--pad)}
 
+/* ── nav ───────────────────────────────────────────────── */
 nav{position:sticky;top:0;z-index:50;background:rgba(5,9,18,.82);backdrop-filter:blur(12px);
   border-bottom:1px solid var(--hairline-soft)}
 nav .in{max-width:1180px;margin:0 auto;padding:13px var(--pad);display:flex;align-items:center;gap:16px}
-nav .mark{font-weight:700;letter-spacing:-.02em;font-size:15px;text-decoration:none}
+nav .mark{font-weight:700;letter-spacing:-.02em;font-size:15px}
 nav .mark span{color:var(--ink-3);font-weight:500}
 nav .sp{flex:1}
 nav .chip{font-family:var(--mono);font-size:var(--fs-95);letter-spacing:.13em;text-transform:uppercase;
@@ -49,6 +49,7 @@ nav a.lk{font-size:13.5px;color:var(--ink-2);text-decoration:none;transition:.15
 nav a.lk:hover{color:var(--ink)}
 @media(max-width:640px){nav .chip{display:none}}
 
+/* ── shared bits ───────────────────────────────────────── */
 .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:var(--fs-10);
   letter-spacing:.15em;text-transform:uppercase;color:var(--ink-2);
   border:1px solid var(--hairline);border-radius:999px;padding:6px 14px;background:var(--ground-2)}
@@ -60,285 +61,348 @@ nav a.lk:hover{color:var(--ink)}
 .btn.p:hover{background:#5C92FF;transform:translateY(-1px)}
 .btn.s{border:1px solid var(--hairline);color:var(--ink);background:var(--ground-2)}
 .btn.s:hover{border-color:#2E4674;background:var(--surface)}
+.frame{border:1px solid var(--hairline);border-radius:13px;overflow:hidden;background:var(--surface);
+  box-shadow:0 40px 90px -44px rgba(0,0,0,.92),0 0 0 1px rgba(255,255,255,.02)}
+.frame .bar{display:flex;gap:6px;padding:10px 13px;background:var(--ground-2);
+  border-bottom:1px solid var(--hairline)}
+.frame .bar i{width:9px;height:9px;border-radius:50%;background:#26344F;display:block}
 .kicker{font-family:var(--mono);font-size:var(--fs-95);letter-spacing:.15em;text-transform:uppercase;color:var(--blue-2)}
 
-.hero{position:relative;padding:clamp(44px,7vw,86px) 0 clamp(30px,5vw,54px);overflow:hidden}
-.hero::before{content:"";position:absolute;inset:-30% 30% 40% -10%;pointer-events:none;
-  background:radial-gradient(52% 52% at 34% 34%,rgba(78,134,247,.17),transparent 72%)}
+/* ── hero ──────────────────────────────────────────────── */
+.hero{position:relative;padding:clamp(52px,8vw,100px) 0 clamp(36px,6vw,70px);text-align:center;
+  overflow:hidden}
+.hero::before{content:"";position:absolute;inset:-34% 8% 42%;pointer-events:none;
+  background:radial-gradient(58% 50% at 50% 32%,rgba(78,134,247,.20),transparent 72%)}
 .hero .wrap{position:relative}
-.hero h1{font-size:clamp(30px,5.2vw,56px);font-weight:700;letter-spacing:-.035em;line-height:1.05;
-  margin-top:20px}
-.hero .sub{font-size:clamp(14.5px,1.7vw,18px);color:var(--ink-2);max-width:58ch;margin-top:18px;
+.hero h1{font-size:clamp(31px,5.4vw,60px);font-weight:700;letter-spacing:-.035em;line-height:1.05;
+  margin-top:22px}
+.hero h1 .soft{color:var(--ink-2);font-weight:600}
+.hero .sub{font-size:clamp(15px,1.7vw,19px);color:var(--ink-2);max-width:58ch;margin:20px auto 0;
   line-height:1.6}
-.hero .sub b{color:var(--ink);font-weight:600}
-.hero .cta{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+.hero .cta{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap;justify-content:center}
+.hero .micro{margin-top:16px;font-size:12.5px;color:var(--ink-3)}
+.hero .shot{margin-top:clamp(38px,5vw,62px)}
 
-.stats{display:grid;gap:1px;background:var(--hairline-soft);
-  border-top:1px solid var(--hairline-soft);border-bottom:1px solid var(--hairline-soft);
-  grid-template-columns:repeat(auto-fit,minmax(158px,1fr))}
-.stat{background:var(--ground);padding:26px clamp(18px,3vw,32px)}
-.stat .v{font-size:clamp(21px,2.8vw,30px);font-weight:700;letter-spacing:-.03em}
-.stat .k{font-family:var(--mono);font-size:var(--fs-95);letter-spacing:.14em;text-transform:uppercase;
-  color:var(--ink-3);margin-top:8px}
-.stat .s{font-size:var(--fs-115);color:var(--ink-2);margin-top:6px}
+/* ── the five teams ────────────────────────────────────── */
+.teams{padding:clamp(48px,7vw,88px) 0;border-top:1px solid var(--hairline-soft)}
+.teams h2{font-size:clamp(22px,3vw,32px);font-weight:600;letter-spacing:-.028em;margin-top:12px;line-height:1.18}
+.teams .lede{color:var(--ink-2);margin-top:14px;font-size:clamp(13.5px,1.5vw,15.5px);max-width:62ch}
+/* five cards must not orphan one onto a row of its own: 1 / 2 / 3 / 5, never 4 */
+.teams .row{display:grid;gap:14px;margin-top:30px;grid-template-columns:1fr}
+@media(min-width:560px){.teams .row{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:760px){.teams .row{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1040px){.teams .row{grid-template-columns:repeat(5,1fr)}}
+.team{border:1px solid var(--hairline);border-radius:13px;background:var(--ground-2);
+  padding:17px 17px 15px;display:flex;flex-direction:column;position:relative}
+.team .d{width:8px;height:8px;border-radius:50%;display:block}
+.team .n{font-size:15.5px;font-weight:600;margin-top:11px;letter-spacing:-.01em}
+.team .c{font-family:var(--mono);font-size:var(--fs-9);letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:6px}
+.team .t{font-size:12.5px;color:var(--ink-2);margin-top:11px;line-height:1.5;flex:1}
+.team .st{font-family:var(--mono);font-size:var(--fs-9);letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:14px}
+.team .st.live{color:var(--blue-2)}
+.teams .foot{margin-top:20px;font-size:12.5px;color:var(--ink-3);max-width:66ch}
 
-.finding{padding:clamp(46px,7vw,86px) 0}
-.finding h2{font-size:clamp(21px,2.9vw,30px);font-weight:600;letter-spacing:-.025em;margin-top:12px}
-.finding .body{margin-top:20px;border-left:2px solid var(--hairline);padding-left:20px;max-width:70ch}
-.finding .body p{font-size:clamp(14px,1.5vw,16px);color:#B3C1DA;line-height:1.65}
-.finding .body p + p{margin-top:14px}
-.finding .body b{color:var(--ink);font-weight:600}
+/* ── proof: the deliverables, stacked ──────────────────── */
+.proof{padding:clamp(52px,8vw,96px) 0;position:relative;overflow:hidden;
+  border-top:1px solid var(--hairline-soft)}
+.proof::before{content:"";position:absolute;top:-16%;right:-12%;width:72%;height:82%;pointer-events:none;
+  background:radial-gradient(50% 50% at 62% 42%,rgba(169,139,224,.15),transparent 72%)}
+.proof .grid{position:relative;display:grid;gap:clamp(34px,5vw,64px);align-items:center;
+  grid-template-columns:minmax(0,1fr)}
+@media(min-width:980px){.proof .grid{grid-template-columns:1fr 1.06fr}}
+.proof h2{font-size:clamp(24px,3.4vw,36px);font-weight:700;letter-spacing:-.03em;line-height:1.13;
+  margin-top:16px}
+.proof p{color:var(--ink-2);margin-top:16px;font-size:clamp(14px,1.5vw,16px);max-width:50ch}
+.proof .cta{margin-top:26px}
+.stack{position:relative;min-height:clamp(280px,34vw,420px)}
+.stack .frame{position:absolute;width:80%;transition:transform .3s ease}
+.stack .f1{top:0;left:0;z-index:3}
+.stack .f2{top:14%;left:12%;z-index:2;opacity:.88}
+.stack .f3{top:28%;left:24%;z-index:1;opacity:.6}
+.stack:hover .f1{transform:translate(-8px,-8px)}
+.stack:hover .f3{transform:translate(8px,8px)}
+@media(max-width:620px){.stack .frame{width:88%}.stack .f2{left:8%}.stack .f3{left:16%}}
 
-.analyses{padding:clamp(40px,6vw,72px) 0 clamp(46px,7vw,84px);border-top:1px solid var(--hairline-soft)}
-.analyses h2{font-size:clamp(21px,2.9vw,30px);font-weight:600;letter-spacing:-.025em;margin-top:12px}
-.analyses .lede{color:var(--ink-2);margin-top:12px;font-size:clamp(13.5px,1.5vw,15px);max-width:60ch}
-.grid{display:grid;gap:18px;margin-top:30px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
-.art{border:1px solid var(--hairline);border-radius:14px;background:var(--surface);overflow:hidden;
-  display:flex;flex-direction:column;transition:.18s}
-.art:hover{border-color:#2E4674;transform:translateY(-2px);
-  box-shadow:0 24px 50px -30px rgba(0,0,0,.9)}
-.art .thumb{aspect-ratio:16/10;overflow:hidden;background:var(--ground-2);
-  border-bottom:1px solid var(--hairline-soft)}
-.art .thumb img{width:100%;height:100%;object-fit:cover;object-position:top center}
-.art .body{padding:17px 17px 15px;display:flex;flex-direction:column;flex:1}
-.art .lens{font-family:var(--mono);font-size:var(--fs-9);letter-spacing:.14em;text-transform:uppercase}
-.art h3{font-size:16.5px;font-weight:600;margin-top:7px;letter-spacing:-.015em}
-.art p{font-size:12.5px;color:var(--ink-2);margin-top:9px;flex:1;line-height:1.55}
-.art .links{display:flex;gap:9px;margin-top:15px;flex-wrap:wrap}
-.art .links a{font-size:12px;font-weight:600;text-decoration:none;border-radius:8px;padding:7px 12px;
-  border:1px solid rgba(78,134,247,.5);background:rgba(78,134,247,.13);color:#9CBEFF;transition:.15s}
-.art .links a:hover{background:rgba(78,134,247,.24)}
-.art .links a.alt{border-color:var(--hairline);background:none;color:var(--ink-2)}
-.art .links a.alt:hover{color:var(--ink);border-color:#2E4674}
-.art.soon{opacity:.55}
-.art.soon .body{padding-top:19px}
+/* ── feature rows ──────────────────────────────────────── */
+.feat{padding:clamp(46px,7vw,84px) 0;border-top:1px solid var(--hairline-soft)}
+.feat .grid{display:grid;gap:clamp(28px,4vw,58px);align-items:center;grid-template-columns:minmax(0,1fr)}
+@media(min-width:920px){
+  .feat .grid{grid-template-columns:1fr 1.18fr}
+  .feat.rev .grid > :first-child{order:2}
+}
+.feat h2{font-size:clamp(21px,2.9vw,30px);font-weight:600;letter-spacing:-.025em;line-height:1.2;margin-top:12px}
+.feat p{color:var(--ink-2);margin-top:14px;font-size:clamp(13.5px,1.5vw,15.5px);max-width:52ch}
+.feat .go{display:inline-flex;align-items:center;gap:8px;margin-top:20px;font-size:14px;font-weight:600;
+  color:var(--blue-2);text-decoration:none}
+.feat .go:hover{color:#A8C6FF}
 
-.grp{margin-top:38px}
-.grp:first-of-type{margin-top:30px}
-.grp h3{font-size:13px;font-weight:600;letter-spacing:-.005em;color:var(--ink);
-  display:flex;align-items:center;gap:11px}
-.grp h3::after{content:"";flex:1;height:1px;background:var(--hairline-soft)}
-.grp .gs{font-size:12.5px;color:var(--ink-3);margin-top:5px;max-width:70ch}
-.grp .grid{margin-top:16px}
+/* ── why it is better ──────────────────────────────────── */
+.why{padding:clamp(48px,7vw,90px) 0;border-top:1px solid var(--hairline-soft);
+  position:relative;overflow:hidden}
+.why::before{content:"";position:absolute;top:-20%;left:-14%;width:66%;height:88%;pointer-events:none;
+  background:radial-gradient(50% 50% at 40% 45%,rgba(79,192,141,.13),transparent 72%)}
+.why .wrap{position:relative}
+.why h2{font-size:clamp(22px,3vw,32px);font-weight:600;letter-spacing:-.028em;margin-top:12px;line-height:1.18}
+.why .lede{color:var(--ink-2);margin-top:14px;font-size:clamp(13.5px,1.5vw,15.5px);max-width:64ch}
+.why .row{display:grid;gap:15px;margin-top:34px;grid-template-columns:1fr}
+@media(min-width:620px){.why .row{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:960px){.why .row{grid-template-columns:repeat(3,1fr)}}
 
+.why .c{position:relative;overflow:hidden;isolation:isolate;
+  border:1px solid var(--hairline);border-radius:14px;background:var(--ground-2);
+  padding:21px 19px 19px;
+  transition:border-color .3s ease, transform .3s cubic-bezier(.2,.7,.3,1), box-shadow .3s ease,
+             opacity .6s cubic-bezier(.2,.7,.3,1)}
+.why .c::before{content:"";position:absolute;z-index:-1;top:-52%;left:-24%;width:78%;height:150%;
+  pointer-events:none;opacity:0;transition:opacity .4s ease;
+  background:radial-gradient(50% 50% at 50% 50%,var(--ag),transparent 70%)}
+.why .c:hover{border-color:var(--ab);transform:translateY(-3px);
+  box-shadow:0 26px 48px -32px rgba(0,0,0,.95)}
+.why .c:hover::before{opacity:1}
+
+.why .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+  color:var(--a);background:var(--ag);border:1px solid var(--ab);
+  transition:transform .34s cubic-bezier(.2,.7,.3,1), box-shadow .34s ease}
+.why .ic svg{width:21px;height:21px;display:block;overflow:visible}
+.why .ic svg *{fill:none;stroke:currentColor;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round}
+.why .c:hover .ic{transform:translateY(-2px) scale(1.06);box-shadow:0 10px 22px -12px var(--a)}
+
+.why .c .h{font-size:15.5px;font-weight:600;letter-spacing:-.012em;margin-top:15px}
+.why .c p{font-size:12.8px;color:var(--ink-2);margin-top:9px;line-height:1.56}
+
+/* reveal — only armed once the script runs, so the cards are never stuck hidden */
+.why.anim .c{opacity:0;transform:translateY(16px)}
+.why.anim .c.in{opacity:1;transform:none}
+.why.anim .c.in:hover{transform:translateY(-3px)}
+@media(prefers-reduced-motion:reduce){
+  .why.anim .c{opacity:1;transform:none;transition:none}
+  .why .ic,.why .c{transition:none}
+}
+
+/* ── steps ─────────────────────────────────────────────── */
+.steps{padding:clamp(46px,7vw,84px) 0;border-top:1px solid var(--hairline-soft)}
+.steps h2{font-size:clamp(21px,2.9vw,30px);font-weight:600;letter-spacing:-.025em}
+.steps .row{display:grid;gap:14px;margin-top:28px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.step{border:1px solid var(--hairline);border-radius:12px;background:var(--ground-2);padding:18px 18px 16px}
+.step .n{font-family:var(--mono);font-size:var(--fs-9);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.step .t{font-size:13.5px;color:#B3C1DA;margin-top:8px;line-height:1.5}
+
+/* ── notice + footer ───────────────────────────────────── */
 .notice{margin:0 auto;max-width:1180px;padding:0 var(--pad)}
 .notice .in{display:flex;gap:13px;align-items:flex-start;padding:16px 18px;
   border:1px solid rgba(229,160,60,.3);border-radius:12px;background:rgba(229,160,60,.06)}
 .notice .d{flex:0 0 auto;width:7px;height:7px;border-radius:50%;background:var(--amber);margin-top:8px}
 .notice p{font-size:clamp(12.5px,1.4vw,14px);color:#DBC79E}
 .notice p b{color:#F2DFB8;font-weight:600}
-footer{margin-top:clamp(42px,6vw,74px);border-top:1px solid var(--hairline-soft)}
+footer{margin-top:clamp(46px,7vw,80px);border-top:1px solid var(--hairline-soft)}
 footer .in{max-width:1180px;margin:0 auto;padding:24px var(--pad) 44px;display:flex;flex-wrap:wrap;
   gap:10px 22px;font-family:var(--mono);font-size:var(--fs-10);letter-spacing:.1em;text-transform:uppercase;
   color:var(--ink-3)}
 </style></head><body>
 
 <nav><div class="in">
-  <a class="mark" href="../index.html">Nova Reperta <span>· Operational Excellence</span></a>
+  <span class="mark">Nova Reperta <span>· Operational Excellence</span></span>
   <span class="sp"></span>
   <span class="chip">Sample data only</span>
-  <a class="lk" href="../engagement-dashboard.html">The dashboard</a>
-  <a class="lk" href="../opex-constellation.html">How it works</a>
-  <a class="lk" href="../index.html">Home</a>
+  <a class="lk" href="engagement-dashboard.html">The dashboard</a>
+  <a class="lk" href="opex-constellation.html">How it works</a>
+  <a class="lk" href="sandbox/index.html">See an example</a>
 </div></nav>
 
-<section class="hero"><div class="wrap">
-  <span class="eyebrow"><span class="dot"></span>Thirteen analyses, one team</span>
-  <h1>Northwind Assurance</h1>
-  <p class="sub">A mid-size non-life insurer that does not exist. We ran the engagement on its
-  <b>Claims Handling</b> team so there is something complete to look at: one set of facts, thirteen
-  analyses, and a single story they all support. <b>Every figure and quote here is invented.</b></p>
-  <div class="cta">
-    <a class="btn p" href="exec-sum.html">Start with the conclusion →</a>
-    <a class="btn s" href="../engagement-dashboard.html">Open the dashboard</a>
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span>28 analyses ready to run today</span>
+    <h1>A full operational<br>excellence engagement,<br><span class="soft">delivered on an AI-enabled system</span></h1>
+    <p class="sub">We map how the work runs today, show where the time and the money actually go,
+    design what it should become, and build the material your people will use. Behind every step is a
+    tool that already knows the method — so the work moves faster and the answers stay consistent.</p>
+    <div class="cta">
+      <a class="btn p" href="engagement-dashboard.html">Open the live dashboard →</a>
+      <a class="btn s" href="sandbox/index.html">See the live demo environment</a>
+    </div>
+    <p class="micro">Everything on this site uses invented data. Northwind Assurance is a company we made up.</p>
+    <div class="shot"><div class="frame">
+      <div class="bar"><i></i><i></i><i></i></div>
+      <img src="assets/hero-map.jpg" alt="Every analysis we can run, laid out on one page" width="2400" height="1350">
+    </div></div>
   </div>
+</section>
+
+
+<section class="feat"><div class="wrap"><div class="grid">
+  <div>
+    <div class="kicker">The product</div>
+    <h2>The dashboard you<br>actually work in</h2>
+    <p>Everything runs out of one place: what was agreed, which teams are in scope, which analyses are
+    done and which are still open, what each one found, and what it all adds up to. You see the same
+    screen we do, from the first day to the last.</p>
+    <a class="go" href="engagement-dashboard.html">Open the live dashboard →</a>
+  </div>
+  <div class="frame"><div class="bar"><i></i><i></i><i></i></div>
+    <img src="assets/dash.jpg" alt="The engagement dashboard for Northwind Assurance" loading="lazy"></div>
+</div></div></section>
+
+<section class="proof"><div class="wrap"><div class="grid">
+  <div>
+    <div class="kicker">What you get</div>
+    <h2>See what it<br>actually produces</h2>
+    <p>One invented insurer, one claims team of 42 people, and the engagement run from start to finish:
+    where the paid hours really go, how the process actually runs, what the customer sees, how the team
+    performs, and what the people in it say themselves. Thirteen analyses that land on the same answer —
+    which is exactly the point.</p>
+    <div class="cta"><a class="btn p" href="sandbox/index.html">Open the live demo environment →</a></div>
+  </div>
+  <div class="stack">
+    <div class="frame f3"><div class="bar"><i></i><i></i><i></i></div>
+      <img src="assets/baro.jpg" alt="What the team says about how the work runs" loading="lazy"></div>
+    <div class="frame f2"><div class="bar"><i></i><i></i><i></i></div>
+      <img src="assets/mae.jpg" alt="How much effort each activity takes, and how much of it is wasted" loading="lazy"></div>
+    <div class="frame f1"><div class="bar"><i></i><i></i><i></i></div>
+      <img src="assets/ote.jpg" alt="Where a team's paid hours actually end up, step by step" loading="lazy"></div>
+  </div>
+</div></div></section>
+
+<section class="teams"><div class="wrap">
+  <div class="kicker">The approach</div>
+  <h2>One engagement, five stages</h2>
+  <p class="lede">Each stage builds on the one before it and works from the same set of facts — so two
+  documents can never disagree about a number.</p>
+  <div class="row">
+    <div class="team"><span class="d" style="background:#4E86F7"></span>
+      <div class="n">Understand</div>
+      <div class="t">We establish what is true today: who does what, how long it takes, and where it goes wrong.</div>
+      <div class="st live">Available now</div></div>
+    <div class="team"><span class="d" style="background:#A98BE0"></span>
+      <div class="n">Design</div>
+      <div class="t">We turn the findings into a target: where you are heading, what the work should look like, and the organisation that delivers it.</div>
+      <div class="st live">Available now</div></div>
+    <div class="team"><span class="d" style="background:#4FC08D"></span>
+      <div class="n">Present</div>
+      <div class="t">We build what you actually see — the read-out, the summary, the recommendation — and check the argument holds before it is sent.</div>
+      <div class="st live">Available now</div></div>
+    <div class="team"><span class="d" style="background:#3E4C6B"></span>
+      <div class="n">Implement</div>
+      <div class="t">We carry the chosen improvements into the organisation and follow whether they actually land.</div>
+      <div class="st">In development</div></div>
+    <div class="team"><span class="d" style="background:#3E4C6B"></span>
+      <div class="n">Bring people along</div>
+      <div class="t">We make sure the people affected are with you: who needs convincing, what they hear, and when.</div>
+      <div class="st">In development</div></div>
+  </div>
+  <p class="foot">Above all five sits a coordinator that frames the question, plans the work, hands each
+  analysis to the tool that owns it, and challenges what comes back before you ever see it.</p>
 </div></section>
 
-<div class="stats">
-  <div class="stat"><div class="v">Claims Handling</div><div class="k">Team we looked at</div>
-    <div class="s">plus Customer Service and Finance Control, partly</div></div>
-  <div class="stat"><div class="v">42 people</div><div class="k">Whose work we mapped</div>
-    <div class="s">across 12 activities and 21 tasks</div></div>
-  <div class="stat"><div class="v">16,1 people</div><div class="k">Worth of time avoidable</div>
-    <div class="s">with 6 improvements that answer it</div></div>
-  <div class="stat"><div class="v">32%</div><div class="k">Of paid time adds value</div>
-    <div class="s">the rest is absence, waiting and rework</div></div>
+
+<section class="feat"><div class="wrap"><div class="grid">
+  <div>
+    <div class="kicker">The overview</div>
+    <h2>Everything we can run,<br>on one page</h2>
+    <p>One page shows every analysis we can run, what each one produces, whether it is available today,
+    and what we need from you before we start. Nothing is buried in a folder somewhere.</p>
+    <a class="go" href="opex-constellation.html">See how it works →</a>
+  </div>
+  <div class="frame"><div class="bar"><i></i><i></i><i></i></div>
+    <img src="assets/hero-map.jpg" alt="" loading="lazy"></div>
+</div></div></section>
+
+<section class="feat rev"><div class="wrap"><div class="grid">
+  <div>
+    <div class="kicker">Your process, end to end</div>
+    <h2>Every step, with the problems on it</h2>
+    <p>A claim from first notice to closure, laid out step by step, with the measured problems sitting on
+    the steps where they happen and the improvements that answer them — all of it drawn from the same
+    set of facts as everything else.</p>
+    <a class="go" href="sandbox/process-map.html">See the example →</a>
+  </div>
+  <div class="frame"><div class="bar"><i></i><i></i><i></i></div>
+    <img src="assets/procmap.jpg" alt="" loading="lazy"></div>
+</div></div></section>
+
+<section class="why"><div class="wrap">
+  <div class="kicker">Why it is worth it</div>
+  <h2>Better, not only faster</h2>
+  <p class="lede">Speed is the obvious gain. The bigger one is what the speed buys you: more of the
+  organisation actually looked at, more angles on every team, and a level of detail and consistency that
+  is simply not affordable by hand.</p>
+  <div class="row">
+    <div class="c" style="--a:#4E86F7;--ag:rgba(78,134,247,.13);--ab:rgba(78,134,247,.42)">
+      <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2.5 4.5 13.5h6l-1 8 9-11h-6l.5-8Z"/></svg></span>
+      <div class="h">It moves faster</div>
+      <p>Preparing, formatting and pulling the findings together takes hours instead of weeks. The time that frees up goes back into talking to your people.</p></div>
+    <div class="c" style="--a:#4FC08D;--ag:rgba(79,192,141,.13);--ab:rgba(79,192,141,.42)">
+      <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="3.2" width="5.4" height="5.4" rx="1.6"/><rect x="9.3" y="3.2" width="5.4" height="5.4" rx="1.6"/><rect x="15.4" y="3.2" width="5.4" height="5.4" rx="1.6"/><rect x="3.2" y="9.3" width="5.4" height="5.4" rx="1.6"/><rect x="9.3" y="9.3" width="5.4" height="5.4" rx="1.6"/><rect x="15.4" y="9.3" width="5.4" height="5.4" rx="1.6"/><rect x="3.2" y="15.4" width="5.4" height="5.4" rx="1.6"/><rect x="9.3" y="15.4" width="5.4" height="5.4" rx="1.6"/><rect x="15.4" y="15.4" width="5.4" height="5.4" rx="1.6"/></svg></span>
+      <div class="h">More teams, not just a sample</div>
+      <p>Coverage is normally rationed to the two or three teams a timeline allows. Here it is not, so what you get is a picture of the operation rather than a slice of it.</p></div>
+    <div class="c" style="--a:#A98BE0;--ag:rgba(169,139,224,.14);--ab:rgba(169,139,224,.42)">
+      <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2.4"/><path d="M12 2.4v3.3"/><path d="M12 18.3v3.3"/><path d="M2.4 12h3.3"/><path d="M18.3 12h3.3"/><path d="M5.2 5.2 7.5 7.5"/><path d="M18.8 18.8 16.5 16.5"/><path d="M18.8 5.2 16.5 7.5"/><path d="M5.2 18.8 7.5 16.5"/></svg></span>
+      <div class="h">More angles on each team</div>
+      <p>A team is looked at from a dozen directions instead of one. When that many separate analyses arrive at the same conclusion, nobody has to take it on trust.</p></div>
+    <div class="c" style="--a:#E5A03C;--ag:rgba(229,160,60,.13);--ab:rgba(229,160,60,.42)">
+      <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6 2.8 7.2 12 11.8l9.2-4.6L12 2.6Z"/><path d="M2.8 12.2 12 16.8l9.2-4.6"/><path d="M2.8 17 12 21.6l9.2-4.6"/></svg></span>
+      <div class="h">Deeper where it counts</div>
+      <p>Down to the individual activity with a number attached to it, rather than an impression at department level that nobody can act on.</p></div>
+    <div class="c" style="--a:#79A6FF;--ag:rgba(121,166,255,.13);--ab:rgba(121,166,255,.42)">
+      <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.6 6.6h11.2"/><path d="M3.6 11.4h11.2"/><path d="M3.6 16.2h6.6"/><path d="M14 17.3 16.4 19.8 20.8 14.6"/></svg></span>
+      <div class="h">Answers that line up</div>
+      <p>Everything works from the same set of facts and the same scoring, so two documents cannot disagree about a number, and the result does not depend on who was in the room that day.</p></div>
+    <div class="c" style="--a:#4FC08D;--ag:rgba(79,192,141,.13);--ab:rgba(79,192,141,.42)">
+      <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.8 20.6h18.4"/><rect x="5" y="9.2" width="4.6" height="11.4" rx="1.3"/><rect x="14.4" y="4.4" width="4.6" height="16.2" rx="1.3"/></svg></span>
+      <div class="h">Teams you can compare</div>
+      <p>Because every team is measured the same way, one can be held up against another — and against what we have seen in comparable operations elsewhere.</p></div>
+  </div>
 </div>
 
-<section class="finding"><div class="wrap">
-  <div class="kicker">The answer</div>
-  <h2>What we found</h2>
-  <div class="body">
-    <p>Claims Handling measures a great deal and steers on almost none of it. The claims system refreshes
-    overnight and nobody keeps a private spreadsheet to correct it, which is rare and worth protecting —
-    but the numbers are read after the fact rather than used to decide the day.</p>
-    <p>The losses are not in the claim decisions themselves. They are in <b>moving information around
-    them</b>: the notification is typed twice because the contact-centre tool was never connected to the
-    claims system, cover has to be looked up in a second system on every file, and customers phone in to
-    ask where their claim stands because nothing tells them.</p>
-    <p>The team survey lands in the same place from the other side. Team spirit is at 96% favourable and
-    workload at 32% — the one clearly negative statement. Neither of those is about the people.</p>
+<script>
+(function(){
+  var sec=document.querySelector('.why'); if(!sec) return;
+  var cards=[].slice.call(sec.querySelectorAll('.c')); if(!cards.length) return;
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  sec.className+=' anim';
+  cards.forEach(function(c,i){
+    c.style.transitionDelay=(i*70)+'ms';
+    [].forEach.call(c.querySelectorAll('.ic svg > *'),function(el,j){
+      if(!el.getTotalLength) return;
+      var L=el.getTotalLength(); if(!L) return;
+      el.style.strokeDasharray=L; el.style.strokeDashoffset=L;
+      el.style.transition='stroke-dashoffset .85s cubic-bezier(.25,.85,.3,1) '+(i*70+140+j*60)+'ms';
+    });
+  });
+  function show(c){
+    c.className+=' in';
+    [].forEach.call(c.querySelectorAll('.ic svg > *'),function(el){ el.style.strokeDashoffset=0; });
+  }
+  if(reduce||!('IntersectionObserver' in window)){ cards.forEach(show); return; }
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ show(e.target); io.unobserve(e.target); } });
+  },{threshold:.2,rootMargin:'0px 0px -8% 0px'});
+  cards.forEach(function(c){ io.observe(c); });
+})();
+</script>
+</section>
+
+<section class="steps"><div class="wrap">
+  <h2>How to look around</h2>
+  <div class="row">
+    <div class="step"><div class="n">Step 1</div>
+      <div class="t">Open the overview and find the stage you are interested in.</div></div>
+    <div class="step"><div class="n">Step 2</div>
+      <div class="t">Read what that analysis produces and what it needs before it can start.</div></div>
+    <div class="step"><div class="n">Step 3</div>
+      <div class="t">Open the same analysis in the worked example to see the finished result.</div></div>
+    <div class="step"><div class="n">Step 4</div>
+      <div class="t">Tell us which ones matter for your teams, and we run them on your own work.</div></div>
   </div>
-</div></section>
-
-<section class="analyses"><div class="wrap">
-  <div class="kicker">The evidence</div>
-  <h2>Thirteen analyses, one set of facts</h2>
-  <p class="lede">Each one opens exactly as you would receive it. The working copy is the same document
-  with the editing tools switched on — that is the version we use live in a session with your team.</p>
-
-  <div class="grp">
-    <h3>What we concluded</h3>
-    <div class="gs">The answer we gave, and the questions we set out to answer in the first place.</div>
-    <div class="grid">
-    <div class="art">
-      <div class="thumb"><img src="../assets/execsum.jpg" alt="" loading="lazy"></div>
-      <div class="body">
-        <div class="lens" style="color:var(--spine)">The conclusion</div>
-        <h3>What we told them</h3>
-        <p>One page: what we found, why it matters, what to do about it and who decides what by when. Every line traces back to the analysis behind it.</p>
-        <div class="links"><a href="exec-sum.html">Open</a></div>
-      </div>
-    </div>
-    <div class="art">
-      <div class="thumb"><img src="../assets/hypo.jpg" alt="" loading="lazy"></div>
-      <div class="body">
-        <div class="lens" style="color:var(--spine)">The questions</div>
-        <h3>The questions behind it all</h3>
-        <p>Eleven things we set out to test, each one naming the analysis that would settle it. Ten came back confirmed and one is still running.</p>
-        <div class="links"><a href="hypothesis-tree.html">Open</a><a class="alt" href="hypothesis-tree.WORKING.html">Working copy</a></div>
-      </div>
-    </div>
-    </div>
-  </div>
-
-  <div class="grp">
-    <h3>Where the time goes</h3>
-    <div class="gs">How much effort the work takes today, and how much of it is avoidable.</div>
-    <div class="grid">
-    <div class="art">
-      <div class="thumb"><img src="../assets/ote.jpg" alt="" loading="lazy"></div>
-      <div class="body">
-        <div class="lens" style="color:var(--spine)">Time and capacity</div>
-        <h3>Where the hours go</h3>
-        <p>Start from the hours you pay for and take away holidays, absence, meetings, waiting and rework, step by step, until what is left is the time actually spent on claims. Here that is a third of it.</p>
-        <div class="links"><a href="ote-waterfall.html">Open</a><a class="alt" href="ote-waterfall.WORKING.html">Working copy</a></div>
-      </div>
-    </div>
-    <div class="art">
-      <div class="thumb"><img src="../assets/mae.jpg" alt="" loading="lazy"></div>
-      <div class="body">
-        <div class="lens" style="color:var(--spine)">The work itself</div>
-        <h3>Effort per activity</h3>
-        <p>Everything the team does, what each one costs in people, what drives the volume, which systems carry it, and how much of that effort is avoidable.</p>
-        <div class="links"><a href="mae.html">Open</a><a class="alt" href="mae.WORKING.html">Working copy</a></div>
-      </div>
-    </div>
-    <div class="art">
-      <div class="thumb"><img src="../assets/oppreg.jpg" alt="" loading="lazy"></div>
-      <div class="body">
-        <div class="lens" style="color:var(--spine)">Where to start</div>
-        <h3>Where to improve first</h3>
-        <p>Every activity placed by effort and by how much of it could be improved, with the specific fix behind each one. Click any card to see the problems and the opportunity.</p>
-        <div class="links"><a href="opportunity-register.html">Open</a></div>
-      </div>
-    </div>
-    <div class="art">
-      <div class="thumb"><img src="../assets/orgbase.jpg" alt="" loading="lazy"></div>
-      <div class="body">
-        <div class="lens" style="color:var(--spine)">The organisation</div>
-        <h3>Who sits where</h3>
-        <p>The teams in scope, their headcount and how much of each manager’s time actually goes on managing rather than on the work itself.</p>
-        <div class="links"><a href="org-baseline.html">Open</a><a class="alt" href="org-baseline.WORKING.html">Working copy</a></div>
-      </div>
-    </div>
-    </div>
-  </div>
-
-  <div class="grp">
-    <h3>How the work runs</h3>
-    <div class="gs">The claim from both sides: how it moves internally, and what the customer sees.</div>
-    <div class="grid">
-    <div class="art">
-      <div class="thumb"><img src="../assets/procmap.jpg" alt="" loading="lazy"></div>
-      <div class="body">
-        <div class="lens" style="color:var(--proc)">The process</div>
-        <h3>The process, end to end</h3>
-        <p>A claim from first notice to closure, step by step, with the measured problems marked on the steps where they happen and the improvements that answer them.</p>
-        <div class="links"><a href="process-map.html">Open</a><a class="alt" href="process-map.WORKING.html">Working copy</a></div>
-      </div>
-    </div>
-    <div class="art">
-      <div class="thumb"><img src="../assets/blueprint.jpg" alt="" loading="lazy"></div>
-      <div class="body">
-        <div class="lens" style="color:var(--proc)">The customer view</div>
-        <h3>The service, from outside</h3>
-        <p>The same claim seen from the customer’s side: what they do, what they see us do, and everything that happens out of their sight. Two of the three biggest losses sit right on that line.</p>
-        <div class="links"><a href="service-blueprint.html">Open</a><a class="alt" href="service-blueprint.WORKING.html">Working copy</a></div>
-      </div>
-    </div>
-    <div class="art">
-      <div class="thumb"><img src="../assets/raci.jpg" alt="" loading="lazy"></div>
-      <div class="body">
-        <div class="lens" style="color:var(--mgmt)">Who decides</div>
-        <h3>Who decides what</h3>
-        <p>Every activity against every role, filled in live with the team. It found triage with no owner at all and settlement with two.</p>
-        <div class="links"><a href="raci-diagnostic.html">Open</a><a class="alt" href="raci-diagnostic.WORKING.html">Working copy</a></div>
-      </div>
-    </div>
-    <div class="art">
-      <div class="thumb"><img src="../assets/datamat.jpg" alt="" loading="lazy"></div>
-      <div class="body">
-        <div class="lens" style="color:var(--spine)">The data</div>
-        <h3>Is the data ready</h3>
-        <p>Ten data points scored on whether a machine could actually use them: reachable, structured, complete, accurate, current and owned. Only a fifth of the work clears the bar today.</p>
-        <div class="links"><a href="data-maturity.html">Open</a><a class="alt" href="data-maturity.WORKING.html">Working copy</a></div>
-      </div>
-    </div>
-    </div>
-  </div>
-
-  <div class="grp">
-    <h3>How the team runs</h3>
-    <div class="gs">The management system and the people inside it.</div>
-    <div class="grid">
-    <div class="art">
-      <div class="thumb"><img src="../assets/wheel.jpg" alt="" loading="lazy"></div>
-      <div class="body">
-        <div class="lens" style="color:var(--mgmt)">Management</div>
-        <h3>How the team is run</h3>
-        <p>The way the team is steered day to day, scored across five parts. It is where the “measures plenty, steers on almost none of it” conclusion comes from.</p>
-        <div class="links"><a href="performance-wheel.html">Open</a><a class="alt" href="performance-wheel.WORKING.html">Working copy</a></div>
-      </div>
-    </div>
-    <div class="art">
-      <div class="thumb"><img src="../assets/skills.jpg" alt="" loading="lazy"></div>
-      <div class="body">
-        <div class="lens" style="color:var(--mgmt)">Management</div>
-        <h3>How skills are built</h3>
-        <p>The same five questions asked about competence. Real technical skill, generously shared, and nothing written down — so it travels only where people happen to sit.</p>
-        <div class="links"><a href="skills-wheel.html">Open</a><a class="alt" href="skills-wheel.WORKING.html">Working copy</a></div>
-      </div>
-    </div>
-    <div class="art">
-      <div class="thumb"><img src="../assets/baro.jpg" alt="" loading="lazy"></div>
-      <div class="body">
-        <div class="lens" style="color:var(--mind)">The people</div>
-        <h3>What the team says</h3>
-        <p>An anonymous survey of the team, 34 of 42 answering. You see the full spread of answers to every statement, not just an average.</p>
-        <div class="links"><a href="team-barometer.html">Open</a><a class="alt" href="team-barometer.WORKING.html">Working copy</a></div>
-      </div>
-    </div>
-    </div>
-  </div>
-
 </div></section>
 
 <div class="notice"><div class="in"><span class="d"></span>
-  <p><b>Northwind Assurance is fictional.</b> Every figure, quote and finding on these pages was written
-  for this site. Real client work is never published here.</p></div></div>
+  <p><b>Nothing here is a real client.</b> Every figure, quote and finding belongs to Northwind
+  Assurance, an insurer we invented for this site. Real client work is never published here.</p></div></div>
 
 <footer><div class="in">
-  <span>Nova Reperta</span><span>Northwind Assurance is fictional</span><span>Sample data only</span>
+  <span>Nova Reperta</span><span>Operational Excellence</span><span>Sample data only</span>
 </div></footer>
 </body></html>
