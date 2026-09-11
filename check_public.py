@@ -20,8 +20,16 @@ WORD = ["ALZ", "dlh", "alz"]
 SKIP_DIRS = {".git", ".github", "node_modules"}
 TEXT = (".html", ".md", ".json", ".js", ".css", ".txt", ".py", ".svg")
 
+# Inlined images are base64, and a long run of base64 will contain "DLH" or "ALZ"
+# by chance - it did, the first time a page carried screenshots, and a gate that
+# cries wolf is a gate people learn to ignore. Strip the encoded blobs before
+# scanning. Nothing is lost: a name inside a PICTURE was never findable by a text
+# search anyway, so look at what you are embedding before you embed it.
+B64 = re.compile(r"data:[a-z0-9.+/-]+;base64,[A-Za-z0-9+/=\s]+", re.I)
+
 
 def hits(text):
+    text = B64.sub("", text)
     found = []
     for n in FORBIDDEN:
         c = text.count(n)
