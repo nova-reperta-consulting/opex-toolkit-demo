@@ -1,9 +1,13 @@
 <!doctype html>
 <!-- ============================================================================
-  SERVICE BLUEPRINT  ·  the customer axis over the process baseline
+  SERVICE BLUEPRINT  ·  the customer axis over the operating baseline
   Lanes come from task.visibility, columns from journey.stages (baseline/2026.9).
-  Replace ONLY the /* DATA */ block. Three views: Blueprint / Journey / Painpoints.
-  <style>
+  Replace ONLY the /* DATA */ block. Three views: Blueprint / Journey / Pain points.
+  <style> inlined from templates/brand.css (canonical). Logo inlined.
+============================================================================ -->
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Service Blueprint</title>
+<style>
 /* Type scale — one place, not case by case. Every size below 12px is a token; the
    whole small end lifts on a narrow screen so nothing drops under 11px on a phone. */
 :root{
@@ -17,10 +21,6 @@
   }
 }
 </style>
-<style> inlined from templates/brand.css (canonical). Logo inlined.
-============================================================================ -->
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Service Blueprint</title>
 <style>
   *{box-sizing:border-box}
   :root{--page:#FFF}
@@ -251,7 +251,7 @@
   #art.editing .swt:hover:before{color:var(--accent)}
   .swt.drag{opacity:.35;transform:scale(.98)}
   #art.editing .swcell.drop{outline:2px dashed var(--accent);outline-offset:-3px;background:rgba(110,177,209,.10)}
-  /* the activity picker - shown when a task is dropped into a phase that holds several activities */
+  /* the block picker - shown when an activity is dropped into a key process that holds several blocks */
   /* --- v2026.7 edit controls: adds, dropdowns, structured magnitude --- */
   .hidden{display:none !important}
   #ed .frow{display:flex;gap:9px} #ed .frow .f{flex:1;min-width:0}
@@ -477,6 +477,8 @@
   #ed .mrow{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:var(--fs-115);color:var(--mut)}
   #ed .mrow b{color:var(--ink);font-weight:600;text-align:right;min-width:0}
   #ed .metablock{padding:10px 12px}
+  #ed .bsteps{margin:2px 0 8px 18px;padding:0;font-size:var(--fs-115);line-height:1.55;color:var(--ink)}
+  #ed .bsteps li{margin:0 0 3px}
   #ed .hintbtns{margin:7px 0 0;display:flex;gap:6px;flex-wrap:wrap}
   #ed .prev{border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:13px;
     font-weight:700;color:var(--navy);line-height:1.35;background:var(--soft)}
@@ -1009,8 +1011,8 @@ const DATA = /* DATA */ {
   "baselineStamp": "21bf379a6c203e79",
   "baselinePath": "baseline.json",
   "generatedAt": "2026-09-08",
-  "keyMessage": "Two of the three biggest losses sit **on the line of visibility**: the notification is typed twice as it crosses from the contact centre into claims (**2,5 FTE**), and **4,0 FTE** goes on answering customers who ring because nothing on their side tells them where the claim stands.",
-  "mappingUnit": "phase",
+  "keyMessage": "Two of the three biggest losses sit **on the line of visibility**: a notification typed twice (**2,5 FTE**) and customers calling for updates (**4,0 FTE**)",
+  "mappingUnit": "key process",
   "coverage": {},
   "stages": [
     {
@@ -1098,10 +1100,10 @@ const DATA = /* DATA */ {
       "name": "Report the damage by phone",
       "system": null,
       "channel": "phone",
-      "activityId": null,
-      "phaseId": null,
       "unitName": null,
-      "pains": []
+      "pains": [],
+      "blockId": null,
+      "processId": null
     },
     {
       "id": "t-01",
@@ -1111,10 +1113,10 @@ const DATA = /* DATA */ {
       "name": "Take the call and capture the circumstances",
       "system": "Contact Centre",
       "channel": "phone",
-      "activityId": "act-01",
-      "phaseId": "notification",
-      "unitName": "Notification",
-      "pains": []
+      "unitName": "Notification and registration",
+      "pains": [],
+      "blockId": "act-01",
+      "processId": "intake"
     },
     {
       "id": "t-02",
@@ -1124,9 +1126,7 @@ const DATA = /* DATA */ {
       "name": "Re-key the notification into the claims system",
       "system": "ClaimsCore",
       "channel": null,
-      "activityId": "act-01",
-      "phaseId": "notification",
-      "unitName": "Notification",
+      "unitName": "Notification and registration",
       "pains": [
         {
           "id": "p-01",
@@ -1139,7 +1139,9 @@ const DATA = /* DATA */ {
           "dimension": "proc",
           "sourceId": "src-05"
         }
-      ]
+      ],
+      "blockId": "act-01",
+      "processId": "intake"
     },
     {
       "id": "c-02",
@@ -1149,10 +1151,10 @@ const DATA = /* DATA */ {
       "name": "Send in the photos and the paperwork",
       "system": null,
       "channel": "e-mail",
-      "activityId": null,
-      "phaseId": null,
       "unitName": null,
-      "pains": []
+      "pains": [],
+      "blockId": null,
+      "processId": null
     },
     {
       "id": "t-03",
@@ -1162,9 +1164,7 @@ const DATA = /* DATA */ {
       "name": "Create the claim record",
       "system": "ClaimsCore",
       "channel": null,
-      "activityId": "act-02",
-      "phaseId": "registration",
-      "unitName": "Registration",
+      "unitName": "Notification and registration",
       "pains": [
         {
           "id": "p-08",
@@ -1177,7 +1177,9 @@ const DATA = /* DATA */ {
           "dimension": "proc",
           "sourceId": "src-02"
         }
-      ]
+      ],
+      "blockId": "act-01",
+      "processId": "intake"
     },
     {
       "id": "t-04",
@@ -1187,10 +1189,10 @@ const DATA = /* DATA */ {
       "name": "Attach the documents received by mail",
       "system": "ClaimsCore",
       "channel": null,
-      "activityId": "act-02",
-      "phaseId": "registration",
-      "unitName": "Registration",
-      "pains": []
+      "unitName": "Notification and registration",
+      "pains": [],
+      "blockId": "act-01",
+      "processId": "intake"
     },
     {
       "id": "t-05",
@@ -1200,9 +1202,7 @@ const DATA = /* DATA */ {
       "name": "Look up the policy and read the cover",
       "system": "PolicyHub",
       "channel": null,
-      "activityId": "act-03",
-      "phaseId": "registration",
-      "unitName": "Registration",
+      "unitName": "Notification and registration",
       "pains": [
         {
           "id": "p-02",
@@ -1215,7 +1215,9 @@ const DATA = /* DATA */ {
           "dimension": "data",
           "sourceId": "src-02"
         }
-      ]
+      ],
+      "blockId": "act-01",
+      "processId": "intake"
     },
     {
       "id": "t-06",
@@ -1225,10 +1227,10 @@ const DATA = /* DATA */ {
       "name": "Record the cover decision on the file",
       "system": "ClaimsCore",
       "channel": null,
-      "activityId": "act-03",
-      "phaseId": "registration",
-      "unitName": "Registration",
-      "pains": []
+      "unitName": "Notification and registration",
+      "pains": [],
+      "blockId": "act-01",
+      "processId": "intake"
     },
     {
       "id": "t-07",
@@ -1238,9 +1240,7 @@ const DATA = /* DATA */ {
       "name": "Score the claim against the triage rules",
       "system": "ClaimsCore",
       "channel": null,
-      "activityId": "act-04",
-      "phaseId": "registration",
-      "unitName": "Registration",
+      "unitName": "Notification and registration",
       "pains": [
         {
           "id": "p-06",
@@ -1250,7 +1250,9 @@ const DATA = /* DATA */ {
           "dimension": "org",
           "sourceId": "src-02"
         }
-      ]
+      ],
+      "blockId": "act-01",
+      "processId": "intake"
     },
     {
       "id": "c-03",
@@ -1260,21 +1262,19 @@ const DATA = /* DATA */ {
       "name": "Meet the adjuster",
       "system": null,
       "channel": "in person",
-      "activityId": null,
-      "phaseId": null,
       "unitName": null,
-      "pains": []
+      "pains": [],
+      "blockId": null,
+      "processId": null
     },
     {
       "id": "t-08",
       "stageId": "s3",
       "visibility": "backstage",
       "actorId": "claims-handling",
-      "name": "Select and instruct an adjuster",
+      "name": "Select and instruct a loss adjuster",
       "system": "Email",
       "channel": null,
-      "activityId": "act-05",
-      "phaseId": "assessment",
       "unitName": "Assessment",
       "pains": [
         {
@@ -1288,7 +1288,9 @@ const DATA = /* DATA */ {
           "dimension": "proc",
           "sourceId": "src-02"
         }
-      ]
+      ],
+      "blockId": "act-02",
+      "processId": "assessment"
     },
     {
       "id": "t-09",
@@ -1298,10 +1300,10 @@ const DATA = /* DATA */ {
       "name": "Chase the adjuster report",
       "system": "Email",
       "channel": null,
-      "activityId": "act-05",
-      "phaseId": "assessment",
       "unitName": "Assessment",
-      "pains": []
+      "pains": [],
+      "blockId": "act-02",
+      "processId": "assessment"
     },
     {
       "id": "t-10",
@@ -1311,23 +1313,23 @@ const DATA = /* DATA */ {
       "name": "Read the report and update the reserve",
       "system": "ClaimsCore",
       "channel": null,
-      "activityId": "act-05",
-      "phaseId": "assessment",
       "unitName": "Assessment",
-      "pains": []
+      "pains": [],
+      "blockId": "act-02",
+      "processId": "assessment"
     },
     {
       "id": "t-11",
       "stageId": "s3",
       "visibility": "support",
       "actorId": "claims-handling",
-      "name": "Run the indicator checklist",
+      "name": "Run the fraud indicator checklist",
       "system": "ClaimsCore",
       "channel": null,
-      "activityId": "act-06",
-      "phaseId": "assessment",
       "unitName": "Assessment",
-      "pains": []
+      "pains": [],
+      "blockId": "act-02",
+      "processId": "assessment"
     },
     {
       "id": "t-12",
@@ -1337,10 +1339,10 @@ const DATA = /* DATA */ {
       "name": "Refer a flagged file to investigation",
       "system": "Email",
       "channel": null,
-      "activityId": "act-06",
-      "phaseId": "assessment",
       "unitName": "Assessment",
-      "pains": []
+      "pains": [],
+      "blockId": "act-02",
+      "processId": "assessment"
     },
     {
       "id": "c-05",
@@ -1350,10 +1352,10 @@ const DATA = /* DATA */ {
       "name": "Call again to ask where the claim stands",
       "system": null,
       "channel": "phone",
-      "activityId": null,
-      "phaseId": null,
       "unitName": null,
-      "pains": []
+      "pains": [],
+      "blockId": null,
+      "processId": null
     },
     {
       "id": "t-19",
@@ -1363,8 +1365,6 @@ const DATA = /* DATA */ {
       "name": "Answer status calls on open claims",
       "system": "Contact Centre",
       "channel": "phone",
-      "activityId": "act-10",
-      "phaseId": "assessment",
       "unitName": "Assessment",
       "pains": [
         {
@@ -1378,7 +1378,9 @@ const DATA = /* DATA */ {
           "dimension": "cust",
           "sourceId": "src-05"
         }
-      ]
+      ],
+      "blockId": "act-04",
+      "processId": "assessment"
     },
     {
       "id": "c-04",
@@ -1388,10 +1390,10 @@ const DATA = /* DATA */ {
       "name": "Drop the car at the network garage",
       "system": null,
       "channel": "in person",
-      "activityId": null,
-      "phaseId": null,
       "unitName": null,
-      "pains": []
+      "pains": [],
+      "blockId": null,
+      "processId": null
     },
     {
       "id": "t-13",
@@ -1401,10 +1403,10 @@ const DATA = /* DATA */ {
       "name": "Book the vehicle into a network garage",
       "system": "RepairPortal",
       "channel": null,
-      "activityId": "act-07",
-      "phaseId": "assessment",
       "unitName": "Assessment",
-      "pains": []
+      "pains": [],
+      "blockId": "act-02",
+      "processId": "assessment"
     },
     {
       "id": "t-14",
@@ -1414,10 +1416,10 @@ const DATA = /* DATA */ {
       "name": "Approve the repair estimate",
       "system": "RepairPortal",
       "channel": null,
-      "activityId": "act-07",
-      "phaseId": "assessment",
       "unitName": "Assessment",
-      "pains": []
+      "pains": [],
+      "blockId": "act-02",
+      "processId": "assessment"
     },
     {
       "id": "t-15",
@@ -1427,8 +1429,6 @@ const DATA = /* DATA */ {
       "name": "Calculate the settlement",
       "system": "Excel",
       "channel": null,
-      "activityId": "act-08",
-      "phaseId": "settlement",
       "unitName": "Settlement",
       "pains": [
         {
@@ -1439,7 +1439,9 @@ const DATA = /* DATA */ {
           "dimension": "data",
           "sourceId": "src-03"
         }
-      ]
+      ],
+      "blockId": "act-03",
+      "processId": "settlement"
     },
     {
       "id": "t-16",
@@ -1449,10 +1451,10 @@ const DATA = /* DATA */ {
       "name": "Obtain the second signature above the limit",
       "system": "Email",
       "channel": null,
-      "activityId": "act-08",
-      "phaseId": "settlement",
       "unitName": "Settlement",
-      "pains": []
+      "pains": [],
+      "blockId": "act-03",
+      "processId": "settlement"
     },
     {
       "id": "t-17",
@@ -1462,10 +1464,10 @@ const DATA = /* DATA */ {
       "name": "Record the settlement decision",
       "system": "ClaimsCore",
       "channel": null,
-      "activityId": "act-08",
-      "phaseId": "settlement",
       "unitName": "Settlement",
-      "pains": []
+      "pains": [],
+      "blockId": "act-03",
+      "processId": "settlement"
     },
     {
       "id": "t-18",
@@ -1475,10 +1477,10 @@ const DATA = /* DATA */ {
       "name": "Prepare and release the payment run",
       "system": "Ledger",
       "channel": null,
-      "activityId": "act-09",
-      "phaseId": "settlement",
       "unitName": "Settlement",
-      "pains": []
+      "pains": [],
+      "blockId": "act-03",
+      "processId": "settlement"
     },
     {
       "id": "c-06",
@@ -1488,10 +1490,10 @@ const DATA = /* DATA */ {
       "name": "Receive the payment",
       "system": null,
       "channel": "bank",
-      "activityId": null,
-      "phaseId": null,
       "unitName": null,
-      "pains": []
+      "pains": [],
+      "blockId": null,
+      "processId": null
     },
     {
       "id": "t-20",
@@ -1501,8 +1503,6 @@ const DATA = /* DATA */ {
       "name": "Build and send the recovery file",
       "system": "Excel",
       "channel": null,
-      "activityId": "act-11",
-      "phaseId": "closure",
       "unitName": "Closure",
       "pains": [
         {
@@ -1516,7 +1516,9 @@ const DATA = /* DATA */ {
           "dimension": "proc",
           "sourceId": "src-01"
         }
-      ]
+      ],
+      "blockId": "act-05",
+      "processId": "closure"
     },
     {
       "id": "t-21",
@@ -1526,10 +1528,10 @@ const DATA = /* DATA */ {
       "name": "Check the file is complete and close it",
       "system": "ClaimsCore",
       "channel": null,
-      "activityId": "act-12",
-      "phaseId": "closure",
       "unitName": "Closure",
-      "pains": []
+      "pains": [],
+      "blockId": "act-05",
+      "processId": "closure"
     }
   ],
   "vocab": {
@@ -2024,13 +2026,16 @@ const DATA = /* DATA */ {
   }
 
   /* ── the small derivations the rows above read from ─────────────────────────────────────── */
-  function unitWord(pl){ return DATA.mappingUnit==='phase' ? (pl?'Phases':'Phase')
-                                                            : (pl?'Activities':'Activity'); }
+  // the unit a column maps at: a KEY PROCESS where the team's work is sequenced into them,
+  // otherwise the ACTIVITY BLOCK itself. ('phase'/'activity' are the pre-taxonomy spellings.)
+  function atProcess(){ var u=DATA.mappingUnit; return u==='key process'||u==='phase'; }
+  function unitWord(pl){ return atProcess() ? (pl?'Key processes':'Key process')
+                                            : (pl?'Activity blocks':'Activity block'); }
   function unitsFor(stageId){
     var seen={}, out=[];
     steps.forEach(function(s){
       if((stageId===null ? !!s.stageId : s.stageId!==stageId)) return;
-      var n=s.unitName||s.activityId; if(!n||seen[n]) return;
+      var n=s.unitName||s.blockId; if(!n||seen[n]) return;
       seen[n]=1; out.push(n);
     });
     return out;
@@ -2259,14 +2264,14 @@ const DATA = /* DATA */ {
 
      What this instrument owns is thin, and that is the point: the blueprint holds no steps of its
      own. It owns the JOURNEY (the columns), the VISIBILITY of each step (the lanes), and the
-     mapping between them. Everything else on screen belongs to the process baseline and is locked
+     mapping between them. Everything else on screen belongs to the operating baseline and is locked
      here, with a toast that says where the change is actually made.
      ========================================================================== */
   var DELTA=[], KM=null;
   EDIT = !!DATA.editable;
 
   var V = DATA.vocab || {};
-  var UNITCOLL = (DATA.mappingUnit==='phase') ? 'phases' : 'activities';
+  var UNITCOLL = (DATA.mappingUnit==='key process'||DATA.mappingUnit==='phase') ? 'processes' : 'activityBlocks';
 
   function esc2(x){return String(x==null?'':x);}
   function pushOp(op){ DELTA.push(op); wsave(); }
@@ -2348,7 +2353,7 @@ const DATA = /* DATA */ {
             '<li><b>Click a step</b> to set what the customer sees of it.</li>'+
             '<li><b>Click a column</b> to rename a journey stage; <b>+ Stage</b> adds one.</li>'+
             '<li><b>+</b> in the Customer lane captures a step the customer performs.</li>'+
-            '<li><b>Map work</b> moves a '+esc(DATA.mappingUnit||'phase')+' to another column.</li>'+
+            '<li><b>Map work</b> moves a '+esc(unitWord().toLowerCase())+' to another column.</li>'+
           '</ul>'+
           '<p>Your edits collect here. Hit <b>Export</b> and hand the file to Claude (or run '+
           '<code>apply_delta.py</code>) &mdash; it validates every change against the baseline before writing.</p>'
@@ -2392,7 +2397,7 @@ const DATA = /* DATA */ {
 
   /* ---- the action title. Always editable, in the sidebar, with the end formatting visible. ---- */
   function suggestTitle(){
-    var c=DATA.coverage||{}, unit=DATA.mappingUnit||'phase';
+    var c=DATA.coverage||{}, unit=unitWord().toLowerCase();
     var alone=stages.filter(function(s){ return !at(s.id,'frontstage').length; });
     var bits=[];
     if(alone.length) bits.push('The customer is **alone** at '+
@@ -2405,15 +2410,15 @@ const DATA = /* DATA */ {
       (c.customerActions||0)+'** of the '+(c.tasksTotal||0)+' steps are theirs to perform');
     return bits.join(', ')+'.';
   }
-  function openTitle(){ if(!ON) return;
+  /* two lines at most (rigor-and-scoring.md 6): a live count under the action-title field */ var KM_MAX=150; function kmCount(){ var ta=document.getElementById('f_km'), c=document.getElementById('km_count'); if(!ta||!c) return; var n=ta.value.replace(/\*\*/g,'').replace(/<[^>]+>/g,'').trim().length, over=n>KM_MAX; c.style.cssText='display:flex;justify-content:space-between;gap:10px;margin:6px 0 2px;font-size:12px;font-weight:600;line-height:1.35;color:'+(over?'var(--rag-red-text,#B3261E)':'var(--mut,#5B6B82)'); c.innerHTML='<span>'+(over?'Runs past two lines on the slide. Keep the conclusion, cut the explanation.':'Fits on two lines.')+'</span><span style="white-space:nowrap">'+n+' / '+KM_MAX+'</span>'; } document.addEventListener('input',function(e){ if(e.target&&e.target.id==='f_km') kmCount(); },true); new MutationObserver(function(){ var c=document.getElementById('km_count'); if(c&&!c.firstChild) kmCount(); }).observe(document.documentElement,{childList:true,subtree:true}); function openTitle(){ if(!ON) return;
     panelShell({cls:'',label:'Narrative'},'Action title','the conclusion, not the topic',
-      '<div class="f"><label>Action title</label><textarea id="f_km">'+esc(DATA.keyMessage||'')+'</textarea>'+
+      '<div class="f"><label>Action title</label><textarea id="f_km">'+esc(DATA.keyMessage||'')+'</textarea><div id="km_count"></div>'+
         '<div class="hintbtns"><button class="kmhl" id="km_hl" title="Wrap the selected words in **…** so they render green"><span class="swch"></span>Highlight selection</button>'+
         '<button id="km_sg" title="Compose a first line from the numbers this blueprint computed">Suggest a starting title</button></div></div>'+
       '<div class="f"><label>Preview — exactly as it renders</label><div class="prev" id="km_prev"></div></div>'+
       '<div class="kmhints"><b>Formatting</b><span class="kchip">**11 days**</span> &rarr; <span style="color:var(--green);font-weight:700">11 days</span> — green highlight for the load-bearing numbers and words.<br>'+
       'Everything else renders <span style="color:var(--navy);font-weight:700">bold navy</span> automatically — no HTML needed (tags are not interpreted).<br>'+
-      '<b style="margin-top:7px">Good title checklist</b>The conclusion, not the topic · ≥2 numbers · one structural implication · no hedging.</div>',
+      '<b style="margin-top:7px">Good title checklist</b>The conclusion, not the topic · ≥2 numbers · one structural implication · no hedging · two lines at most.</div>',
       '<span style="flex:1"></span><button class="wbtn" id="km_c">Cancel</button><button class="wbtn pri" id="km_ok">Apply</button>');
     var kmt=edp.querySelector('#f_km'), kmp=edp.querySelector('#km_prev');
     function prev(){ kmp.innerHTML=hl(kmt.value||''); }
@@ -2469,6 +2474,13 @@ const DATA = /* DATA */ {
         '<div class="mrow"><span>Journey stage</span><b>'+esc(stage?stage.name:'not on the journey')+'</b></div>'+
         '<div class="lockchip" id="lk_step">'+LOCK_SVG+'locked — these come from the baseline</div>'+
       '</div>'+
+      // the deep dive: the tasks inside this activity. Read-only here - the process map and the
+      // baseline own them; the blueprint only shows how deep the walkthrough went.
+      ((s.tasks&&s.tasks.length)
+        ? '<div class="metablock"><div class="mrow"><span>Tasks</span><b>'+s.tasks.length+'</b></div>'+
+          '<ol class="bsteps">'+s.tasks.map(function(k){ return '<li>'+esc(k.name||'')+'</li>'; }).join('')+
+          '</ol></div>'
+        : '')+
       '<div class="addbox"><h6>Pain at this step</h6>'+
         (s.pains&&s.pains.length
           ? s.pains.map(function(p){ return '<div class="pn2">'+esc(p.theme)+
@@ -2477,7 +2489,7 @@ const DATA = /* DATA */ {
           : '<p class="fine">Nothing captured here yet.</p>')+
         '<button class="wbtn wide" id="f_addpain">Capture a pain point</button></div>';
     panelShell({cls:mine?'':'act', label:'Step'}, s.name,
-      '<span class="id">'+esc(s.id)+'</span>'+(s.activityId?'<span class="id">'+esc(s.activityId)+'</span>':''),
+      '<span class="id">'+esc(s.id)+'</span>'+(s.blockId?'<span class="id">'+esc(s.blockId)+'</span>':''),
       body, '<span style="flex:1"></span><button class="wbtn" id="s_c">Cancel</button><button class="wbtn pri" id="s_ok">Apply</button>');
     var vs=edp.querySelector('#f_vis');
     vs.addEventListener('change',function(){
@@ -2491,7 +2503,7 @@ const DATA = /* DATA */ {
       toast('The customer performs this step, so it sits above the line of interaction and nowhere '+
             'else. Change who performs it on the process map if that is wrong.'); };
     edp.querySelector('#lk_step').onclick=function(){
-      toast('A step’s name, who performs it and which activity it belongs to are the <b>process baseline’s</b>. '+
+      toast('A step’s name, who performs it and which activity it belongs to are the <b>operating baseline’s</b>. '+
             'Change them on the process map, then re-seed this blueprint.'); };
     edp.querySelector('#f_addpain').onclick=function(){ openPain(s); };
     edp.querySelector('#s_c').onclick=closeEd;
@@ -2514,7 +2526,7 @@ const DATA = /* DATA */ {
           return;
         }
         Object.keys(ch).forEach(function(k){ s[k]=ch[k]; });
-        pushOp({op:'update', coll:'tasks', id:s.id, changes:ch});
+        pushOp({op:'update', coll:'activities', id:s.id, changes:ch});
         draw();
       }
       closeEd(); };
@@ -2542,7 +2554,7 @@ const DATA = /* DATA */ {
       if(!th){ toast('A pain needs to say what hurts.'); return; }
       var src=edp.querySelector('#p_src').value.trim();
       if(!src){ toast('A pain without a source is an impression. Say who told you.'); return; }
-      var mag=readMag(), rec={activityId:s.activityId||null, theme:th,
+      var mag=readMag(), rec={blockId:s.blockId||null, theme:th,
                               dimension:edp.querySelector('#p_dim').value, sourceLabel:src};
       if(mag) rec.magnitude=mag; else rec.magnitudeNote='not quantified';
       (s.pains=s.pains||[]).push({theme:th, magnitude:mag, dimension:rec.dimension});
@@ -2610,11 +2622,11 @@ const DATA = /* DATA */ {
   function unitsOf(){
     var seen={}, out=[];
     steps.forEach(function(s){
-      var u = (UNITCOLL==='activities') ? s.activityId : (s.phaseId||s.activityId);
+      var u = (UNITCOLL==='activityBlocks') ? s.blockId : (s.processId||s.blockId);
       if(!u || seen[u]) return;
       seen[u]=1;
       var mine=steps.filter(function(x){
-        return ((UNITCOLL==='activities')?x.activityId:(x.phaseId||x.activityId))===u; });
+        return ((UNITCOLL==='activityBlocks')?x.blockId:(x.processId||x.blockId))===u; });
       out.push({id:u, name:(s.unitName||u), n:mine.length, stageId:mine[0].stageId||''});
     });
     return out;
@@ -2623,7 +2635,7 @@ const DATA = /* DATA */ {
     if(!ON) return;
     var us=unitsOf();
     panelShell({cls:'act',label:'Mapping'}, 'Map the work onto the journey',
-      esc(us.length)+' '+esc(DATA.mappingUnit||'phase')+(us.length===1?'':'s')+' · a column each',
+      esc(us.length)+' '+esc(unitWord(us.length!==1).toLowerCase())+' · a column each',
       us.map(function(u,i){
         return sel(u.name+'  ('+u.n+' step'+(u.n===1?'':'s')+')','u_'+i,stageVocab(),u.stageId,
                    '— not on the journey —');
@@ -2638,7 +2650,7 @@ const DATA = /* DATA */ {
         var v=edp.querySelector('#u_'+i).value||null;
         if(v===(u.stageId||null)) return;
         steps.forEach(function(s){
-          var su=(UNITCOLL==='activities')?s.activityId:(s.phaseId||s.activityId);
+          var su=(UNITCOLL==='activityBlocks')?s.blockId:(s.processId||s.blockId);
           if(su===u.id) s.stageId=v; });
         pushOp({op:'update', coll:UNITCOLL, id:u.id, changes:{journeyStageId:v}});
         n++;
@@ -2656,8 +2668,8 @@ const DATA = /* DATA */ {
     if(!ON) return;
     var cust=customerActor();
     var acts={}, order=[];
-    steps.forEach(function(s){ if(s.activityId && !acts[s.activityId]){
-      acts[s.activityId]=s.unitName||s.activityId; order.push(s.activityId); } });
+    steps.forEach(function(s){ if(s.blockId && !acts[s.blockId]){
+      acts[s.blockId]=s.unitName||s.blockId; order.push(s.blockId); } });
     var actVocab=order.map(function(i){return {key:i,label:acts[i]};});
     var stg=stages.filter(function(x){return x.id===stageId;})[0];
     panelShell({cls:'new',label:'Customer step'}, 'What does the customer do here?',
@@ -2686,9 +2698,9 @@ const DATA = /* DATA */ {
       var lid='NEWSTEP'+(steps.length+1);
       var cch=edp.querySelector('#c_ch').value||null;
       steps.push({id:lid, stageId:stageId||null, visibility:'customer-action', channel:cch,
-                  actorId:cust?cust.id:'NEWCUST', name:nm, system:null, activityId:aid, pains:[], _new:true});
-      pushOp({op:'add', coll:'tasks',
-              record:{activityId:aid, actorName:who, name:nm, visibility:'customer-action',
+                  actorId:cust?cust.id:'NEWCUST', name:nm, system:null, blockId:aid, pains:[], _new:true});
+      pushOp({op:'add', coll:'activities',
+              record:{blockId:aid, actorName:who, name:nm, visibility:'customer-action',
                       channel:cch}});
       recount(); draw(); closeEd(); };
   }
@@ -2872,7 +2884,7 @@ const DATA = /* DATA */ {
       var s=stepById(id); if(!s) return null;
       var r=CROWS.filter(function(x){return x.id===(s.visibility||'');})[0]||{label:'Unclassified'};
       var st=stages.filter(function(x){return x.id===s.stageId;})[0];
-      return {kind:r.label, title:s.name, id:s.id+(s.activityId?' · '+s.activityId:''),
+      return {kind:r.label, title:s.name, id:s.id+(s.blockId?' · '+s.blockId:''),
         rows:[
           {k:'Journey stage', v:st?st.name:'not on the journey'},
           {k:'Performed by',  v:actorName(s.actorId)},
@@ -2881,7 +2893,7 @@ const DATA = /* DATA */ {
                                s.visibility?'never sees this':'has not been asked'},
           {k:'They meet it through', v:s.channel?chLabel(s.channel):'—'},
           {k:'Carried by',    v:s.system||'—'},
-          {k:'Part of',       v:s.unitName||s.activityId||'—'}
+          {k:'Part of',       v:s.unitName||s.blockId||'—'}
         ],
         notesTitle:'Where it breaks', notesEmpty:'Nothing captured at this step.',
         notes:(s.pains||[]).map(function(p){
@@ -2954,7 +2966,7 @@ const DATA = /* DATA */ {
 /*</EDIT>*/
 
 
-  var VIEWS=[['bp','Blueprint',vBlueprint],['journey','Journey',vJourney],['pains','Painpoints',vPains]];
+  var VIEWS=[['bp','Blueprint',vBlueprint],['journey','Journey',vJourney],['pains','Pain points',vPains]];
   var cur='bp';
 
   document.getElementById('ctx').textContent  = DATA.context||'OPEX QUICKSCAN';
@@ -2968,7 +2980,7 @@ const DATA = /* DATA */ {
     var c = DATA.coverage||{};
     document.getElementById('src').innerHTML = DATA.source
       ? '<b style="color:var(--txt)">Source:</b> '+esc(DATA.source) : '';
-    var bits=[], unit=DATA.mappingUnit||'phase';
+    var bits=[], unit=unitWord().toLowerCase();
     if(DATA.baselineVersion) bits.push(DATA.baselineVersion);
     if(c.tasksTotal) bits.push(c.classified+' of '+c.tasksTotal+' steps classified');
     if(c.unitsUnmapped) bits.push(c.unitsUnmapped+' '+unit+(c.unitsUnmapped>1?'s':'')+' off the journey');

@@ -195,6 +195,11 @@
   .lg-gap{width:10px;height:10px;border-radius:50%;background:var(--rag-amber);display:inline-block}
   /* a suggested (derived) value — visibly not a measured one */
   .st input.sugg{border-color:var(--rag-amber);border-style:dashed;background:var(--tint-amber)}
+  /* what the operating baseline books for the team this card joins — an internal
+     cross-check, like the amber dot, and working build only */
+  .n-recon{font-size:var(--fs-95);color:var(--mut);margin-top:4px;letter-spacing:.01em}
+  .n-recon.off{color:var(--rag-amber);font-weight:700}
+  .compact .n-recon{display:none}
   #art.editing .nc{cursor:pointer}
   #art.editing .nc:hover{outline:2px solid var(--accent);outline-offset:2px;transform:translateY(-1px)}
   #art.editing h1{cursor:pointer}
@@ -350,7 +355,7 @@ const DATA = /* DATA */ {
     "capturedBy": "NR team",
     "capturedAt": "2026-09-04",
     "peildatum": "01/09/2026",
-    "keyMessage": "Claims Operations runs **65,0 FTE in scope** across 5 teams and 3 org layers, with **42,0 of it in Claims Handling** alone; **5 of 7** named managers quantify their management split, so the capacity picture is evidenced at the top and thin underneath.",
+    "keyMessage": "Claims Operations runs **65,0 FTE in scope**, but only **5 of 7** managers quantify their management split, so the capacity picture thins out below the top",
     "baselineVersion": null
   },
   "org": {
@@ -698,13 +703,13 @@ function missing(n){
     if(rf==null||rf==='')m.push('regular FTE');
   }
   /* a named manager with no FTE silently books 1 HC at 0 FTE and understates capacity
-     all the way into the process baseline — that is a blind spot, not a zero. It applies
+     all the way into the operating baseline — that is a blind spot, not a zero. It applies
      at EVERY level: a department head or C-level with no FTE understates just as much. */
   if(n.manager&&String(n.manager.name||'').trim()&&(n.manager.fte_total==null||n.manager.fte_total===''))m.push('manager FTE');
   return m;
 }
 /*<EDIT>*/
-/* a node name is the join key for the delta apply AND for process-baseline actor
+/* a node name is the join key for the delta apply AND for operating-baseline actor
    matching, so a person's name inside it breaks both the day that person moves */
 function nameLooksPersonal(n){
   var nm2=String(n.name||'');
@@ -717,6 +722,54 @@ function nameLooksPersonal(n){
   }
   var br=nm2.match(/[(\[]\s*([^)\]]*\p{Lu}\p{Ll}+(?:\s+\p{Lu}[\p{Ll}.]*)+[^)\]]*)\s*[)\]]/u);
   return br?br[1]:null;
+}
+/* ---- the operating baseline's own reading of this team ----
+   A card that joins an actor (actor_id) carries what the baseline books for it in
+   baseline_actor, put there by seed_org.py. HEADCOUNT IS PEOPLE AND FTE IS CONTRACTED
+   FTE: 46 people on part-time contracts are 42 FTE, so the two are compared separately
+   and neither is corrected here. The roll-up mirrors org_spine.py — the unit plus every
+   descendant that reconciles at it, stopping at one that joins an actor of its own —
+   because a chip that counts differently from the delta is the second headcount this
+   join exists to stop. */
+function spineRoll(n){
+  var fte=0,hc=0,fp=false,hp=false;
+  (function rec(x,top){
+    if(!top){
+      if(isTeam(x)&&!x.in_scope)return;
+      if(x.actor_id)return;
+    }
+    var s=x.staff||{};
+    CATS.forEach(function(k){
+      var d=s[k]||{};
+      if(d.fte!=null&&d.fte!=='')fte+=+d.fte;else if(d.hc!=null&&d.hc!=='')fp=true;
+      if(d.hc!=null&&d.hc!=='')hc+=+d.hc;else if(d.fte!=null&&d.fte!=='')hp=true;
+    });
+    var m=x.manager||{};
+    if(String(m.name||'').trim()||m.fte_total!=null){
+      hc+=1;
+      if(m.fte_total==null||m.fte_total==='')fp=true;else fte+=+m.fte_total;
+    }
+    (x.children||[]).forEach(function(c){rec(c,false);});
+  })(n,true);
+  return{fte:fte,hc:hc,fte_partial:fp,hc_partial:hp};
+}
+function ppl(v){return v==null?'–':(v%1?f(v):String(v));}   /* people are whole */
+function reconChip(n){
+  var b=n.baseline_actor;if(!b)return'';
+  var r=spineRoll(n),bits=[],off=false,d;
+  if(b.headcount!=null){
+    d=!r.hc_partial&&Math.abs(b.headcount-r.hc)>0.05;off=off||d;
+    bits.push('<span class="'+(d?'off':'')+'">'+ppl(b.headcount)+' people</span>');
+  }
+  if(b.fte!=null){
+    d=!r.fte_partial&&Math.abs(b.fte-r.fte)>0.05;off=off||d;
+    bits.push('<span class="'+(d?'off':'')+'">'+f(b.fte)+' FTE</span>');
+  }
+  if(!bits.length)bits.push('no figures yet');
+  return'<div class="n-recon'+(off?' off':'')+'" title="'+x(b.name||b.id)+
+    ' in the operating baseline. This tree counts '+ppl(r.hc)+' people at '+f(r.fte)+
+    ' FTE. Where they differ, settle it with the manager. Nothing is overwritten.">'+
+    'baseline: '+bits.join(' · ')+'</div>';
 }
 /*</EDIT>*/
 function summary(root){
@@ -809,7 +862,7 @@ function cardHTML(n){
     /*<EDIT>*/(gaps.length?'<span class="gap-dot" title="Incomplete: '+x(gaps.join(', '))+'"></span>':'')+/*</EDIT>*/
     (mn?'<div class="n-mgr">'+personIcon(n.manager,n.__rid)+'</div>':'')+
     '<div class="n-name">'+(x(n.name)||'Team')+'</div>'+
-    '<div class="n-fte">'+f(o.fte)+' FTE · '+o.hc+' HC</div>'+
+    '<div class="n-fte">'+f(o.fte)+' FTE · '+o.hc+' HC</div>'+/*<EDIT>*/reconChip(n)+/*</EDIT>*/
     (n.service_description?'<div class="n-desc">'+x(n.service_description)+'</div>':'')+
     (pills?'<div class="n-pills">'+pills+'</div>':'');
 }
@@ -1473,14 +1526,14 @@ function addNode(prid,type){
 
 /* ---- action title: ALWAYS editable while unlocked — in the SIDEBAR, with the
    end formatting rendered live + formatting hints (the house standard) ---- */
-function openTitle(){
+/* two lines at most (rigor-and-scoring.md 6): a live count under the action-title field */ var KM_MAX=150; function kmCount(){ var ta=document.getElementById('f_km'), c=document.getElementById('km_count'); if(!ta||!c) return; var n=ta.value.replace(/\*\*/g,'').replace(/<[^>]+>/g,'').trim().length, over=n>KM_MAX; c.style.cssText='display:flex;justify-content:space-between;gap:10px;margin:6px 0 2px;font-size:12px;font-weight:600;line-height:1.35;color:'+(over?'var(--rag-red-text,#B3261E)':'var(--mut,#5B6B82)'); c.innerHTML='<span>'+(over?'Runs past two lines on the slide. Keep the conclusion, cut the explanation.':'Fits on two lines.')+'</span><span style="white-space:nowrap">'+n+' / '+KM_MAX+'</span>'; } document.addEventListener('input',function(e){ if(e.target&&e.target.id==='f_km') kmCount(); },true); new MutationObserver(function(){ var c=document.getElementById('km_count'); if(c&&!c.firstChild) kmCount(); }).observe(document.documentElement,{childList:true,subtree:true}); function openTitle(){
   if(!ON)return;
   document.getElementById('np-kind').textContent='Narrative';
   document.getElementById('np-ttl').textContent='Action title';
   var b=document.getElementById('np-body');
   b.innerHTML=
     '<div class="f"><label>Action title</label>'+
-    '<textarea id="f_km" placeholder="The conclusion, not the topic — with at least two numbers.">'+x(DATA.meta.keyMessage||'')+'</textarea>'+
+    '<textarea id="f_km" placeholder="The conclusion, not the topic — with at least two numbers.">'+x(DATA.meta.keyMessage||'')+'</textarea><div id="km_count"></div>'+
     '<button class="km-hlbtn" id="km_hl" title="Wrap the selected words in **…** so they render green"><span class="swch"></span>Highlight selection</button>'+
     ' <button class="km-hlbtn" id="km_sug" title="Compose a starting title from the computed stats — deterministic, no invented numbers">Suggest a starting title</button></div>'+
     '<div class="f"><label>Preview — exactly as it renders</label><div class="km-prev" id="km_prev"></div></div>'+
@@ -1488,11 +1541,11 @@ function openTitle(){
     '<span class="kchip">**41,3 FTE**</span> &rarr; <span style="color:var(--green);font-weight:700">41,3 FTE</span> — green highlight for the load-bearing numbers and words.<br>'+
     'Everything else renders <span style="color:var(--navy);font-weight:700">bold navy</span> automatically — no HTML needed (tags are not interpreted).<br>'+
     '<b style="margin-top:7px">Good title checklist</b>'+
-    'The conclusion, not the topic · ≥2 numbers · one structural implication · no hedging.</div>';
+    'The conclusion, not the topic · ≥2 numbers · one structural implication · no hedging · two lines at most.</div>';
   var ftr=document.getElementById('np-ftr');
   ftr.innerHTML='<span class="sp"></span><button class="wbtn" id="km_cancel">Cancel</button><button class="wbtn pri" id="km_apply">Apply</button>';
   var ta=b.querySelector('#f_km'),pv=b.querySelector('#km_prev');
-  function upd(){pv.innerHTML=ta.value?hlMsg(ta.value):'<span class="km-empty">Key conclusion to be drafted</span>';}
+  function upd(){kmCount();pv.innerHTML=ta.value?hlMsg(ta.value):'<span class="km-empty">Key conclusion to be drafted</span>';}
   function grow(){ta.style.height='auto';ta.style.height=(ta.scrollHeight+2)+'px';}
   ta.addEventListener('input',function(){upd();grow();});
   upd();setTimeout(grow,10);ta.focus();

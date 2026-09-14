@@ -345,8 +345,8 @@ const DATA = /* DATA */ {
  "lens": "BASELINE · OTE WATERFALL",
  "teamName": "Claims Handling",
  "teamId": "claims-handling",
- "source": "Team lead, two coordinators and four handlers, 3-4 Sep 2026; HR time records and the claims system report pack",
- "keyMessage": "Just under a third of the time Northwind pays for reaches a customer or the business. The two biggest losses are not absence or meetings: they are the peaks the team cannot staff for, and the 95 minutes a day every handler spends chasing, searching and re-typing.",
+ "source": "Team lead, two coordinators and four handlers, 3-4 Sep 2026; HR time records and the claims system report pack, Jan-Aug 2026",
+ "keyMessage": "Just under a third of Claims Handling's time adds value: the biggest losses are peaks it cannot staff and 95 minutes a day of chasing and re-typing",
  "referencePeriod": {
   "from": "2025-09-01",
   "to": "2026-08-31",
@@ -359,7 +359,7 @@ const DATA = /* DATA */ {
  },
  "inputs": {
   "fte": 42,
-  "headcount": 46,
+  "headcount": 45,
   "hoursPerDay": 8,
   "contractedDaysYear": 260,
   "absence": {
@@ -626,8 +626,37 @@ const DATA = /* DATA */ {
   "allocatedFte": 42.0,
   "source": "sum of activity x actor allocations for Claims Handling"
  },
- "generatedAt": "2026-09-10",
- "baselineVersion": "21bf379a6c203e79",
+ "generatedAt": "2026-09-13",
+ "baselineVersion": "9e0b4bf7d4d1849d",
+ "capacitySource": {
+  "enabled": true,
+  "teamId": "claims-handling",
+  "source": "actors[].capacity for Claims Handling in the operating baseline",
+  "sourceId": "src-01",
+  "fields": [
+   "absence.absenteeismPct",
+   "absence.legalHolidays",
+   "absence.overtimePct",
+   "absence.publicHolidays",
+   "absence.recuperationDays",
+   "contractedDaysYear",
+   "fte",
+   "headcount",
+   "hoursPerDay",
+   "management.managerFte",
+   "management.managerMgmtPct",
+   "management.teamLeadFte",
+   "management.teamLeadMgmtPct"
+  ],
+  "filled": [],
+  "overrides": [
+   {
+    "field": "headcount",
+    "baseline": 45,
+    "capture": 46
+   }
+  ]
+ },
  "methodFingerprint": "1681311c6a0e",
  "benchmarks": null,
  "derived": {

@@ -275,7 +275,7 @@ table.hm tr.all td{outline:2px solid rgba(0,32,91,.35);outline-offset:-2px}
 
 <script>
 const DATA = /* DATA */ {
- "keyMessage": "Claims Handling likes the work and likes each other, and is running hot: workload is the one statement where the team is clearly negative, and development support is the second. Nothing here points at the people; both sit where the management system is thinnest.",
+ "keyMessage": "Claims Handling likes the work and each other but runs hot: workload and development support score lowest, where the management system is thinnest",
  "teamName": "Claims Handling",
  "context": "OPEX QUICKSCAN",
  "lens": "MINDSET · TEAM BAROMETER",
@@ -786,12 +786,12 @@ const DATA = /* DATA */ {
   function toast(m){var t=document.querySelector('.nr-toast');if(!t){t=document.createElement('div');t.className='nr-toast';document.body.appendChild(t);}
     t.textContent=m;t.classList.add('on');clearTimeout(_tt);_tt=setTimeout(function(){t.classList.remove('on');},3200);}
 
-  function openConclusions(){ if(!ON) return; edp=document.getElementById("ed");
+  /* two lines at most (rigor-and-scoring.md 6): a live count under the action-title field */ var KM_MAX=150; function kmCount(){ var ta=document.getElementById('f_km'), c=document.getElementById('km_count'); if(!ta||!c) return; var n=ta.value.replace(/\*\*/g,'').replace(/<[^>]+>/g,'').trim().length, over=n>KM_MAX; c.style.cssText='display:flex;justify-content:space-between;gap:10px;margin:6px 0 2px;font-size:12px;font-weight:600;line-height:1.35;color:'+(over?'var(--rag-red-text,#B3261E)':'var(--mut,#5B6B82)'); c.innerHTML='<span>'+(over?'Runs past two lines on the slide. Keep the conclusion, cut the explanation.':'Fits on two lines.')+'</span><span style="white-space:nowrap">'+n+' / '+KM_MAX+'</span>'; } document.addEventListener('input',function(e){ if(e.target&&e.target.id==='f_km') kmCount(); },true); new MutationObserver(function(){ var c=document.getElementById('km_count'); if(c&&!c.firstChild) kmCount(); }).observe(document.documentElement,{childList:true,subtree:true}); function openConclusions(){ if(!ON) return; edp=document.getElementById("ed");
     var C=(D.conclusions&&D.conclusions.strengths)?D.conclusions:{strengths:[],attentions:[],takeaway:""};
     edp.innerHTML='<div class="edh"><button class="x" id="edx">&times;</button><div class="row"><span class="kind">Narrative</span><h3>Conclusions &amp; action title</h3></div><div class="edq">'+esc(D.teamName||"")+' — survey numbers stay locked; this panel edits the story, not the data</div></div>'+
       '<div class="edb">'+
-      '<div class="f"><label>Action title</label><textarea id="f_km">'+esc(D.keyMessage||"")+'</textarea><button class="kmhl" id="km_hl" title="Wrap the selected words in **\u2026** so they render green"><span class="swch"></span>Highlight selection</button></div>'+
-      '<div class="f"><label>Preview \u2014 exactly as it renders</label><div class="prev" id="km_prev"></div></div><div class="kmhints"><b>Formatting</b><span class="kchip">**42 FTE**</span> &rarr; <span style="color:var(--green);font-weight:700">42 FTE</span> \u2014 green highlight for the load-bearing numbers and words.<br>Everything else renders <span style="color:var(--navy);font-weight:700">bold navy</span> automatically \u2014 no HTML needed (tags are not interpreted).<br><b style="margin-top:7px">Good title checklist</b>The conclusion, not the topic \u00b7 \u22652 numbers \u00b7 one structural implication \u00b7 no hedging.</div>'+
+      '<div class="f"><label>Action title</label><textarea id="f_km">'+esc(D.keyMessage||"")+'</textarea><div id="km_count"></div><button class="kmhl" id="km_hl" title="Wrap the selected words in **\u2026** so they render green"><span class="swch"></span>Highlight selection</button></div>'+
+      '<div class="f"><label>Preview \u2014 exactly as it renders</label><div class="prev" id="km_prev"></div></div><div class="kmhints"><b>Formatting</b><span class="kchip">**42 FTE**</span> &rarr; <span style="color:var(--green);font-weight:700">42 FTE</span> \u2014 green highlight for the load-bearing numbers and words.<br>Everything else renders <span style="color:var(--navy);font-weight:700">bold navy</span> automatically \u2014 no HTML needed (tags are not interpreted).<br><b style="margin-top:7px">Good title checklist</b>The conclusion, not the topic \u00b7 \u22652 numbers \u00b7 one structural implication \u00b7 no hedging \u00b7 two lines at most.</div>'+
       '<div class="sect pos"><label>Strengths<span class="cap2">each line is a bullet — Enter adds one</span></label><textarea id="f_str">'+esc(bullets(C.strengths))+'</textarea></div>'+
       '<div class="sect neg"><label>Attention areas<span class="cap2">each line is a bullet — Enter adds one</span></label><textarea id="f_att">'+esc(bullets(C.attentions))+'</textarea></div>'+
       '<div class="sect take"><label>Key take-away</label><textarea id="f_tk">'+esc(C.takeaway||"")+'</textarea></div>'+

@@ -4,7 +4,6 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>AI Opportunity Heatmap</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
 /* Type scale — one place, not case by case. Every size below 12px is a token; the
    whole small end lifts on a narrow screen so nothing drops under 11px on a phone. */
@@ -19,6 +18,7 @@
   }
 }
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
 :root{--navy:#1B2A4A;--green:#1D7044;--border:#D4DBE8;--muted:#7A8CAA;
   --opt0-bg:#F0F2F5;--opt0-c:#9CA3AF;--opt0-bc:#E5E7EB;
@@ -112,12 +112,10 @@ body{display:flex;align-items:center;justify-content:center;}
     <span class="bar-c">Sample data</span>
   </div>
     <div class="action-bar">
-    <div class="action-title">Just over <strong>60% of the improvement potential</strong> sits in four activities, and every one of them is information moving between systems rather than a claim being decided</div>
-    <div class="ameta"><span class="ameta-pill">42,0 FTE in Claims Handling</span><span class="ameta-pill">12 activities &middot; 5 phases</span><span class="ameta-pill">16,1 FTE of potential</span></div>
+    <div class="action-title">Opening and registering a claim carries <strong>6,8 of the 14,9 FTE</strong> of potential, and every gain in it is information moving between systems</div>
+    <div class="ameta"><span class="ameta-pill">42,0 FTE in Claims Handling</span><span class="ameta-pill">5 activity blocks &middot; 4 phases</span><span class="ameta-pill">14,9 FTE of potential</span></div>
   </div>
-    <div class="phase-hdr">
-    <div class="ph-cell"><span class="ph-name">Notification</span><span class="ph-fte">1,5 FTE</span></div>
-    <div class="ph-cell"><span class="ph-name">Registration</span><span class="ph-fte">12,0 FTE</span></div>
+    <div class="phase-hdr">    <div class="ph-cell"><span class="ph-name">Notification and registration</span><span class="ph-fte">13,5 FTE</span></div>
     <div class="ph-cell"><span class="ph-name">Assessment</span><span class="ph-fte">15,5 FTE</span></div>
     <div class="ph-cell"><span class="ph-name">Settlement</span><span class="ph-fte">8,0 FTE</span></div>
     <div class="ph-cell"><span class="ph-name">Closure</span><span class="ph-fte">5,0 FTE</span></div>
@@ -125,72 +123,35 @@ body{display:flex;align-items:center;justify-content:center;}
     <div class="cols-grid">
     <div class="phase-col">
       <div class="act-card opt2" onclick="openModal('act-01')">
-        <div class="act-name">Take the first notification of loss</div>
-        <div class="act-sdesc">Take the call, then type it in again</div>
-        <div class="act-foot"><span class="fte-badge">1,5 FTE</span><div class="lever-dots"><div class="ldot ldot-auto"></div></div></div>
+        <div class="act-name">Open and register the claim</div>
+        <div class="act-sdesc">Take it in, open it, check the cover</div>
+        <div class="act-foot"><span class="fte-badge">13,5 FTE</span><div class="lever-dots"><div class="ldot ldot-auto"></div><div class="ldot ldot-auto"></div><div class="ldot ldot-process"></div></div></div>
       </div>
     </div>
     <div class="phase-col">
       <div class="act-card opt1" onclick="openModal('act-02')">
-        <div class="act-name">Register the claim and open the file</div>
-        <div class="act-sdesc">Open the file, attach what arrives</div>
-        <div class="act-foot"><span class="fte-badge">4,5 FTE</span><div class="lever-dots"></div></div>
+        <div class="act-name">Assess the claim</div>
+        <div class="act-sdesc">Instruct, screen and book the repair</div>
+        <div class="act-foot"><span class="fte-badge">13,5 FTE</span><div class="lever-dots"><div class="ldot ldot-auto"></div></div></div>
       </div>
-      <div class="act-card opt1" onclick="openModal('act-03')">
-        <div class="act-name">Check cover against the policy</div>
-        <div class="act-sdesc">Read the cover in a second system</div>
-        <div class="act-foot"><span class="fte-badge">5,0 FTE</span><div class="lever-dots"><div class="ldot ldot-auto"></div></div></div>
-      </div>
-      <div class="act-card opt1" onclick="openModal('act-04')">
-        <div class="act-name">Triage the claim by complexity</div>
-        <div class="act-sdesc">Score the file and route it</div>
-        <div class="act-foot"><span class="fte-badge">2,5 FTE</span><div class="lever-dots"><div class="ldot ldot-process"></div></div></div>
-      </div>
-    </div>
-    <div class="phase-col">
-      <div class="act-card opt2" onclick="openModal('act-05')">
-        <div class="act-name">Instruct and follow up the loss adjuster</div>
-        <div class="act-sdesc">Instruct the adjuster, then chase</div>
-        <div class="act-foot"><span class="fte-badge">6,5 FTE</span><div class="lever-dots"><div class="ldot ldot-auto"></div></div></div>
-      </div>
-      <div class="act-card opt1" onclick="openModal('act-06')">
-        <div class="act-name">Screen for fraud indicators</div>
-        <div class="act-sdesc">Run the indicator checklist</div>
-        <div class="act-foot"><span class="fte-badge">3,0 FTE</span><div class="lever-dots"></div></div>
-      </div>
-      <div class="act-card opt0" onclick="openModal('act-07')">
-        <div class="act-name">Agree the repair route with the garage</div>
-        <div class="act-sdesc">Agree the repair and approve the estimate</div>
-        <div class="act-foot"><span class="fte-badge">4,0 FTE</span><div class="lever-dots"></div></div>
-      </div>
-      <div class="act-card opt2" onclick="openModal('act-10')">
-        <div class="act-name">Handle customer queries during the claim</div>
-        <div class="act-sdesc">Answer where the claim stands</div>
+      <div class="act-card opt3" onclick="openModal('act-04')">
+        <div class="act-name">Answer the customer while the claim runs</div>
+        <div class="act-sdesc">Tell them where the claim stands</div>
         <div class="act-foot"><span class="fte-badge">2,0 FTE</span><div class="lever-dots"><div class="ldot ldot-enh"></div></div></div>
       </div>
     </div>
     <div class="phase-col">
-      <div class="act-card opt1" onclick="openModal('act-08')">
-        <div class="act-name">Calculate and approve the settlement</div>
-        <div class="act-sdesc">Calculate, approve, record</div>
-        <div class="act-foot"><span class="fte-badge">7,0 FTE</span><div class="lever-dots"><div class="ldot ldot-process"></div></div></div>
-      </div>
-      <div class="act-card opt0" onclick="openModal('act-09')">
-        <div class="act-name">Release the payment</div>
-        <div class="act-sdesc">Release the payment on the daily run</div>
-        <div class="act-foot"><span class="fte-badge">1,0 FTE</span><div class="lever-dots"></div></div>
+      <div class="act-card opt1" onclick="openModal('act-03')">
+        <div class="act-name">Settle and pay the claim</div>
+        <div class="act-sdesc">Calculate it, sign it, pay it</div>
+        <div class="act-foot"><span class="fte-badge">8,0 FTE</span><div class="lever-dots"><div class="ldot ldot-process"></div></div></div>
       </div>
     </div>
     <div class="phase-col">
-      <div class="act-card opt1" onclick="openModal('act-11')">
-        <div class="act-name">Recover from the third party</div>
-        <div class="act-sdesc">Build the recovery file from scratch</div>
-        <div class="act-foot"><span class="fte-badge">3,5 FTE</span><div class="lever-dots"></div></div>
-      </div>
-      <div class="act-card opt0" onclick="openModal('act-12')">
-        <div class="act-name">Close the file and archive</div>
-        <div class="act-sdesc">Check it is complete and archive</div>
-        <div class="act-foot"><span class="fte-badge">1,5 FTE</span><div class="lever-dots"></div></div>
+      <div class="act-card opt1" onclick="openModal('act-05')">
+        <div class="act-name">Recover and close the file</div>
+        <div class="act-sdesc">Recover what is owed, then close</div>
+        <div class="act-foot"><span class="fte-badge">5,0 FTE</span><div class="lever-dots"></div></div>
       </div>
     </div>
   </div>
@@ -208,7 +169,7 @@ body{display:flex;align-items:center;justify-content:center;}
     <div class="leg-grp"><div class="leg-dot" style="background:var(--lv-enh);"></div><span class="leg-txt">AI &mdash; Enhance</span></div>
     <div class="leg-sep"></div>
     <span class="leg-txt" style="font-style:italic;color:var(--muted);">Click any card for detail</span>
-    <div class="nr-tag"><div class="nr-dot"></div><span class="nr-lbl">Sample data · Northwind Assurance is fictional</span></div>
+    <div class="nr-tag"><div class="nr-dot"></div><span class="nr-lbl">Sample data &middot; Northwind Assurance is fictional</span></div>
   </div>
   <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
     <div class="modal" id="modal">
@@ -243,66 +204,24 @@ const LV={
 };
 const A={
  "act-01": {
-  "title": "Take the first notification of loss",
-  "phase": "Notification",
-  "fte": "1,5 FTE",
+  "title": "Open and register the claim",
+  "phase": "Notification and registration",
+  "fte": "13,5 FTE",
   "opt": 2,
-  "desc": "Every claim starts here: the customer rings, the circumstances are captured in the contact-centre tool, and the notification is then entered a second time into the claims system before a handler can see it.",
+  "desc": "Every claim starts here: the contact centre takes the call, a handler takes the notification over, opens the file, attaches the post that arrives by mail, reads the cover in the policy system and scores the claim against the triage rules.",
   "pain": [
    {
     "fte": "~2,5 FTE",
     "text": "The same notification is typed twice, once by the contact centre and once into the claims system. The contact-centre tool and the claims system were never connected, so the second entry is the only way the claim reaches a handler"
-   }
-  ],
-  "opps": [
-   {
-    "type": "auto",
-    "label": "Automation",
-    "text": "Connect the contact-centre tool to the claims system so the notification arrives once and reaches a handler without a second entry."
-   }
-  ]
- },
- "act-02": {
-  "title": "Register the claim and open the file",
-  "phase": "Registration",
-  "fte": "4,5 FTE",
-  "opt": 1,
-  "desc": "The claim record is created and the documents that arrive by post are attached to it by hand, often days after the file was opened.",
-  "pain": [
+   },
    {
     "fte": "~1,5 FTE",
     "text": "Documents arriving by mail are attached by hand, often days after the claim is opened. Post is scanned centrally once a day and matched to claims manually"
-   }
-  ],
-  "opps": []
- },
- "act-03": {
-  "title": "Check cover against the policy",
-  "phase": "Registration",
-  "fte": "5,0 FTE",
-  "opt": 1,
-  "desc": "Cover is checked against the policy. The policy lives in a second system, so PolicyHub is opened on every single file.",
-  "pain": [
+   },
    {
     "fte": "~1,8 FTE",
     "text": "Cover cannot be read from the claim, so every file needs a second system open. Policy data lives in PolicyHub and is not surfaced in the claim record"
-   }
-  ],
-  "opps": [
-   {
-    "type": "auto",
-    "label": "Automation",
-    "text": "Show a read-only view of PolicyHub inside the claim, so cover is read where the work is instead of in a second system."
-   }
-  ]
- },
- "act-04": {
-  "title": "Triage the claim by complexity",
-  "phase": "Registration",
-  "fte": "2,5 FTE",
-  "opt": 1,
-  "desc": "The claim is scored against the triage rules and routed. The score says how complex the file is; it says nothing about who can handle it.",
-  "pain": [
+   },
    {
     "fte": "not quantified",
     "text": "Triage sends complex files to whoever is free rather than to who can handle them. No record exists of which handler can take which claim type"
@@ -310,18 +229,28 @@ const A={
   ],
   "opps": [
    {
+    "type": "auto",
+    "label": "Automation",
+    "text": "Pass the notification straight through from the contact centre. Removes the second entry entirely. Depends on the two systems being connected, which is the data foundation."
+   },
+   {
+    "type": "auto",
+    "label": "Automation",
+    "text": "Show cover on the claim record. A read-only view of PolicyHub inside the claim removes the second system for the common case."
+   },
+   {
     "type": "process",
     "label": "Process redesign",
-    "text": "Triage on skill as well as complexity, so the file goes to someone who can finish it."
+    "text": "Triage on skill as well as complexity. Requires the skill record the skills wheel found missing, so it follows that work."
    }
   ]
  },
- "act-05": {
-  "title": "Instruct and follow up the loss adjuster",
+ "act-02": {
+  "title": "Assess the claim",
   "phase": "Assessment",
-  "fte": "6,5 FTE",
-  "opt": 2,
-  "desc": "An adjuster is selected and instructed, then the report is chased by hand until it arrives, and the reserve is updated when it does.",
+  "fte": "13,5 FTE",
+  "opt": 1,
+  "desc": "The claim is assessed: an adjuster is instructed and chased where the damage needs an expert eye, the file is screened for fraud indicators, and the repair is booked and approved with a network garage.",
   "pain": [
    {
     "fte": "~3,0 FTE",
@@ -332,34 +261,16 @@ const A={
    {
     "type": "auto",
     "label": "Automation",
-    "text": "Put a due date on the instruction and let the system chase the adjuster, rather than a handler doing it by hand."
+    "text": "Track adjuster due dates and chase automatically. Needs a due date in the instruction, which does not exist today."
    }
   ]
  },
- "act-06": {
-  "title": "Screen for fraud indicators",
-  "phase": "Assessment",
-  "fte": "3,0 FTE",
-  "opt": 1,
-  "desc": "A fixed checklist of fraud indicators is run on every file, and anything flagged is referred to the investigation team.",
-  "pain": [],
-  "opps": []
- },
- "act-07": {
-  "title": "Agree the repair route with the garage",
-  "phase": "Assessment",
-  "fte": "4,0 FTE",
-  "opt": 0,
-  "desc": "The repair route is agreed with the customer and a network garage, and the estimate is approved before work starts.",
-  "pain": [],
-  "opps": []
- },
- "act-08": {
-  "title": "Calculate and approve the settlement",
+ "act-03": {
+  "title": "Settle and pay the claim",
   "phase": "Settlement",
-  "fte": "7,0 FTE",
+  "fte": "8,0 FTE",
   "opt": 1,
-  "desc": "The settlement is calculated - today in a personal spreadsheet - approved, and the decision recorded on the claim.",
+  "desc": "The settlement is calculated, signed off above the limit, recorded on the claim, and the payment run is checked before Finance Control releases it.",
   "pain": [
    {
     "fte": "not quantified",
@@ -370,25 +281,16 @@ const A={
    {
     "type": "process",
     "label": "Process redesign",
-    "text": "Move the settlement calculation into the claim, which ends the personal spreadsheets and makes the calculation auditable."
+    "text": "Move the settlement calculation into the claim. Ends the personal spreadsheets and makes the calculation auditable."
    }
   ]
  },
- "act-09": {
-  "title": "Release the payment",
-  "phase": "Settlement",
-  "fte": "1,0 FTE",
-  "opt": 0,
-  "desc": "The payment is released by Finance Control on the daily run once the settlement decision is recorded.",
-  "pain": [],
-  "opps": []
- },
- "act-10": {
-  "title": "Handle customer queries during the claim",
+ "act-04": {
+  "title": "Answer the customer while the claim runs",
   "phase": "Assessment",
   "fte": "2,0 FTE",
-  "opt": 2,
-  "desc": "Customers ring to ask where their claim stands, because nothing on their side tells them. The call is handled, but nothing about the claim changes.",
+  "opt": 3,
+  "desc": "The contact centre passes on the status calls it cannot answer, and a handler tells the customer where the claim stands.",
   "pain": [
    {
     "fte": "~4,0 FTE",
@@ -398,32 +300,23 @@ const A={
   "opps": [
    {
     "type": "enh",
-    "label": "AI - Enhance",
-    "text": "Tell the customer what happened at each milestone, so the reason for the call disappears rather than the call being handled faster."
+    "label": "AI enhancement",
+    "text": "Tell the customer what happened without them asking. Status updates at each milestone. The call volume is the measure of whether it works."
    }
   ]
  },
- "act-11": {
-  "title": "Recover from the third party",
+ "act-05": {
+  "title": "Recover and close the file",
   "phase": "Closure",
-  "fte": "3,5 FTE",
+  "fte": "5,0 FTE",
   "opt": 1,
-  "desc": "Where a third party is liable, the recovery file is assembled and sent - from scratch each time, because no recovery record exists.",
+  "desc": "Where a third party is liable the recovery file is built and sent, and the claim is checked for completeness and closed.",
   "pain": [
    {
     "fte": "~1,2 FTE",
     "text": "Recovery files are built from scratch each time. The documents needed for recovery are scattered across the file and no template collects them"
    }
   ],
-  "opps": []
- },
- "act-12": {
-  "title": "Close the file and archive",
-  "phase": "Closure",
-  "fte": "1,5 FTE",
-  "opt": 0,
-  "desc": "The file is checked for completeness and archived once everything is settled and paid.",
-  "pain": [],
   "opps": []
  }
 };

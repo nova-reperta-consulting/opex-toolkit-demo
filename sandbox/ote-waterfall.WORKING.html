@@ -469,8 +469,8 @@ const DATA = /* DATA */ {
  "lens": "BASELINE · OTE WATERFALL",
  "teamName": "Claims Handling",
  "teamId": "claims-handling",
- "source": "Team lead, two coordinators and four handlers, 3-4 Sep 2026; HR time records and the claims system report pack",
- "keyMessage": "Just under a third of the time Northwind pays for reaches a customer or the business. The two biggest losses are not absence or meetings: they are the peaks the team cannot staff for, and the 95 minutes a day every handler spends chasing, searching and re-typing.",
+ "source": "Team lead, two coordinators and four handlers, 3-4 Sep 2026; HR time records and the claims system report pack, Jan-Aug 2026",
+ "keyMessage": "Just under a third of Claims Handling's time adds value: the biggest losses are peaks it cannot staff and 95 minutes a day of chasing and re-typing",
  "referencePeriod": {
   "from": "2025-09-01",
   "to": "2026-08-31",
@@ -483,7 +483,7 @@ const DATA = /* DATA */ {
  },
  "inputs": {
   "fte": 42,
-  "headcount": 46,
+  "headcount": 45,
   "hoursPerDay": 8,
   "contractedDaysYear": 260,
   "absence": {
@@ -750,8 +750,37 @@ const DATA = /* DATA */ {
   "allocatedFte": 42.0,
   "source": "sum of activity x actor allocations for Claims Handling"
  },
- "generatedAt": "2026-09-10",
- "baselineVersion": "21bf379a6c203e79",
+ "generatedAt": "2026-09-13",
+ "baselineVersion": "9e0b4bf7d4d1849d",
+ "capacitySource": {
+  "enabled": true,
+  "teamId": "claims-handling",
+  "source": "actors[].capacity for Claims Handling in the operating baseline",
+  "sourceId": "src-01",
+  "fields": [
+   "absence.absenteeismPct",
+   "absence.legalHolidays",
+   "absence.overtimePct",
+   "absence.publicHolidays",
+   "absence.recuperationDays",
+   "contractedDaysYear",
+   "fte",
+   "headcount",
+   "hoursPerDay",
+   "management.managerFte",
+   "management.managerMgmtPct",
+   "management.teamLeadFte",
+   "management.teamLeadMgmtPct"
+  ],
+  "filled": [],
+  "overrides": [
+   {
+    "field": "headcount",
+    "baseline": 45,
+    "capture": 46
+   }
+  ]
+ },
  "methodFingerprint": "1681311c6a0e",
  "benchmarks": null,
  "derived": {
@@ -2052,17 +2081,17 @@ const DATA = /* DATA */ {
   }
 
   /* the action title — always editable, in the sidebar, with the end formatting visible */
-  function openTitle(){ if(!ON) return;
+  /* two lines at most (rigor-and-scoring.md 6): a live count under the action-title field */ var KM_MAX=150; function kmCount(){ var ta=document.getElementById('f_km'), c=document.getElementById('km_count'); if(!ta||!c) return; var n=ta.value.replace(/\*\*/g,'').replace(/<[^>]+>/g,'').trim().length, over=n>KM_MAX; c.style.cssText='display:flex;justify-content:space-between;gap:10px;margin:6px 0 2px;font-size:12px;font-weight:600;line-height:1.35;color:'+(over?'var(--rag-red-text,#B3261E)':'var(--mut,#5B6B82)'); c.innerHTML='<span>'+(over?'Runs past two lines on the slide. Keep the conclusion, cut the explanation.':'Fits on two lines.')+'</span><span style="white-space:nowrap">'+n+' / '+KM_MAX+'</span>'; } document.addEventListener('input',function(e){ if(e.target&&e.target.id==='f_km') kmCount(); },true); new MutationObserver(function(){ var c=document.getElementById('km_count'); if(c&&!c.firstChild) kmCount(); }).observe(document.documentElement,{childList:true,subtree:true}); function openTitle(){ if(!ON) return;
     shell('Narrative','Action title',
-      '<div class="f"><label>Action title</label><textarea id="f_km">'+esc(DATA.keyMessage||'')+'</textarea>'+
+      '<div class="f"><label>Action title</label><textarea id="f_km">'+esc(DATA.keyMessage||'')+'</textarea><div id="km_count"></div>'+
       '<button class="kmhl" id="km_hl" title="Wrap the selection in **…** so it renders green"><span class="swch"></span>Highlight selection</button></div>'+
       '<div class="f"><label>Preview — exactly as it renders</label><div class="kmprev" id="km_prev"></div></div>'+
       '<div class="kmhints"><b>Formatting</b><span class="kchip">**37% of paid time**</span> &rarr; <span style="color:var(--green);font-weight:700">green highlight</span>. '+
       'Everything else renders <span style="color:var(--navy);font-weight:700" class="dk">bold navy</span> automatically — no HTML.<br>'+
-      '<b style="margin-top:7px">Good title checklist</b>The conclusion, not the topic &middot; &ge;2 numbers &middot; one implication &middot; no hedging.</div>',
+      '<b style="margin-top:7px">Good title checklist</b>The conclusion, not the topic &middot; &ge;2 numbers &middot; one implication &middot; no hedging &middot; two lines at most.</div>',
       '<button class="wbtn" id="km_sug" title="Compose a title from the computed figures">Suggest from the data</button>');
     var ta=edp.querySelector('#f_km'), pv=edp.querySelector('#km_prev');
-    function upd(){pv.innerHTML=ta.value?hl(ta.value):'<span style="color:var(--mut);font-style:italic;font-weight:600;font-size:.85em">Key message to be drafted</span>';}
+    function upd(){kmCount();pv.innerHTML=ta.value?hl(ta.value):'<span style="color:var(--mut);font-style:italic;font-weight:600;font-size:.85em">Key message to be drafted</span>';}
     function grow(){ta.style.height='auto';ta.style.height=(ta.scrollHeight+2)+'px';}
     ta.addEventListener('input',function(){upd();grow();}); upd(); setTimeout(grow,10); ta.focus();
     edp.querySelector('#km_sug').onclick=function(){

@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- ============================================================================
-  MAE TEMPLATE · team-level activity map (joins the process baseline by Activity ID).
+  MAE TEMPLATE · team-level activity map (joins the operating baseline by Activity ID).
   Built on the editable artifact shell: render_mae.py emits TWO builds - the client
   mae.html (editing layer stripped at build time, zero editor references) and
   mae.WORKING.html (lock-by-default in-place editing; exports one delta that
@@ -103,6 +103,7 @@
   .rel.reliable{background:var(--tint-green);color:var(--rag-green)}
   .rel.unreliable{background:var(--tint-amber);color:var(--tAmb)}
   .rel.unavailable{background:var(--tint-red);color:var(--tRed)}
+  .rel.na{background:var(--slate-10);color:var(--mut)}
   .tst{font-size:var(--fs-10);font-weight:700;padding:1px 7px;border-radius:999px;margin-right:4px}
   .tst.core{background:var(--tint-green);color:var(--rag-green)}
   .tst.shadow-it{background:var(--tint-amber);color:var(--tAmb)}
@@ -122,6 +123,34 @@
   .mx2 td{vertical-align:top;font-size:12.5px}
   .mx2 tr.total td{border-bottom:none;font-weight:700;color:var(--ink);padding-top:14px;font-size:13px}
   .mx2 thead tr,.mx2 tr.total{height:1px}
+  /* ── activity blocks: one row is one block, drawn as a tile with its activities in order ── */
+  .mx2 th{font-size:12px}
+  .mx2 td{font-size:14px;padding:13px 24px 13px 0}
+  .mx2 td.blk{height:1px;padding:7px 26px 7px 0;border-bottom:none;min-width:400px;max-width:470px}
+  .tile{height:100%;box-sizing:border-box;background:rgba(110,177,209,.18);border-left:5px solid var(--accent);border-radius:10px;padding:12px 16px}
+  #art[data-t="dark"] .tile{background:rgba(143,199,232,.12)}
+  .bh{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+  .bno{flex:none;width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;font-size:14px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+  #art[data-t="dark"] .bno{background:#EAEFF5;color:#0B2347}
+  .bn{font-size:17.5px;line-height:1.25;color:var(--navy)}
+  #art[data-t="dark"] .bn{color:#EAEFF5}
+  ol.acts{margin:0;padding:0;list-style:none;font-size:13.5px;line-height:1.42;color:var(--txt)}
+  ol.acts.two{columns:2;column-gap:22px}
+  ol.acts li{display:grid;grid-template-columns:2.1em 1fr;break-inside:avoid}
+  .ano{color:var(--steel);font-weight:700;font-variant-numeric:tabular-nums}
+  .mx2 td.wl{min-width:160px;max-width:210px}
+  .mx2 .wl b{font-size:18px} .mx2 .wl .pctt{font-size:12.5px}
+  .wl .vd{display:block;margin-top:6px;font-size:13px;color:var(--txt);line-height:1.35}
+  .mx2 td.tc{min-width:210px}
+  .tl1{margin:0 0 6px;display:flex;align-items:center;gap:7px;white-space:nowrap}
+  .tl1:last-child{margin:0} .tl1 b{color:var(--ink);font-weight:600}
+  .tl1 .tst,.tl1 .rel{font-size:12px;padding:1.5px 8px;margin:0}
+  .tl1 .verb{font-size:var(--fs-115);color:var(--mut);font-style:italic}
+  .mx2 td.ic{min-width:420px;max-width:540px}
+  ul.ib{margin:0;padding-left:1.15em;font-size:13.5px;line-height:1.42;color:var(--txt)}
+  ul.ib li{margin:0 0 4px} ul.ib li:last-child{margin:0} ul.ib li::marker{color:var(--mut)}
+  .mx2 .nat{width:30px;height:30px;font-size:14px}
+  .mx2 .opt .op{font-size:18px} .mx2 .opt .of{font-size:12.5px} .mx2 .opt .indl{font-size:12px;color:var(--mut)}
   
   /* ── extra views ── */
   .prio svg{display:block;width:100%;max-width:1500px;margin:0 auto}
@@ -192,10 +221,11 @@ const DATA = /* DATA */ {
   "teamName": "Claims Handling",
   "teamId": "claims-handling",
   "headcount": 42.0,
-  "source": "MAE interviews with the team lead and two coordinators, 3-4 Sep 2026",
-  "generatedAt": "2026-09-09",
-  "baselineVersion": "21bf379a6c203e79",
-  "keyMessage": "Claims Handling spends 42 FTE, and the three activities with the most to gain are all information movement rather than claim decisions: the double notification entry, the cover lookup, and the status calls the customer should never have had to make.",
+  "people": 45,
+  "source": "",
+  "generatedAt": "2026-09-13",
+  "baselineVersion": "9e0b4bf7d4d1849d",
+  "keyMessage": "MAE — the team's activity map",
   "vocab": {
     "natures": [
       {
@@ -227,6 +257,28 @@ const DATA = /* DATA */ {
       {
         "key": "gap",
         "label": "Gap / missing"
+      }
+    ],
+    "dataModes": [
+      {
+        "key": "",
+        "label": "— not classified —"
+      },
+      {
+        "key": "create",
+        "label": "Creates it"
+      },
+      {
+        "key": "read",
+        "label": "Reads it"
+      },
+      {
+        "key": "update",
+        "label": "Updates it"
+      },
+      {
+        "key": "delete",
+        "label": "Deletes it"
       }
     ],
     "reliability": [
@@ -296,36 +348,251 @@ const DATA = /* DATA */ {
       }
     ]
   },
-  "activities": [
+  "registry": {
+    "linked": true,
+    "systems": [
+      {
+        "id": "sys-01",
+        "name": "Contact Centre",
+        "status": "core"
+      },
+      {
+        "id": "sys-02",
+        "name": "ClaimsCore",
+        "status": "core"
+      },
+      {
+        "id": "sys-03",
+        "name": "PolicyHub",
+        "status": "core"
+      },
+      {
+        "id": "sys-04",
+        "name": "RepairPortal",
+        "status": "core"
+      },
+      {
+        "id": "sys-05",
+        "name": "Ledger",
+        "status": "core"
+      },
+      {
+        "id": "sys-06",
+        "name": "Email",
+        "status": "shadow-it"
+      },
+      {
+        "id": "sys-07",
+        "name": "Excel",
+        "status": "shadow-it"
+      },
+      {
+        "id": "sys-08",
+        "name": "Scan post",
+        "status": "gap"
+      }
+    ],
+    "dataPoints": [
+      {
+        "id": "dp-01",
+        "name": "Notification details",
+        "systemId": "sys-01",
+        "systemName": "Contact Centre"
+      },
+      {
+        "id": "dp-02",
+        "name": "Claim documents",
+        "systemId": "sys-08",
+        "systemName": "Scan post"
+      },
+      {
+        "id": "dp-03",
+        "name": "Policy number",
+        "systemId": "sys-01",
+        "systemName": "Contact Centre"
+      },
+      {
+        "id": "dp-04",
+        "name": "Policy cover",
+        "systemId": "sys-03",
+        "systemName": "PolicyHub"
+      },
+      {
+        "id": "dp-05",
+        "name": "Complexity indicators",
+        "systemId": "sys-02",
+        "systemName": "ClaimsCore"
+      },
+      {
+        "id": "dp-06",
+        "name": "Adjuster reports",
+        "systemId": "sys-06",
+        "systemName": "Email"
+      },
+      {
+        "id": "dp-07",
+        "name": "Fraud indicators",
+        "systemId": "sys-02",
+        "systemName": "ClaimsCore"
+      },
+      {
+        "id": "dp-08",
+        "name": "Repair estimates",
+        "systemId": "sys-04",
+        "systemName": "RepairPortal"
+      },
+      {
+        "id": "dp-09",
+        "name": "Settlement calculation",
+        "systemId": "sys-07",
+        "systemName": "Excel"
+      },
+      {
+        "id": "dp-10",
+        "name": "Reserve",
+        "systemId": "sys-02",
+        "systemName": "ClaimsCore"
+      },
+      {
+        "id": "dp-11",
+        "name": "Payment instructions",
+        "systemId": "sys-05",
+        "systemName": "Ledger"
+      },
+      {
+        "id": "dp-12",
+        "name": "Claim status",
+        "systemId": "sys-02",
+        "systemName": "ClaimsCore"
+      },
+      {
+        "id": "dp-13",
+        "name": "Recovery evidence",
+        "systemId": "sys-02",
+        "systemName": "ClaimsCore"
+      },
+      {
+        "id": "dp-14",
+        "name": "File completeness",
+        "systemId": "sys-02",
+        "systemName": "ClaimsCore"
+      }
+    ]
+  },
+  "activityBlocks": [
     {
       "id": "act-01",
-      "name": "Take the first notification of loss",
-      "tasks": [],
-      "nature": "R",
-      "fte": 1.5,
-      "volumeDriver": "~1,900 notifications/month",
+      "name": "Open and register the claim",
+      "activities": [
+        {
+          "id": "t-22",
+          "name": "Take over the notification from the contact centre"
+        },
+        {
+          "id": "t-03",
+          "name": "Create the claim record"
+        },
+        {
+          "id": "t-04",
+          "name": "Attach the documents received by mail"
+        },
+        {
+          "id": "t-05",
+          "name": "Look up the policy and read the cover"
+        },
+        {
+          "id": "t-06",
+          "name": "Record the cover decision on the file"
+        },
+        {
+          "id": "t-07",
+          "name": "Score the claim against the triage rules"
+        }
+      ],
+      "nature": "S",
+      "fte": 13.5,
+      "volumeDriver": "~1,900 new claims/month",
       "tools": [
         {
+          "id": "sys-08",
+          "name": "Scan post",
+          "role": "",
+          "status": "gap"
+        },
+        {
+          "id": "sys-01",
           "name": "Contact Centre",
-          "role": "Call handling",
+          "role": "",
           "status": "core"
         },
         {
+          "id": "sys-02",
           "name": "ClaimsCore",
-          "role": "Notification entry",
+          "role": "",
+          "status": "core"
+        },
+        {
+          "id": "sys-03",
+          "name": "PolicyHub",
+          "role": "",
           "status": "core"
         }
       ],
       "data": [
         {
+          "id": "dp-01",
           "name": "Notification details",
           "source": "Contact Centre",
-          "reliability": "unreliable"
+          "systemId": "sys-01",
+          "reliability": "unreliable",
+          "mode": "create",
+          "verb": "creates",
+          "own": true,
+          "useId": "DU0001"
         },
         {
+          "id": "dp-02",
+          "name": "Claim documents",
+          "source": "Scan post",
+          "systemId": "sys-08",
+          "reliability": "unreliable",
+          "mode": "create",
+          "verb": "creates",
+          "own": true,
+          "useId": "DU0002"
+        },
+        {
+          "id": "dp-03",
           "name": "Policy number",
-          "source": "Caller",
-          "reliability": "reliable"
+          "source": "Contact Centre",
+          "systemId": "sys-01",
+          "reliability": "reliable",
+          "mode": "read",
+          "verb": "reads",
+          "own": true,
+          "useId": "DU0003"
+        },
+        {
+          "id": "dp-04",
+          "name": "Policy cover",
+          "source": "PolicyHub",
+          "systemId": "sys-03",
+          "reliability": "reliable",
+          "mode": "read",
+          "verb": "reads",
+          "own": true,
+          "useId": "DU0004"
+        },
+        {
+          "id": "dp-05",
+          "name": "Complexity indicators",
+          "source": "ClaimsCore",
+          "systemId": "sys-02",
+          "reliability": "reliable",
+          "mode": "create",
+          "verb": "creates",
+          "own": true,
+          "useId": "DU0005"
         }
       ],
       "ineff": [
@@ -336,46 +603,7 @@ const DATA = /* DATA */ {
           "quant": true,
           "rootCause": "The contact-centre tool and the claims system were never connected, so the second entry is the only way the claim reaches a handler",
           "dimKey": "proc"
-        }
-      ],
-      "pct": 55
-    },
-    {
-      "id": "act-02",
-      "name": "Register the claim and open the file",
-      "tasks": [
-        {
-          "id": "t-03",
-          "name": "Create the claim record"
         },
-        {
-          "id": "t-04",
-          "name": "Attach the documents received by mail"
-        }
-      ],
-      "nature": "R",
-      "fte": 4.5,
-      "volumeDriver": "~1,900 claims opened/month",
-      "tools": [
-        {
-          "name": "ClaimsCore",
-          "role": "Claim record",
-          "status": "core"
-        },
-        {
-          "name": "Scan post",
-          "role": "Document intake",
-          "status": "gap"
-        }
-      ],
-      "data": [
-        {
-          "name": "Claim documents",
-          "source": "Central scanning",
-          "reliability": "unreliable"
-        }
-      ],
-      "ineff": [
         {
           "painId": "p-08",
           "label": "Documents arriving by mail are attached by hand, often days after the claim is opened",
@@ -383,46 +611,7 @@ const DATA = /* DATA */ {
           "quant": true,
           "rootCause": "Post is scanned centrally once a day and matched to claims manually",
           "dimKey": "proc"
-        }
-      ],
-      "pct": 35
-    },
-    {
-      "id": "act-03",
-      "name": "Check cover against the policy",
-      "tasks": [
-        {
-          "id": "t-05",
-          "name": "Look up the policy and read the cover"
         },
-        {
-          "id": "t-06",
-          "name": "Record the cover decision on the file"
-        }
-      ],
-      "nature": "S",
-      "fte": 5.0,
-      "volumeDriver": "~1,900 cover checks/month",
-      "tools": [
-        {
-          "name": "PolicyHub",
-          "role": "Policy and cover",
-          "status": "core"
-        },
-        {
-          "name": "ClaimsCore",
-          "role": "Decision record",
-          "status": "core"
-        }
-      ],
-      "data": [
-        {
-          "name": "Policy cover",
-          "source": "PolicyHub",
-          "reliability": "reliable"
-        }
-      ],
-      "ineff": [
         {
           "painId": "p-02",
           "label": "Cover cannot be read from the claim, so every file needs a second system open",
@@ -430,37 +619,7 @@ const DATA = /* DATA */ {
           "quant": true,
           "rootCause": "Policy data lives in PolicyHub and is not surfaced in the claim record",
           "dimKey": "data"
-        }
-      ],
-      "pct": 45
-    },
-    {
-      "id": "act-04",
-      "name": "Triage the claim by complexity",
-      "tasks": [
-        {
-          "id": "t-07",
-          "name": "Score the claim against the triage rules"
-        }
-      ],
-      "nature": "S",
-      "fte": 2.5,
-      "volumeDriver": "~1,900 triage decisions/month",
-      "tools": [
-        {
-          "name": "ClaimsCore",
-          "role": "Triage rules",
-          "status": "core"
-        }
-      ],
-      "data": [
-        {
-          "name": "Complexity indicators",
-          "source": "ClaimsCore",
-          "reliability": "reliable"
-        }
-      ],
-      "ineff": [
+        },
         {
           "painId": "p-06",
           "label": "Triage sends complex files to whoever is free rather than to who can handle them",
@@ -470,15 +629,15 @@ const DATA = /* DATA */ {
           "dimKey": "org"
         }
       ],
-      "pct": 25
+      "pct": 50
     },
     {
-      "id": "act-05",
-      "name": "Instruct and follow up the loss adjuster",
-      "tasks": [
+      "id": "act-02",
+      "name": "Assess the claim",
+      "activities": [
         {
           "id": "t-08",
-          "name": "Select and instruct an adjuster"
+          "name": "Select and instruct a loss adjuster"
         },
         {
           "id": "t-09",
@@ -487,23 +646,80 @@ const DATA = /* DATA */ {
         {
           "id": "t-10",
           "name": "Read the report and update the reserve"
+        },
+        {
+          "id": "t-11",
+          "name": "Run the fraud indicator checklist"
+        },
+        {
+          "id": "t-12",
+          "name": "Refer a flagged file to investigation"
+        },
+        {
+          "id": "t-13",
+          "name": "Book the vehicle into a network garage"
+        },
+        {
+          "id": "t-14",
+          "name": "Approve the repair estimate"
         }
       ],
       "nature": "S",
-      "fte": 6.5,
-      "volumeDriver": "~420 adjuster instructions/month",
+      "fte": 13.5,
+      "volumeDriver": "~1,900 claims/month, ~420 of them with an adjuster",
       "tools": [
         {
+          "id": "sys-06",
           "name": "Email",
-          "role": "Instruction and chasing",
+          "role": "",
           "status": "shadow-it"
+        },
+        {
+          "id": "sys-02",
+          "name": "ClaimsCore",
+          "role": "",
+          "status": "core"
+        },
+        {
+          "id": "sys-04",
+          "name": "RepairPortal",
+          "role": "",
+          "status": "core"
         }
       ],
       "data": [
         {
+          "id": "dp-06",
           "name": "Adjuster reports",
-          "source": "Email attachments",
-          "reliability": "unreliable"
+          "source": "Email",
+          "systemId": "sys-06",
+          "reliability": "unreliable",
+          "mode": "create",
+          "verb": "creates",
+          "own": true,
+          "useId": "DU0006"
+        },
+        {
+          "id": "dp-07",
+          "name": "Fraud indicators",
+          "source": "ClaimsCore",
+          "systemId": "sys-02",
+          "reliability": "reliable",
+          "mode": "update",
+          "verb": "updates",
+          "own": true,
+          "useId": "DU0007"
+        },
+        {
+          "id": "dp-08",
+          "name": "Repair estimates",
+          "source": "RepairPortal",
+          "systemId": "sys-04",
+          "reliability": "reliable",
+          "mode": "read",
+          "verb": "reads",
+          "own": true,
+          "useId": "DU0008"
         }
       ],
       "ineff": [
@@ -516,78 +732,12 @@ const DATA = /* DATA */ {
           "dimKey": "proc"
         }
       ],
-      "pct": 50
+      "pct": 25
     },
     {
-      "id": "act-06",
-      "name": "Screen for fraud indicators",
-      "tasks": [
-        {
-          "id": "t-11",
-          "name": "Run the indicator checklist"
-        },
-        {
-          "id": "t-12",
-          "name": "Refer a flagged file to investigation"
-        }
-      ],
-      "nature": "S",
-      "fte": 3.0,
-      "volumeDriver": "~1,900 screens/month",
-      "tools": [
-        {
-          "name": "ClaimsCore",
-          "role": "Indicator checklist",
-          "status": "core"
-        }
-      ],
-      "data": [
-        {
-          "name": "Fraud indicators",
-          "source": "ClaimsCore",
-          "reliability": "reliable"
-        }
-      ],
-      "ineff": [],
-      "pct": 40
-    },
-    {
-      "id": "act-07",
-      "name": "Agree the repair route with the garage",
-      "tasks": [
-        {
-          "id": "t-13",
-          "name": "Book the vehicle into a network garage"
-        },
-        {
-          "id": "t-14",
-          "name": "Approve the repair estimate"
-        }
-      ],
-      "nature": "R",
-      "fte": 4.0,
-      "volumeDriver": "~1,150 repairs/month",
-      "tools": [
-        {
-          "name": "RepairPortal",
-          "role": "Booking and estimates",
-          "status": "core"
-        }
-      ],
-      "data": [
-        {
-          "name": "Repair estimates",
-          "source": "RepairPortal",
-          "reliability": "reliable"
-        }
-      ],
-      "ineff": [],
-      "pct": 15
-    },
-    {
-      "id": "act-08",
-      "name": "Calculate and approve the settlement",
-      "tasks": [
+      "id": "act-03",
+      "name": "Settle and pay the claim",
+      "activities": [
         {
           "id": "t-15",
           "name": "Calculate the settlement"
@@ -599,33 +749,74 @@ const DATA = /* DATA */ {
         {
           "id": "t-17",
           "name": "Record the settlement decision"
+        },
+        {
+          "id": "t-23",
+          "name": "Check the payment run before release"
         }
       ],
       "nature": "K",
-      "fte": 7.0,
+      "fte": 8.0,
       "volumeDriver": "~1,700 settlements/month",
       "tools": [
         {
+          "id": "sys-07",
           "name": "Excel",
-          "role": "Calculation",
+          "role": "",
           "status": "shadow-it"
         },
         {
+          "id": "sys-06",
+          "name": "Email",
+          "role": "",
+          "status": "shadow-it"
+        },
+        {
+          "id": "sys-02",
           "name": "ClaimsCore",
-          "role": "Decision record",
+          "role": "",
+          "status": "core"
+        },
+        {
+          "id": "sys-05",
+          "name": "Ledger",
+          "role": "",
           "status": "core"
         }
       ],
       "data": [
         {
+          "id": "dp-09",
           "name": "Settlement calculation",
-          "source": "Personal spreadsheet",
-          "reliability": "unreliable"
+          "source": "Excel",
+          "systemId": "sys-07",
+          "reliability": "unreliable",
+          "mode": "create",
+          "verb": "creates",
+          "own": true,
+          "useId": "DU0009"
         },
         {
+          "id": "dp-10",
           "name": "Reserve",
           "source": "ClaimsCore",
-          "reliability": "reliable"
+          "systemId": "sys-02",
+          "reliability": "reliable",
+          "mode": "update",
+          "verb": "updates",
+          "own": true,
+          "useId": "DU0010"
+        },
+        {
+          "id": "dp-11",
+          "name": "Payment instructions",
+          "source": "Ledger",
+          "systemId": "sys-05",
+          "reliability": "reliable",
+          "mode": "create",
+          "verb": "creates",
+          "own": true,
+          "useId": "DU0011"
         }
       ],
       "ineff": [
@@ -638,51 +829,39 @@ const DATA = /* DATA */ {
           "dimKey": "data"
         }
       ],
-      "pct": 40
+      "pct": 25
     },
     {
-      "id": "act-09",
-      "name": "Release the payment",
-      "tasks": [],
-      "nature": "R",
-      "fte": 1.0,
-      "volumeDriver": "~1,700 payments/month",
-      "tools": [
+      "id": "act-04",
+      "name": "Answer the customer while the claim runs",
+      "activities": [
         {
-          "name": "Ledger",
-          "role": "Payment run",
-          "status": "core"
+          "id": "t-24",
+          "name": "Take the status calls the contact centre passes on"
         }
       ],
-      "data": [
-        {
-          "name": "Payment instructions",
-          "source": "Ledger",
-          "reliability": "reliable"
-        }
-      ],
-      "ineff": [],
-      "pct": 10
-    },
-    {
-      "id": "act-10",
-      "name": "Handle customer queries during the claim",
-      "tasks": [],
       "nature": "R",
       "fte": 2.0,
       "volumeDriver": "~3,400 status calls/month",
       "tools": [
         {
+          "id": "sys-01",
           "name": "Contact Centre",
-          "role": "Status calls",
+          "role": "",
           "status": "core"
         }
       ],
       "data": [
         {
+          "id": "dp-12",
           "name": "Claim status",
-          "source": "Not available to the customer",
-          "reliability": "unavailable"
+          "source": "ClaimsCore",
+          "systemId": "sys-02",
+          "reliability": "unavailable",
+          "mode": "read",
+          "verb": "reads",
+          "own": true,
+          "useId": "DU0012"
         }
       ],
       "ineff": [
@@ -695,32 +874,60 @@ const DATA = /* DATA */ {
           "dimKey": "cust"
         }
       ],
-      "pct": 60
+      "pct": 75
     },
     {
-      "id": "act-11",
-      "name": "Recover from the third party",
-      "tasks": [
+      "id": "act-05",
+      "name": "Recover and close the file",
+      "activities": [
         {
           "id": "t-20",
           "name": "Build and send the recovery file"
+        },
+        {
+          "id": "t-21",
+          "name": "Check the file is complete and close it"
         }
       ],
       "nature": "K",
-      "fte": 3.5,
-      "volumeDriver": "~310 recoveries/month",
+      "fte": 5.0,
+      "volumeDriver": "~1,700 closures/month, ~310 recoveries",
       "tools": [
         {
+          "id": "sys-07",
           "name": "Excel",
-          "role": "Recovery file",
+          "role": "",
           "status": "shadow-it"
+        },
+        {
+          "id": "sys-02",
+          "name": "ClaimsCore",
+          "role": "",
+          "status": "core"
         }
       ],
       "data": [
         {
+          "id": "dp-13",
           "name": "Recovery evidence",
-          "source": "Scattered across the file",
-          "reliability": "unreliable"
+          "source": "ClaimsCore",
+          "systemId": "sys-02",
+          "reliability": "unreliable",
+          "mode": "create",
+          "verb": "creates",
+          "own": true,
+          "useId": "DU0013"
+        },
+        {
+          "id": "dp-14",
+          "name": "File completeness",
+          "source": "ClaimsCore",
+          "systemId": "sys-02",
+          "reliability": "reliable",
+          "mode": "update",
+          "verb": "updates",
+          "own": true,
+          "useId": "DU0014"
         }
       ],
       "ineff": [
@@ -733,36 +940,7 @@ const DATA = /* DATA */ {
           "dimKey": "proc"
         }
       ],
-      "pct": 45
-    },
-    {
-      "id": "act-12",
-      "name": "Close the file and archive",
-      "tasks": [
-        {
-          "id": "t-21",
-          "name": "Check the file is complete and close it"
-        }
-      ],
-      "nature": "R",
-      "fte": 1.5,
-      "volumeDriver": "~1,700 closures/month",
-      "tools": [
-        {
-          "name": "ClaimsCore",
-          "role": "Closure checks",
-          "status": "core"
-        }
-      ],
-      "data": [
-        {
-          "name": "File completeness",
-          "source": "ClaimsCore",
-          "reliability": "reliable"
-        }
-      ],
-      "ineff": [],
-      "pct": 10
+      "pct": 25
     }
   ]
 };
@@ -774,35 +952,35 @@ const DATA = /* DATA */ {
   function hl(t){return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1</span>');}
   function n1(x){return (Math.round(x*10)/10).toLocaleString('en',{maximumFractionDigits:1});}
   function eff(a){return a.pct==null?(DEF[a.nature]||0):a.pct;}
-  function impact(){return DATA.activities.reduce(function(s,a){return s+(a.fte||0)*eff(a)/100;},0);}
+  function impact(){return DATA.activityBlocks.reduce(function(s,a){return s+(a.fte||0)*eff(a)/100;},0);}
   function ball(p){return '<span class="ball" style="background:conic-gradient(var(--green) '+(p*3.6)+'deg, var(--ball-track) 0)"></span>';}
-  function row(a){var hc=DATA.headcount||1,p=eff(a);
-    var tasks=(a.tasks||[]).map(function(t){return '<div style="color:var(--txt);font-size:var(--fs-115);margin-top:3px">• '+esc(t.name)+'</div>';}).join('');
-    var tools=(a.tools&&a.tools.length)?a.tools.map(function(t){return '<p class="tl"><b>'+esc(t.name)+'</b><br><span><span class="tst '+t.status+'">'+esc({core:'Core system','shadow-it':'Shadow IT',gap:'Gap / missing'}[t.status]||t.status)+'</span><span class="sub">'+esc(t.role||'')+'</span></span></p>';}).join(''):'<span class="toprobe">to probe</span>';
-    var dat=(a.data&&a.data.length)?a.data.map(function(d){return '<p class="tl"><b>'+esc(d.name)+'</b><br><span><span class="rel '+d.reliability+'">'+d.reliability.charAt(0).toUpperCase()+d.reliability.slice(1)+'</span><span class="sub">'+esc(d.source||'')+'</span></span></p>';}).join(''):'<span class="toprobe">to probe</span>';
-    var inf=(a.ineff&&a.ineff.length)?a.ineff.map(function(i){
-      var pill=i.quant?'<span class="vpill">'+esc(i.value||'')+'</span>':'<span class="nq">not quantified</span>';
-      var cause=i.rootCause?'<span class="cause">'+esc(i.rootCause)+'</span>':'<span class="cause toprobe">root cause to probe</span>';
-      return '<p class="inf"><span class="ilab">'+esc(i.label)+'</span>'+pill+cause+'</p>';}).join(''):'<span class="toprobe">— none flagged</span>';
+  function row(a,i){var hc=DATA.headcount||1,p=eff(a),no=i+1,T=a.activities||[];
+    var acts=T.length?'<ol class="acts'+(T.length>4?' two':'')+'">'+T.map(function(t,k){return '<li><span class="ano">'+no+'.'+(k+1)+'</span><span>'+esc(t.name)+'</span></li>';}).join('')+'</ol>':'<span class="toprobe">activities to confirm</span>';
+    var TS={core:'Core system','shadow-it':'Shadow IT',gap:'Gap / missing'};
+    var tools=(a.tools&&a.tools.length)?a.tools.map(function(t){return '<p class="tl1"><b>'+esc(t.name)+'</b><span class="tst '+t.status+'">'+esc(TS[t.status]||t.status)+'</span></p>';}).join(''):'<span class="toprobe">to probe</span>';
+    var dat=(a.data&&a.data.length)?a.data.map(function(d){var r=d.reliability||'';
+      return '<p class="tl1"><b>'+esc(d.name)+'</b>'+(d.verb?'<span class="verb">'+esc(d.verb)+'</span>':'')+
+             '<span class="rel '+(r||'na')+'">'+(r?r.charAt(0).toUpperCase()+r.slice(1):'To probe')+'</span></p>';}).join(''):'<span class="toprobe">to probe</span>';
+    var inf=(a.ineff&&a.ineff.length)?'<ul class="ib">'+a.ineff.map(function(x){return '<li>'+esc(x.label)+'</li>';}).join('')+'</ul>':'<span class="toprobe">none flagged</span>';
     return '<tr data-id="'+a.id+'">'+
-    '<td style="min-width:170px"><b style="color:var(--ink);font-size:13.5px;border-bottom:1.5px solid var(--line)">'+esc(a.name)+'</b>'+tasks+'</td>'+
+    '<td class="blk"><div class="tile"><div class="bh"><span class="bno">'+no+'</span><b class="bn">'+esc(a.name)+'</b></div>'+acts+'</div></td>'+
     '<td>'+(a.nature?'<span class="nat '+a.nature+'">'+a.nature+'</span>':'<span class="nat na">?</span>')+'</td>'+
-    '<td class="wl"><b>'+n1(a.fte||0)+'</b><div class="wbar"><i style="width:'+Math.min((a.fte||0)/hc*100/0.4,100)+'%"></i></div><span class="pctt">'+Math.round((a.fte||0)/hc*100)+'% of team</span></td>'+
-    '<td>'+(a.volumeDriver?esc(a.volumeDriver):'<span class="toprobe">to probe</span>')+'</td>'+
-    '<td style="min-width:150px">'+tools+'</td><td style="min-width:150px">'+dat+'</td><td style="min-width:140px">'+inf+'</td>'+
-    '<td><div class="opt'+(a.pct==null?' ind':'')+'" data-oid="'+a.id+'">'+ball(p)+'<div><span class="op">'+p+'%</span>'+(a.pct==null?'<span style="font-size:var(--fs-95);color:var(--mut)"> indicative</span>':'')+'<br><span class="of">~'+n1((a.fte||0)*p/100)+' FTE</span></div></div></td></tr>';}
+    '<td class="wl"><b>'+n1(a.fte||0)+'</b><div class="wbar"><i style="width:'+Math.min((a.fte||0)/hc*100/0.4,100)+'%"></i></div><span class="pctt">'+Math.round((a.fte||0)/hc*100)+'% of team</span>'+
+      (a.volumeDriver?'<span class="vd">'+esc(a.volumeDriver)+'</span>':'<span class="vd toprobe">volume to probe</span>')+'</td>'+
+    '<td class="tc">'+tools+'</td><td class="tc">'+dat+'</td><td class="ic">'+inf+'</td>'+
+    '<td><div class="opt'+(a.pct==null?' ind':'')+'" data-oid="'+a.id+'">'+ball(p)+'<div><span class="op">'+Math.round(p)+'%</span>'+(a.pct==null?'<span class="indl"> indicative</span>':'')+'<br><span class="of">~'+n1((a.fte||0)*p/100)+' FTE</span></div></div></td></tr>';}
   function natOf(a){return a.nature||null;}
   function renderPrio(){
     var NATL={R:'R · rule-based',S:'S · semi-structured',K:'K · knowledge-driven'};
-    var acts=DATA.activities.slice().sort(function(x,y){return (y.fte||0)*eff(y)-(x.fte||0)*eff(x);});
+    var acts=DATA.activityBlocks.slice().sort(function(x,y){return (y.fte||0)*eff(y)-(x.fte||0)*eff(x);});
     var vb=document.getElementById('view');
     var availW=vb.clientWidth||1600, availH=(vb.clientHeight||760)-48;
     var W=980, H=Math.max(430,Math.min(1100,Math.round(W*availH/(availW*0.585))));
     var L=70,B=64,T=34,R=28;
-    var ftes=DATA.activities.map(function(a){return a.fte||0;});
+    var ftes=DATA.activityBlocks.map(function(a){return a.fte||0;});
     var maxF=Math.max.apply(null,ftes.concat([1]))*1.15;
     var minF=Math.max(0,Math.min.apply(null,ftes.concat([maxF]))*0.6);
-    var maxE=Math.max.apply(null,DATA.activities.map(function(a){return eff(a);}).concat([25]));
+    var maxE=Math.max.apply(null,DATA.activityBlocks.map(function(a){return eff(a);}).concat([25]));
     var xMax=Math.min(100,Math.max(50,Math.ceil((maxE+12)/25)*25));
     function X(p){return L+(p/xMax)*(W-L-R);} function Y(f){return H-B-((f-minF)/(maxF-minF))*(H-T-B);}
     var midF=(minF+maxF)/2,midY=Y(midF),midX=xMax/2;
@@ -840,28 +1018,30 @@ const DATA = /* DATA */ {
       (pain?'<div class="ppain">'+pain+'</div>':'')+'</div></div>';}).join('')+'</div>';
     return '<div class="vcols"><div class="prio"><svg viewBox="0 0 '+W+' '+H+'">'+g+'</svg></div>'+side+'</div>';}
   function renderTools(){
-    var TH={core:['Healthy','var(--rag-green)','var(--tint-green)',1],
+    var TH={'':['To probe','var(--rag-na)','var(--slate-10)',0],
+            core:['Healthy','var(--rag-green)','var(--tint-green)',1],
             'shadow-it':['Shadow IT','var(--tAmb)','var(--tint-amber)',2],
             gap:['Missing','var(--tRed)','var(--tint-red)',3]};
-    var DH={reliable:['Reliable','var(--rag-green)','var(--tint-green)',1],
+    var DH={'':['To probe','var(--rag-na)','var(--slate-10)',0],
+            reliable:['Reliable','var(--rag-green)','var(--tint-green)',1],
             unreliable:['Unreliable','var(--tAmb)','var(--tint-amber)',2],
             unavailable:['Unavailable','var(--tRed)','var(--tint-red)',3]};
     function agg(field,keyName,rankMap,extraKey){
       var m={},order=[];
-      DATA.activities.forEach(function(a){(a[field]||[]).forEach(function(x){
+      DATA.activityBlocks.forEach(function(a){(a[field]||[]).forEach(function(x){
         var nm=x.name; if(!m[nm]){m[nm]={name:nm,extra:{},acts:[],fte:0,worst:null,rank:0};order.push(nm);}
         var e=m[nm];
         if(x[extraKey])e.extra[x[extraKey]]=1;
         if(e.acts.indexOf(a.name)<0){e.acts.push(a.name);e.fte+=(a.fte||0);e.ids=e.ids||[];e.ids.push(a.id);}
-        var st=x[keyName],r=(rankMap[st]||[0,0,0,0])[3];
+        var st=x[keyName]||'',r=(rankMap[st]||[0,0,0,0])[3];
         if(r>e.rank){e.rank=r;e.worst=st;}});});
       return order.map(function(k){return m[k];});}
     function card(e,rankMap,kindWord){
-      var h=rankMap[e.worst]||['?','var(--rag-na)','var(--slate-10)',0];
+      var h=rankMap[e.worst||'']||['To probe','var(--rag-na)','var(--slate-10)',0];
       return '<div class="hcard" data-ids="'+e.ids.join(',')+'" style="border-left-color:'+h[1]+'">'+
       '<div class="hh"><b>'+esc(e.name)+'</b><span class="hb" style="background:'+h[2]+';color:'+h[1]+'">'+h[0]+'</span></div>'+
       '<div class="hsub">'+esc(Object.keys(e.extra).join(' · ')||kindWord)+'</div>'+
-      '<div class="hexp"><b>'+n1(e.fte)+' FTE</b> touched · '+e.acts.length+' activit'+(e.acts.length===1?'y':'ies')+'</div>'+
+      '<div class="hexp"><b>'+n1(e.fte)+' FTE</b> touched · '+e.acts.length+' activity block'+(e.acts.length===1?'':'s')+'</div>'+
       '<div class="hacts">'+esc(e.acts.join(' · '))+'</div></div>';}
     var tools=agg('tools','status',TH,'role');
     var data=agg('data','reliability',DH,'source');
@@ -870,11 +1050,11 @@ const DATA = /* DATA */ {
       '<div class="hcsec"><div class="colh">Data — '+data.length+' item'+(data.length===1?'':'s')+' · worst observed reliability</div><div class="hcgrid">'+
       data.map(function(e){return card(e,DH,'data');}).join('')+'</div></div>';}
   function renderMatrix(){
-    var tot=DATA.activities.reduce(function(s,a){return s+(a.fte||0);},0);
+    var tot=DATA.activityBlocks.reduce(function(s,a){return s+(a.fte||0);},0);
     return (
-    '<table class="mx2"><thead><tr><th>Activity</th><th>Nature</th><th>Workload (FTE)</th><th>Volume driver</th><th>Tools used</th><th>Data used</th><th>Inefficiencies</th><th>Inefficiency level</th></tr></thead><tbody>'+
-    DATA.activities.map(row).join('')+
-    '<tr class="total"><td>Total</td><td></td><td>'+n1(tot)+' FTE</td><td colspan="4" style="color:var(--mut);font-weight:400">'+DATA.activities.length+' activities mapped · '+n1(DATA.headcount)+' FTE in scope</td><td style="color:var(--green)">~'+n1(impact())+' FTE inefficiency identified</td></tr>'+
+    '<table class="mx2"><thead><tr><th>Activity block</th><th>Nature</th><th>Workload (FTE)</th><th>Tools used</th><th>Data used</th><th>Pain points</th><th>Inefficiency level</th></tr></thead><tbody>'+
+    DATA.activityBlocks.map(row).join('')+
+    '<tr class="total"><td>Total</td><td></td><td>'+n1(tot)+' FTE</td><td colspan="3" style="color:var(--mut);font-weight:400">'+DATA.activityBlocks.length+' activity block'+(DATA.activityBlocks.length===1?'':'s')+' mapped · '+n1(DATA.headcount)+' FTE in scope</td><td style="color:var(--green)">~'+n1(impact())+' FTE inefficiency identified</td></tr>'+
     '</tbody></table>');}
   var VIEWS={matrix:renderMatrix,prio:renderPrio,tools:renderTools},cur='matrix';
   function render(){document.getElementById('vinner').innerHTML=VIEWS[cur]();
@@ -887,11 +1067,11 @@ const DATA = /* DATA */ {
   document.getElementById('src').innerHTML=(DATA.source?('<b style="color:var(--txt)">Source:</b> '+esc(DATA.source)):'')+(DATA.baselineVersion?' <span style="opacity:.75">· baseline '+esc(String(DATA.baselineVersion).slice(0,8))+'</span>':'');
   document.getElementById('lg').innerHTML=
     '<span class="lgrp"><b>Nature</b><span class="lp" style="background:rgba(110,177,209,.18);color:var(--tR)">R rule-based</span><span class="lp" style="background:var(--green-10);color:var(--tS)">S semi-structured</span><span class="lp" style="background:rgba(127,119,221,.16);color:var(--tK)">K knowledge-driven</span></span>'+
-    '<span class="lgrp"><b>Inefficiency</b><span class="li">'+ball(50)+'share of the activity’s effort that is inefficient today · indicative until set with the business</span></span>';
+    '<span class="lgrp"><b>Inefficiency</b><span class="li">'+ball(50)+'share of the block’s effort that is inefficient today · indicative until set with the business</span></span>';
   function fitView(){var v=document.getElementById('view'),vi=document.getElementById('vinner');var ah=v.clientHeight;if(!ah)return;
     var tb=vi.querySelector('table.mx2'); if(tb)tb.style.height='';
     vi.style.transform='none';var lo=0.25,hi=1.12,best=0.25;
-    for(var k=0;k<12;k++){var s=(lo+hi)/2;vi.style.width=(100/s)+'%';if(vi.scrollHeight*s<=ah-10){best=s;lo=s;}else{hi=s;}}
+    for(var k=0;k<12;k++){var s=(lo+hi)/2;vi.style.width=(100/s)+'%';if(vi.scrollHeight*s<=ah-10&&vi.scrollWidth<=vi.clientWidth+1){best=s;lo=s;}else{hi=s;}}
     vi.style.width=(100/best)+'%';vi.style.transform='scale('+best+')';
     if(tb){var free=(ah-10)/best-vi.scrollHeight; if(free>1)tb.style.height=(tb.offsetHeight+free)+'px';}}
   function seg(id,attr,cb){var box=document.getElementById(id);if(!box)return;box.querySelectorAll('button').forEach(function(b){b.onclick=function(){box.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});b.classList.add('on');cb(b.getAttribute(attr));};});}

@@ -244,7 +244,7 @@ const DATA = /* DATA */ {
     "capturedBy": "NR team",
     "capturedAt": "2026-09-04",
     "peildatum": "01/09/2026",
-    "keyMessage": "Claims Operations runs **65,0 FTE in scope** across 5 teams and 3 org layers, with **42,0 of it in Claims Handling** alone; **5 of 7** named managers quantify their management split, so the capacity picture is evidenced at the top and thin underneath.",
+    "keyMessage": "Claims Operations runs **65,0 FTE in scope**, but only **5 of 7** managers quantify their management split, so the capacity picture thins out below the top",
     "baselineVersion": null
   },
   "org": {
@@ -591,7 +591,7 @@ function missing(n){
     if(rf==null||rf==='')m.push('regular FTE');
   }
   /* a named manager with no FTE silently books 1 HC at 0 FTE and understates capacity
-     all the way into the process baseline — that is a blind spot, not a zero. It applies
+     all the way into the operating baseline — that is a blind spot, not a zero. It applies
      at EVERY level: a department head or C-level with no FTE understates just as much. */
   if(n.manager&&String(n.manager.name||'').trim()&&(n.manager.fte_total==null||n.manager.fte_total===''))m.push('manager FTE');
   return m;

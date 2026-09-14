@@ -131,7 +131,7 @@
   .scalenums{position:relative;height:calc(var(--ui)*1.5);font-size:var(--fs-micro);color:var(--mut)}
   .scalenums span{position:absolute;transform:translateX(-50%)}
 
-  /* ── process rows ── */
+  /* ── the unit rows: one per activity block (or value chain) ── */
   .phead,.prow{display:grid;grid-template-columns:1fr calc(var(--ui)*5) calc(var(--ui)*10.5) 1.15fr;
     gap:calc(var(--ui)*1.1);align-items:center}
   .phead{padding-bottom:calc(var(--ui)*.6);font-size:var(--fs-micro);color:var(--mut);
@@ -334,7 +334,7 @@
         <button data-v="o" class="on">Overview</button>
         <button data-v="x">Maturity profile</button>
         <button data-v="m">Maturity assessment</button>
-        <button data-v="p">Processes</button>
+        <button data-v="p">Activity blocks</button>
         <button data-v="d">Data points</button>
         <button data-v="f">Critical repairs</button>
       </div>
@@ -359,14 +359,14 @@
    `data` block of a capture JSON. Keep the marker comments exactly as they are. */
 const DATA = /* DATA */ {
   "team": "Claims Handling",
-  "period": "Sep 2026",
+  "period": "Jan-Aug 2026",
   "keyMessage": {
-    "o": "Three data points hold back <span class=\"hl\">18,5 of the 38,0 FTE mapped</span>: the settlement lives in a private spreadsheet, the adjuster's finding in prose, and cover in a system nobody has open",
-    "x": "Maturity is strongest in <span class=\"hl\">currency and accuracy</span>; structure and ownership are what hold the team back",
+    "o": "Not one of Claims Handling's four mapped blocks runs on data AI could take over: <span class=\"hl\">13,5 FTE is blocked</span> outright, 23,5 is assist-only",
+    "x": "Maturity is strongest in <span class=\"hl\">timeliness and completeness</span>; structure and ownership are what hold the team back",
     "m": "The data is mostly there and mostly right. It is <span class=\"hl\">not structured for a machine</span>, and it is not owned",
-    "p": "Only <span class=\"hl\">7,0 of the 38,0 FTE</span> mapped sits on data an assistant could run on today",
+    "p": "Nothing clears the bar today: <span class=\"hl\">assessment is blocked</span> by the adjuster's report, the other three blocks sit one step short",
     "d": "Three of ten data points clear what AI needs, and <span class=\"hl\">nobody is named as owner</span> on six of the other seven",
-    "f": "Every blocked process clears with <span class=\"hl\">a single repair</span> - not one of them is held back by two data points at once"
+    "f": "Only opening and registering a claim needs more than one repair: <span class=\"hl\">four of its data points</span> sit at the same level"
   },
   "sources": {
     "o": "Data owner sessions 7 Sep 2026 · team session 8 Sep 2026 · claims system extract",
@@ -374,35 +374,35 @@ const DATA = /* DATA */ {
     "m": "Data owner sessions 7 Sep 2026 · team session 8 Sep 2026 · claims system extract",
     "d": "Data owner sessions 7 Sep 2026 · team session 8 Sep 2026 · claims system extract",
     "f": "Data owner sessions 7 Sep 2026 · team session 8 Sep 2026 · claims system extract",
-    "p": "Process baseline · FTE from the activity map (MAE), Sep 2026"
+    "p": "Operating baseline · FTE from the activity map (MAE), Sep 2026"
   },
   "insights": {
     "o": [
       {
         "num": 1,
-        "h": "Settlement calculation",
-        "chip": [
-          "blocked",
-          "poor"
-        ],
-        "b": [
-          "Carries the 7,0 FTE of settlement work, the largest activity in the team.",
-          "It lives in a personal spreadsheet on a shared drive, one file per handler.",
-          "The arithmetic is right. Nothing else about it is: no owner, no structure, no way to read it as a set."
-        ],
-        "ev": "Data owner sessions, 7 Sep 2026"
-      },
-      {
-        "num": 2,
         "h": "Adjuster reports",
         "chip": [
           "blocked",
           "poor"
         ],
         "b": [
-          "PDFs on an e-mail thread, one per instructed file, 6,5 FTE leaning on them.",
-          "The finding is written in prose, so there is no field a system could read it from.",
-          "This is the same data behind the 3,0 FTE of chasing in the process map."
+          "Assessment is the largest block on the grid at 13,5 FTE, and this is what it waits for.",
+          "The finding arrives as prose in an e-mail attachment, so there is no field a system could read it from.",
+          "This is the same data behind the 3,0 FTE of chasing the activity map already put a number on."
+        ],
+        "ev": "Data owner sessions, 7 Sep 2026"
+      },
+      {
+        "num": 2,
+        "h": "Settlement calculation",
+        "chip": [
+          "blocked",
+          "poor"
+        ],
+        "b": [
+          "Carries the 8,0 FTE of settling and paying, and the calculation itself never enters the claims system.",
+          "It lives in a personal spreadsheet on a shared drive, one file per handler.",
+          "The arithmetic is right. Nothing else about it is: no owner, no structure, no way to read it as a set."
         ],
         "ev": "Data owner sessions, 7 Sep 2026"
       },
@@ -440,9 +440,9 @@ const DATA = /* DATA */ {
           "poor"
         ],
         "b": [
-          "Four of the ten data points hold their content as prose, an image or a private sheet.",
+          "Five of the ten data points hold their content as prose, call notes or a private sheet.",
           "A human reads those in seconds. A system cannot read them at all.",
-          "Every one of the blocked processes is blocked on exactly this."
+          "Every blocked block on this grid is blocked on exactly this."
         ],
         "ev": "Data owner sessions, 7 Sep 2026"
       },
@@ -453,7 +453,7 @@ const DATA = /* DATA */ {
         ],
         "b": [
           "Ownership is the lowest-scoring criterion across the whole grid.",
-          "Where something is owned - cover, repair estimates, fraud indicators - it also scores well elsewhere.",
+          "Where something is owned - cover, repair estimates, fraud indicators, the policy number - it also scores well elsewhere.",
           "Naming an owner costs nothing and is the precondition for every repair below."
         ],
         "ev": "Data owner sessions, 7 Sep 2026"
@@ -461,419 +461,83 @@ const DATA = /* DATA */ {
     ],
     "p": [
       {
-        "h": "7,0 of 38,0 FTE is ready today",
-        "chip": [
-          "fair"
-        ],
-        "b": [
-          "Only agreeing the repair route (4,0 FTE) and screening for fraud (3,0 FTE) run on data that clears the bar.",
-          "Both sit on systems built for the job: RepairPortal and the fraud flags in ClaimsCore.",
-          "Everything else waits on one of four repairs."
-        ],
-        "ev": "Process baseline · FTE from the activity map (MAE), Sep 2026"
-      },
-      {
-        "h": "The two biggest activities are both blocked",
+        "h": "Nothing runs on data an assistant could take over",
         "chip": [
           "blocked"
         ],
         "b": [
-          "Settlement (7,0 FTE) and adjuster follow-up (6,5 FTE) are the two largest, and neither is reachable.",
-          "Together they are more than a third of everything mapped.",
-          "Fixing those two data points moves more work than the other eight combined."
+          "Of the 37,0 FTE these four blocks carry, 13,5 is blocked outright and 23,5 can be assisted with a human in the loop.",
+          "A block is only as ready as the weakest data point it leans on, and every block has one below the bar.",
+          "Repair estimates and fraud indicators do clear it - they sit inside blocks that other data points hold down."
         ],
-        "ev": "Data owner sessions, 7 Sep 2026"
-      }
-    ],
-    "f": [
-      {
-        "h": "Four repairs unlock 24,0 FTE",
-        "chip": [
-          "good"
-        ],
-        "b": [
-          "Settlement into the claim, adjuster findings as fields, cover on the claim record, documents indexed at scanning.",
-          "Those four repairs between them release settlement, adjuster follow-up, cover checking and registration.",
-          "Three of the four are already on the opportunity list, so nothing new has to be argued."
-        ],
-        "ev": "Data owner sessions, 7 Sep 2026"
+        "ev": "Operating baseline · FTE from the activity map (MAE), Sep 2026"
       },
       {
-        "h": "Claim status is the one that gates the AI answer",
+        "h": "Assessment is the one blocked outright",
+        "chip": [
+          "blocked"
+        ],
+        "b": [
+          "13,5 FTE, held at level 1 by the adjuster's report arriving as prose.",
+          "Nothing automated can read it, so nothing downstream of it can be automated either.",
+          "It is also the block where the team spends 3,0 FTE chasing what it cannot see."
+        ],
+        "ev": "Operating baseline · FTE from the activity map (MAE), Sep 2026"
+      },
+      {
+        "h": "The other three are one step short",
         "chip": [
           "fair"
         ],
         "b": [
-          "The status is accurate, complete and current. It is simply written for handlers, not for customers.",
-          "Twelve internal workflow codes, none of which means anything to the person ringing in.",
-          "Map them onto four states a customer would recognise and the 4,0 FTE of status calls becomes answerable."
+          "Opening and registering (13,5 FTE), settling and paying (8,0) and answering the customer (2,0) all sit at level 2.",
+          "Level 2 means a human stays in the loop: an assistant can draft, it cannot decide.",
+          "Each of them moves to level 3 on the repairs listed under what it would take."
+        ],
+        "ev": "Operating baseline · FTE from the activity map (MAE), Sep 2026"
+      }
+    ],
+    "f": [
+      {
+        "h": "Opening and registering needs four repairs, not one",
+        "chip": [
+          "poor"
+        ],
+        "b": [
+          "Claim documents, notification details, complexity indicators and cover all sit at level 2 in the same block.",
+          "Fixing one of them moves nothing: the block stays at the level of whichever is still weakest.",
+          "That interlock is the finding. A client picking off the cheapest repair sees the number stay where it was."
+        ],
+        "ev": "Data owner sessions, 7 Sep 2026"
+      },
+      {
+        "h": "Assessment clears with a single repair",
+        "chip": [
+          "fair"
+        ],
+        "b": [
+          "Have the adjusters submit their finding through a form instead of an attachment.",
+          "That alone takes the block from blocked to assisted, and 13,5 FTE with it.",
+          "It is a supplier conversation, not a system build."
+        ],
+        "ev": "Data owner sessions, 7 Sep 2026"
+      },
+      {
+        "h": "Naming owners is the cheapest move on the page",
+        "chip": [
+          "fair"
+        ],
+        "b": [
+          "Six of the ten data points have nobody accountable for them.",
+          "No repair below survives without one: a fix with no owner drifts back within a quarter.",
+          "It costs a decision, not a budget."
         ],
         "ev": "Data owner sessions, 7 Sep 2026"
       }
     ]
   },
   "objects": {
-    "settleme": {
-      "n": "Settlement calculation",
-      "sh": "Settlement calcula…",
-      "sy": "Personal spreadsheet",
-      "c": [
-        2,
-        2,
-        3,
-        3,
-        4
-      ],
-      "g": 1,
-      "m": 0,
-      "num": 1,
-      "fix": "Move the settlement calculation into the claim, so the numbers live where the decision is recorded.",
-      "why": [
-        "It lives in a personal spreadsheet on a shared drive. You can open one file; you cannot read them as a set.",
-        "Each handler has shaped their own sheet, so the same figure sits in a different cell in every file.",
-        "The sheet is filled for every settlement - the calculation itself is never skipped.",
-        "The arithmetic is right; what varies is which version of the sheet was used.",
-        "It is done at the moment of settlement, so it is never out of date."
-      ],
-      "whyg": "No owner. The sheet was built by a handler who has since left, and everyone copies theirs from the last one.",
-      "seed": {
-        "inScopeBecause": "17% of team FTE leans on it",
-        "dependentFte": 7.0,
-        "activities": [
-          {
-            "id": "act-08",
-            "name": "Calculate and approve the settlement",
-            "fte": 7.0
-          }
-        ],
-        "maeSaid": [
-          "unreliable"
-        ],
-        "hypothesis": "Completeness / Accuracy & consistency",
-        "toProbe": "The MAE recorded this as unreliable. That word covers both an empty field and a wrong one - separate the two: which is it, and on how many records?"
-      }
-    },
-    "reserve": {
-      "n": "Reserve",
-      "sh": "Reserve",
-      "sy": "ClaimsCore",
-      "c": [
-        4,
-        4,
-        4,
-        3,
-        4
-      ],
-      "g": 3,
-      "m": 0,
-      "num": 2,
-      "fix": "",
-      "why": [
-        "Held as a field on the claim in ClaimsCore and readable across the whole book.",
-        "A single amount in a numeric field, with a history of changes behind it.",
-        "Every open claim carries a reserve; the system will not let you skip it.",
-        "It is right at the moment it is set, but it is only revisited when the adjuster report lands.",
-        "It refreshes overnight with the rest of the claim."
-      ],
-      "whyg": "Claims Handling owns it in practice and the finance controller checks it monthly, but nobody is named.",
-      "seed": {
-        "inScopeBecause": "17% of team FTE leans on it",
-        "dependentFte": 7.0,
-        "activities": [
-          {
-            "id": "act-08",
-            "name": "Calculate and approve the settlement",
-            "fte": 7.0
-          }
-        ],
-        "maeSaid": [
-          "reliable"
-        ],
-        "hypothesis": null,
-        "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
-      }
-    },
-    "adjuster": {
-      "n": "Adjuster reports",
-      "sh": "Adjuster reports",
-      "sy": "Email attachments",
-      "c": [
-        2,
-        1,
-        3,
-        4,
-        2
-      ],
-      "g": 2,
-      "m": 0,
-      "num": 3,
-      "fix": "Have the adjusters submit through a form rather than as an attachment, so the finding is a field.",
-      "why": [
-        "Attachments on an e-mail thread. Finding one means finding the right mail first.",
-        "A PDF written in prose. There is no field a system could read the finding from.",
-        "A report arrives for every instructed file, eventually.",
-        "The adjusters are professionals and the reports are accurate; what varies is the layout.",
-        "They arrive late - the chasing in the process map is exactly this."
-      ],
-      "whyg": "Nobody. The adjuster network is managed commercially, not as a data source.",
-      "seed": {
-        "inScopeBecause": "15% of team FTE leans on it",
-        "dependentFte": 6.5,
-        "activities": [
-          {
-            "id": "act-05",
-            "name": "Instruct and follow up the loss adjuster",
-            "fte": 6.5
-          }
-        ],
-        "maeSaid": [
-          "unreliable"
-        ],
-        "hypothesis": "Completeness / Accuracy & consistency",
-        "toProbe": "The MAE recorded this as unreliable. That word covers both an empty field and a wrong one - separate the two: which is it, and on how many records?"
-      }
-    },
-    "policyco": {
-      "n": "Policy cover",
-      "sh": "Policy cover",
-      "sy": "PolicyHub",
-      "c": [
-        2,
-        4,
-        5,
-        4,
-        5
-      ],
-      "g": 4,
-      "m": 0,
-      "num": 4,
-      "fix": "Expose cover as a service so it can be shown on the claim record instead of looked up.",
-      "why": [
-        "It sits in PolicyHub, a second system that has to be opened on every single file.",
-        "Properly structured: cover, limits and excesses are all fields.",
-        "Complete for every policy - it is the policy record itself.",
-        "Accurate; it is what the customer bought.",
-        "Current to the day a policy changes."
-      ],
-      "whyg": "Underwriting owns it and the ownership is written down.",
-      "seed": {
-        "inScopeBecause": "12% of team FTE leans on it",
-        "dependentFte": 5.0,
-        "activities": [
-          {
-            "id": "act-03",
-            "name": "Check cover against the policy",
-            "fte": 5.0
-          }
-        ],
-        "maeSaid": [
-          "reliable"
-        ],
-        "hypothesis": null,
-        "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
-      }
-    },
-    "claimdoc": {
-      "n": "Claim documents",
-      "sh": "Claim documents",
-      "sy": "Central scanning",
-      "c": [
-        3,
-        2,
-        3,
-        4,
-        2
-      ],
-      "g": 2,
-      "m": 0,
-      "num": 5,
-      "fix": "Index the documents at the point of scanning, so the claim knows what it has before a human looks.",
-      "why": [
-        "Everything reaches the central scanning queue, and from there the claim - eventually.",
-        "Scanned images with a file name. Nothing inside them is readable by a system.",
-        "Most documents arrive, but the file is often opened before they do.",
-        "What arrives is what was sent; the content is not in question.",
-        "Attached by hand, often days after the claim is opened."
-      ],
-      "whyg": "Central scanning runs the queue but nobody owns what lands on a claim.",
-      "seed": {
-        "inScopeBecause": "11% of team FTE leans on it",
-        "dependentFte": 4.5,
-        "activities": [
-          {
-            "id": "act-02",
-            "name": "Register the claim and open the file",
-            "fte": 4.5
-          }
-        ],
-        "maeSaid": [
-          "unreliable"
-        ],
-        "hypothesis": "Completeness / Accuracy & consistency",
-        "toProbe": "The MAE recorded this as unreliable. That word covers both an empty field and a wrong one - separate the two: which is it, and on how many records?"
-      }
-    },
-    "repaires": {
-      "n": "Repair estimates",
-      "sh": "Repair estimates",
-      "sy": "RepairPortal",
-      "c": [
-        4,
-        4,
-        4,
-        4,
-        4
-      ],
-      "g": 3,
-      "m": 0,
-      "num": 6,
-      "fix": "",
-      "why": [
-        "Held in RepairPortal and readable per claim and per garage.",
-        "Line items with parts, labour and hours as separate fields.",
-        "Every network repair carries one before work starts.",
-        "The garages price to an agreed schedule, so the estimates are consistent.",
-        "Submitted before the repair, so it is current by construction."
-      ],
-      "whyg": "The repair network manager owns it, though the responsibility is not written down anywhere.",
-      "seed": {
-        "inScopeBecause": "10% of team FTE leans on it",
-        "dependentFte": 4.0,
-        "activities": [
-          {
-            "id": "act-07",
-            "name": "Agree the repair route with the garage",
-            "fte": 4.0
-          }
-        ],
-        "maeSaid": [
-          "reliable"
-        ],
-        "hypothesis": null,
-        "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
-      }
-    },
-    "recovery": {
-      "n": "Recovery evidence",
-      "sh": "Recovery evidence",
-      "sy": "Scattered across the file",
-      "c": [
-        2,
-        1,
-        2,
-        3,
-        3
-      ],
-      "g": 1,
-      "m": 0,
-      "num": 7,
-      "fix": "Assemble the recovery pack from what the claim already holds, rather than rebuilding it by hand.",
-      "why": [
-        "Scattered across the file: some in the claim, some in mail, some in the adjuster report.",
-        "There is no recovery record at all - the pack is built in a spreadsheet each time.",
-        "Whether the evidence is there depends on who handled the claim.",
-        "What is found is right; the risk is what is never found.",
-        "It is gathered at the point of recovery, so it reflects the file as it stands."
-      ],
-      "whyg": "Nobody. Claims Handling and Finance Control both build recovery files and neither owns the outcome.",
-      "seed": {
-        "inScopeBecause": "8% of team FTE leans on it",
-        "dependentFte": 3.5,
-        "activities": [
-          {
-            "id": "act-11",
-            "name": "Recover from the third party",
-            "fte": 3.5
-          }
-        ],
-        "maeSaid": [
-          "unreliable"
-        ],
-        "hypothesis": "Completeness / Accuracy & consistency",
-        "toProbe": "The MAE recorded this as unreliable. That word covers both an empty field and a wrong one - separate the two: which is it, and on how many records?"
-      }
-    },
-    "fraudind": {
-      "n": "Fraud indicators",
-      "sh": "Fraud indicators",
-      "sy": "ClaimsCore",
-      "c": [
-        4,
-        3,
-        3,
-        3,
-        4
-      ],
-      "g": 3,
-      "m": 0,
-      "num": 8,
-      "fix": "",
-      "why": [
-        "Held as flags on the claim in ClaimsCore.",
-        "A fixed checklist of yes/no flags, which is readable, if coarse.",
-        "The checklist is run on every file, so the flags are always set.",
-        "The flags are set consistently, but they were designed for motor and are used on everything.",
-        "Set at assessment and refreshed with the claim."
-      ],
-      "whyg": "The fraud team owns the indicator list and reviews it yearly.",
-      "seed": {
-        "inScopeBecause": "7% of team FTE leans on it",
-        "dependentFte": 3.0,
-        "activities": [
-          {
-            "id": "act-06",
-            "name": "Screen for fraud indicators",
-            "fte": 3.0
-          }
-        ],
-        "maeSaid": [
-          "reliable"
-        ],
-        "hypothesis": null,
-        "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
-      }
-    },
-    "complexi": {
-      "n": "Complexity indicators",
-      "sh": "Complexity indicat…",
-      "sy": "ClaimsCore",
-      "c": [
-        4,
-        3,
-        2,
-        2,
-        4
-      ],
-      "g": 2,
-      "m": 0,
-      "num": 9,
-      "fix": "Record what a handler can take on, and triage on that as well as on complexity.",
-      "why": [
-        "A complexity score sits on the claim and is readable.",
-        "One numeric band, which is structured but thin.",
-        "The score is set on every file, but it says nothing about who can handle it.",
-        "The bands were set years ago and no longer separate the hard files from the routine ones.",
-        "Set at registration and never revisited."
-      ],
-      "whyg": "Nobody owns the banding. It was inherited from the previous claims system.",
-      "seed": {
-        "inScopeBecause": "6% of team FTE leans on it",
-        "dependentFte": 2.5,
-        "activities": [
-          {
-            "id": "act-04",
-            "name": "Triage the claim by complexity",
-            "fte": 2.5
-          }
-        ],
-        "maeSaid": [
-          "reliable"
-        ],
-        "hypothesis": null,
-        "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
-      }
-    },
-    "claimstat": {
+    "dp-12": {
       "n": "Claim status",
       "sh": "Claim status",
       "sy": "ClaimsCore",
@@ -886,7 +550,7 @@ const DATA = /* DATA */ {
       ],
       "g": 2,
       "m": 0,
-      "num": 10,
+      "num": 1,
       "fix": "Map the twelve internal workflow codes onto the four states a customer would recognise, and name an owner.",
       "why": [
         "The status sits on the claim and is readable across the book.",
@@ -897,89 +561,430 @@ const DATA = /* DATA */ {
       ],
       "whyg": "No owner. The codes came with the system and nobody has revisited what they are for.",
       "seed": {
-        "inScopeBecause": "named by opportunity o-04, tell the customer what happened without them asking",
+        "dataPointId": "dp-12",
+        "inScopeBecause": "named by a shortlisted opportunity",
         "dependentFte": 2.0,
         "activities": [
           {
-            "id": "act-10",
-            "name": "Handle customer queries during the claim",
+            "id": "act-04",
+            "name": "Answer the customer while the claim runs",
             "fte": 2.0
+          }
+        ],
+        "maeSaid": [
+          "unavailable"
+        ],
+        "hypothesis": "Availability & access",
+        "toProbe": "The MAE recorded this as unavailable, so it may not be reachable at all. Confirm how the team would get a full set of these, and who has to be asked."
+      }
+    },
+    "dp-06": {
+      "n": "Adjuster reports",
+      "sh": "Adjuster reports",
+      "sy": "Email",
+      "c": [
+        2,
+        1,
+        3,
+        4,
+        2
+      ],
+      "g": 2,
+      "m": 0,
+      "num": 2,
+      "fix": "Have the adjusters submit through a form rather than as an attachment, so the finding is a field.",
+      "why": [
+        "Attachments on an e-mail thread. Finding one means finding the right mail first.",
+        "A PDF written in prose. There is no field a system could read the finding from.",
+        "A report arrives for every instructed file, eventually.",
+        "The adjusters are professionals and the reports are accurate; what varies is the layout.",
+        "They arrive late - the chasing in the process map is exactly this."
+      ],
+      "whyg": "Nobody. The adjuster network is managed commercially, not as a data source.",
+      "seed": {
+        "dataPointId": "dp-06",
+        "inScopeBecause": "32% of team FTE leans on it",
+        "dependentFte": 13.5,
+        "activities": [
+          {
+            "id": "act-02",
+            "name": "Assess the claim",
+            "fte": 13.5
+          }
+        ],
+        "maeSaid": [
+          "unreliable"
+        ],
+        "hypothesis": "Completeness / Accuracy & consistency",
+        "toProbe": "The MAE recorded this as unreliable. That word covers both an empty field and a wrong one - separate the two: which is it, and on how many records?"
+      }
+    },
+    "dp-02": {
+      "n": "Claim documents",
+      "sh": "Claim documents",
+      "sy": "Scan post",
+      "c": [
+        3,
+        2,
+        3,
+        4,
+        2
+      ],
+      "g": 2,
+      "m": 0,
+      "num": 3,
+      "fix": "Index the documents at the point of scanning, so the claim knows what it has before a human looks.",
+      "why": [
+        "Everything reaches the central scanning queue, and from there the claim - eventually.",
+        "Scanned images with a file name. Nothing inside them is readable by a system.",
+        "Most documents arrive, but the file is often opened before they do.",
+        "What arrives is what was sent; the content is not in question.",
+        "Attached by hand, often days after the claim is opened."
+      ],
+      "whyg": "Central scanning runs the queue but nobody owns what lands on a claim.",
+      "seed": {
+        "dataPointId": "dp-02",
+        "inScopeBecause": "32% of team FTE leans on it",
+        "dependentFte": 13.5,
+        "activities": [
+          {
+            "id": "act-01",
+            "name": "Open and register the claim",
+            "fte": 13.5
+          }
+        ],
+        "maeSaid": [
+          "unreliable"
+        ],
+        "hypothesis": "Completeness / Accuracy & consistency",
+        "toProbe": "The MAE recorded this as unreliable. That word covers both an empty field and a wrong one - separate the two: which is it, and on how many records?"
+      }
+    },
+    "dp-01": {
+      "n": "Notification details",
+      "sh": "Notification detai…",
+      "sy": "Contact Centre",
+      "c": [
+        3,
+        2,
+        3,
+        2,
+        4
+      ],
+      "g": 2,
+      "m": 0,
+      "num": 4,
+      "fix": "Pass the notification from the contact centre into the claim as fields, so it is captured once and there is one copy of it.",
+      "why": [
+        "It sits in the contact-centre tool and can be exported, but only by asking the vendor's support desk for the pull.",
+        "The circumstances are free-text call notes. A handler reads them in seconds; nothing can be read from them by a system.",
+        "Every notification has one. The fields a claim needs are there in the text, even when they are not in a field.",
+        "It is typed a second time into the claims system, so the two copies of the same notification drift apart on the details.",
+        "It is written while the customer is on the phone, so it is as current as the claim itself."
+      ],
+      "whyg": "No owner. The contact centre owns the tool; nobody owns the record that comes out of it, which is why nothing has been done about the second entry.",
+      "seed": {
+        "dataPointId": "dp-01",
+        "inScopeBecause": "32% of team FTE leans on it",
+        "dependentFte": 13.5,
+        "activities": [
+          {
+            "id": "act-01",
+            "name": "Open and register the claim",
+            "fte": 13.5
+          }
+        ],
+        "maeSaid": [
+          "unreliable"
+        ],
+        "hypothesis": "Completeness / Accuracy & consistency",
+        "toProbe": "The MAE recorded this as unreliable. That word covers both an empty field and a wrong one - separate the two: which is it, and on how many records?"
+      }
+    },
+    "dp-05": {
+      "n": "Complexity indicators",
+      "sh": "Complexity indicat…",
+      "sy": "ClaimsCore",
+      "c": [
+        4,
+        3,
+        2,
+        2,
+        4
+      ],
+      "g": 2,
+      "m": 0,
+      "num": 5,
+      "fix": "Record what a handler can take on, and triage on that as well as on complexity.",
+      "why": [
+        "A complexity score sits on the claim and is readable.",
+        "One numeric band, which is structured but thin.",
+        "The score is set on every file, but it says nothing about who can handle it.",
+        "The bands were set years ago and no longer separate the hard files from the routine ones.",
+        "Set at registration and never revisited."
+      ],
+      "whyg": "Nobody owns the banding. It was inherited from the previous claims system.",
+      "seed": {
+        "dataPointId": "dp-05",
+        "inScopeBecause": "32% of team FTE leans on it",
+        "dependentFte": 13.5,
+        "activities": [
+          {
+            "id": "act-01",
+            "name": "Open and register the claim",
+            "fte": 13.5
           }
         ],
         "maeSaid": [
           "reliable"
         ],
-        "hypothesis": "Structure",
-        "toProbe": "The status exists, but does it mean anything to a customer?"
+        "hypothesis": null,
+        "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
+      }
+    },
+    "dp-07": {
+      "n": "Fraud indicators",
+      "sh": "Fraud indicators",
+      "sy": "ClaimsCore",
+      "c": [
+        4,
+        3,
+        3,
+        3,
+        4
+      ],
+      "g": 3,
+      "m": 0,
+      "num": 6,
+      "fix": "",
+      "why": [
+        "Held as flags on the claim in ClaimsCore.",
+        "A fixed checklist of yes/no flags, which is readable, if coarse.",
+        "The checklist is run on every file, so the flags are always set.",
+        "The flags are set consistently, but they were designed for motor and are used on everything.",
+        "Set at assessment and refreshed with the claim."
+      ],
+      "whyg": "The fraud team owns the indicator list and reviews it yearly.",
+      "seed": {
+        "dataPointId": "dp-07",
+        "inScopeBecause": "32% of team FTE leans on it",
+        "dependentFte": 13.5,
+        "activities": [
+          {
+            "id": "act-02",
+            "name": "Assess the claim",
+            "fte": 13.5
+          }
+        ],
+        "maeSaid": [
+          "reliable"
+        ],
+        "hypothesis": null,
+        "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
+      }
+    },
+    "dp-04": {
+      "n": "Policy cover",
+      "sh": "Policy cover",
+      "sy": "PolicyHub",
+      "c": [
+        2,
+        4,
+        5,
+        4,
+        5
+      ],
+      "g": 4,
+      "m": 0,
+      "num": 7,
+      "fix": "Expose cover as a service so it can be shown on the claim record instead of looked up.",
+      "why": [
+        "It sits in PolicyHub, a second system that has to be opened on every single file.",
+        "Properly structured: cover, limits and excesses are all fields.",
+        "Complete for every policy - it is the policy record itself.",
+        "Accurate; it is what the customer bought.",
+        "Current to the day a policy changes."
+      ],
+      "whyg": "Underwriting owns it and the ownership is written down.",
+      "seed": {
+        "dataPointId": "dp-04",
+        "inScopeBecause": "32% of team FTE leans on it",
+        "dependentFte": 13.5,
+        "activities": [
+          {
+            "id": "act-01",
+            "name": "Open and register the claim",
+            "fte": 13.5
+          }
+        ],
+        "maeSaid": [
+          "reliable"
+        ],
+        "hypothesis": null,
+        "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
+      }
+    },
+    "dp-03": {
+      "n": "Policy number",
+      "sh": "Policy number",
+      "sy": "Contact Centre",
+      "c": [
+        4,
+        4,
+        3,
+        3,
+        4
+      ],
+      "g": 3,
+      "m": 0,
+      "num": 8,
+      "fix": "",
+      "why": [
+        "It is on the claim from the first screen and can be read straight out of the claims system.",
+        "One field, one format, validated on entry - the only data point on this grid a machine can already use as a key.",
+        "A handful of notifications arrive without one and are matched by name and address afterwards.",
+        "Where it is wrong, it is a mis-heard digit on the phone; the validation catches most of those.",
+        "Captured at the notification, never stale after that."
+      ],
+      "whyg": "Owned by the contact-centre team lead: the number is what every later lookup depends on, and that is understood.",
+      "seed": {
+        "dataPointId": "dp-03",
+        "inScopeBecause": "32% of team FTE leans on it",
+        "dependentFte": 13.5,
+        "activities": [
+          {
+            "id": "act-01",
+            "name": "Open and register the claim",
+            "fte": 13.5
+          }
+        ],
+        "maeSaid": [
+          "reliable"
+        ],
+        "hypothesis": null,
+        "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
+      }
+    },
+    "dp-08": {
+      "n": "Repair estimates",
+      "sh": "Repair estimates",
+      "sy": "RepairPortal",
+      "c": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "g": 3,
+      "m": 0,
+      "num": 9,
+      "fix": "",
+      "why": [
+        "Held in RepairPortal and readable per claim and per garage.",
+        "Line items with parts, labour and hours as separate fields.",
+        "Every network repair carries one before work starts.",
+        "The garages price to an agreed schedule, so the estimates are consistent.",
+        "Submitted before the repair, so it is current by construction."
+      ],
+      "whyg": "The repair network manager owns it, though the responsibility is not written down anywhere.",
+      "seed": {
+        "dataPointId": "dp-08",
+        "inScopeBecause": "32% of team FTE leans on it",
+        "dependentFte": 13.5,
+        "activities": [
+          {
+            "id": "act-02",
+            "name": "Assess the claim",
+            "fte": 13.5
+          }
+        ],
+        "maeSaid": [
+          "reliable"
+        ],
+        "hypothesis": null,
+        "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
+      }
+    },
+    "dp-09": {
+      "n": "Settlement calculation",
+      "sh": "Settlement calcula…",
+      "sy": "Excel",
+      "c": [
+        2,
+        2,
+        3,
+        3,
+        4
+      ],
+      "g": 1,
+      "m": 0,
+      "num": 10,
+      "fix": "Move the settlement calculation into the claim, so the numbers live where the decision is recorded.",
+      "why": [
+        "It lives in a personal spreadsheet on a shared drive. You can open one file; you cannot read them as a set.",
+        "Each handler has shaped their own sheet, so the same figure sits in a different cell in every file.",
+        "The sheet is filled for every settlement - the calculation itself is never skipped.",
+        "The arithmetic is right; what varies is which version of the sheet was used.",
+        "It is done at the moment of settlement, so it is never out of date."
+      ],
+      "whyg": "No owner. The sheet was built by a handler who has since left, and everyone copies theirs from the last one.",
+      "seed": {
+        "dataPointId": "dp-09",
+        "inScopeBecause": "19% of team FTE leans on it",
+        "dependentFte": 8.0,
+        "activities": [
+          {
+            "id": "act-03",
+            "name": "Settle and pay the claim",
+            "fte": 8.0
+          }
+        ],
+        "maeSaid": [
+          "unreliable"
+        ],
+        "hypothesis": "Completeness / Accuracy & consistency",
+        "toProbe": "The MAE recorded this as unreliable. That word covers both an empty field and a wrong one - separate the two: which is it, and on how many records?"
       }
     }
   },
-  "processes": [
+  "units": [
     {
-      "n": "Calculate and approve the settlement",
-      "f": 7.0,
+      "n": "Assess the claim",
+      "f": 13.5,
       "u": [
-        "settleme",
-        "reserve"
+        "dp-06",
+        "dp-07",
+        "dp-08"
       ]
     },
     {
-      "n": "Instruct and follow up the loss adjuster",
-      "f": 6.5,
+      "n": "Open and register the claim",
+      "f": 13.5,
       "u": [
-        "adjuster"
+        "dp-02",
+        "dp-01",
+        "dp-05",
+        "dp-04",
+        "dp-03"
       ]
     },
     {
-      "n": "Check cover against the policy",
-      "f": 5.0,
+      "n": "Settle and pay the claim",
+      "f": 8.0,
       "u": [
-        "policyco"
+        "dp-09"
       ]
     },
     {
-      "n": "Register the claim and open the file",
-      "f": 4.5,
-      "u": [
-        "claimdoc"
-      ]
-    },
-    {
-      "n": "Agree the repair route with the garage",
-      "f": 4.0,
-      "u": [
-        "repaires"
-      ]
-    },
-    {
-      "n": "Recover from the third party",
-      "f": 3.5,
-      "u": [
-        "recovery"
-      ]
-    },
-    {
-      "n": "Screen for fraud indicators",
-      "f": 3.0,
-      "u": [
-        "fraudind"
-      ]
-    },
-    {
-      "n": "Triage the claim by complexity",
-      "f": 2.5,
-      "u": [
-        "complexi"
-      ]
-    },
-    {
-      "n": "Handle customer queries during the claim",
+      "n": "Answer the customer while the claim runs",
       "f": 2.0,
       "u": [
-        "claimstat"
+        "dp-12"
       ]
     }
-  ]
+  ],
+  "unitWord": "activity block"
 } /* /DATA */;
 var TEAM=DATA.team, PERIOD=DATA.period;
 /* ========================================================== */
@@ -989,7 +994,8 @@ var CRIT=["Availability & access","Structure & granularity","Completeness","Accu
 var SHORT=["Avail","Struct","Compl","Accur","Timel"];
 var VERD={1:"Blocked",2:"Assist only",3:"Runs with controls",4:"Runs as-is",5:"Build on it"};
 
-var D=DATA.objects, P=DATA.processes;
+var D=DATA.objects, P=DATA.units||DATA.processes||[];      // rows: activity blocks (or value chains)
+var UNIT=DATA.unitWord||'activity block', UNITS=UNIT+'s';
 var KEYS=Object.keys(D);
 function sc(k){return Math.min.apply(null,D[k].c)}
 function bindNames(k){var c=D[k].c,s=sc(k),r=[];
@@ -1050,7 +1056,7 @@ function openDP(k){
   var o=D[k],s=sc(k),deps=P.filter(function(p){return p.u.indexOf(k)>-1});
   var h='<div class="mdl" role="dialog" aria-modal="true" aria-label="'+esc(o.n)+'">'+
     '<div class="mhead"><div><div class="mtit">'+esc(o.n)+'</div><div class="msub">'+esc(o.sy)+
-    ' · used by '+deps.length+(deps.length===1?" process":" processes")+' · '+
+    ' · used by '+deps.length+' '+(deps.length===1?UNIT:UNITS)+' · '+
     (o.m?"score measured from an extract":"scored from interview evidence")+
     '</div></div><span class="chip2 k'+s+'" style="margin-top:.2em">'+VERD[s]+
     '</span><button class="mx" id="mx" aria-label="Close">&times;</button></div><div class="mbody">'+
@@ -1067,7 +1073,7 @@ function openDP(k){
     h+='<div class="mrow own"><div class="mcl">Ownership &amp; governance<small>outside the verdict</small></div>'+
        '<div class="msc m'+o.g+'">'+o.g+'</div><div class="mtx">'+esc(o.whyg)+'</div></div>';
   }
-  h+='<div class="mh2">Depending processes</div>';
+  h+='<div class="mh2">Depending '+UNITS+'</div>';
   deps.sort(function(a,b){return b.f-a.f}).forEach(function(p){
     var ps=pScore(p),binds=(ps<3&&sc(k)===ps);
     h+='<div class="mdep"><div>'+esc(p.n)+'</div><div class="r">'+p.f.toFixed(1)+' FTE</div>'+
@@ -1100,7 +1106,7 @@ function mapSVG(H){
   P.forEach(function(p){var h=Math.max(20,avail*p.f/TOT);pn.push({y:y,h:h});y+=h+pGap});
   var order=KEYS.slice(),dh=32,dGap=13,dTot=order.length*dh+(order.length-1)*dGap,dy=(H-dTot)/2+4,dn={};
   order.forEach(function(k){dn[k]={y:dy,h:dh};dy+=dh+dGap});
-  var s='<text class="axcap" x="18" y="20">Processes</text>'+
+  var s='<text class="axcap" x="18" y="20">'+esc(UNITS.charAt(0).toUpperCase()+UNITS.slice(1))+'</text>'+
         '<text class="axcap" x="'+(DX+DW+31)+'" y="20">Data points</text>';
   P.forEach(function(p,i){
     var ay=pn[i].y+pn[i].h/2;
@@ -1113,7 +1119,7 @@ function mapSVG(H){
   P.forEach(function(p,i){
     var a=pn[i],v=pScore(p),bind=p.u.filter(function(k){return sc(k)===v});
     var t=tip(p.n,VERD[v]+" · "+p.f.toFixed(1)+" FTE",0,
-      v>=3?"Everything this process leans on reaches the bar.":
+      v>=3?"Everything this "+UNIT+" leans on reaches the bar.":
       "Held back by "+bind.map(function(k){return D[k].sh}).join(" and ")+".");
     s+='<g class="gnode" data-p="'+i+'" data-tip="'+t+'">'+
        '<rect x="'+PX+'" y="'+a.y+'" width="'+PW+'" height="'+a.h+'" rx="4" fill="'+bandHex(v)+'"/>'+
@@ -1122,8 +1128,8 @@ function mapSVG(H){
   });
   order.forEach(function(k){
     var b=dn[k],v=sc(k),cy=b.y+b.h/2,star=(D[k].num<=4);
-    var t=tip(D[k].n,D[k].sy+" · used by "+(used[k]||0)+" processes",v,
-      v>=3?"Clears the bar. Nothing here blocks a process.":
+    var t=tip(D[k].n,D[k].sy+" · used by "+(used[k]||0)+" "+UNITS,v,
+      v>=3?"Clears the bar. Nothing here blocks the work.":
       "Lowest on "+bindNames(k).toLowerCase()+". "+D[k].why[D[k].c.indexOf(v)]);
     s+='<g class="gnode" data-d="'+k+'" data-dp="'+k+'" data-tip="'+t+'">'+
        '<rect x="'+DX+'" y="'+b.y+'" width="'+DW+'" height="'+b.h+'" rx="4" fill="'+bandHex(v)+'"/>';
@@ -1135,7 +1141,7 @@ function mapSVG(H){
        (v>=3?'clears the bar':'held back by '+bindNames(k).toLowerCase())+'</text></g>';
   });
   return '<div class="mapwrap"><svg viewBox="0 0 '+VBW+' '+H+'" role="img" aria-label="Dependency map: '+
-    P.length+' processes linked to the '+KEYS.length+' data points they use.">'+s+'</svg></div>';
+    P.length+' '+UNITS+' linked to the '+KEYS.length+' data points they use.">'+s+'</svg></div>';
 }
 function capPills(svg){
   var NS="http://www.w3.org/2000/svg";
@@ -1199,14 +1205,14 @@ function dotPlot(){
   return '<div data-stretch>'+h+'</div><div class="scaleline"><div></div><div class="scalenums">'+sn+'</div></div>';
 }
 function processList(){
-  return '<div class="phead"><div>Process</div><div class="pf">FTE</div><div class="pv">Readiness</div><div>Leans on</div></div>'+
+  return '<div class="phead"><div>'+esc(UNIT.charAt(0).toUpperCase()+UNIT.slice(1))+'</div><div class="pf">FTE</div><div class="pv">Readiness</div><div>Leans on</div></div>'+
    '<div data-stretch>'+P.map(function(p){var s=pScore(p);
     return '<div class="prow"><div class="pn">'+esc(p.n)+'</div>'+
      '<div class="pf">'+p.f.toFixed(1)+'</div>'+
      '<div class="pv"><span class="chip2 k'+s+'">'+VERD[s]+'</span></div>'+
      '<div class="pl">'+p.u.map(function(k){var v=sc(k);
        var t=tip(D[k].n,CRIT[D[k].c.indexOf(v)]||"Lowest of the five",v,
-         v>=3?"Clears the bar, so it does not hold this process back.":D[k].why[D[k].c.indexOf(v)]);
+         v>=3?"Clears the bar, so it does not hold this "+UNIT+" back.":D[k].why[D[k].c.indexOf(v)]);
        return '<span class="dp dp'+v+(v===s?" bind":"")+'" data-dp="'+k+'" data-tip="'+t+'">'+esc(D[k].sh)+' <b>'+v+'</b></span>'}).join("")+
      '</div></div>';
   }).join("")+'</div>';
@@ -1220,7 +1226,7 @@ function cardGrid(){
     var gt=tip(o.n,"Ownership & governance",o.g,o.whyg);
     return '<div class="card" data-dp="'+k+'" tabindex="0" role="button"><div class="chead"><div class="cname"><span class="prov'+(o.m?" meas":"")+
      '"></span>'+esc(o.n)+'</div><span class="chip2 k'+s+'">'+VERD[s]+'</span></div>'+
-     '<div class="csys">'+esc(o.sy)+' · used by '+(used[k]||0)+(used[k]===1?" process":" processes")+'</div>'+
+     '<div class="csys">'+esc(o.sy)+' · used by '+(used[k]||0)+' '+(used[k]===1?UNIT:UNITS)+'</div>'+
      '<div class="mini">'+bars+'</div><div class="mlab">'+SHORT.map(function(t){return "<span>"+t+"</span>"}).join("")+'</div>'+
      '<div class="cfoot"><span class="hold">'+(s>=4?"Nothing holds it back":
         (s===3?'At the bar on <b>'+bindNames(k).toLowerCase()+'</b>':'Held back by <b>'+bindNames(k).toLowerCase()+'</b>'))+
@@ -1338,8 +1344,8 @@ var LG2=[["Below the bar","--rag-amber"],["At or above the bar","--rag-green"]];
 var VIEWS={
  o:{label:"Overview",
    title:"Where this team's readiness is lost",
-   meth:'A process inherits the score of the <b>weakest data point it leans on</b>. Hover for the reason, <b>click a data point</b> for its full assessment.',
-   sech:"Mapping from processes to data points", vis:function(){return mapSVG()}, after:wireMap,
+   meth:'An activity block inherits the score of the <b>weakest data point it leans on</b>. Hover for the reason, <b>click a data point</b> for its full assessment.',
+   sech:"Mapping from activity blocks to data points", vis:function(){return mapSVG()}, after:wireMap,
    insh:"Insights and where the readiness is lost", ins:INS.o||[],
    src:srcOf("o"), lg:LG3},
 
@@ -1358,10 +1364,10 @@ var VIEWS={
    src:srcOf("m"),
    lg:[["Below the bar","--rag-red"],["At or above the bar","--rag-green"]]},
 
- p:{label:"Processes",
-   title:"What the team's processes can run on today",
+ p:{label:"Activity blocks",
+   title:"What the team's work can run on today",
    meth:'The <b>binding data point</b> is outlined on each row. Hover for the finding, <b>click it</b> for its full assessment.',
-   sech:"Readiness by process", vis:processList,
+   sech:"Readiness by activity block", vis:processList,
    insh:"Insights and where the FTE sits", ins:INS.p||[],
    src:srcOf("p"), lg:LG3},
 
@@ -1374,7 +1380,7 @@ var VIEWS={
 
  f:{label:"Critical repairs",
    title:"What it would take to unblock the work",
-   meth:'A process clears only when <b>every</b> data point it leans on reaches the bar.',
+   meth:'An activity block clears only when <b>every</b> data point it leans on reaches the bar.',
    sech:"What it would take, largest first", vis:repairList,
    insh:"Insights and how to sequence it", ins:INS.f||[],
    src:srcOf("f"),

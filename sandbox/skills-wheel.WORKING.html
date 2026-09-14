@@ -208,7 +208,7 @@ const DATA = /* DATA */ {
   "lens": "MGMT · SKILLS WHEEL",
   "teamName": "Claims Handling",
   "source": "Team lead, technical referent, two coordinators and four handlers across tenure levels, 3-4 Sep 2026",
-  "keyMessage": "Claims Handling has more technical skill than it can see: the knowledge is real and generously shared, but none of it is defined, recorded or planned, so it moves only where people happen to sit and stops when someone leaves.",
+  "keyMessage": "Claims Handling has more technical skill than it can see: none of it is defined, recorded or planned, so it leaves with the people who hold it",
   "aspects": [
     {
       "key": "target",
@@ -474,10 +474,10 @@ const DATA = /* DATA */ {
   function bindEdit(){ if(!ON) return;
     document.querySelectorAll('#vinner [data-ek]').forEach(function(el){el.onclick=function(){openAspect(el.getAttribute('data-ek'));};});
     document.getElementById('title').onclick=function(){openTitle();};}
-  function openTitle(){ if(!ON) return; edp=document.getElementById('ed');
+  /* two lines at most (rigor-and-scoring.md 6): a live count under the action-title field */ var KM_MAX=150; function kmCount(){ var ta=document.getElementById('f_km'), c=document.getElementById('km_count'); if(!ta||!c) return; var n=ta.value.replace(/\*\*/g,'').replace(/<[^>]+>/g,'').trim().length, over=n>KM_MAX; c.style.cssText='display:flex;justify-content:space-between;gap:10px;margin:6px 0 2px;font-size:12px;font-weight:600;line-height:1.35;color:'+(over?'var(--rag-red-text,#B3261E)':'var(--mut,#5B6B82)'); c.innerHTML='<span>'+(over?'Runs past two lines on the slide. Keep the conclusion, cut the explanation.':'Fits on two lines.')+'</span><span style="white-space:nowrap">'+n+' / '+KM_MAX+'</span>'; } document.addEventListener('input',function(e){ if(e.target&&e.target.id==='f_km') kmCount(); },true); new MutationObserver(function(){ var c=document.getElementById('km_count'); if(c&&!c.firstChild) kmCount(); }).observe(document.documentElement,{childList:true,subtree:true}); function openTitle(){ if(!ON) return; edp=document.getElementById('ed');
     edp.innerHTML='<div class="edh"><button class="x" id="edx">&times;</button><div class="row"><span class="kind">Narrative</span><h3>Action title</h3></div></div>'+
-      '<div class="edb"><div class="f"><label>Action title</label><textarea id="f_km">'+esc(DATA.keyMessage||'')+'</textarea><button class="kmhl" id="km_hl" title="Wrap the selected words in **\u2026** so they render green"><span class="swch"></span>Highlight selection</button></div>'+
-      '<div class="f"><label>Preview \u2014 exactly as it renders</label><div class="prev" id="km_prev"></div></div><div class="kmhints"><b>Formatting</b><span class="kchip">**42 FTE**</span> &rarr; <span style="color:var(--green);font-weight:700">42 FTE</span> \u2014 green highlight for the load-bearing numbers and words.<br>Everything else renders <span style="color:var(--navy);font-weight:700">bold navy</span> automatically \u2014 no HTML needed (tags are not interpreted).<br><b style="margin-top:7px">Good title checklist</b>The conclusion, not the topic \u00b7 \u22652 numbers \u00b7 one structural implication \u00b7 no hedging.</div></div>'+
+      '<div class="edb"><div class="f"><label>Action title</label><textarea id="f_km">'+esc(DATA.keyMessage||'')+'</textarea><div id="km_count"></div><button class="kmhl" id="km_hl" title="Wrap the selected words in **\u2026** so they render green"><span class="swch"></span>Highlight selection</button></div>'+
+      '<div class="f"><label>Preview \u2014 exactly as it renders</label><div class="prev" id="km_prev"></div></div><div class="kmhints"><b>Formatting</b><span class="kchip">**42 FTE**</span> &rarr; <span style="color:var(--green);font-weight:700">42 FTE</span> \u2014 green highlight for the load-bearing numbers and words.<br>Everything else renders <span style="color:var(--navy);font-weight:700">bold navy</span> automatically \u2014 no HTML needed (tags are not interpreted).<br><b style="margin-top:7px">Good title checklist</b>The conclusion, not the topic \u00b7 \u22652 numbers \u00b7 one structural implication \u00b7 no hedging \u00b7 two lines at most.</div></div>'+
       '<div class="edf"><span class="sp"></span><button class="wbtn" id="edc">Cancel</button><button class="wbtn pri" id="edok">Apply</button></div>';
     edp.classList.add('on');
     var kmt=edp.querySelector('#f_km'),kmp=edp.querySelector('#km_prev');

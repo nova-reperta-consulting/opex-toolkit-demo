@@ -1650,19 +1650,19 @@ const DATA = /* DATA */ {
     document.getElementById('save').className=ON?'show':'';
     document.getElementById('addbar').classList.toggle('show',ON);
     render(); }
-  function openTitle(){ if(!ON||!edp) return;
+  /* two lines at most (rigor-and-scoring.md 6): a live count under the action-title field */ var KM_MAX=150; function kmCount(){ var ta=document.getElementById('f_km'), c=document.getElementById('km_count'); if(!ta||!c) return; var n=ta.value.replace(/\*\*/g,'').replace(/<[^>]+>/g,'').trim().length, over=n>KM_MAX; c.style.cssText='display:flex;justify-content:space-between;gap:10px;margin:6px 0 2px;font-size:12px;font-weight:600;line-height:1.35;color:'+(over?'var(--rag-red-text,#B3261E)':'var(--mut,#5B6B82)'); c.innerHTML='<span>'+(over?'Runs past two lines on the slide. Keep the conclusion, cut the explanation.':'Fits on two lines.')+'</span><span style="white-space:nowrap">'+n+' / '+KM_MAX+'</span>'; } document.addEventListener('input',function(e){ if(e.target&&e.target.id==='f_km') kmCount(); },true); new MutationObserver(function(){ var c=document.getElementById('km_count'); if(c&&!c.firstChild) kmCount(); }).observe(document.documentElement,{childList:true,subtree:true}); function openTitle(){ if(!ON||!edp) return;
     edp.innerHTML='<div class="edh"><button class="x" id="edx">&times;</button><div class="row"><span class="kind">Narrative</span><h3>Action title</h3></div></div>'+
-      '<div class="edb"><div class="f"><label>Action title</label><textarea id="f_km">'+esc(DATA.keyMessage||'')+'</textarea>'+
+      '<div class="edb"><div class="f"><label>Action title</label><textarea id="f_km">'+esc(DATA.keyMessage||'')+'</textarea><div id="km_count"></div>'+
       '<button class="kmhl" id="km_hl" title="Wrap the selected words in **…** so they render green"><span class="swch"></span>Highlight selection</button></div>'+
       '<div class="f"><label>Preview — exactly as it renders</label><div class="kmprev" id="km_prev"></div></div>'+
       '<div class="kmhints"><b>Formatting</b>'+
       '<span class="kchip">**42 FTE**</span> &rarr; <span style="color:var(--green);font-weight:700">42 FTE</span> — green highlight for the load-bearing numbers and words.<br>'+
       'Everything else renders <span style="color:var(--navy);font-weight:700" class="dk">bold navy</span> automatically — no HTML needed.<br>'+
-      '<b style="margin-top:7px">Good title checklist</b>The conclusion, not the topic &middot; &ge;2 numbers &middot; one structural implication &middot; no hedging.</div></div>'+
+      '<b style="margin-top:7px">Good title checklist</b>The conclusion, not the topic &middot; &ge;2 numbers &middot; one structural implication &middot; no hedging &middot; two lines at most.</div></div>'+
       '<div class="edf"><span class="sp"></span><button class="wbtn" id="edc">Cancel</button><button class="wbtn pri" id="edok">Apply</button></div>';
     edp.classList.add('on');
     var ta=edp.querySelector('#f_km'), pv=edp.querySelector('#km_prev');
-    function upd(){pv.innerHTML=ta.value?hl(ta.value):'<span style="color:var(--mut);font-style:italic;font-weight:600;font-size:.85em">Key message to be drafted</span>';}
+    function upd(){kmCount();pv.innerHTML=ta.value?hl(ta.value):'<span style="color:var(--mut);font-style:italic;font-weight:600;font-size:.85em">Key message to be drafted</span>';}
     function grow(){ta.style.height='auto';ta.style.height=(ta.scrollHeight+2)+'px';}
     ta.addEventListener('input',function(){upd();grow();}); upd(); setTimeout(grow,10); ta.focus();
     edp.querySelector('#km_hl').onclick=function(){
@@ -1729,9 +1729,6 @@ const DATA = /* DATA */ {
   #ft b,.legend b,.l b{font-size:11px!important}
   /* a row label truncated to '…' is worse than a wrapped one once the page flows */
   [style*="ellipsis"]{white-space:normal!important;text-overflow:clip!important;overflow:visible!important}
-  :root,#art,#pw,#pm{--t-cell:max(11px,clamp(10px,.86vw,12.5px))!important}
-  :root,#art,#pw,#pm{--t-head:max(11px,clamp(8.5px,.72vw,12px))!important}
-  :root,#art,#pw,#pm{--t-micro:max(11px,clamp(8.5px,.7vw,11.5px))!important}
 }
 </style>
 </body></html>

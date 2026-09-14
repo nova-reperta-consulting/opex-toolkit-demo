@@ -23,11 +23,11 @@
   #pm{--navy:#0B2347;--slate:#364156;--steel:#7991AD;--green:#1C7A4A;--accent:#6EB1D1;--sky:#A9D5E6;--navy2:#16315B;
       --slate-10:rgba(54,65,86,.09);--rag-green:#2F8F6B;--rag-amber:#D49A3A;--rag-red:#D2645A;--rag-na:#9AA4B0;--rag-green-text:#2F8F6B;--rag-amber-text:#B97F22;--rag-red-text:#C2483D;--rag-na-text:#6B7480;--tint-green:rgba(47,143,107,.12);--tint-amber:rgba(212,154,58,.16);--tint-red:rgba(210,100,90,.13);--tint-na:rgba(154,164,176,.16);--navy-fill:#0B2347;
       --ink:#15243A;--txt:#46505C;--mut:#7A838F;--line:#E1E6EE;--card:#FFF;--bg:#FFF;--soft:#F5F7FB;
-      --nat-automate:#2E5C8A;--nat-accelerate:#1C7A4A;--nat-enhance:#6EB1D1;--nat-redesign:#D49A3A;--nat-keep:#7991AD;
+      --lev-auto:#3B6FBF;--lev-aiacc:#1C7A4A;--lev-aienh:#6EB1D1;--lev-process:#2A4D8F;--lev-journey:#C0392B;--lev-lean:#145530;--lev-data:#B8620A;--lev-change:#6B4E9E;--lev-org:#1F6F66;
       --sh:0 1px 2px rgba(20,30,50,.04),0 14px 32px -24px rgba(20,30,50,.30);
       width:100%;max-width:2200px;margin:0 auto;height:100vh;overflow:hidden;position:relative;
       display:flex;flex-direction:column;background:var(--bg);color:var(--ink);padding:76px 40px 12px 98px}
-  #pm[data-t="dark"]{--bg:#16202C;--card:#1E2937;--ink:#EAEFF5;--txt:#C4CEDA;--mut:#94A1B2;--line:#2A3744;--soft:#141E2A;--navy-fill:#243246;--navy2:#31517F;--accent:#8FC7E8;--steel:#93A9C4;--rag-green:#5FBF94;--rag-amber:#E8B96A;--rag-red:#F0968C;--rag-na:#9AA8B8;--rag-green-text:#5FBF94;--rag-amber-text:#E8B96A;--rag-red-text:#F0968C;--rag-na-text:#9AA8B8;--tint-green:rgba(95,191,148,.15);--tint-amber:rgba(232,185,106,.15);--tint-red:rgba(240,150,140,.14);--tint-na:rgba(148,161,178,.15);--nat-automate:#4A7FB8;--nat-keep:#93A9BC;--sh:0 1px 2px rgba(0,0,0,.4),0 14px 32px -24px rgba(0,0,0,.6)}
+  #pm[data-t="dark"]{--lev-auto:#6E9BDB;--lev-aiacc:#5FBF94;--lev-aienh:#8FC7E8;--lev-process:#7FA3DB;--lev-journey:#E8877C;--lev-lean:#5FA87F;--lev-data:#D9A05B;--lev-change:#A48CD1;--lev-org:#5FB5A9;--bg:#16202C;--card:#1E2937;--ink:#EAEFF5;--txt:#C4CEDA;--mut:#94A1B2;--line:#2A3744;--soft:#141E2A;--navy-fill:#243246;--navy2:#31517F;--accent:#8FC7E8;--steel:#93A9C4;--rag-green:#5FBF94;--rag-amber:#E8B96A;--rag-red:#F0968C;--rag-na:#9AA8B8;--rag-green-text:#5FBF94;--rag-amber-text:#E8B96A;--rag-red-text:#F0968C;--rag-na-text:#9AA8B8;--tint-green:rgba(95,191,148,.15);--tint-amber:rgba(232,185,106,.15);--tint-red:rgba(240,150,140,.14);--tint-na:rgba(148,161,178,.15);--sh:0 1px 2px rgba(0,0,0,.4),0 14px 32px -24px rgba(0,0,0,.6)}
   body:has(#pm[data-t="dark"]){--page:#0E1620}
   #pm[data-t="dark"] .prow .pbadge,#pm[data-t="dark"] #pin .ptp,#pm[data-t="dark"] #pin .tchip.pn,#pm[data-t="dark"] #pin .plegend .lp,#pm[data-t="dark"] .pchpill{color:#16202C}
   /*<EDIT>*/#pm[data-t="dark"] #wgear.blocked,#pm[data-t="dark"] #ed .edkind.pain{color:#16202C}/*</EDIT>*/
@@ -231,6 +231,9 @@
   #pin .trow{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0 2px}
   #pin .tdesc{font-size:12px;color:var(--txt);line-height:1.5;margin:11px 0 2px}
   #pin .tplabel{font-size:var(--fs-9);font-weight:800;color:var(--rag-red);text-transform:uppercase;letter-spacing:.4px;margin:14px 0 4px;padding-top:11px;border-top:1px solid var(--line)}
+    .tsteps{margin:2px 0 10px 18px;padding:0;font-size:12px;line-height:1.5;color:var(--ink)}
+    .tsteps li{margin:0 0 3px}
+    .tsteps .tsys{margin-left:6px;font-size:var(--fs-105);color:var(--mut)}
   #pin .tpp{border-left:2px solid var(--rag-red);padding:1px 0 1px 11px;margin:9px 0}
   #pin .tppt{font-size:12px;font-weight:700;color:var(--ink);line-height:1.35}
   #pin .tppm{font-size:var(--fs-11);font-weight:800;color:#B07A1E;margin-top:2px}
@@ -330,7 +333,7 @@
   #pm.editing .swt:hover:before{color:var(--accent)}
   .swt.drag{opacity:.35;transform:scale(.98)}
   #pm.editing .swcell.drop{outline:2px dashed var(--accent);outline-offset:-3px;background:rgba(110,177,209,.10)}
-  /* the activity picker - shown when a task is dropped into a phase that holds several activities */
+  /* the block picker - shown when an activity is dropped into a key process that holds several blocks */
   /* --- v2026.7 edit controls: adds, dropdowns, structured magnitude --- */
   .hidden{display:none !important}
   #ed .frow{display:flex;gap:9px} #ed .frow .f{flex:1;min-width:0}
@@ -470,7 +473,14 @@
   #ed .metablock{border:1px solid var(--line);border-radius:10px;padding:12px 12px 2px;background:var(--soft);margin-bottom:12px}
   #ed .metablock .frow{margin-bottom:0}
   #ed .addtoggle{width:100%;margin-top:8px;border-style:dashed;color:var(--mut);font-weight:600;font-size:12px}
-  #ed .taskcard{display:block;width:100%;text-align:left;border:none;border-left:2px solid var(--accent);
+  #ed .opprow{display:block;width:100%;text-align:left;border:none;
+  border-left:2px solid var(--line);background:var(--soft);border-radius:0 6px 6px 0;
+  padding:9px 11px;margin-bottom:6px;cursor:pointer;font:inherit;color:var(--txt);}
+#ed .opprow:hover{background:var(--card);border-left-color:var(--accent);}
+#ed .opprow .or-t{display:block;font-weight:600;color:var(--ink);font-size:12.5px;
+  line-height:1.4;margin:5px 0 3px;}
+#ed .opprow .or-m{display:block;color:var(--mut);font-size:var(--fs-11);}
+#ed .taskcard{display:block;width:100%;text-align:left;border:none;border-left:2px solid var(--accent);
     background:rgba(110,177,209,.06);border-radius:0 8px 8px 0;padding:7px 11px;margin:0 0 6px;cursor:pointer;transition:.13s}
   #ed .taskcard:hover{background:rgba(110,177,209,.15);transform:translateX(2px)}
   #ed .tc-n{font-size:12px;font-weight:700;color:var(--ink);line-height:1.3}
@@ -563,7 +573,7 @@
 <!--</EDIT>-->
       </div>
     <div class="ctrls">
-      <div class="seg" id="views"><button data-v="highlevel" class="on">High-level</button><button data-v="opportunity">Opportunities</button><button data-v="pains">Painpoints</button><button data-v="detail">Swimlane</button></div>
+      <div class="seg" id="views"><button data-v="highlevel" class="on">High-level</button><button data-v="opportunity">Opportunities</button><button data-v="pains">Pain points</button><button data-v="detail">Swimlane</button></div>
       <div class="seg" id="theme"><button data-s="light" class="on">Light</button><button data-s="dark">Dark</button></div>
     </div>
   </div>
@@ -574,20 +584,38 @@
   <div id="pinwrap"><div id="pin"></div></div>
   <div id="ft">
     <div class="l"><span id="src"></span><div class="legend" id="lg"></div></div>
-    <span class="conf">&copy; Nova Reperta &middot; Sample data</span>
+    <span class="conf">Sample data &middot; Northwind Assurance is fictional</span>
   </div>
 </div>
 <script>
-const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCESS MAP", "teamName": "Motor claim, end to end", "keyMessage": "Half of the claim journey is spent moving information rather than deciding: the notification is typed twice, cover is read in a second system, and customers phone because nothing tells them what happened.", "source": "Team lead, two coordinators and four handlers, 3-4 Sep 2026; claims system report pack Jan-Aug 2026", "schemaVersion": "baseline/2026.6", "registerPath": "./baseline.json", "processId": "motor-claim", "editable": true, "gaps": [], "hl": {"phases": ["Notification", "Registration", "Assessment", "Settlement", "Closure"], "lanes": ["Customer Service", "Claims Handling", "Finance Control"], "tasks": [{"id": "t-01", "name": "Take the call and capture the circumstances", "lane": "Customer Service", "actorId": "customer-service", "stage": "Notification", "activity": "Take the first notification of loss", "activityId": "act-01", "system": "Contact Centre", "cadence": "", "fte": 3.5, "nature": "automate", "description": "", "week": "", "order": 1, "pains": []}, {"id": "t-02", "name": "Re-key the notification into the claims system", "lane": "Customer Service", "actorId": "customer-service", "stage": "Notification", "activity": "Take the first notification of loss", "activityId": "act-01", "system": "ClaimsCore", "cadence": "", "fte": 2.5, "nature": "automate", "description": "", "week": "", "order": 2, "pains": [{"theme": "The same notification is typed twice, once by the contact centre and once into the claims system", "magnitude": {"value": 2.5, "unit": "fte"}, "description": null, "source": null, "id": "p-01"}]}, {"id": "t-03", "name": "Create the claim record", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Registration", "activity": "Register the claim and open the file", "activityId": "act-02", "system": "ClaimsCore", "cadence": "", "fte": 2.0, "nature": "automate", "description": "", "week": "", "order": 3, "pains": []}, {"id": "t-04", "name": "Attach the documents received by mail", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Registration", "activity": "Register the claim and open the file", "activityId": "act-02", "system": "ClaimsCore", "cadence": "", "fte": 2.5, "nature": "automate", "description": "", "week": "", "order": 4, "pains": [{"theme": "Documents arriving by mail are attached by hand, often days after the claim is opened", "magnitude": {"value": 1.5, "unit": "fte"}, "description": null, "source": null, "id": "p-08"}]}, {"id": "t-05", "name": "Look up the policy and read the cover", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Registration", "activity": "Check cover against the policy", "activityId": "act-03", "system": "PolicyHub", "cadence": "", "fte": 3.0, "nature": "automate", "description": "", "week": "", "order": 5, "pains": [{"theme": "Cover cannot be read from the claim, so every file needs a second system open", "magnitude": {"value": 1.8, "unit": "fte"}, "description": null, "source": null, "id": "p-02"}]}, {"id": "t-06", "name": "Record the cover decision on the file", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Registration", "activity": "Check cover against the policy", "activityId": "act-03", "system": "ClaimsCore", "cadence": "", "fte": 2.0, "nature": "automate", "description": "", "week": "", "order": 6, "pains": []}, {"id": "t-07", "name": "Score the claim against the triage rules", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Registration", "activity": "Triage the claim by complexity", "activityId": "act-04", "system": "ClaimsCore", "cadence": "", "fte": 2.5, "nature": "redesign", "description": "", "week": "", "order": 7, "pains": [{"theme": "Triage sends complex files to whoever is free rather than to who can handle them", "magnitude": null, "description": null, "source": null, "id": "p-06"}]}, {"id": "t-08", "name": "Select and instruct an adjuster", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Instruct and follow up the loss adjuster", "activityId": "act-05", "system": "Email", "cadence": "", "fte": 2.0, "nature": "automate", "description": "", "week": "", "order": 8, "pains": []}, {"id": "t-09", "name": "Chase the adjuster report", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Instruct and follow up the loss adjuster", "activityId": "act-05", "system": "Email", "cadence": "", "fte": 3.0, "nature": "automate", "description": "", "week": "", "order": 9, "pains": [{"theme": "Adjuster reports arrive late and are chased by hand", "magnitude": {"value": 3.0, "unit": "fte"}, "description": null, "source": null, "id": "p-03"}]}, {"id": "t-10", "name": "Read the report and update the reserve", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Instruct and follow up the loss adjuster", "activityId": "act-05", "system": "ClaimsCore", "cadence": "", "fte": 1.5, "nature": "automate", "description": "", "week": "", "order": 10, "pains": []}, {"id": "t-11", "name": "Run the indicator checklist", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Screen for fraud indicators", "activityId": "act-06", "system": "ClaimsCore", "cadence": "", "fte": 1.5, "nature": "ai-accelerate", "description": "", "week": "", "order": 11, "pains": []}, {"id": "t-12", "name": "Refer a flagged file to investigation", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Screen for fraud indicators", "activityId": "act-06", "system": "Email", "cadence": "", "fte": 1.5, "nature": "ai-accelerate", "description": "", "week": "", "order": 12, "pains": []}, {"id": "t-13", "name": "Book the vehicle into a network garage", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Agree the repair route with the garage", "activityId": "act-07", "system": "RepairPortal", "cadence": "", "fte": 2.5, "nature": "keep", "description": "", "week": "", "order": 13, "pains": []}, {"id": "t-14", "name": "Approve the repair estimate", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Agree the repair route with the garage", "activityId": "act-07", "system": "RepairPortal", "cadence": "", "fte": 1.5, "nature": "keep", "description": "", "week": "", "order": 14, "pains": []}, {"id": "t-15", "name": "Calculate the settlement", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Settlement", "activity": "Calculate and approve the settlement", "activityId": "act-08", "system": "Excel", "cadence": "", "fte": 4.0, "nature": "redesign", "description": "", "week": "", "order": 15, "pains": [{"theme": "The settlement is calculated in a spreadsheet outside the claims system", "magnitude": null, "description": null, "source": null, "id": "p-04"}]}, {"id": "t-16", "name": "Obtain the second signature above the limit", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Settlement", "activity": "Calculate and approve the settlement", "activityId": "act-08", "system": "Email", "cadence": "", "fte": 1.5, "nature": "redesign", "description": "", "week": "", "order": 16, "pains": []}, {"id": "t-17", "name": "Record the settlement decision", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Settlement", "activity": "Calculate and approve the settlement", "activityId": "act-08", "system": "ClaimsCore", "cadence": "", "fte": 1.5, "nature": "redesign", "description": "", "week": "", "order": 17, "pains": []}, {"id": "t-18", "name": "Prepare and release the payment run", "lane": "Finance Control", "actorId": "finance-control", "stage": "Settlement", "activity": "Release the payment", "activityId": "act-09", "system": "Ledger", "cadence": "", "fte": 3.5, "nature": "keep", "description": "", "week": "", "order": 18, "pains": []}, {"id": "t-19", "name": "Answer status calls on open claims", "lane": "Customer Service", "actorId": "customer-service", "stage": "Assessment", "activity": "Handle customer queries during the claim", "activityId": "act-10", "system": "Contact Centre", "cadence": "", "fte": 9.0, "nature": "ai-enhance", "description": "", "week": "", "order": 19, "pains": [{"theme": "Customers call to ask where their claim is", "magnitude": {"value": 4.0, "unit": "fte"}, "description": null, "source": null, "id": "p-05"}]}, {"id": "t-20", "name": "Build and send the recovery file", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Closure", "activity": "Recover from the third party", "activityId": "act-11", "system": "Excel", "cadence": "", "fte": 3.5, "nature": "automate", "description": "", "week": "", "order": 20, "pains": [{"theme": "Recovery files are built from scratch each time", "magnitude": {"value": 1.2, "unit": "fte"}, "description": null, "source": null, "id": "p-07"}]}, {"id": "t-21", "name": "Check the file is complete and close it", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Closure", "activity": "Close the file and archive", "activityId": "act-12", "system": "ClaimsCore", "cadence": "", "fte": 1.5, "nature": "keep", "description": "", "week": "", "order": 21, "pains": []}], "activities": [{"name": "Take the first notification of loss", "activityId": "act-01", "phase": "Notification", "lanes": ["Customer Service"], "taskCount": 2, "fte": 7.5, "pain": 1, "tasks": [{"id": "t-01", "name": "Take the call and capture the circumstances", "lane": "Customer Service", "actorId": "customer-service", "stage": "Notification", "activity": "Take the first notification of loss", "activityId": "act-01", "system": "Contact Centre", "cadence": "", "fte": 3.5, "nature": "automate", "description": "", "week": "", "order": 1, "pains": []}, {"id": "t-02", "name": "Re-key the notification into the claims system", "lane": "Customer Service", "actorId": "customer-service", "stage": "Notification", "activity": "Take the first notification of loss", "activityId": "act-01", "system": "ClaimsCore", "cadence": "", "fte": 2.5, "nature": "automate", "description": "", "week": "", "order": 2, "pains": [{"theme": "The same notification is typed twice, once by the contact centre and once into the claims system", "magnitude": {"value": 2.5, "unit": "fte"}, "description": null, "source": null, "id": "p-01"}]}]}, {"name": "Register the claim and open the file", "activityId": "act-02", "phase": "Registration", "lanes": ["Claims Handling"], "taskCount": 2, "fte": 4.5, "pain": 1, "tasks": [{"id": "t-03", "name": "Create the claim record", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Registration", "activity": "Register the claim and open the file", "activityId": "act-02", "system": "ClaimsCore", "cadence": "", "fte": 2.0, "nature": "automate", "description": "", "week": "", "order": 3, "pains": []}, {"id": "t-04", "name": "Attach the documents received by mail", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Registration", "activity": "Register the claim and open the file", "activityId": "act-02", "system": "ClaimsCore", "cadence": "", "fte": 2.5, "nature": "automate", "description": "", "week": "", "order": 4, "pains": [{"theme": "Documents arriving by mail are attached by hand, often days after the claim is opened", "magnitude": {"value": 1.5, "unit": "fte"}, "description": null, "source": null, "id": "p-08"}]}]}, {"name": "Check cover against the policy", "activityId": "act-03", "phase": "Registration", "lanes": ["Claims Handling"], "taskCount": 2, "fte": 5.0, "pain": 1, "tasks": [{"id": "t-05", "name": "Look up the policy and read the cover", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Registration", "activity": "Check cover against the policy", "activityId": "act-03", "system": "PolicyHub", "cadence": "", "fte": 3.0, "nature": "automate", "description": "", "week": "", "order": 5, "pains": [{"theme": "Cover cannot be read from the claim, so every file needs a second system open", "magnitude": {"value": 1.8, "unit": "fte"}, "description": null, "source": null, "id": "p-02"}]}, {"id": "t-06", "name": "Record the cover decision on the file", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Registration", "activity": "Check cover against the policy", "activityId": "act-03", "system": "ClaimsCore", "cadence": "", "fte": 2.0, "nature": "automate", "description": "", "week": "", "order": 6, "pains": []}]}, {"name": "Triage the claim by complexity", "activityId": "act-04", "phase": "Registration", "lanes": ["Claims Handling"], "taskCount": 1, "fte": 2.5, "pain": 1, "tasks": [{"id": "t-07", "name": "Score the claim against the triage rules", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Registration", "activity": "Triage the claim by complexity", "activityId": "act-04", "system": "ClaimsCore", "cadence": "", "fte": 2.5, "nature": "redesign", "description": "", "week": "", "order": 7, "pains": [{"theme": "Triage sends complex files to whoever is free rather than to who can handle them", "magnitude": null, "description": null, "source": null, "id": "p-06"}]}]}, {"name": "Instruct and follow up the loss adjuster", "activityId": "act-05", "phase": "Assessment", "lanes": ["Claims Handling"], "taskCount": 3, "fte": 6.5, "pain": 1, "tasks": [{"id": "t-08", "name": "Select and instruct an adjuster", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Instruct and follow up the loss adjuster", "activityId": "act-05", "system": "Email", "cadence": "", "fte": 2.0, "nature": "automate", "description": "", "week": "", "order": 8, "pains": []}, {"id": "t-09", "name": "Chase the adjuster report", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Instruct and follow up the loss adjuster", "activityId": "act-05", "system": "Email", "cadence": "", "fte": 3.0, "nature": "automate", "description": "", "week": "", "order": 9, "pains": [{"theme": "Adjuster reports arrive late and are chased by hand", "magnitude": {"value": 3.0, "unit": "fte"}, "description": null, "source": null, "id": "p-03"}]}, {"id": "t-10", "name": "Read the report and update the reserve", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Instruct and follow up the loss adjuster", "activityId": "act-05", "system": "ClaimsCore", "cadence": "", "fte": 1.5, "nature": "automate", "description": "", "week": "", "order": 10, "pains": []}]}, {"name": "Screen for fraud indicators", "activityId": "act-06", "phase": "Assessment", "lanes": ["Claims Handling"], "taskCount": 2, "fte": 3.0, "pain": 0, "tasks": [{"id": "t-11", "name": "Run the indicator checklist", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Screen for fraud indicators", "activityId": "act-06", "system": "ClaimsCore", "cadence": "", "fte": 1.5, "nature": "ai-accelerate", "description": "", "week": "", "order": 11, "pains": []}, {"id": "t-12", "name": "Refer a flagged file to investigation", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Screen for fraud indicators", "activityId": "act-06", "system": "Email", "cadence": "", "fte": 1.5, "nature": "ai-accelerate", "description": "", "week": "", "order": 12, "pains": []}]}, {"name": "Agree the repair route with the garage", "activityId": "act-07", "phase": "Assessment", "lanes": ["Claims Handling"], "taskCount": 2, "fte": 4.0, "pain": 0, "tasks": [{"id": "t-13", "name": "Book the vehicle into a network garage", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Agree the repair route with the garage", "activityId": "act-07", "system": "RepairPortal", "cadence": "", "fte": 2.5, "nature": "keep", "description": "", "week": "", "order": 13, "pains": []}, {"id": "t-14", "name": "Approve the repair estimate", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Agree the repair route with the garage", "activityId": "act-07", "system": "RepairPortal", "cadence": "", "fte": 1.5, "nature": "keep", "description": "", "week": "", "order": 14, "pains": []}]}, {"name": "Handle customer queries during the claim", "activityId": "act-10", "phase": "Assessment", "lanes": ["Customer Service"], "taskCount": 1, "fte": 11.0, "pain": 1, "tasks": [{"id": "t-19", "name": "Answer status calls on open claims", "lane": "Customer Service", "actorId": "customer-service", "stage": "Assessment", "activity": "Handle customer queries during the claim", "activityId": "act-10", "system": "Contact Centre", "cadence": "", "fte": 9.0, "nature": "ai-enhance", "description": "", "week": "", "order": 19, "pains": [{"theme": "Customers call to ask where their claim is", "magnitude": {"value": 4.0, "unit": "fte"}, "description": null, "source": null, "id": "p-05"}]}]}, {"name": "Calculate and approve the settlement", "activityId": "act-08", "phase": "Settlement", "lanes": ["Claims Handling"], "taskCount": 3, "fte": 7.0, "pain": 1, "tasks": [{"id": "t-15", "name": "Calculate the settlement", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Settlement", "activity": "Calculate and approve the settlement", "activityId": "act-08", "system": "Excel", "cadence": "", "fte": 4.0, "nature": "redesign", "description": "", "week": "", "order": 15, "pains": [{"theme": "The settlement is calculated in a spreadsheet outside the claims system", "magnitude": null, "description": null, "source": null, "id": "p-04"}]}, {"id": "t-16", "name": "Obtain the second signature above the limit", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Settlement", "activity": "Calculate and approve the settlement", "activityId": "act-08", "system": "Email", "cadence": "", "fte": 1.5, "nature": "redesign", "description": "", "week": "", "order": 16, "pains": []}, {"id": "t-17", "name": "Record the settlement decision", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Settlement", "activity": "Calculate and approve the settlement", "activityId": "act-08", "system": "ClaimsCore", "cadence": "", "fte": 1.5, "nature": "redesign", "description": "", "week": "", "order": 17, "pains": []}]}, {"name": "Release the payment", "activityId": "act-09", "phase": "Settlement", "lanes": ["Finance Control"], "taskCount": 1, "fte": 4.5, "pain": 0, "tasks": [{"id": "t-18", "name": "Prepare and release the payment run", "lane": "Finance Control", "actorId": "finance-control", "stage": "Settlement", "activity": "Release the payment", "activityId": "act-09", "system": "Ledger", "cadence": "", "fte": 3.5, "nature": "keep", "description": "", "week": "", "order": 18, "pains": []}]}, {"name": "Recover from the third party", "activityId": "act-11", "phase": "Closure", "lanes": ["Claims Handling"], "taskCount": 1, "fte": 5.0, "pain": 1, "tasks": [{"id": "t-20", "name": "Build and send the recovery file", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Closure", "activity": "Recover from the third party", "activityId": "act-11", "system": "Excel", "cadence": "", "fte": 3.5, "nature": "automate", "description": "", "week": "", "order": 20, "pains": [{"theme": "Recovery files are built from scratch each time", "magnitude": {"value": 1.2, "unit": "fte"}, "description": null, "source": null, "id": "p-07"}]}]}, {"name": "Close the file and archive", "activityId": "act-12", "phase": "Closure", "lanes": ["Claims Handling"], "taskCount": 1, "fte": 1.5, "pain": 0, "tasks": [{"id": "t-21", "name": "Check the file is complete and close it", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Closure", "activity": "Close the file and archive", "activityId": "act-12", "system": "ClaimsCore", "cadence": "", "fte": 1.5, "nature": "keep", "description": "", "week": "", "order": 21, "pains": []}]}]}, "detail": {"numCols": 1, "numRows": 3, "lanes": [{"name": "Customer Service", "row": 0}, {"name": "Claims Handling", "row": 1}, {"name": "Finance Control", "row": 2}], "weeks": [{"label": "", "startCol": 1, "endCol": 1}], "phases": [{"label": "Notification", "startCol": 1, "endCol": 1}], "parallel_phases": [], "cells": [{"gridRow": 1, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Customer Service", "week": "", "phase": "Notification", "label": "Take the call and capture the circumstances", "system": "Contact Centre", "fte": 3.5, "nature": "automate", "activity": "Take the first notification of loss", "description": "", "painPoints": [], "taskId": "t-01"}, {"gridRow": 1, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Customer Service", "week": "", "phase": "Notification", "label": "Re-key the notification into the claims system", "system": "ClaimsCore", "fte": 2.5, "nature": "automate", "activity": "Take the first notification of loss", "description": "", "painPoints": [{"theme": "The same notification is typed twice, once by the contact centre and once into the claims system", "magnitude": {"value": 2.5, "unit": "fte"}, "description": null, "source": null, "id": "p-01"}], "taskId": "t-02"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Registration", "label": "Create the claim record", "system": "ClaimsCore", "fte": 2.0, "nature": "automate", "activity": "Register the claim and open the file", "description": "", "painPoints": [], "taskId": "t-03"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Registration", "label": "Attach the documents received by mail", "system": "ClaimsCore", "fte": 2.5, "nature": "automate", "activity": "Register the claim and open the file", "description": "", "painPoints": [{"theme": "Documents arriving by mail are attached by hand, often days after the claim is opened", "magnitude": {"value": 1.5, "unit": "fte"}, "description": null, "source": null, "id": "p-08"}], "taskId": "t-04"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Registration", "label": "Look up the policy and read the cover", "system": "PolicyHub", "fte": 3.0, "nature": "automate", "activity": "Check cover against the policy", "description": "", "painPoints": [{"theme": "Cover cannot be read from the claim, so every file needs a second system open", "magnitude": {"value": 1.8, "unit": "fte"}, "description": null, "source": null, "id": "p-02"}], "taskId": "t-05"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Registration", "label": "Record the cover decision on the file", "system": "ClaimsCore", "fte": 2.0, "nature": "automate", "activity": "Check cover against the policy", "description": "", "painPoints": [], "taskId": "t-06"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Registration", "label": "Score the claim against the triage rules", "system": "ClaimsCore", "fte": 2.5, "nature": "redesign", "activity": "Triage the claim by complexity", "description": "", "painPoints": [{"theme": "Triage sends complex files to whoever is free rather than to who can handle them", "magnitude": null, "description": null, "source": null, "id": "p-06"}], "taskId": "t-07"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Assessment", "label": "Select and instruct an adjuster", "system": "Email", "fte": 2.0, "nature": "automate", "activity": "Instruct and follow up the loss adjuster", "description": "", "painPoints": [], "taskId": "t-08"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Assessment", "label": "Chase the adjuster report", "system": "Email", "fte": 3.0, "nature": "automate", "activity": "Instruct and follow up the loss adjuster", "description": "", "painPoints": [{"theme": "Adjuster reports arrive late and are chased by hand", "magnitude": {"value": 3.0, "unit": "fte"}, "description": null, "source": null, "id": "p-03"}], "taskId": "t-09"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Assessment", "label": "Read the report and update the reserve", "system": "ClaimsCore", "fte": 1.5, "nature": "automate", "activity": "Instruct and follow up the loss adjuster", "description": "", "painPoints": [], "taskId": "t-10"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Assessment", "label": "Run the indicator checklist", "system": "ClaimsCore", "fte": 1.5, "nature": "ai-accelerate", "activity": "Screen for fraud indicators", "description": "", "painPoints": [], "taskId": "t-11"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Assessment", "label": "Refer a flagged file to investigation", "system": "Email", "fte": 1.5, "nature": "ai-accelerate", "activity": "Screen for fraud indicators", "description": "", "painPoints": [], "taskId": "t-12"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Assessment", "label": "Book the vehicle into a network garage", "system": "RepairPortal", "fte": 2.5, "nature": "keep", "activity": "Agree the repair route with the garage", "description": "", "painPoints": [], "taskId": "t-13"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Assessment", "label": "Approve the repair estimate", "system": "RepairPortal", "fte": 1.5, "nature": "keep", "activity": "Agree the repair route with the garage", "description": "", "painPoints": [], "taskId": "t-14"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Settlement", "label": "Calculate the settlement", "system": "Excel", "fte": 4.0, "nature": "redesign", "activity": "Calculate and approve the settlement", "description": "", "painPoints": [{"theme": "The settlement is calculated in a spreadsheet outside the claims system", "magnitude": null, "description": null, "source": null, "id": "p-04"}], "taskId": "t-15"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Settlement", "label": "Obtain the second signature above the limit", "system": "Email", "fte": 1.5, "nature": "redesign", "activity": "Calculate and approve the settlement", "description": "", "painPoints": [], "taskId": "t-16"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Settlement", "label": "Record the settlement decision", "system": "ClaimsCore", "fte": 1.5, "nature": "redesign", "activity": "Calculate and approve the settlement", "description": "", "painPoints": [], "taskId": "t-17"}, {"gridRow": 3, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Finance Control", "week": "", "phase": "Settlement", "label": "Prepare and release the payment run", "system": "Ledger", "fte": 3.5, "nature": "keep", "activity": "Release the payment", "description": "", "painPoints": [], "taskId": "t-18"}, {"gridRow": 1, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Customer Service", "week": "", "phase": "Assessment", "label": "Answer status calls on open claims", "system": "Contact Centre", "fte": 9.0, "nature": "ai-enhance", "activity": "Handle customer queries during the claim", "description": "", "painPoints": [{"theme": "Customers call to ask where their claim is", "magnitude": {"value": 4.0, "unit": "fte"}, "description": null, "source": null, "id": "p-05"}], "taskId": "t-19"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Closure", "label": "Build and send the recovery file", "system": "Excel", "fte": 3.5, "nature": "automate", "activity": "Recover from the third party", "description": "", "painPoints": [{"theme": "Recovery files are built from scratch each time", "magnitude": {"value": 1.2, "unit": "fte"}, "description": null, "source": null, "id": "p-07"}], "taskId": "t-20"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Closure", "label": "Check the file is complete and close it", "system": "ClaimsCore", "fte": 1.5, "nature": "keep", "activity": "Close the file and archive", "description": "", "painPoints": [], "taskId": "t-21"}]}};
+const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS MAP", "teamName": "Motor claim, end to end", "keyMessage": "", "source": "", "schemaVersion": "baseline/2026.14", "registerPath": "baseline.json", "valueChainId": "motor-claim", "editable": true, "gaps": [], "opportunities": [{"id": "o-01", "lever": "auto", "title": "Pass the notification straight through from the contact centre", "blockId": "act-01", "blockName": "Open and register the claim", "owner": "Claims Handling", "sizingValue": 2.5, "sizingUnit": "fte", "horizon": "6-12m", "readiness": null, "status": "agreed", "needsRecapture": false, "painIds": ["p-01"], "pains": [{"id": "p-01", "theme": "The same notification is typed twice, once by the contact centre and once into the claims system", "magnitude": {"value": 2.5, "unit": "fte"}}]}, {"id": "o-02", "lever": "auto", "title": "Show cover on the claim record", "blockId": "act-01", "blockName": "Open and register the claim", "owner": "Claims Handling", "sizingValue": 1.8, "sizingUnit": "fte", "horizon": "0-6m", "readiness": null, "status": "agreed", "needsRecapture": false, "painIds": ["p-02"], "pains": [{"id": "p-02", "theme": "Cover cannot be read from the claim, so every file needs a second system open", "magnitude": {"value": 1.8, "unit": "fte"}}]}, {"id": "o-03", "lever": "auto", "title": "Track adjuster due dates and chase automatically", "blockId": "act-02", "blockName": "Assess the claim", "owner": "Claims Handling", "sizingValue": 1.0, "sizingUnit": "fte", "horizon": "6-12m", "readiness": null, "status": "identified", "needsRecapture": false, "painIds": ["p-03"], "pains": [{"id": "p-03", "theme": "Adjuster reports arrive late and are chased by hand", "magnitude": {"value": 3.0, "unit": "fte"}}]}, {"id": "o-04", "lever": "aienh", "title": "Tell the customer what happened without them asking", "blockId": "act-04", "blockName": "Answer the customer while the claim runs", "owner": "Customer Service", "sizingValue": 3.2, "sizingUnit": "fte", "horizon": "6-12m", "readiness": null, "status": "agreed", "needsRecapture": false, "painIds": ["p-05"], "pains": [{"id": "p-05", "theme": "Customers call to ask where their claim is", "magnitude": {"value": 4.0, "unit": "fte"}}]}, {"id": "o-05", "lever": "process", "title": "Move the settlement calculation into the claim", "blockId": "act-03", "blockName": "Settle and pay the claim", "owner": "Finance Control", "sizingValue": 1.5, "sizingUnit": "fte", "horizon": "12-24m", "readiness": null, "status": "identified", "needsRecapture": false, "painIds": ["p-04"], "pains": [{"id": "p-04", "theme": "The settlement is calculated in a spreadsheet outside the claims system", "magnitude": null}]}, {"id": "o-06", "lever": "process", "title": "Triage on skill as well as complexity", "blockId": "act-01", "blockName": "Open and register the claim", "owner": "Claims Handling", "sizingValue": null, "sizingUnit": null, "horizon": "12-24m", "readiness": null, "status": "identified", "needsRecapture": false, "painIds": ["p-06"], "pains": [{"id": "p-06", "theme": "Triage sends complex files to whoever is free rather than to who can handle them", "magnitude": null}]}, {"id": "o-07", "lever": "auto", "title": "Recover and close the file - automate", "blockId": "act-05", "blockName": "Recover and close the file", "owner": "", "sizingValue": null, "sizingUnit": null, "horizon": null, "readiness": null, "status": "identified", "needsRecapture": true, "painIds": [], "pains": []}], "hl": {"processes": ["Notification and registration", "Assessment", "Settlement", "Closure"], "lanes": ["Customer Service", "Claims Handling", "Finance Control"], "activities": [{"id": "t-01", "name": "Take the call and capture the circumstances", "lane": "Customer Service", "actorId": "customer-service", "stage": "Notification and registration", "activity": "Open and register the claim", "blockId": "act-01", "system": "Contact Centre", "cadence": "", "fte": 3.5, "description": "", "week": "", "order": 1, "tasks": [{"name": "Greet the caller and verify the policy number", "order": 1, "system": "Contact Centre"}, {"name": "Capture the date, place and circumstances of the accident", "order": 2, "system": "Contact Centre"}, {"name": "Note the counterparty and any injuries", "order": 3, "system": "Contact Centre"}, {"name": "Read back the summary and give the claim reference", "order": 4, "system": "Contact Centre"}], "pains": []}, {"id": "t-02", "name": "Re-key the notification into the claims system", "lane": "Customer Service", "actorId": "customer-service", "stage": "Notification and registration", "activity": "Open and register the claim", "blockId": "act-01", "system": "ClaimsCore", "cadence": "", "fte": 2.5, "description": "", "week": "", "order": 2, "tasks": [{"name": "Open a new notification in the claims system", "order": 1, "system": "ClaimsCore"}, {"name": "Re-type the circumstances from the call notes", "order": 2, "system": "ClaimsCore"}, {"name": "Copy the counterparty details across", "order": 3, "system": "ClaimsCore"}, {"name": "Save and hand the notification to claims handling", "order": 4, "system": "ClaimsCore"}], "pains": [{"theme": "The same notification is typed twice, once by the contact centre and once into the claims system", "magnitude": {"value": 2.5, "unit": "fte"}, "description": null, "source": "src-05", "id": "p-01"}]}, {"id": "t-22", "name": "Take over the notification from the contact centre", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Notification and registration", "activity": "Open and register the claim", "blockId": "act-01", "system": "Contact Centre", "cadence": "", "fte": 1.5, "description": "", "week": "", "order": 3, "tasks": [], "pains": []}, {"id": "t-03", "name": "Create the claim record", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Notification and registration", "activity": "Open and register the claim", "blockId": "act-01", "system": "ClaimsCore", "cadence": "", "fte": 2.0, "description": "", "week": "", "order": 4, "tasks": [], "pains": []}, {"id": "t-04", "name": "Attach the documents received by mail", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Notification and registration", "activity": "Open and register the claim", "blockId": "act-01", "system": "ClaimsCore", "cadence": "", "fte": 2.5, "description": "", "week": "", "order": 5, "tasks": [{"name": "Open the mailbox item and read the covering letter", "order": 1, "system": "Scan post"}, {"name": "Rename the attachments to the document convention", "order": 2, "system": "Scan post"}, {"name": "Upload each document to the claim file", "order": 3, "system": "ClaimsCore"}, {"name": "Mark the mailbox item as filed", "order": 4, "system": "Scan post"}], "pains": [{"theme": "Documents arriving by mail are attached by hand, often days after the claim is opened", "magnitude": {"value": 1.5, "unit": "fte"}, "description": null, "source": "src-02", "id": "p-08"}]}, {"id": "t-05", "name": "Look up the policy and read the cover", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Notification and registration", "activity": "Open and register the claim", "blockId": "act-01", "system": "PolicyHub", "cadence": "", "fte": 3.0, "description": "", "week": "", "order": 6, "tasks": [{"name": "Look up the policy in the policy system", "order": 1, "system": "PolicyHub"}, {"name": "Check the cover in force on the date of loss", "order": 2, "system": "PolicyHub"}, {"name": "Check the deductible and any exclusions", "order": 3, "system": "PolicyHub"}, {"name": "Copy the cover summary onto the claim file", "order": 4, "system": "PolicyHub"}], "pains": [{"theme": "Cover cannot be read from the claim, so every file needs a second system open", "magnitude": {"value": 1.8, "unit": "fte"}, "description": null, "source": "src-02", "id": "p-02"}]}, {"id": "t-06", "name": "Record the cover decision on the file", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Notification and registration", "activity": "Open and register the claim", "blockId": "act-01", "system": "ClaimsCore", "cadence": "", "fte": 2.0, "description": "", "week": "", "order": 7, "tasks": [], "pains": []}, {"id": "t-07", "name": "Score the claim against the triage rules", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Notification and registration", "activity": "Open and register the claim", "blockId": "act-01", "system": "ClaimsCore", "cadence": "", "fte": 2.5, "description": "", "week": "", "order": 8, "tasks": [], "pains": [{"theme": "Triage sends complex files to whoever is free rather than to who can handle them", "magnitude": null, "description": null, "source": "src-02", "id": "p-06"}]}, {"id": "t-08", "name": "Select and instruct a loss adjuster", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Assess the claim", "blockId": "act-02", "system": "Email", "cadence": "", "fte": 2.0, "description": "", "week": "", "order": 9, "tasks": [], "pains": []}, {"id": "t-09", "name": "Chase the adjuster report", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Assess the claim", "blockId": "act-02", "system": "Email", "cadence": "", "fte": 3.0, "description": "", "week": "", "order": 10, "tasks": [], "pains": [{"theme": "Adjuster reports arrive late and are chased by hand", "magnitude": {"value": 3.0, "unit": "fte"}, "description": null, "source": "src-02", "id": "p-03"}]}, {"id": "t-10", "name": "Read the report and update the reserve", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Assess the claim", "blockId": "act-02", "system": "ClaimsCore", "cadence": "", "fte": 1.5, "description": "", "week": "", "order": 11, "tasks": [], "pains": []}, {"id": "t-11", "name": "Run the fraud indicator checklist", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Assess the claim", "blockId": "act-02", "system": "ClaimsCore", "cadence": "", "fte": 1.5, "description": "", "week": "", "order": 12, "tasks": [], "pains": []}, {"id": "t-12", "name": "Refer a flagged file to investigation", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Assess the claim", "blockId": "act-02", "system": "Email", "cadence": "", "fte": 1.5, "description": "", "week": "", "order": 13, "tasks": [], "pains": []}, {"id": "t-13", "name": "Book the vehicle into a network garage", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Assess the claim", "blockId": "act-02", "system": "RepairPortal", "cadence": "", "fte": 2.5, "description": "", "week": "", "order": 14, "tasks": [], "pains": []}, {"id": "t-14", "name": "Approve the repair estimate", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Assess the claim", "blockId": "act-02", "system": "RepairPortal", "cadence": "", "fte": 1.5, "description": "", "week": "", "order": 15, "tasks": [], "pains": []}, {"id": "t-15", "name": "Calculate the settlement", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Settlement", "activity": "Settle and pay the claim", "blockId": "act-03", "system": "Excel", "cadence": "", "fte": 4.0, "description": "", "week": "", "order": 16, "tasks": [], "pains": [{"theme": "The settlement is calculated in a spreadsheet outside the claims system", "magnitude": null, "description": null, "source": "src-03", "id": "p-04"}]}, {"id": "t-16", "name": "Obtain the second signature above the limit", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Settlement", "activity": "Settle and pay the claim", "blockId": "act-03", "system": "Email", "cadence": "", "fte": 1.5, "description": "", "week": "", "order": 17, "tasks": [], "pains": []}, {"id": "t-17", "name": "Record the settlement decision", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Settlement", "activity": "Settle and pay the claim", "blockId": "act-03", "system": "ClaimsCore", "cadence": "", "fte": 1.5, "description": "", "week": "", "order": 18, "tasks": [], "pains": []}, {"id": "t-23", "name": "Check the payment run before release", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Settlement", "activity": "Settle and pay the claim", "blockId": "act-03", "system": "Ledger", "cadence": "", "fte": 1.0, "description": "", "week": "", "order": 19, "tasks": [], "pains": []}, {"id": "t-18", "name": "Prepare and release the payment run", "lane": "Finance Control", "actorId": "finance-control", "stage": "Settlement", "activity": "Settle and pay the claim", "blockId": "act-03", "system": "Ledger", "cadence": "", "fte": 3.5, "description": "", "week": "", "order": 20, "tasks": [], "pains": []}, {"id": "t-19", "name": "Answer status calls on open claims", "lane": "Customer Service", "actorId": "customer-service", "stage": "Assessment", "activity": "Answer the customer while the claim runs", "blockId": "act-04", "system": "Contact Centre", "cadence": "", "fte": 9.0, "description": "", "week": "", "order": 21, "tasks": [], "pains": [{"theme": "Customers call to ask where their claim is", "magnitude": {"value": 4.0, "unit": "fte"}, "description": null, "source": "src-04", "id": "p-05"}]}, {"id": "t-24", "name": "Take the status calls the contact centre passes on", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Answer the customer while the claim runs", "blockId": "act-04", "system": "Contact Centre", "cadence": "", "fte": 2.0, "description": "", "week": "", "order": 22, "tasks": [], "pains": []}, {"id": "t-20", "name": "Build and send the recovery file", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Closure", "activity": "Recover and close the file", "blockId": "act-05", "system": "Excel", "cadence": "", "fte": 3.5, "description": "", "week": "", "order": 23, "tasks": [], "pains": [{"theme": "Recovery files are built from scratch each time", "magnitude": {"value": 1.2, "unit": "fte"}, "description": null, "source": "src-01", "id": "p-07"}]}, {"id": "t-21", "name": "Check the file is complete and close it", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Closure", "activity": "Recover and close the file", "blockId": "act-05", "system": "ClaimsCore", "cadence": "", "fte": 1.5, "description": "", "week": "", "order": 24, "tasks": [], "pains": []}], "activityBlocks": [{"name": "Open and register the claim", "blockId": "act-01", "phase": "Notification and registration", "lanes": ["Customer Service", "Claims Handling"], "activityCount": 8, "fte": 19.5, "pain": 4, "activities": [{"id": "t-01", "name": "Take the call and capture the circumstances", "lane": "Customer Service", "actorId": "customer-service", "stage": "Notification and registration", "activity": "Open and register the claim", "blockId": "act-01", "system": "Contact Centre", "cadence": "", "fte": 3.5, "description": "", "week": "", "order": 1, "tasks": [{"name": "Greet the caller and verify the policy number", "order": 1, "system": "Contact Centre"}, {"name": "Capture the date, place and circumstances of the accident", "order": 2, "system": "Contact Centre"}, {"name": "Note the counterparty and any injuries", "order": 3, "system": "Contact Centre"}, {"name": "Read back the summary and give the claim reference", "order": 4, "system": "Contact Centre"}], "pains": []}, {"id": "t-02", "name": "Re-key the notification into the claims system", "lane": "Customer Service", "actorId": "customer-service", "stage": "Notification and registration", "activity": "Open and register the claim", "blockId": "act-01", "system": "ClaimsCore", "cadence": "", "fte": 2.5, "description": "", "week": "", "order": 2, "tasks": [{"name": "Open a new notification in the claims system", "order": 1, "system": "ClaimsCore"}, {"name": "Re-type the circumstances from the call notes", "order": 2, "system": "ClaimsCore"}, {"name": "Copy the counterparty details across", "order": 3, "system": "ClaimsCore"}, {"name": "Save and hand the notification to claims handling", "order": 4, "system": "ClaimsCore"}], "pains": [{"theme": "The same notification is typed twice, once by the contact centre and once into the claims system", "magnitude": {"value": 2.5, "unit": "fte"}, "description": null, "source": "src-05", "id": "p-01"}]}, {"id": "t-22", "name": "Take over the notification from the contact centre", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Notification and registration", "activity": "Open and register the claim", "blockId": "act-01", "system": "Contact Centre", "cadence": "", "fte": 1.5, "description": "", "week": "", "order": 3, "tasks": [], "pains": []}, {"id": "t-03", "name": "Create the claim record", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Notification and registration", "activity": "Open and register the claim", "blockId": "act-01", "system": "ClaimsCore", "cadence": "", "fte": 2.0, "description": "", "week": "", "order": 4, "tasks": [], "pains": []}, {"id": "t-04", "name": "Attach the documents received by mail", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Notification and registration", "activity": "Open and register the claim", "blockId": "act-01", "system": "ClaimsCore", "cadence": "", "fte": 2.5, "description": "", "week": "", "order": 5, "tasks": [{"name": "Open the mailbox item and read the covering letter", "order": 1, "system": "Scan post"}, {"name": "Rename the attachments to the document convention", "order": 2, "system": "Scan post"}, {"name": "Upload each document to the claim file", "order": 3, "system": "ClaimsCore"}, {"name": "Mark the mailbox item as filed", "order": 4, "system": "Scan post"}], "pains": [{"theme": "Documents arriving by mail are attached by hand, often days after the claim is opened", "magnitude": {"value": 1.5, "unit": "fte"}, "description": null, "source": "src-02", "id": "p-08"}]}, {"id": "t-05", "name": "Look up the policy and read the cover", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Notification and registration", "activity": "Open and register the claim", "blockId": "act-01", "system": "PolicyHub", "cadence": "", "fte": 3.0, "description": "", "week": "", "order": 6, "tasks": [{"name": "Look up the policy in the policy system", "order": 1, "system": "PolicyHub"}, {"name": "Check the cover in force on the date of loss", "order": 2, "system": "PolicyHub"}, {"name": "Check the deductible and any exclusions", "order": 3, "system": "PolicyHub"}, {"name": "Copy the cover summary onto the claim file", "order": 4, "system": "PolicyHub"}], "pains": [{"theme": "Cover cannot be read from the claim, so every file needs a second system open", "magnitude": {"value": 1.8, "unit": "fte"}, "description": null, "source": "src-02", "id": "p-02"}]}, {"id": "t-06", "name": "Record the cover decision on the file", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Notification and registration", "activity": "Open and register the claim", "blockId": "act-01", "system": "ClaimsCore", "cadence": "", "fte": 2.0, "description": "", "week": "", "order": 7, "tasks": [], "pains": []}, {"id": "t-07", "name": "Score the claim against the triage rules", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Notification and registration", "activity": "Open and register the claim", "blockId": "act-01", "system": "ClaimsCore", "cadence": "", "fte": 2.5, "description": "", "week": "", "order": 8, "tasks": [], "pains": [{"theme": "Triage sends complex files to whoever is free rather than to who can handle them", "magnitude": null, "description": null, "source": "src-02", "id": "p-06"}]}]}, {"name": "Assess the claim", "blockId": "act-02", "phase": "Assessment", "lanes": ["Claims Handling"], "activityCount": 7, "fte": 13.5, "pain": 1, "activities": [{"id": "t-08", "name": "Select and instruct a loss adjuster", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Assess the claim", "blockId": "act-02", "system": "Email", "cadence": "", "fte": 2.0, "description": "", "week": "", "order": 9, "tasks": [], "pains": []}, {"id": "t-09", "name": "Chase the adjuster report", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Assess the claim", "blockId": "act-02", "system": "Email", "cadence": "", "fte": 3.0, "description": "", "week": "", "order": 10, "tasks": [], "pains": [{"theme": "Adjuster reports arrive late and are chased by hand", "magnitude": {"value": 3.0, "unit": "fte"}, "description": null, "source": "src-02", "id": "p-03"}]}, {"id": "t-10", "name": "Read the report and update the reserve", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Assess the claim", "blockId": "act-02", "system": "ClaimsCore", "cadence": "", "fte": 1.5, "description": "", "week": "", "order": 11, "tasks": [], "pains": []}, {"id": "t-11", "name": "Run the fraud indicator checklist", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Assess the claim", "blockId": "act-02", "system": "ClaimsCore", "cadence": "", "fte": 1.5, "description": "", "week": "", "order": 12, "tasks": [], "pains": []}, {"id": "t-12", "name": "Refer a flagged file to investigation", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Assess the claim", "blockId": "act-02", "system": "Email", "cadence": "", "fte": 1.5, "description": "", "week": "", "order": 13, "tasks": [], "pains": []}, {"id": "t-13", "name": "Book the vehicle into a network garage", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Assess the claim", "blockId": "act-02", "system": "RepairPortal", "cadence": "", "fte": 2.5, "description": "", "week": "", "order": 14, "tasks": [], "pains": []}, {"id": "t-14", "name": "Approve the repair estimate", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Assess the claim", "blockId": "act-02", "system": "RepairPortal", "cadence": "", "fte": 1.5, "description": "", "week": "", "order": 15, "tasks": [], "pains": []}]}, {"name": "Answer the customer while the claim runs", "blockId": "act-04", "phase": "Assessment", "lanes": ["Customer Service", "Claims Handling"], "activityCount": 2, "fte": 11.0, "pain": 1, "activities": [{"id": "t-19", "name": "Answer status calls on open claims", "lane": "Customer Service", "actorId": "customer-service", "stage": "Assessment", "activity": "Answer the customer while the claim runs", "blockId": "act-04", "system": "Contact Centre", "cadence": "", "fte": 9.0, "description": "", "week": "", "order": 21, "tasks": [], "pains": [{"theme": "Customers call to ask where their claim is", "magnitude": {"value": 4.0, "unit": "fte"}, "description": null, "source": "src-04", "id": "p-05"}]}, {"id": "t-24", "name": "Take the status calls the contact centre passes on", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Assessment", "activity": "Answer the customer while the claim runs", "blockId": "act-04", "system": "Contact Centre", "cadence": "", "fte": 2.0, "description": "", "week": "", "order": 22, "tasks": [], "pains": []}]}, {"name": "Settle and pay the claim", "blockId": "act-03", "phase": "Settlement", "lanes": ["Claims Handling", "Finance Control"], "activityCount": 5, "fte": 11.5, "pain": 1, "activities": [{"id": "t-15", "name": "Calculate the settlement", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Settlement", "activity": "Settle and pay the claim", "blockId": "act-03", "system": "Excel", "cadence": "", "fte": 4.0, "description": "", "week": "", "order": 16, "tasks": [], "pains": [{"theme": "The settlement is calculated in a spreadsheet outside the claims system", "magnitude": null, "description": null, "source": "src-03", "id": "p-04"}]}, {"id": "t-16", "name": "Obtain the second signature above the limit", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Settlement", "activity": "Settle and pay the claim", "blockId": "act-03", "system": "Email", "cadence": "", "fte": 1.5, "description": "", "week": "", "order": 17, "tasks": [], "pains": []}, {"id": "t-17", "name": "Record the settlement decision", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Settlement", "activity": "Settle and pay the claim", "blockId": "act-03", "system": "ClaimsCore", "cadence": "", "fte": 1.5, "description": "", "week": "", "order": 18, "tasks": [], "pains": []}, {"id": "t-23", "name": "Check the payment run before release", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Settlement", "activity": "Settle and pay the claim", "blockId": "act-03", "system": "Ledger", "cadence": "", "fte": 1.0, "description": "", "week": "", "order": 19, "tasks": [], "pains": []}, {"id": "t-18", "name": "Prepare and release the payment run", "lane": "Finance Control", "actorId": "finance-control", "stage": "Settlement", "activity": "Settle and pay the claim", "blockId": "act-03", "system": "Ledger", "cadence": "", "fte": 3.5, "description": "", "week": "", "order": 20, "tasks": [], "pains": []}]}, {"name": "Recover and close the file", "blockId": "act-05", "phase": "Closure", "lanes": ["Claims Handling"], "activityCount": 2, "fte": 6.5, "pain": 1, "activities": [{"id": "t-20", "name": "Build and send the recovery file", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Closure", "activity": "Recover and close the file", "blockId": "act-05", "system": "Excel", "cadence": "", "fte": 3.5, "description": "", "week": "", "order": 23, "tasks": [], "pains": [{"theme": "Recovery files are built from scratch each time", "magnitude": {"value": 1.2, "unit": "fte"}, "description": null, "source": "src-01", "id": "p-07"}]}, {"id": "t-21", "name": "Check the file is complete and close it", "lane": "Claims Handling", "actorId": "claims-handling", "stage": "Closure", "activity": "Recover and close the file", "blockId": "act-05", "system": "ClaimsCore", "cadence": "", "fte": 1.5, "description": "", "week": "", "order": 24, "tasks": [], "pains": []}]}]}, "detail": {"numCols": 1, "numRows": 3, "lanes": [{"name": "Customer Service", "row": 0}, {"name": "Claims Handling", "row": 1}, {"name": "Finance Control", "row": 2}], "weeks": [{"label": "", "startCol": 1, "endCol": 1}], "processes": [{"label": "Notification and registration", "startCol": 1, "endCol": 1}], "parallel_phases": [], "cells": [{"gridRow": 1, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Customer Service", "week": "", "phase": "Notification and registration", "label": "Take the call and capture the circumstances", "system": "Contact Centre", "fte": 3.5, "activity": "Open and register the claim", "description": "", "painPoints": [], "tasks": [{"name": "Greet the caller and verify the policy number", "order": 1, "system": "Contact Centre"}, {"name": "Capture the date, place and circumstances of the accident", "order": 2, "system": "Contact Centre"}, {"name": "Note the counterparty and any injuries", "order": 3, "system": "Contact Centre"}, {"name": "Read back the summary and give the claim reference", "order": 4, "system": "Contact Centre"}], "activityId": "t-01"}, {"gridRow": 1, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Customer Service", "week": "", "phase": "Notification and registration", "label": "Re-key the notification into the claims system", "system": "ClaimsCore", "fte": 2.5, "activity": "Open and register the claim", "description": "", "painPoints": [{"theme": "The same notification is typed twice, once by the contact centre and once into the claims system", "magnitude": {"value": 2.5, "unit": "fte"}, "description": null, "source": "src-05", "id": "p-01"}], "tasks": [{"name": "Open a new notification in the claims system", "order": 1, "system": "ClaimsCore"}, {"name": "Re-type the circumstances from the call notes", "order": 2, "system": "ClaimsCore"}, {"name": "Copy the counterparty details across", "order": 3, "system": "ClaimsCore"}, {"name": "Save and hand the notification to claims handling", "order": 4, "system": "ClaimsCore"}], "activityId": "t-02"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Notification and registration", "label": "Take over the notification from the contact centre", "system": "Contact Centre", "fte": 1.5, "activity": "Open and register the claim", "description": "", "painPoints": [], "tasks": [], "activityId": "t-22"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Notification and registration", "label": "Create the claim record", "system": "ClaimsCore", "fte": 2.0, "activity": "Open and register the claim", "description": "", "painPoints": [], "tasks": [], "activityId": "t-03"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Notification and registration", "label": "Attach the documents received by mail", "system": "ClaimsCore", "fte": 2.5, "activity": "Open and register the claim", "description": "", "painPoints": [{"theme": "Documents arriving by mail are attached by hand, often days after the claim is opened", "magnitude": {"value": 1.5, "unit": "fte"}, "description": null, "source": "src-02", "id": "p-08"}], "tasks": [{"name": "Open the mailbox item and read the covering letter", "order": 1, "system": "Scan post"}, {"name": "Rename the attachments to the document convention", "order": 2, "system": "Scan post"}, {"name": "Upload each document to the claim file", "order": 3, "system": "ClaimsCore"}, {"name": "Mark the mailbox item as filed", "order": 4, "system": "Scan post"}], "activityId": "t-04"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Notification and registration", "label": "Look up the policy and read the cover", "system": "PolicyHub", "fte": 3.0, "activity": "Open and register the claim", "description": "", "painPoints": [{"theme": "Cover cannot be read from the claim, so every file needs a second system open", "magnitude": {"value": 1.8, "unit": "fte"}, "description": null, "source": "src-02", "id": "p-02"}], "tasks": [{"name": "Look up the policy in the policy system", "order": 1, "system": "PolicyHub"}, {"name": "Check the cover in force on the date of loss", "order": 2, "system": "PolicyHub"}, {"name": "Check the deductible and any exclusions", "order": 3, "system": "PolicyHub"}, {"name": "Copy the cover summary onto the claim file", "order": 4, "system": "PolicyHub"}], "activityId": "t-05"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Notification and registration", "label": "Record the cover decision on the file", "system": "ClaimsCore", "fte": 2.0, "activity": "Open and register the claim", "description": "", "painPoints": [], "tasks": [], "activityId": "t-06"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Notification and registration", "label": "Score the claim against the triage rules", "system": "ClaimsCore", "fte": 2.5, "activity": "Open and register the claim", "description": "", "painPoints": [{"theme": "Triage sends complex files to whoever is free rather than to who can handle them", "magnitude": null, "description": null, "source": "src-02", "id": "p-06"}], "tasks": [], "activityId": "t-07"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Assessment", "label": "Select and instruct a loss adjuster", "system": "Email", "fte": 2.0, "activity": "Assess the claim", "description": "", "painPoints": [], "tasks": [], "activityId": "t-08"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Assessment", "label": "Chase the adjuster report", "system": "Email", "fte": 3.0, "activity": "Assess the claim", "description": "", "painPoints": [{"theme": "Adjuster reports arrive late and are chased by hand", "magnitude": {"value": 3.0, "unit": "fte"}, "description": null, "source": "src-02", "id": "p-03"}], "tasks": [], "activityId": "t-09"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Assessment", "label": "Read the report and update the reserve", "system": "ClaimsCore", "fte": 1.5, "activity": "Assess the claim", "description": "", "painPoints": [], "tasks": [], "activityId": "t-10"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Assessment", "label": "Run the fraud indicator checklist", "system": "ClaimsCore", "fte": 1.5, "activity": "Assess the claim", "description": "", "painPoints": [], "tasks": [], "activityId": "t-11"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Assessment", "label": "Refer a flagged file to investigation", "system": "Email", "fte": 1.5, "activity": "Assess the claim", "description": "", "painPoints": [], "tasks": [], "activityId": "t-12"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Assessment", "label": "Book the vehicle into a network garage", "system": "RepairPortal", "fte": 2.5, "activity": "Assess the claim", "description": "", "painPoints": [], "tasks": [], "activityId": "t-13"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Assessment", "label": "Approve the repair estimate", "system": "RepairPortal", "fte": 1.5, "activity": "Assess the claim", "description": "", "painPoints": [], "tasks": [], "activityId": "t-14"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Settlement", "label": "Calculate the settlement", "system": "Excel", "fte": 4.0, "activity": "Settle and pay the claim", "description": "", "painPoints": [{"theme": "The settlement is calculated in a spreadsheet outside the claims system", "magnitude": null, "description": null, "source": "src-03", "id": "p-04"}], "tasks": [], "activityId": "t-15"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Settlement", "label": "Obtain the second signature above the limit", "system": "Email", "fte": 1.5, "activity": "Settle and pay the claim", "description": "", "painPoints": [], "tasks": [], "activityId": "t-16"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Settlement", "label": "Record the settlement decision", "system": "ClaimsCore", "fte": 1.5, "activity": "Settle and pay the claim", "description": "", "painPoints": [], "tasks": [], "activityId": "t-17"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Settlement", "label": "Check the payment run before release", "system": "Ledger", "fte": 1.0, "activity": "Settle and pay the claim", "description": "", "painPoints": [], "tasks": [], "activityId": "t-23"}, {"gridRow": 3, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Finance Control", "week": "", "phase": "Settlement", "label": "Prepare and release the payment run", "system": "Ledger", "fte": 3.5, "activity": "Settle and pay the claim", "description": "", "painPoints": [], "tasks": [], "activityId": "t-18"}, {"gridRow": 1, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Customer Service", "week": "", "phase": "Assessment", "label": "Answer status calls on open claims", "system": "Contact Centre", "fte": 9.0, "activity": "Answer the customer while the claim runs", "description": "", "painPoints": [{"theme": "Customers call to ask where their claim is", "magnitude": {"value": 4.0, "unit": "fte"}, "description": null, "source": "src-04", "id": "p-05"}], "tasks": [], "activityId": "t-19"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Assessment", "label": "Take the status calls the contact centre passes on", "system": "Contact Centre", "fte": 2.0, "activity": "Answer the customer while the claim runs", "description": "", "painPoints": [], "tasks": [], "activityId": "t-24"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Closure", "label": "Build and send the recovery file", "system": "Excel", "fte": 3.5, "activity": "Recover and close the file", "description": "", "painPoints": [{"theme": "Recovery files are built from scratch each time", "magnitude": {"value": 1.2, "unit": "fte"}, "description": null, "source": "src-01", "id": "p-07"}], "tasks": [], "activityId": "t-20"}, {"gridRow": 2, "gridCol": 1, "rowSpan": 1, "colSpan": 1, "lane": "Claims Handling", "week": "", "phase": "Closure", "label": "Check the file is complete and close it", "system": "ClaimsCore", "fte": 1.5, "activity": "Recover and close the file", "description": "", "painPoints": [], "tasks": [], "activityId": "t-21"}]}};
 (function(){
-  var NAT={automate:['var(--nat-automate)','Automate'],"ai-accelerate":['var(--nat-accelerate)','AI-accelerate'],
-           "ai-enhance":['var(--nat-enhance)','AI-enhance'],redesign:['var(--nat-redesign)','Redesign'],keep:['var(--nat-keep)','Keep']};
+  /* The nine canonical levers. This replaced a five-key `nature` map that named the same idea a
+     second time - see baseline/2026.14. Colours come from model.json where the generator injects
+     them; the CSS vars are the standalone fallback. */
+  var LEV=(DATA.leverMeta)||{auto:['var(--lev-auto)','Automation'],aiacc:['var(--lev-aiacc)','AI acceleration'],
+           aienh:['var(--lev-aienh)','AI enhancement'],process:['var(--lev-process)','Process redesign'],
+           journey:['var(--lev-journey)','Journey redesign'],lean:['var(--lev-lean)','Lean management'],
+           data:['var(--lev-data)','Data & tech foundation'],change:['var(--lev-change)','Change program'],
+           org:['var(--lev-org)','Org redesign']};
+  var AILEV={auto:1,aiacc:1,aienh:1};
+  function levBadge(k){ var m=LEV[k]; if(!m) return '';
+    return '<span class="nat" style="background:'+m[0]+'">'+esc(m[1])+'</span>'; }
+  function levEdge(k){ var m=LEV[k]; return m?m[0]:'transparent'; }
+  var OPPS=(DATA.opportunities)||[];
+  function oppsOf(blockId){ return OPPS.filter(function(o){return o.blockId===blockId;}); }
+  /* the colour of a cell is its block's DOMINANT opportunity - biggest sizing, id as tiebreak.
+     The FTE maths uses the equal split instead; a block with one opportunity makes them agree. */
+  function domLever(blockId){
+    var o=oppsOf(blockId).slice().sort(function(a,b){
+      var d=(b.sizingValue||0)-(a.sizingValue||0); return d?d:String(a.id).localeCompare(String(b.id));});
+    return o.length?o[0].lever:null; }
   var RAGP={red:['rgba(210,100,90,.16)','#C2483D'],amber:['rgba(212,154,58,.18)','#B07A1E'],green:['rgba(47,143,107,.15)','#1F6B50']};
   function esc(t){return String(t==null?'':t).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
   function hl(t){return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1</span>');}
   function rn(n){return Math.round(n*10)/10;}
   var HL=DATA.hl||{lanes:[],stages:[],activities:[]}, DET=DATA.detail||{lanes:[],cells:[],weeks:[],phases:[],parallel_phases:[],numCols:0,numRows:0};
-  var A=HL.tasks||[], ACTS=HL.activities||[];
+  var A=HL.activities||[], ACTS=HL.activityBlocks||[];
   var DVSEQ=['#0B2347','#2E5C8A','#7991AD','#1C7A4A','#2E8B6F','#6EB1D1','#D49A3A','#B07A1E','#8E7CC3','#5A6B7B'];
   var LC={};(HL.lanes||[]).forEach(function(l,i){LC[l]=DVSEQ[i%DVSEQ.length];});
   function laneColor(l){return LC[l]||'var(--rag-na)';}
@@ -604,54 +632,65 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
   function srcLabel(id){ if(!id) return ''; var x=(DATA.sources||[]).filter(function(s){return s.id===id;})[0]; return x?(x.label||x.id):id; }
   var GOICON='<span class="swgo" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H5a1 1 0 0 0-1 1v4M15 4h4a1 1 0 0 1 1 1v4M9 20H5a1 1 0 0 1-1-1v-4M15 20h4a1 1 0 0 1 1-1v-4"/></svg></span>';
   function openPin(a){var pw=document.getElementById('pinwrap'),pn=document.getElementById('pin');
-    var tasks=(a.tasks||[]);
+    var acts=(a.activities||[]);
     var order=[],gm={};
-    tasks.forEach(function(t,i){var k=(t.lane||'—');if(!gm[k]){gm[k]={lane:t.lane||'',tasks:[],pain:0};order.push(k);}gm[k].tasks.push([t,i]);gm[k].pain+=(t.pains||[]).length;});
+    acts.forEach(function(t,i){var k=(t.lane||'—');if(!gm[k]){gm[k]={lane:t.lane||'',activities:[],pain:0};order.push(k);}gm[k].activities.push([t,i]);gm[k].pain+=(t.pains||[]).length;});
     var panels=order.map(function(k){var g=gm[k];var col=laneColor(g.lane);
-      var chips=g.tasks.map(function(x){var t=x[0],i=x[1];var np=(t.pains||[]).length;
+      var chips=g.activities.map(function(x){var t=x[0],i=x[1];var np=(t.pains||[]).length;
         return '<span class="tchip'+(np?' pn':'')+'" data-i="'+i+'">'+esc(t.name)+(np?'<span class="tcb">'+np+'</span>':'')+'</span>';}).join('');
-      var gh='<div class="tmh"><span class="ownerdot" style="background:'+col+'"></span><span class="tmn">'+esc(g.lane||'—')+'</span><span class="tmm">'+g.tasks.length+' task'+(g.tasks.length===1?'':'s')+(g.pain?' &middot; '+g.pain+' pain'+(g.pain===1?'':'s'):'')+'</span></div>';
+      var gh='<div class="tmh"><span class="ownerdot" style="background:'+col+'"></span><span class="tmn">'+esc(g.lane||'—')+'</span><span class="tmm">'+g.activities.length+' activit'+(g.activities.length===1?'y':'ies')+(g.pain?' &middot; '+g.pain+' pain'+(g.pain===1?'':'s'):'')+'</span></div>';
       return '<div class="tmpanel" style="border-left-color:'+col+'">'+gh+'<div class="tmchips">'+chips+'</div></div>';}).join('');
-    var n=tasks.length;
-    var sub='The '+n+' task'+(n===1?'':'s')+' that make'+(n===1?'s':'')+' up this activity, grouped by owning team'+((typeof a.fte==='number')?' &middot; '+rn(a.fte)+' FTE':'')+(a.pain?' &middot; '+a.pain+' pain point'+(a.pain===1?'':'s'):'');
-    var legend='<div class="plegend"><span><span class="ownerdot" style="background:var(--mut)"></span>one panel per owning team</span><span><span class="tchip pn" style="cursor:default">task<span class="tcb">n</span></span>&nbsp;red = has pains · click any task to open it</span></div>';
-    pn.innerHTML='<div class="ph"><div><div class="pkick">Activity</div><div class="pnm">'+esc(a.name)+'</div></div><button class="px" aria-label="Close">&times;</button></div><div class="psub">'+sub+'</div>'+panels+legend;
+    var n=acts.length;
+    var sub='The '+n+' activit'+(n===1?'y':'ies')+' that make'+(n===1?'s':'')+' up this block, grouped by owning team'+((typeof a.fte==='number')?' &middot; '+rn(a.fte)+' FTE':'')+(a.pain?' &middot; '+a.pain+' pain point'+(a.pain===1?'':'s'):'');
+    var legend='<div class="plegend"><span><span class="ownerdot" style="background:var(--mut)"></span>one panel per owning team</span><span><span class="tchip pn" style="cursor:default">activity<span class="tcb">n</span></span>&nbsp;red = has pains · click any activity to open it</span></div>';
+    pn.innerHTML='<div class="ph"><div><div class="pkick">Activity block</div><div class="pnm">'+esc(a.name)+'</div></div><button class="px" aria-label="Close">&times;</button></div><div class="psub">'+sub+'</div>'+panels+legend;
     pn.querySelector('.px').onclick=closePin;
-    pn.querySelectorAll('.tchip[data-i]').forEach(function(ch){ch.onclick=function(){var t=tasks[+ch.getAttribute('data-i')];openTaskPin(t,function(){openPin(a);});};});
+    pn.querySelectorAll('.tchip[data-i]').forEach(function(ch){ch.onclick=function(){var t=acts[+ch.getAttribute('data-i')];openTaskPin(t,function(){openPin(a);});};});
     pw.classList.add('on');}
   function closePin(){document.getElementById('pinwrap').classList.remove('on');}
   function openTaskPin(t,back){var pw=document.getElementById('pinwrap'),pn=document.getElementById('pin');
     var name=t.name||t.label||'', pains=t.pains||t.painPoints||[], lane=t.lane||'';
     var phase=t.stage||(t.phase?String(t.phase).replace(/Phase\s*\d+:\s*/,''):'');
     var meta='<span class="ownerdot" style="background:'+laneColor(lane)+'"></span>'+esc(lane||'—')+(phase?' · '+esc(phase):'')+(t.week?' · '+esc(t.week):'');
-    var chips=((typeof t.fte==='number')?fteChip(t.fte):'')+natBadge(t.nature)+(t.system?'<span class="chip">'+esc(t.system)+'</span>':'')+(t.frequency?'<span class="chip">'+esc(t.frequency)+'</span>':(t.cadence?'<span class="chip">'+esc(t.cadence)+'</span>':''));
+    var chips=((typeof t.fte==='number')?fteChip(t.fte):'')+levBadge(domLever(t.blockId))+(t.system?'<span class="chip">'+esc(t.system)+'</span>':'')+(t.frequency?'<span class="chip">'+esc(t.frequency)+'</span>':(t.cadence?'<span class="chip">'+esc(t.cadence)+'</span>':''));
+    var tks=(t.tasks||[]);                       // the deep dive: the steps inside this activity
+    var tl=tks.map(function(k){
+      return '<li>'+esc(k.name||'')+(k.system?'<span class="tsys">'+esc(k.system)+'</span>':'')+'</li>';}).join('');
     var pl=pains.map(function(p){var sl=srcLabel(p.sourceId),ms=magStr(p);
       return '<div class="tpp"><div class="tppt">'+esc(p.theme||'')+'</div>'+(ms?'<div class="tppm">'+esc(ms)+'</div>':'')+(p.description?'<div class="tppd">'+esc(p.description)+'</div>':'')+(sl?'<div class="tsrc" title="'+esc(sl)+'">['+esc(sl)+']</div>':'')+'</div>';}).join('');
-    pn.innerHTML=(back?'<button class="pback" type="button">‹ Back to activity</button>':'')+'<div class="ph"><div><div class="pkick">Task</div><div class="pnm">'+esc(name)+'</div></div><button class="px" aria-label="Close">&times;</button></div>'+
+    pn.innerHTML=(back?'<button class="pback" type="button">‹ Back to activity block</button>':'')+'<div class="ph"><div><div class="pkick">Activity</div><div class="pnm">'+esc(name)+'</div></div><button class="px" aria-label="Close">&times;</button></div>'+
       '<div class="tmeta">'+meta+'</div>'+(chips?'<div class="trow">'+chips+'</div>':'')+
       (t.description?'<div class="tdesc">'+esc(t.description)+'</div>':'')+
+      (tks.length?'<div class="tplabel">'+tks.length+' task'+(tks.length>1?'s':'')+'</div><ol class="tsteps">'+tl+'</ol>':'')+
       (pains.length?'<div class="tplabel">'+pains.length+' pain point'+(pains.length>1?'s':'')+'</div>'+pl:'<div class="tplabel" style="color:var(--mut)">No pain points recorded</div>');
     pn.querySelector('.px').onclick=closePin;if(back){var bb=pn.querySelector('.pback');if(bb)bb.onclick=back;}pw.classList.add('on');}
 
   var teamFte=DATA.teamFte||A.reduce(function(s,x){return s+(typeof x.fte==='number'?x.fte:0);},0);
   var fteMapped=A.reduce(function(s,x){return s+(typeof x.fte==='number'?x.fte:0);},0);
-  var autoFte=A.reduce(function(s,x){return s+(((x.nature==='automate'||x.nature==='ai-accelerate')&&typeof x.fte==='number')?x.fte:0);},0);
+  /* FTE sitting behind an AI or automation lever. A block's FTE splits equally across the levers
+     of its opportunities, so the per-lever totals still add up to the FTE actually mapped. */
+  var autoFte=A.reduce(function(s,x){
+    var L=oppsOf(x.blockId); if(!L.length||typeof x.fte!=='number') return s;
+    var ai=L.filter(function(o){return AILEV[o.lever];}).length;
+    return s+x.fte*ai/L.length;},0);
   var painCount=A.reduce(function(s,x){return s+((x.pains||x.painPoints||[]).length);},0);
   var hasFte=fteMapped>0;
-  function natEdge(n){return (NAT[n]||['var(--rag-na)'])[0];}
-  function natBadge(n){var m=NAT[n];return m?'<span class="nat" style="background:'+m[0]+'">'+m[1]+'</span>':'';}
+  /* natEdge / natBadge are gone: a cell's colour is no longer a property of the cell. It comes
+     from the block's dominant opportunity - see levEdge / levBadge / domLever above. */
   function fteChip(f){return '<span class="chip">'+(typeof f==='number'?rn(f)+' FTE':'n/a')+'</span>';}
   function painTags(pp){return (pp||[]).map(function(p){var k=RAGP[p.rag]||RAGP.amber;return '<span class="pn" style="background:'+k[0]+';color:'+k[1]+'">'+esc(magStr(p)||p.theme)+'</span>';}).join('');}
   var pm=document.getElementById('pm');
   function natMix(list){var m={automate:0,"ai-accelerate":0,"ai-enhance":0,redesign:0,keep:0};
-    list.forEach(function(x){if(typeof x.fte==='number'&&m.hasOwnProperty(x.nature))m[x.nature]+=x.fte;});return m;}
+    list.forEach(function(x){ if(typeof x.fte!=='number') return;
+      var L=oppsOf(x.blockId); if(!L.length) return;
+      L.forEach(function(o){ if(m.hasOwnProperty(o.lever)) m[o.lever]+=x.fte/L.length; });});return m;}
   function mixBar(m){var tot=0;Object.keys(m).forEach(function(k){tot+=m[k];});if(!tot)return '';
-    return '<div class="amix">'+Object.keys(NAT).map(function(k){return m[k]?'<div style="width:'+(100*m[k]/tot)+'%;background:'+NAT[k][0]+'"></div>':'';}).join('')+'</div>';}
+    return '<div class="amix">'+Object.keys(LEV).map(function(k){return m[k]?'<div style="width:'+(100*m[k]/tot)+'%;background:'+LEV[k][0]+'"></div>':'';}).join('')+'</div>';}
   function heatV(v,mx,fte){if(!v)return 'var(--soft)';var a=mx?v/mx:0;return fte?'rgba(110,177,209,'+(0.12+a*0.40).toFixed(2)+')':'rgba(210,100,90,'+(0.10+a*0.50).toFixed(2)+')';}
   function renderHighlevel(){
-    var phases=HL.phases||[];var host=document.createElement('div');
+    var phases=HL.processes||[];var host=document.createElement('div');
     function actsOf(ph){return ACTS.filter(function(a){return a.phase===ph;});}
-    var pa=phases.map(function(ph){var as=actsOf(ph),pain=0,tc=0,fte=0,ls=[];as.forEach(function(a){pain+=a.pain;tc+=a.taskCount;fte+=(typeof a.fte==='number'?a.fte:0);a.lanes.forEach(function(l){if(ls.indexOf(l)<0)ls.push(l);});});return {ph:ph,as:as,pain:pain,tc:tc,fte:fte,lanes:ls};});
+    var pa=phases.map(function(ph){var as=actsOf(ph),pain=0,tc=0,fte=0,ls=[];as.forEach(function(a){pain+=a.pain;tc+=a.activityCount;fte+=(typeof a.fte==='number'?a.fte:0);a.lanes.forEach(function(l){if(ls.indexOf(l)<0)ls.push(l);});});return {ph:ph,as:as,pain:pain,tc:tc,fte:fte,lanes:ls};});
     var maxPh=1;pa.forEach(function(g){var v=hasFte?g.fte:g.pain;if(v>maxPh)maxPh=v;});
     var maxA=1;ACTS.forEach(function(a){var v=hasFte?(a.fte||0):a.pain;if(v>maxA)maxA=v;});
     var HS={};ACTS.slice().sort(function(x,y){return y.pain-x.pain;}).slice(0,2).forEach(function(x){if(x.pain>0)HS[x.phase+'|'+x.name]=true;});
@@ -659,7 +698,7 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
     phases.forEach(function(ph,i){var g=pa[i];var v=hasFte?g.fte:g.pain;var _ra=maxPh?v/maxPh:0;
       var col=document.createElement('div');col.className='pcol';
       var act=g.lanes.slice(0,3).map(function(l){return '<span class="ochip"><span class="ownerdot" style="background:'+laneColor(l)+'"></span>'+esc(l)+'</span>';}).join('')+(g.lanes.length>3?'<span class="ochip">+'+(g.lanes.length-3)+'</span>':'');
-      var m=(hasFte?rn(g.fte)+' FTE · ':'')+g.as.length+' activit'+(g.as.length===1?'y':'ies')+' · '+g.tc+' task'+(g.tc===1?'':'s')+(g.pain?' <span class="pchpill">'+g.pain+' pain'+(g.pain===1?'':'s')+'</span>':'');
+      var m=(hasFte?rn(g.fte)+' FTE · ':'')+g.as.length+' block'+(g.as.length===1?'':'s')+' · '+g.tc+' activit'+(g.tc===1?'y':'ies')+(g.pain?' <span class="pchpill">'+g.pain+' pain'+(g.pain===1?'':'s')+'</span>':'');
       var aw=16;
       var cp=(i===0)?'polygon(0 0,calc(100% - '+aw+'px) 0,100% 50%,calc(100% - '+aw+'px) 100%,0 100%)':'polygon(0 0,calc(100% - '+aw+'px) 0,100% 50%,calc(100% - '+aw+'px) 100%,0 100%,'+aw+'px 50%)';
       var ov=(i===0?0:aw+13);
@@ -683,18 +722,18 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
       g.as.forEach(function(a){var v=hasFte?(a.fte||0):a.pain;
         var card=document.createElement('div');card.className='acard'+(a.name==='(other)'?' other':'');
         var owners=a.lanes.slice(0,3).map(function(l){return '<span class="ochip2"><span class="ownerdot" style="background:'+laneColor(l)+'"></span>'+esc(l)+'</span>';}).join('')+(a.lanes.length>3?'<span class="ochip2">+'+(a.lanes.length-3)+'</span>':'');
-        var am=a.taskCount+' task'+(a.taskCount===1?'':'s')+(a.pain?' · <span style="color:var(--rag-red);font-weight:700">'+a.pain+' pain'+(a.pain===1?'':'s')+'</span>':'')+((hasFte&&typeof a.fte==='number')?' · '+rn(a.fte)+' FTE':'');
+        var am=a.activityCount+' activit'+(a.activityCount===1?'y':'ies')+(a.pain?' · <span style="color:var(--rag-red);font-weight:700">'+a.pain+' pain'+(a.pain===1?'':'s')+'</span>':'')+((hasFte&&typeof a.fte==='number')?' · '+rn(a.fte)+' FTE':'');
         card.innerHTML='<span class="acgo" aria-hidden="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H5a1 1 0 0 0-1 1v4M15 4h4a1 1 0 0 1 1 1v4M9 20H5a1 1 0 0 1-1-1v-4M15 20h4a1 1 0 0 1 1-1v-4"/></svg></span><div class="acn">'+esc(a.name)+'</div><div class="acm">'+am+'</div><div class="aca">'+owners+'</div>';
         if(!ON)card.style.cursor='pointer';
         card.onclick=(function(act){return function(){ if(ON) EDITCARD(act); else openPin(act); };})(a);
         col.appendChild(card);});
       cols.appendChild(col);});
-    var hh=document.createElement('div');hh.className='swhint';hh.style.margin='2px 0 14px';hh.innerHTML='Each card is one activity \u2014 <b>click a card</b> for its tasks and pain points';host.appendChild(hh);
+    var hh=document.createElement('div');hh.className='swhint';hh.style.margin='2px 0 14px';hh.innerHTML='Each card is one activity block \u2014 <b>click a card</b> for its activities and pain points';host.appendChild(hh);
     host.appendChild(cols);
     if((DATA.gaps||[]).length){var cc=document.createElement('div');cc.className='cov';cc.innerHTML='<b>&#9888; Not mapped &mdash; to walk:</b> '+(DATA.gaps).map(esc).join('  &middot;  ');host.appendChild(cc);}
     return host;
   }
-  function phaseColor(i){var seq=['var(--navy-fill)','var(--navy2)','var(--slate)','var(--steel)','var(--nat-accelerate)','var(--nat-enhance)'];return seq[i%seq.length];}
+  function phaseColor(i){var seq=['var(--navy-fill)','var(--navy2)','var(--slate)','var(--steel)','var(--lev-aiacc)','var(--lev-aienh)'];return seq[i%seq.length];}
   function renderTimeline(){
     var nC=DET.numCols||0,lanes=DET.lanes||[],nR=lanes.length;
     var host=document.createElement('div');
@@ -702,7 +741,7 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
     var g=document.createElement('div');g.className='dgrid';
     g.style.gridTemplateColumns='150px repeat('+nC+',minmax(84px,1fr))';
     var html='<div style="grid-row:1;grid-column:1"></div>';
-    (DET.phases||[]).forEach(function(b,i){html+='<div class="dband" style="grid-row:1;grid-column:'+(b.startCol+1)+' / '+(b.endCol+2)+';background:'+phaseColor(i)+'">'+esc(String(b.label).replace(/Phase\s*(\d+):\s*/,'P$1 · '))+'</div>';});
+    (DET.processes||[]).forEach(function(b,i){html+='<div class="dband" style="grid-row:1;grid-column:'+(b.startCol+1)+' / '+(b.endCol+2)+';background:'+phaseColor(i)+'">'+esc(String(b.label).replace(/Phase\s*(\d+):\s*/,'P$1 · '))+'</div>';});
     html+='<div style="grid-row:2;grid-column:1"></div>';
     (DET.weeks||[]).forEach(function(b){html+='<div class="dweek" style="grid-row:2;grid-column:'+(b.startCol+1)+' / '+(b.endCol+2)+'">'+esc(b.label)+'</div>';});
     lanes.forEach(function(l){html+='<div class="dlane" style="grid-row:'+(l.row+2)+';grid-column:1">'+esc(l.name)+'</div>';});
@@ -713,7 +752,7 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
       el.className=isMile?'dmile':'dcell';
       el.style.gridRow=(c.gridRow+2)+' / span '+(c.rowSpan||1);
       el.style.gridColumn=(c.gridCol+1)+' / span '+(c.colSpan||1);
-      if(!isMile){el.style.borderLeftColor=natEdge(c.nature);
+      if(!isMile){el.style.borderLeftColor=levEdge(domLever(c.blockId));
         var pp=(c.painPoints||[]).length?'<span class="ppn" style="background:'+(RAGP.red[0])+';color:'+(RAGP.red[1])+'">'+(c.painPoints.length)+' pain</span>':'';
         el.innerHTML='<div class="dn">'+esc(c.label)+'</div><div class="dm">'+esc(c.system||'')+(typeof c.fte==='number'?' · '+rn(c.fte)+' FTE':'')+'</div>'+pp+(ON?'':GOICON);
       } else { el.textContent=c.label; }
@@ -724,10 +763,10 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
   }
   var swCollapsed={};
   function renderPhaseGrid(){
-    var phases=HL.phases||[];
+    var phases=HL.processes||[];
     var lanes=(HL.lanes||[]).filter(function(l){return A.some(function(t){return t.lane===l;});});
     var host=document.createElement('div');
-    if(!lanes.length||!phases.length){host.innerHTML='<div class="cov">No tasks captured.</div>';return host;}
+    if(!lanes.length||!phases.length){host.innerHTML='<div class="cov">No activities captured.</div>';return host;}
     var g=document.createElement('div');g.className='swg';
     g.style.gridTemplateColumns='170px repeat('+phases.length+',minmax(210px,1fr))';
     host.appendChild(g);
@@ -738,7 +777,7 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
       phases.forEach(function(ph,i){
         var ts=A.filter(function(t){return t.stage===ph;});var st=sumP(ts);
         var d=document.createElement('div');d.className='swch';d.style.cssText='grid-row:1;grid-column:'+(i+2);
-        var sub='<b>'+ts.length+'</b> tasks'+((hasFte&&st.fe)?' · <b>'+rn(st.f)+'</b> FTE':'')+(st.p?' · <span class="warn">'+st.p+'</span> pains':'');
+        var sub='<b>'+ts.length+'</b> activities'+((hasFte&&st.fe)?' · <b>'+rn(st.f)+'</b> FTE':'')+(st.p?' · <span class="warn">'+st.p+'</span> pains':'');
         d.innerHTML='<div class="swchtop">'+(ON?PGRIP():'')+
           '<span class="swchn">'+(i+1)+'</span><span class="swcht">'+esc(ph)+'</span></div><div class="swchsub">'+sub+'</div>';
 /*<EDIT>*/
@@ -746,7 +785,7 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
           d.draggable=true;
           if(ON){
             var ap=document.createElement('button');
-            ap.className='hdrplus'; ap.innerHTML='+ activity'; ap.title='Add an activity to this phase';
+            ap.className='hdrplus'; ap.innerHTML='+ activity block'; ap.title='Add an activity block to this key process';
             ap.onclick=(function(ph){ return function(e){ e.stopPropagation(); addActivity(ph); }; })(ph);
             d.appendChild(ap);
           }
@@ -789,7 +828,7 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
         g.appendChild(lc);
         if(collapsed){
           var sm=document.createElement('div');sm.className='swrowsum';sm.style.cssText='grid-row:'+(r+2)+';grid-column:2 / '+(phases.length+2);
-          sm.innerHTML='<b>'+own.length+'</b> tasks'+((hasFte&&so.fe)?' · <b>'+rn(so.f)+'</b> FTE':'')+(so.p?' · <span class="warn">'+so.p+'</span> pains':'')+' &nbsp;·&nbsp; click to expand';
+          sm.innerHTML='<b>'+own.length+'</b> activities'+((hasFte&&so.fe)?' · <b>'+rn(so.f)+'</b> FTE':'')+(so.p?' · <span class="warn">'+so.p+'</span> pains':'')+' &nbsp;·&nbsp; click to expand';
           sm.onclick=function(){swCollapsed[l]=false;build();};
           g.appendChild(sm);return;
         }
@@ -811,7 +850,7 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
               ev.preventDefault(); cell.classList.remove('drop');
               var tid=ev.dataTransfer.getData('text/plain');
               // A cell is (lane x phase). Dropping re-homes BOTH: the actor comes from the lane, the
-              // activity from the phase - a task has no phase of its own, it inherits its activity's.
+              // block from the key process - an activity has no key process of its own, it inherits its block's.
               if(tid) moveTask(tid, laneName, phaseName);
             };})(l, ph));
           }
@@ -819,7 +858,7 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
           var lastAct=null;
           ts.forEach(function(t){
             if(t.activity&&t.activity!==lastAct){lastAct=t.activity;var ac=document.createElement('div');ac.className='swact';ac.textContent=t.activity;cell.appendChild(ac);}
-            var chip=document.createElement('div');chip.className='swt';chip.style.borderLeftColor=natEdge(t.nature);
+            var chip=document.createElement('div');chip.className='swt';chip.style.borderLeftColor=levEdge(domLever(t.blockId));
             var np=(t.pains||[]).length?'<span class="swp">'+(t.pains.length)+' pain</span>':'';
             var sys=t.system?'<span>'+esc(t.system)+'</span>':'';
             var fte=(hasFte&&typeof t.fte==='number')?'<span>'+rn(t.fte)+' FTE</span>':'';
@@ -847,18 +886,18 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
     var host=document.createElement('div');
     var bar=document.createElement('div');bar.className='swsub';
     var sg=document.createElement('div');sg.className='seg';sg.style.width='max-content';
-    sg.innerHTML='<button data-s="phase"'+(detMode==='phase'?' class="on"':'')+'>By phase</button><button data-s="timeline"'+(detMode==='timeline'?' class="on"':'')+'>Timeline</button>';
+    sg.innerHTML='<button data-s="phase"'+(detMode==='phase'?' class="on"':'')+'>By key process</button><button data-s="timeline"'+(detMode==='timeline'?' class="on"':'')+'>Timeline</button>';
     var hint=document.createElement('span');hint.className='swhint';
     bar.appendChild(sg);bar.appendChild(hint);
     var body=document.createElement('div');
     function draw(){body.innerHTML='';body.appendChild(detMode==='timeline'?renderTimeline():renderPhaseGrid());
       hint.innerHTML = (EDIT && EDITHINT(detMode)) ||
-        (detMode==='phase' ? 'Tasks grouped by phase and lane \u2014 click a task for detail'
+        (detMode==='phase' ? 'Activities grouped by key process and lane \u2014 click one for detail'
                            : 'Full time grid \u2014 scroll to follow the calendar');
 /*<EDIT>*/
       if(ON && detMode==='phase'){
         var hb=document.createElement('span'); hb.className='hintbtns';
-        hb.innerHTML='<button id="h_phase">+ Phase</button>'+
+        hb.innerHTML='<button id="h_phase">+ Key process</button>'+
                      '<button id="h_opp">+ Team-wide opportunity</button>';
         hint.appendChild(hb);
         hb.querySelector('#h_phase').onclick=function(){ addPhase(); };
@@ -872,57 +911,90 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
   }
   var NATHEX={automate:'#2E5C8A','ai-accelerate':'#1C7A4A','ai-enhance':'#6EB1D1',redesign:'#D49A3A',keep:'#7991AD'};
   function hexA(h,a){var n=parseInt(h.slice(1),16);return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a.toFixed(2)+')';}
-  function phaseIdx(ph){return (HL.phases||[]).indexOf(ph);}
-  var NATK=['automate','ai-accelerate','ai-enhance','redesign','keep'];
+  function phaseIdx(ph){return (HL.processes||[]).indexOf(ph);}
+  var LEVK=['auto','aiacc','aienh','process','journey','lean','data','change','org'];
+  /* The Opportunities tab reads the OPPORTUNITY RECORDS. Until 2026.14 it listed activities that
+     carried a `nature` and called each one an opportunity - so the tab named Opportunities showed
+     none, and an activity with two improvements on it could only show one. */
   function renderOpportunity(){
     var host=document.createElement('div');
-    if(!A.filter(function(t){return t.nature;}).length){host.innerHTML='<div class="cov" style="color:var(--txt);background:var(--soft);border-color:var(--line)">No improvement opportunities captured yet.</div>';
+    var useFte=hasFte;
+    var blockFte={};
+    A.forEach(function(t){ if(typeof t.fte==='number') blockFte[t.blockId]=(blockFte[t.blockId]||0)+t.fte; });
+    /* a block's FTE divided equally across the levers of the opportunities on it */
+    function share(o){
+      var n=oppsOf(o.blockId).length||1;
+      return (blockFte[o.blockId]||0)/n;
+    }
+    if(!OPPS.length){
+      host.innerHTML='<div class="cov" style="color:var(--txt);background:var(--soft);border-color:var(--line)">No improvement opportunities captured yet. An opportunity is how a pain point becomes something we would actually do.</div>';
 /*<EDIT>*/
       if(ON){ var oa0=document.createElement('button'); oa0.className='tabadd'; oa0.innerHTML='&#43; Add an opportunity';
         oa0.onclick=function(){ openAddOpp(); }; host.appendChild(oa0); }
 /*</EDIT>*/
       return host;}
-    var useFte=hasFte;function val(t){return useFte?(typeof t.fte==='number'?t.fte:0):1;}
-    var byNat={};NATK.forEach(function(k){byNat[k]=0;});A.forEach(function(t){if(t.nature&&byNat.hasOwnProperty(t.nature))byNat[t.nature]+=val(t);});
-    var tot=0;NATK.forEach(function(k){tot+=byNat[k];});var autov=byNat.automate+byNat['ai-accelerate'];var pct=tot?Math.round(100*autov/tot):0;
+
+    var byLev={}; LEVK.forEach(function(k){byLev[k]=0;});
+    OPPS.forEach(function(o){ if(byLev.hasOwnProperty(o.lever)) byLev[o.lever]+=useFte?share(o):1; });
+    var tot=0; LEVK.forEach(function(k){tot+=byLev[k];});
+    var aiv=byLev.auto+byLev.aiacc+byLev.aienh;
+    var pct=tot?Math.round(100*aiv/tot):0;
+    /* "0 FTE (0%)" over an empty bar says nothing except that the join failed. When no FTE
+       reaches the opportunities, count them instead - that number is always real. */
+    var byCount=!useFte||tot<=0;
+    if(byCount){ tot=0; LEVK.forEach(function(k){byLev[k]=0;});
+      OPPS.forEach(function(o){ if(byLev.hasOwnProperty(o.lever)){byLev[o.lever]++;tot++;} });
+      aiv=byLev.auto+byLev.aiacc+byLev.aienh; pct=tot?Math.round(100*aiv/tot):0; }
     var head=document.createElement('div');head.className='nbwrap';
-    head.innerHTML='<div class="nblabel">'+(useFte?rn(autov)+' FTE ('+pct+'%) is automatable or AI-acceleratable':pct+'% of tagged tasks are automate or AI-accelerate')+'</div><div class="natbar">'+NATK.map(function(k){return byNat[k]?'<div style="width:'+(100*byNat[k]/tot)+'%;background:'+NAT[k][0]+((k==='ai-enhance'||k==='keep')?';color:#0B2347':'')+'"><span>'+NAT[k][1]+' '+rn(byNat[k])+(useFte?' FTE':'')+'</span></div>':'';}).join('')+'</div>';
+    head.innerHTML='<div class="nblabel">'+(byCount
+        ? aiv+' of '+tot+' opportunit'+(tot===1?'y is':'ies are')+' automation or AI'
+        : rn(aiv)+' FTE ('+pct+'%) has an automation or AI opportunity on it')+'</div><div class="natbar">'+
+      LEVK.filter(function(k){return byLev[k]>0;}).map(function(k){
+        return '<span title="'+esc(LEV[k][1])+'" style="flex:'+byLev[k]+';background:'+LEV[k][0]+'"></span>';}).join('')+'</div>';
     host.appendChild(head);
-    var ops=A.filter(function(t){return t.nature&&t.nature!=='keep';});
-    ops.sort(function(a,b){var d=val(b)-val(a);if(d)return d;return (b.pains||[]).length-(a.pains||[]).length;});
-    var nAddr=0;ops.forEach(function(t){nAddr+=(t.pains||[]).length;});
+
+    var ops=OPPS.slice().sort(function(a,b){
+      var d=(b.sizingValue||0)-(a.sizingValue||0); if(d) return d;
+      return (b.painIds||[]).length-(a.painIds||[]).length;});
+    var nAddr=0; ops.forEach(function(o){ nAddr+=(o.pains||[]).length; });
 /*<EDIT>*/
     if(ON){ var oa=document.createElement('button'); oa.className='tabadd'; oa.innerHTML='&#43; Add an opportunity';
       oa.onclick=function(){ openAddOpp(); }; host.appendChild(oa); }
 /*</EDIT>*/
     var lab=document.createElement('div');lab.className='nblabel';lab.style.margin='16px 0 7px';
-    lab.innerHTML='Improvement opportunities and the pain points they address — <b>'+ops.length+'</b> opportunit'+(ops.length===1?'y':'ies')+' addressing <span style="color:var(--rag-red);font-weight:800">'+nAddr+'</span> pain point'+(nAddr===1?'':'s');
+    lab.innerHTML='Improvement opportunities and the pain points they address — <b>'+ops.length+'</b> opportunit'+(ops.length===1?'y':'ies')+' addressing <span style="color:var(--rag-red);font-weight:600">'+nAddr+'</span> pain point'+(nAddr===1?'':'s');
     host.appendChild(lab);
     var tbl=document.createElement('div');tbl.className='otbl';
-    var html='<div class="orow ohd"><span>Opportunity</span><span>Improvement</span><span>Phase</span><span>Owner</span><span style="text-align:right">'+(useFte?'FTE':'')+'</span><span>Pain points addressed</span></div>';
-    ops.forEach(function(t){
-      var pains=(t.pains||[]);
+    var html='<div class="orow ohd"><span>Opportunity</span><span>Lever</span><span>Activity block</span><span>Owner</span><span style="text-align:right">'+(useFte?'FTE':'')+'</span><span>Pain points it addresses</span></div>';
+    ops.forEach(function(o){
+      var pains=(o.pains||[]);
       var pc=pains.length?pains.map(function(p){return '<div class="opain"><b>'+esc(p.theme)+'</b>'+(magStr(p)?' <span class="om">'+esc(magStr(p))+'</span>':' <span class="onomag">to quantify</span>')+'</div>';}).join('')
                          :'<div class="onopain">No pain documented — confirm the opportunity is real</div>';
-      html+='<div class="orow" data-task="'+esc(t.id||'')+'">'+
-        '<span><div class="otn">'+esc(t.name)+'</div>'+(t.system?'<div class="osys">'+esc(t.system)+'</div>':'')+'</span>'+
-        '<span><span class="nat" style="background:'+NAT[t.nature][0]+((t.nature==='ai-enhance'||t.nature==='keep')?';color:#0B2347':'')+'">'+NAT[t.nature][1]+'</span></span>'+
-        '<span class="oc">'+esc(t.stage||'')+'</span>'+
-        '<span class="oc"><span class="ownerdot" style="background:'+laneColor(t.lane)+'"></span>'+esc(t.lane||'')+'</span>'+
-        '<span class="ofte">'+((useFte&&typeof t.fte==='number')?rn(t.fte):'')+'</span>'+
+      var sz=(typeof o.sizingValue==='number')
+               ? rn(o.sizingValue)+(o.sizingUnit&&o.sizingUnit!=='fte'?' '+esc(o.sizingUnit):'')
+               : '<span class="onomag" style="white-space:nowrap">not sized</span>';
+      html+='<div class="orow" data-opp="'+esc(o.id||'')+'">'+
+        '<span><div class="otn">'+esc(o.title||o.note||'(untitled)')+'</div>'+
+          (o.needsRecapture?'<div class="osys">migrated from the block — re-capture</div>':'')+'</span>'+
+        '<span>'+levBadge(o.lever)+'</span>'+
+        '<span class="oc">'+esc(o.blockName||'')+'</span>'+
+        '<span class="oc"><span class="ownerdot" style="background:'+laneColor(o.owner||'')+'"></span>'+esc(o.owner||'')+'</span>'+
+        '<span class="ofte">'+sz+'</span>'+
         '<span>'+pc+'</span></div>';
     });
     tbl.innerHTML=html;
 /*<EDIT>*/
-    if(ON) Array.prototype.forEach.call(tbl.querySelectorAll('[data-task]'),function(el){
-      el.onclick=function(){ var t=taskById(el.getAttribute('data-task')); if(t) openEd(t); };
+    if(ON) Array.prototype.forEach.call(tbl.querySelectorAll('[data-opp]'),function(el){
+      el.onclick=function(){ var o=oppById(el.getAttribute('data-opp')); if(o) openOpp(o); };
     });
 /*</EDIT>*/
     host.appendChild(tbl);
-    var gaps=A.filter(function(t){return !t.nature&&(t.pains||[]).length;});
-    if(gaps.length){var gp=0;gaps.forEach(function(t){gp+=(t.pains||[]).length;});
+    /* a pain nobody has answered yet is the gap worth naming */
+    var answered={}; OPPS.forEach(function(o){ (o.painIds||[]).forEach(function(p){answered[p]=1;}); });
+    var gaps=A.filter(function(t){ return (t.pains||[]).some(function(p){return !answered[p.id];}); });
+    if(gaps.length){var gp=0;gaps.forEach(function(t){gp+=(t.pains||[]).filter(function(p){return !answered[p.id];}).length;});
       var gd=document.createElement('div');gd.className='cov';gd.style.marginTop='14px';
-      gd.innerHTML='<b>&#9888; '+gp+' pain point'+(gp===1?'':'s')+' on '+gaps.length+' task'+(gaps.length===1?'':'s')+' not yet linked to an improvement:</b> '+gaps.slice(0,8).map(function(t){return esc(t.name);}).join('  &middot;  ')+(gaps.length>8?'  &middot;  +'+(gaps.length-8)+' more':'');
+      gd.innerHTML='<b>&#9888; '+gp+' pain point'+(gp===1?'':'s')+' on '+gaps.length+' activit'+(gaps.length===1?'y':'ies')+' with no opportunity against '+(gp===1?'it':'them')+':</b> '+gaps.slice(0,8).map(function(t){return esc(t.name);}).join('  &middot;  ')+(gaps.length>8?'  &middot;  +'+(gaps.length-8)+' more':'');
       host.appendChild(gd);}
     return host;
   }
@@ -939,10 +1011,10 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
 /*</EDIT>*/
     var mode='phase';
     var seg=document.createElement('div');seg.className='seg';seg.style.cssText='margin-bottom:10px;width:max-content';
-    seg.innerHTML='<button class="on" data-s="phase">By phase</button><button data-s="gap">Unquantified first</button>';
+    seg.innerHTML='<button class="on" data-s="phase">By key process</button><button data-s="gap">Unquantified first</button>';
     var tbl=document.createElement('div');tbl.className='pregtbl';
     function paint(){var r2=rows.slice();if(mode==='gap')r2.sort(function(a,b){return (a.mag?1:0)-(b.mag?1:0);});else r2.sort(function(a,b){return phaseIdx(a.phase)-phaseIdx(b.phase);});
-      tbl.innerHTML='<div class="preg preh"><span>Pain</span><span>Magnitude</span><span>Task</span><span>Owner</span><span>Phase</span></div>'+r2.map(function(r,i){return '<div class="preg'+(r.mag?'':' nomag')+'" data-row="'+i+'"><span class="prt">'+esc(r.theme)+'</span><span class="prm">'+(r.mag?esc(r.mag):'<span style="color:var(--rag-red)">to quantify</span>')+'</span><span class="prc">'+esc(r.task)+'</span><span class="prc prow2"><span class="ownerdot" style="background:'+laneColor(r.owner)+'"></span>'+esc(r.owner)+'</span><span class="prc">'+esc(r.phase)+'</span></div>';}).join('');
+      tbl.innerHTML='<div class="preg preh"><span>Pain</span><span>Magnitude</span><span>Activity</span><span>Owner</span><span>Key process</span></div>'+r2.map(function(r,i){return '<div class="preg'+(r.mag?'':' nomag')+'" data-row="'+i+'"><span class="prt">'+esc(r.theme)+'</span><span class="prm">'+(r.mag?esc(r.mag):'<span style="color:var(--rag-red)">to quantify</span>')+'</span><span class="prc">'+esc(r.task)+'</span><span class="prc prow2"><span class="ownerdot" style="background:'+laneColor(r.owner)+'"></span>'+esc(r.owner)+'</span><span class="prc">'+esc(r.phase)+'</span></div>';}).join('');
 /*<EDIT>*/
       if(ON) Array.prototype.forEach.call(tbl.querySelectorAll('[data-row]'),function(el){
         el.onclick=function(){ var r=r2[+el.getAttribute('data-row')]; if(r&&r._t&&r._p) openPain(r._t,r._p); };
@@ -961,8 +1033,10 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
   function kpi(l,n,cls){return '<div class="kpi"><div class="l">'+esc(l)+'</div><div class="n '+cls+'">'+esc(n)+'</div></div>';}
   document.getElementById('src').innerHTML=DATA.source?('<b style="color:var(--txt)">Source:</b> '+esc(DATA.source)):'';
   function setLegend(){var el=document.getElementById('lg');
-    if(hasFte&&(cur==='opportunity'||cur==='detail')){el.innerHTML='<b style="color:var(--txt);margin-right:2px">Improvement:</b>'+Object.keys(NAT).map(function(k){return '<span class="lp" style="background:var(--soft);color:var(--txt)"><i style="background:'+NAT[k][0]+'"></i>'+NAT[k][1]+'</span>';}).join('');}
-    else{el.innerHTML='<span class="lp" style="background:var(--soft);color:var(--mut)">Owners coloured by lane &middot; click an activity to open its tasks</span>';}}
+    if(hasFte&&(cur==='opportunity'||cur==='detail')){
+      var used={}; OPPS.forEach(function(o){ if(o.lever) used[o.lever]=1; });
+      el.innerHTML='<b style="color:var(--txt);margin-right:2px">Improvement:</b>'+Object.keys(LEV).filter(function(k){return used[k];}).map(function(k){return '<span class="lp" style="background:var(--soft);color:var(--txt)"><i style="background:'+LEV[k][0]+'"></i>'+LEV[k][1]+'</span>';}).join('');}
+    else{el.innerHTML='<span class="lp" style="background:var(--soft);color:var(--mut)">Owners coloured by lane &middot; click an activity block to open its activities</span>';}}
   function fitView(){var vi=document.getElementById('vinner');pm.classList.add('scrollmode');vi.style.transform='none';vi.style.width='auto';}
   var EDIT=false;   // client read-out: the whole edit layer is STRIPPED; this keeps the hooks inert
   var EDITCARD=function(){};
@@ -1096,10 +1170,10 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
   var KM=null,_tt=null;
   function toast(m){var t=document.querySelector('.nr-toast');if(!t){t=document.createElement('div');t.className='nr-toast';document.body.appendChild(t);}
     t.textContent=m;t.classList.add('on');clearTimeout(_tt);_tt=setTimeout(function(){t.classList.remove('on');},3200);}
-  function openTitle(){ if(!ON) return;
+  /* two lines at most (rigor-and-scoring.md 6): a live count under the action-title field */ var KM_MAX=150; function kmCount(){ var ta=document.getElementById('f_km'), c=document.getElementById('km_count'); if(!ta||!c) return; var n=ta.value.replace(/\*\*/g,'').replace(/<[^>]+>/g,'').trim().length, over=n>KM_MAX; c.style.cssText='display:flex;justify-content:space-between;gap:10px;margin:6px 0 2px;font-size:12px;font-weight:600;line-height:1.35;color:'+(over?'var(--rag-red-text,#B3261E)':'var(--mut,#5B6B82)'); c.innerHTML='<span>'+(over?'Runs past two lines on the slide. Keep the conclusion, cut the explanation.':'Fits on two lines.')+'</span><span style="white-space:nowrap">'+n+' / '+KM_MAX+'</span>'; } document.addEventListener('input',function(e){ if(e.target&&e.target.id==='f_km') kmCount(); },true); new MutationObserver(function(){ var c=document.getElementById('km_count'); if(c&&!c.firstChild) kmCount(); }).observe(document.documentElement,{childList:true,subtree:true}); function openTitle(){ if(!ON) return;
     panelShell({cls:'',label:'Narrative'},'Action title','the conclusion, not the topic',
-      '<div class="f"><label>Action title</label><textarea id="f_km">'+esc(DATA.keyMessage||'')+'</textarea><button class="kmhl" id="km_hl" title="Wrap the selected words in **\u2026** so they render green"><span class="swch"></span>Highlight selection</button></div>'+
-      '<div class="f"><label>Preview \u2014 exactly as it renders</label><div class="prev" id="km_prev"></div></div><div class="kmhints"><b>Formatting</b><span class="kchip">**42 FTE**</span> &rarr; <span style="color:var(--green);font-weight:700">42 FTE</span> \u2014 green highlight for the load-bearing numbers and words.<br>Everything else renders <span style="color:var(--navy);font-weight:700">bold navy</span> automatically \u2014 no HTML needed (tags are not interpreted).<br><b style="margin-top:7px">Good title checklist</b>The conclusion, not the topic \u00b7 \u22652 numbers \u00b7 one structural implication \u00b7 no hedging.</div>',
+      '<div class="f"><label>Action title</label><textarea id="f_km">'+esc(DATA.keyMessage||'')+'</textarea><div id="km_count"></div><button class="kmhl" id="km_hl" title="Wrap the selected words in **\u2026** so they render green"><span class="swch"></span>Highlight selection</button></div>'+
+      '<div class="f"><label>Preview \u2014 exactly as it renders</label><div class="prev" id="km_prev"></div></div><div class="kmhints"><b>Formatting</b><span class="kchip">**42 FTE**</span> &rarr; <span style="color:var(--green);font-weight:700">42 FTE</span> \u2014 green highlight for the load-bearing numbers and words.<br>Everything else renders <span style="color:var(--navy);font-weight:700">bold navy</span> automatically \u2014 no HTML needed (tags are not interpreted).<br><b style="margin-top:7px">Good title checklist</b>The conclusion, not the topic \u00b7 \u22652 numbers \u00b7 one structural implication \u00b7 no hedging \u00b7 two lines at most.</div>',
       '<span style="flex:1"></span><button class="wbtn" id="km_c">Cancel</button><button class="wbtn pri" id="km_ok">Apply</button>');
     var kmt=edp.querySelector('#f_km'),kmp=edp.querySelector('#km_prev');
     function prev(){kmp.innerHTML=hl(kmt.value||'');}
@@ -1133,12 +1207,12 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
         (ON?'&#128275; Lock editing':'&#128274; Unlock to edit')+'</button>'+
       (ON
         ? '<ul>'+
-            '<li><b>Drag</b> a task to any cell to move it; <b>drag</b> a lane or phase header to reorder.</li>'+
-            '<li><b>+</b> in a cell adds a step; <b>click</b> a task to edit it or quantify a pain.</li>'+
+            '<li><b>Drag</b> an activity to any cell to move it; <b>drag</b> a lane or key-process header to reorder.</li>'+
+            '<li><b>+</b> in a cell adds an activity; <b>click</b> one to edit it or quantify a pain.</li>'+
           '</ul>'+
           '<p>Your edits collect here. Hit <b>Export</b> and hand the file to Claude (or run '+
           '<code>apply_delta.py</code>) &mdash; it validates every change against the baseline before writing.</p>'
-        : '<p>The map is <b>locked</b> so nothing changes by accident. Unlock when you want to move tasks, '+
+        : '<p>The map is <b>locked</b> so nothing changes by accident. Unlock when you want to move activities, '+
           'capture pains, or add activities.</p>')+
       '<p class="fine"><b>This is not the client version.</b> Send <code>process-map.html</code> instead.</p>';
     var lb=document.getElementById('wlock');
@@ -1146,11 +1220,11 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
   }
   function exportDelta(){
     if(!DELTA.length&&KM==null) return;
-    var d={ deltaId:'D-'+new Date().toISOString().slice(0,10)+'-'+(DATA.processId||'map'),
+    var d={ deltaId:'D-'+new Date().toISOString().slice(0,10)+'-'+(DATA.valueChainId||'map'),
             author:'consultant',
             baseline:DATA.baselinePath||null,
             baselineVersion:DATA.baselineVersion||null,   // apply_delta refuses if the baseline moved
-            processId:DATA.processId||null,
+            valueChainId:DATA.valueChainId||null,
             source:{kind:'process-map artifact', ref:(DATA.teamName||'')+' · '+new Date().toISOString().slice(0,10)},
             proposals:DELTA, challenges:[] };
     if(KM!=null)d.keyMessage=KM;
@@ -1163,14 +1237,14 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
   }
 
   /* ---- local view updates. A PREVIEW - the authoritative projection is redone on apply. ---- */
-  function taskById(id){ return (DATA.hl.tasks||[]).filter(function(t){return t.id===id;})[0]; }
+  function taskById(id){ return (DATA.hl.activities||[]).filter(function(t){return t.id===id;})[0]; }
 
-  // A task belongs to an ACTIVITY, and the activity is what sits in a phase. So "move a task to
+  // An activity belongs to an ACTIVITY BLOCK, and the block is what sits in a key process. So "move it to
   // another phase" really means "re-home it under an activity that lives there". There is no such
-  // thing as moving a task to a bare phase - we must know which activity receives it, and only the
+  // a bare key process is not enough - we must know which block receives it, and only the
   // consultant can say. Hence the picker when the phase has more than one candidate.
   function actsInPhase(phaseName, laneName){
-    var all=(DATA.hl.activities||[]).filter(function(a){return a.phase===phaseName;});
+    var all=(DATA.hl.activityBlocks||[]).filter(function(a){return a.phase===phaseName;});
     var mine=all.filter(function(a){return (a.lanes||[]).indexOf(laneName)>=0;});
     return {mine:mine, all:all};
   }
@@ -1197,13 +1271,13 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
     if((DATA.hl.lanes||[]).indexOf(lane)<0) DATA.hl.lanes.push(lane);  // a brand-new lane
     var ch={};
     if(t.lane!==lane){ t.lane=lane; ch.actorName=lane; }
-    if(act && act.activityId!==t.activityId){
-      t.activityId=act.activityId; t.activity=act.name; t.stage=act.phase;
-      ch.activityId=act.activityId;      // an EXISTING id, straight from the baseline - never minted here
+    if(act && act.blockId!==t.blockId){
+      t.blockId=act.blockId; t.activity=act.name; t.stage=act.phase;
+      ch.blockId=act.blockId;      // an EXISTING id, straight from the baseline - never minted here
     }
     if(!Object.keys(ch).length) return;
     // The FTE transfer between allocations is done by apply_delta, in Python, where the baseline is.
-    pushOp({op:'update', coll:'tasks', id:t.id, changes:ch});
+    pushOp({op:'update', coll:'activities', id:t.id, changes:ch});
     reboot();
   }
 
@@ -1211,10 +1285,10 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
     var w=document.getElementById('apick'); if(!w) return;
     var h='<div class="apk-h">'+(t.__newTask?'Add a step to':'Move <b>'+esc(t.name)+'</b> to')+
           ' <b>'+esc(phase)+'</b></div>'+
-          '<div class="apk-s">Which activity does it belong to? A task has no phase of its own — '+
+          '<div class="apk-s">Which activity block does it belong to? An activity has no key process of its own — '+
           'it lives inside an activity, and the activity is what sits in a phase.</div>';
     function row(a,own){
-      return '<button class="apk-r" data-act="'+esc(a.activityId)+'">'+
+      return '<button class="apk-r" data-act="'+esc(a.blockId)+'">'+
              '<span class="apk-n">'+esc(a.name)+'</span>'+
              '<span class="apk-m">'+(own?'already done by '+esc(lane):'<i>'+esc(lane)+' joins as a participant</i>')+'</span></button>';
     }
@@ -1226,7 +1300,7 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
     w.innerHTML=h; w.classList.add('on');
     w.querySelectorAll('.apk-r').forEach(function(b){
       b.onclick=function(){
-        var a=(DATA.hl.activities||[]).filter(function(x){return x.activityId===b.getAttribute('data-act');})[0];
+        var a=(DATA.hl.activityBlocks||[]).filter(function(x){return x.blockId===b.getAttribute('data-act');})[0];
         w.classList.remove('on');
         if(!a) return;
         if(t.__newTask) newTaskPanel(a, lane);      // the picker also homes a NEW step
@@ -1241,12 +1315,12 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
     if('system' in ch) t.system=ch.system;
     if('fte' in ch) t.fte = (ch.fte===''||ch.fte==null)?null:+ch.fte;
     if('description' in ch) t.description=ch.description;
-    pushOp({op:'update', coll:'tasks', id:id, changes:ch});
+    pushOp({op:'update', coll:'activities', id:id, changes:ch});
     reboot();
   }
   function addPain(id, p){
     var t=taskById(id); if(!t) return;
-    var rec={taskId:id, theme:p.theme, description:p.description||null,
+    var rec={activityId:id, theme:p.theme, description:p.description||null,
              magnitude:p.magnitude||null, dimension:p.dimension||null};
     applySrc(rec, p.source);                       // sourceId (existing) OR label/person/role (new, minted in Python)
     t.pains=(t.pains||[]).concat([{theme:p.theme, description:p.description||null, magnitude:p.magnitude||null,
@@ -1290,7 +1364,7 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
       '<div class="hint">It joins <b>'+esc(act.name)+'</b>, in '+esc(act.phase)+'. An FTE here must come out of that '+
       'team\'s allocation, so leave it blank unless you know it.</div></div>';
     panelShell({label:'New step',cls:'new'}, 'Add a step',
-      'in <span class="id">'+esc(act.activityId)+'</span> '+esc(act.name),
+      'in <span class="id">'+esc(act.blockId)+'</span> '+esc(act.name),
       body,
       '<span class="sp"></span><button class="wbtn" id="n_x">Cancel</button>'+
       '<button class="wbtn pri" id="n_ok">Add step</button>');
@@ -1300,10 +1374,10 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
       if(!nm){ wmsg('A step needs a name.'); return; }
       var lane=edp.querySelector('#n_lane').value;
       var fte=edp.querySelector('#n_fte').value;
-      DATA.hl.tasks.push({id:null, name:nm, lane:lane, stage:act.phase, activity:act.name,
-                          activityId:act.activityId, system:edp.querySelector('#n_sys').value.trim(),
-                          description:edp.querySelector('#n_desc').value, fte:fte===''?null:+fte, pains:[], nature:null});
-      pushOp({op:'add', coll:'tasks', record:{name:nm, activityId:act.activityId, actorName:lane,
+      DATA.hl.activities.push({id:null, name:nm, lane:lane, stage:act.phase, activity:act.name,
+                          blockId:act.blockId, system:edp.querySelector('#n_sys').value.trim(),
+                          description:edp.querySelector('#n_desc').value, fte:fte===''?null:+fte, pains:[]});
+      pushOp({op:'add', coll:'activities', record:{name:nm, blockId:act.blockId, actorName:lane,
               description:edp.querySelector('#n_desc').value||null,
               system:edp.querySelector('#n_sys').value.trim()||null,
               frequency:edp.querySelector('#n_freq').value||null,
@@ -1314,15 +1388,13 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
 
   function addActivity(phaseName){
     if(!edp) return;
-    var ph=(DATA.phases||[]).filter(function(x){return x.name===phaseName;})[0];
+    var ph=(DATA.processes||[]).filter(function(x){return x.name===phaseName;})[0];
     var all=(DATA.actors||[]).length ? DATA.actors : (DATA.hl.lanes||[]).map(function(l){return {name:l};});
     var chk=all.map(function(a){
       return '<label class="chk"><input type="checkbox" value="'+esc(a.name)+'"> '+esc(a.name)+
         (a.kind==='external'?' <i>— external, no FTE</i>':'')+'</label>';}).join('');
     var body='<div class="grp"><h5>The activity</h5>'+
         fld('Name','a2_name','','e.g. Proof & price the folder')+
-        sel('Improvement nature','a2_nat',V.natures,null,'— not yet assessed —',
-            'What we intend to DO about it — not what the work is like.')+
         sel('How often','a2_freq',V.frequencies,null,'— pick a frequency —')+
       '</div>'+
       '<div class="grp"><h5>Who does it?</h5><div class="chks">'+chk+'</div>'+
@@ -1339,11 +1411,11 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
       if(!nm){ wmsg('An activity needs a name.'); return; }
       var who=Array.prototype.slice.call(edp.querySelectorAll('.chks input:checked')).map(function(x){return x.value;});
       if(!who.length){ wmsg('Who does it? An activity with no participant cannot hold work.'); return; }
-      pushOp({op:'add', coll:'activities', record:{name:nm, phaseId:ph&&ph.id, processId:DATA.processId,
-              actorNames:who, nature:edp.querySelector('#a2_nat').value||null,
+      pushOp({op:'add', coll:'activityBlocks', record:{name:nm, processId:ph&&ph.id, valueChainId:DATA.valueChainId,
+              actorNames:who,
               frequency:edp.querySelector('#a2_freq').value||null}});
-      DATA.hl.activities.push({name:nm, activityId:null, phase:phaseName, lanes:who,
-                               taskCount:0, fte:null, pain:0, tasks:[]});
+      DATA.hl.activityBlocks.push({name:nm, blockId:null, phase:phaseName, lanes:who,
+                               activityCount:0, fte:null, pain:0, activities:[]});
       closeEd(); reboot();
       wmsg('Activity added. It gets its real ID when you apply the delta.');
     };
@@ -1351,7 +1423,7 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
 
   function addPhase(){
     if(!edp) return;
-    var P=DATA.hl.phases||[];
+    var P=DATA.hl.processes||[];
     var posOpts=P.map(function(nm,i){ return '<option value="'+(i+1)+'">before '+esc(nm)+'</option>'; }).join('')
               + '<option value="'+(P.length+1)+'" selected>at the end</option>';
     panelShell({label:'New phase',cls:'new'}, 'Add a phase',
@@ -1368,8 +1440,8 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
       var nm=edp.querySelector('#f_name').value.trim();
       if(!nm){ wmsg('A phase needs a name.'); return; }
       var at=+edp.querySelector('#f_pos').value;
-      pushOp({op:'add', coll:'phases', record:{name:nm, order:at, processId:DATA.processId}});
-      DATA.hl.phases.splice(at-1, 0, nm);
+      pushOp({op:'add', coll:'processes', record:{name:nm, order:at, valueChainId:DATA.valueChainId}});
+      DATA.hl.processes.splice(at-1, 0, nm);
       closeEd(); reboot();
       wmsg('Phase added. It is empty until you put an activity in it.');
     };
@@ -1377,7 +1449,7 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
 
   function addOpportunity(act){
     if(!edp) return;
-    var painOpts=(DATA.hl.tasks||[]).filter(function(t){return t.activityId===(act&&act.activityId);})
+    var painOpts=(DATA.hl.activities||[]).filter(function(t){return t.blockId===(act&&act.blockId);})
       .reduce(function(acc,t){ return acc.concat((t.pains||[]).map(function(p){
         return '<label class="chk"><input type="checkbox" value="'+esc(p.id||'')+'"> '+esc(p.theme)+'</label>';})); },[]).join('');
     var body='<div class="grp"><h5>The opportunity</h5>'+
@@ -1393,7 +1465,7 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
       (painOpts?'<div class="grp"><h5>Which pains does it address?</h5><div class="chks">'+painOpts+'</div>'+
         '<div class="hint">An opportunity that addresses no pain is a solution looking for a problem — the gate warns about it.</div></div>':'');
     panelShell({label:'New opportunity',cls:'opp'}, 'Add an opportunity',
-      act?('on <span class="id">'+esc(act.activityId||'')+'</span> '+esc(act.name)):'team-wide',
+      act?('on <span class="id">'+esc(act.blockId||'')+'</span> '+esc(act.name)):'team-wide',
       body,
       '<span class="sp"></span><button class="wbtn" id="o_x">Cancel</button>'+
       '<button class="wbtn pri" id="o_ok">Add opportunity</button>');
@@ -1405,13 +1477,64 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
       var fte=edp.querySelector('#o_fte').value;
       var addressed=Array.prototype.slice.call(edp.querySelectorAll('.chks input:checked')).map(function(x){return x.value;});
       pushOp({op:'add', coll:'opportunities', record:{
-        scope: act?'activity':'team', activityId: act?act.activityId:null,
-        note:note, lever:lever, fteImpact: fte===''?null:+fte,
+        scope: act?'activityBlock':'team', blockId: act?act.blockId:null,
+        title:note, lever:lever,
+        sizing: fte===''?null:{value:+fte, unit:'fte', method:null},
         horizon: edp.querySelector('#o_hor').value||null,
         readiness: edp.querySelector('#o_ready').value||null,
-        addresses: addressed}});
+        status:'identified',
+        painIds: addressed}});
+      /* show it straight away - the tab and the block panel read OPPS, not the delta */
+      OPPS.push({id:'(new)', blockId: act?act.blockId:null, blockName: act?act.name:'',
+                 lever:lever, title:note, sizingValue: fte===''?null:+fte, sizingUnit:'fte',
+                 painIds: addressed, pains:[], owner:''});
       closeEd();
       wmsg('Opportunity captured. It reaches the value waterfall once you apply the delta.');
+    };
+  }
+
+  function oppById(id){ for(var i=0;i<OPPS.length;i++){ if(String(OPPS[i].id)===String(id)) return OPPS[i]; } return null; }
+
+  /* An opportunity opened from the block panel or the Opportunities tab. Same record, one editor. */
+  function openOpp(o){
+    if(!ON||!edp) return;
+    var pains=(DATA.hl.activities||[]).filter(function(t){return t.blockId===o.blockId;})
+      .reduce(function(acc,t){ return acc.concat((t.pains||[]).map(function(p){
+        var on=(o.painIds||[]).indexOf(p.id)>=0;
+        return '<label class="chk"><input type="checkbox" value="'+esc(p.id||'')+'"'+(on?' checked':'')+'> '+esc(p.theme)+'</label>';})); },[]).join('');
+    var body='<div class="grp"><h5>The opportunity</h5>'+
+        fld('What we would do','oe_note',o.title||o.note||'')+
+        sel('Lever','oe_lever',V.levers,o.lever,'— pick a lever —')+
+        '<div class="frow">'+
+          '<div class="f"><label>FTE impact</label><input id="oe_fte" type="number" step="0.1" value="'+
+            (typeof o.sizingValue==='number'?o.sizingValue:'')+'"></div>'+
+          '<div class="f"><label>Horizon</label><select id="oe_hor">'+opts(V.horizons,o.horizon||null,'— when? —')+'</select></div>'+
+        '</div>'+
+      '</div>'+
+      (pains?'<div class="grp"><h5>Which pains does it address?</h5><div class="chks">'+pains+'</div></div>':'')+
+      (o.needsRecapture?'<div class="hint">This one was migrated from the block\'s old improvement tag. It '+
+        'describes the whole block, so narrow it to the work it really applies to and it stops being flagged.</div>':'');
+    panelShell({label:'Opportunity',cls:'opp'}, o.title||o.note||'(untitled)',
+      '<span class="id">'+esc(o.id||'')+'</span> on '+esc(o.blockName||''),
+      body,
+      '<span class="sp"></span><button class="wbtn" id="oe_x">Cancel</button>'+
+      '<button class="wbtn pri" id="oe_ok">Apply</button>');
+    edp.querySelector('#oe_x').onclick=closeEd;
+    edp.querySelector('#oe_ok').onclick=function(){
+      var note=edp.querySelector('#oe_note').value.trim();
+      var lever=edp.querySelector('#oe_lever').value;
+      if(!note||!lever){ wmsg('An opportunity needs a description and a lever.'); return; }
+      var fte=edp.querySelector('#oe_fte').value;
+      var addressed=Array.prototype.slice.call(edp.querySelectorAll('.chks input:checked')).map(function(x){return x.value;});
+      o.title=note; o.lever=lever; o.painIds=addressed;
+      o.sizingValue = fte===''?null:+fte;
+      o.needsRecapture=false;
+      pushOp({op:'update', coll:'opportunities', id:o.id, changes:{
+        title:note, lever:lever, painIds:addressed,
+        sizing: fte===''?null:{value:+fte, unit:'fte', method:null},
+        horizon: edp.querySelector('#oe_hor').value||null,
+        needsRecapture:false}});
+      closeEd(); reboot();
     };
   }
 
@@ -1419,15 +1542,15 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
   function openAddPain(){
     if(!edp) return;
     var byPhase={};
-    (DATA.hl.tasks||[]).forEach(function(t){ (byPhase[t.stage]=byPhase[t.stage]||[]).push(t); });
-    var groups=(DATA.hl.phases||[]).map(function(ph){
+    (DATA.hl.activities||[]).forEach(function(t){ (byPhase[t.stage]=byPhase[t.stage]||[]).push(t); });
+    var groups=(DATA.hl.processes||[]).map(function(ph){
       var ts=byPhase[ph]||[]; if(!ts.length) return '';
       return '<optgroup label="'+esc(ph)+'">'+ts.map(function(t){
         return '<option value="'+esc(t.id)+'">'+esc(t.activity)+' &middot; '+esc(t.name)+' ('+esc(t.lane)+')</option>';
       }).join('')+'</optgroup>';
     }).join('');
     var body='<div class="grp"><h5>Which step is this pain about?</h5>'+
-        '<div class="f"><label>Step</label><select id="ap_task">'+groups+'</select></div>'+
+        '<div class="f"><label>Activity</label><select id="ap_task">'+groups+'</select></div>'+
         '<div class="hint">A pain hangs off a step, so it reaches the right activity and lens.</div></div>'+
       '<div class="grp"><h5>What hurts</h5>'+fld('Short title','ap_theme','','e.g. Manual re-keying between SAP and Excel')+
         fldT('Description','ap_desc','','The detail — what actually happens and why it hurts')+'</div>'+
@@ -1456,14 +1579,14 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
 
   function openAddOpp(){
     if(!edp) return;
-    var actOpts=(DATA.hl.activities||[]).map(function(a){
-      return '<option value="'+esc(a.activityId||'')+'">'+esc(a.name)+' &middot; '+esc(a.phase)+'</option>';}).join('');
+    var actOpts=(DATA.hl.activityBlocks||[]).map(function(a){
+      return '<option value="'+esc(a.blockId||'')+'">'+esc(a.name)+' &middot; '+esc(a.phase)+'</option>';}).join('');
     panelShell({label:'New opportunity',cls:'opp'}, 'Add an opportunity', 'what is it about?',
       '<div class="grp"><h5>This opportunity is about</h5>'+
         '<div class="f"><label>Scope</label><select id="ao_scope">'+
           '<option value="team">The team as a whole (lean / change / org / data / journey)</option>'+
           '<option value="activity">One activity (automate / AI)</option></select></div>'+
-        '<div class="f hidden" id="ao_actwrap"><label>Activity</label><select id="ao_act">'+actOpts+'</select></div>'+
+        '<div class="f hidden" id="ao_actwrap"><label>Activity block</label><select id="ao_act">'+actOpts+'</select></div>'+
         '<div class="hint">Activity-scoped opportunities attach to the work; team-wide ones to the team.</div></div>',
       '<span class="sp"></span><button class="wbtn" id="ao_x">Cancel</button>'+
       '<button class="wbtn pri" id="ao_ok">Continue</button>');
@@ -1473,7 +1596,7 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
     edp.querySelector('#ao_ok').onclick=function(){
       if(sc.value==='activity'){
         var aid=edp.querySelector('#ao_act').value;
-        var a=(DATA.hl.activities||[]).filter(function(x){return x.activityId===aid;})[0];
+        var a=(DATA.hl.activityBlocks||[]).filter(function(x){return x.blockId===aid;})[0];
         addOpportunity(a||null);
       } else { addOpportunity(null); }
     };
@@ -1481,21 +1604,20 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
 
   function editActivity(a,ch){
     a.name=ch.name;
-    (a.tasks||[]).forEach(function(t){ t.nature=ch.nature; });
-    (DATA.hl.tasks||[]).forEach(function(t){ if(t.activityId===a.activityId){ t.activity=ch.name; t.nature=ch.nature; } });
-    pushOp({op:'update', coll:'activities', id:a.activityId, changes:{name:ch.name, nature:ch.nature}});
+    (DATA.hl.activities||[]).forEach(function(t){ if(t.blockId===a.blockId) t.activity=ch.name; });
+    pushOp({op:'update', coll:'activityBlocks', id:a.blockId, changes:{name:ch.name}});
     reboot();
   }
   function reorderPhase(from,to){
-    var P=DATA.hl.phases||[]; if(from===to||from<0||to<0||from>=P.length||to>=P.length) return;
+    var P=DATA.hl.processes||[]; if(from===to||from<0||to<0||from>=P.length||to>=P.length) return;
     var nm=P.splice(from,1)[0]; P.splice(to,0,nm);
-    // the phase list in DATA.phases carries the IDs the baseline needs
-    (DATA.phases||[]).sort(function(x,y){ return P.indexOf(x.name)-P.indexOf(y.name); });
-    (DATA.phases||[]).forEach(function(ph,i){
+    // the phase list in DATA.processes carries the IDs the baseline needs
+    (DATA.processes||[]).sort(function(x,y){ return P.indexOf(x.name)-P.indexOf(y.name); });
+    (DATA.processes||[]).forEach(function(ph,i){
       var o=i+1;
-      if(ph.order!==o){ ph.order=o; pushOp({op:'update', coll:'phases', id:ph.id, changes:{order:o}}); }
+      if(ph.order!==o){ ph.order=o; pushOp({op:'update', coll:'processes', id:ph.id, changes:{order:o}}); }
     });
-    (DATA.hl.activities||[]).sort(function(x,y){ return P.indexOf(x.phase)-P.indexOf(y.phase); });
+    (DATA.hl.activityBlocks||[]).sort(function(x,y){ return P.indexOf(x.phase)-P.indexOf(y.phase); });
     reboot();
   }
   function reorderLane(from,to){
@@ -1508,19 +1630,19 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
     reboot();
   }
   function retireTask(id){
-    DATA.hl.tasks=(DATA.hl.tasks||[]).filter(function(t){return t.id!==id;});
-    (DATA.hl.activities||[]).forEach(function(a){
-      a.tasks=(a.tasks||[]).filter(function(t){return t.id!==id;});
-      a.taskCount=a.tasks.length; a.pain=a.tasks.reduce(function(s,t){return s+(t.pains||[]).length;},0);
+    DATA.hl.activities=(DATA.hl.activities||[]).filter(function(t){return t.id!==id;});
+    (DATA.hl.activityBlocks||[]).forEach(function(a){
+      a.activities=(a.activities||[]).filter(function(t){return t.id!==id;});
+      a.activityCount=a.activities.length; a.pain=a.activities.reduce(function(s,t){return s+(t.pains||[]).length;},0);
     });
-    pushOp({op:'update', coll:'tasks', id:id, changes:{retired:true}});
+    pushOp({op:'update', coll:'activities', id:id, changes:{retired:true}});
     reboot();
   }
 
   function reboot(){
-    A=DATA.hl.tasks||[]; ACTS=DATA.hl.activities||[]; HL=DATA.hl;
-    (DATA.hl.activities||[]).forEach(function(a){
-      a.lanes=[]; (a.tasks||[]).forEach(function(t){ if(t.lane&&a.lanes.indexOf(t.lane)<0) a.lanes.push(t.lane); });
+    A=DATA.hl.activities||[]; ACTS=DATA.hl.activityBlocks||[]; HL=DATA.hl;
+    (DATA.hl.activityBlocks||[]).forEach(function(a){
+      a.lanes=[]; (a.activities||[]).forEach(function(t){ if(t.lane&&a.lanes.indexOf(t.lane)<0) a.lanes.push(t.lane); });
     });
     render();
   }
@@ -1530,14 +1652,14 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
   LGRIP=function(){ return '<span class="grip" title="drag up or down to reorder this lane">\u2261</span>'; };
   EDITHINT=function(mode){
     return mode==='phase'
-      ? '<b>Drag</b> a task to any cell (lane \u00d7 phase) &nbsp;&middot;&nbsp; '
+      ? '<b>Drag</b> an activity to any cell (lane \u00d7 key process) &nbsp;&middot;&nbsp; '
       + '<b>drag</b> a lane or phase header to reorder &nbsp;&middot;&nbsp; '
       + '<b>+</b> in a cell adds a step &nbsp;&middot;&nbsp; '
-      + '<b>click</b> a task to edit it or quantify a pain'
-      : 'Full time grid \u2014 switch to <b>By phase</b> to edit';
+      + '<b>click</b> an activity to edit it or quantify a pain'
+      : 'Full time grid \u2014 switch to <b>By key process</b> to edit';
   };
 
-  /* ---- ONE panel for every object: task · activity · pain ---- */
+  /* ---- ONE panel for every object: activity · activity block · pain ---- */
   var edp=document.getElementById('ed');
   function closeEd(){ if(edp) edp.classList.remove('on'); }
   function fld(l,id,v,ph,cls){ return '<div class="f"><label>'+esc(l)+'</label><input id="'+id+'" class="'+(cls||'')+
@@ -1612,10 +1734,10 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
     if(!ON||!t.id||!edp) return;
     var all=(DATA.actors||[]).length ? DATA.actors : (DATA.hl.lanes||[]).map(function(l){return {name:l,inMap:true};});
     var laneOpts=actorOpts(all, t.lane);
-    var phOpts=(DATA.hl.phases||[]).map(function(ph){
+    var phOpts=(DATA.hl.processes||[]).map(function(ph){
       return '<option value="'+esc(ph)+'"'+(ph===t.stage?' selected':'')+'>'+esc(ph)+'</option>';}).join('');
     var sysList=(function(){                     // systems already named in this map, plus free text
-      var seen={}; (DATA.hl.tasks||[]).forEach(function(x){ if(x.system) seen[x.system]=1; });
+      var seen={}; (DATA.hl.activities||[]).forEach(function(x){ if(x.system) seen[x.system]=1; });
       return Object.keys(seen).sort().map(function(k){return {key:k,label:k};});
     })();
     var pains=(t.pains||[]).map(function(p,i){
@@ -1632,7 +1754,7 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
         '<div class="metablock">'+
           '<div class="frow">'+
             '<div class="f"><label>Done by</label><select id="e_lane">'+laneOpts+'</select></div>'+
-            '<div class="f"><label>Phase</label><select id="e_phase">'+phOpts+'</select></div>'+
+            '<div class="f"><label>Key process</label><select id="e_phase">'+phOpts+'</select></div>'+
           '</div>'+
           '<div class="frow">'+
             '<div class="f"><label>System</label><select id="e_sys">'+
@@ -1738,11 +1860,22 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
       closeEd(); };
   }
 
-  /* --- ACTIVITY (from a High-level card or an Opportunities row) --- */
+  /* --- ACTIVITY BLOCK (from a High-level card or an Opportunities row) --- */
   function openAct(a){
     if(!ON||!edp) return;
-    var nat=(a.tasks&&a.tasks[0]&&a.tasks[0].nature)||null;
-    var tl=(a.tasks||[]).map(function(t){
+    /* Option 1: the block LISTS its opportunities. One dropdown could only ever hold one
+       improvement per block, which is the coarseness 2026.14 removed. */
+    var mine=oppsOf(a.blockId);
+    var ol=mine.map(function(o){
+      return '<button class="opprow" data-opp="'+esc(o.id||'')+'">'+
+        levBadge(o.lever)+
+        '<span class="or-t">'+esc(o.title||o.note||'(untitled)')+'</span>'+
+        '<span class="or-m">'+(typeof o.sizingValue==='number'
+            ? rn(o.sizingValue)+' '+esc(o.sizingUnit||'FTE')
+            : 'not sized')+
+          ((o.painIds||[]).length?' &middot; '+(o.painIds||[]).length+' pain':'')+'</span>'+
+        '</button>';}).join('');
+    var tl=(a.activities||[]).map(function(t){
       var pc=(t.pains||[]).length;
       return '<button class="taskcard" data-task="'+esc(t.id)+'">'+
         '<div class="tc-n">'+esc(t.name)+'</div>'+
@@ -1751,13 +1884,16 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
           (pc?'<span class="tc-pain">&middot; '+pc+' pain</span>':'')+'</div></button>';}).join('');
     var body='<div class="grp">'+
       fld('Name','a_name',a.name)+
-      sel('Improvement nature','a_nat',V.natures,nat,'— not assessed —',
-          'Drives the Opportunities tab. FTE is owned by the MAE.')+
-      '<button class="wbtn addtoggle" id="a_opp">&#43; Add an opportunity</button>'+
       '</div>'+
-      '<div class="grp"><h5>Tasks ('+(a.tasks||[]).length+')</h5>'+(tl||'<div class="none">No tasks.</div>')+'</div>';
-    panelShell({label:'Activity',cls:'act'}, a.name,
-      '<span class="id">'+esc(a.activityId||'')+'</span> '+esc(a.phase)+' &middot; '+
+      '<div class="grp"><h5>Improvement &mdash; '+mine.length+' opportunit'+(mine.length===1?'y':'ies')+'</h5>'+
+      (ol||'<div class="none">Nothing proposed here yet.</div>')+
+      '<button class="wbtn addtoggle" id="a_opp">&#43; Add an opportunity</button>'+
+      '<div class="hint">A block can carry more than one &mdash; automate part of it and redesign '+
+      'another part. The swimlane is coloured by the biggest.</div>'+
+      '</div>'+
+      '<div class="grp"><h5>Activities ('+(a.activities||[]).length+')</h5>'+(tl||'<div class="none">No activities.</div>')+'</div>';
+    panelShell({label:'Activity block',cls:'act'}, a.name,
+      '<span class="id">'+esc(a.blockId||'')+'</span> '+esc(a.phase)+' &middot; '+
       (a.fte!=null?a.fte+' FTE':'no FTE')+' &middot; '+(a.pain||0)+' pains',
       body,
       '<span class="sp"></span><button class="wbtn" id="a_x">Cancel</button>'+
@@ -1765,9 +1901,11 @@ const DATA = /* DATA */ {"context": "OPEX QUICKSCAN", "lens": "PROCESS · PROCES
     edp.querySelector('#a_opp').onclick=function(){ addOpportunity(a); };
     edp.querySelector('#a_x').onclick=closeEd;
     edp.querySelector('#a_ok').onclick=function(){
-      editActivity(a,{name:edp.querySelector('#a_name').value.trim(),
-                      nature:edp.querySelector('#a_nat').value||null});
+      editActivity(a,{name:edp.querySelector('#a_name').value.trim()});
       closeEd(); };
+    Array.prototype.forEach.call(edp.querySelectorAll('[data-opp]'),function(el){
+      el.onclick=function(){ var o=oppById(el.getAttribute('data-opp')); if(o) openOpp(o); };
+    });
     Array.prototype.forEach.call(edp.querySelectorAll('[data-task]'),function(el){
       el.onclick=function(){ var t=taskById(el.getAttribute('data-task')); if(t) openEd(t); };
     });
