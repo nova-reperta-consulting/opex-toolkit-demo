@@ -2167,7 +2167,7 @@ const M = {
     {k:'org', label:'Organisation', short:'Org',       col:'#2A8C82'}
   ],
   offers:{
-    proc:['lma','process-map'],
+    proc:['lma','process-map','waste-observations'],
     cust:['lma','service-blueprint','nps-analysis','kano-analysis'],
     mgmt:['lma','wilo-analysis','performance-wheel','skills-wheel','kpi-cascade'],
     data:['lma','data-maturity'],
@@ -2177,6 +2177,7 @@ const M = {
   inst:{
     'lma':              {label:'Maturity scan (LMA)', type:'rated-wheel', cat:'maturity-engine', scoreSource:true, skill:'lma-builder', status:'in-build', trig:'run the LMA for {team}', note:'Scores the dimension. Every other analysis is evidence that makes that score defensible.'},
     'process-map':      {label:'Process map', type:'node-map', cat:'dimension', skill:'process-map-builder', status:'live', trig:'run the process map for {team}', note:'Walks the flow end to end: who does what, how much effort each step takes, and where it hurts.'},
+    'waste-observations': {label:'Waste observations', type:'matrix', cat:'dimension', skill:'waste-observations-builder', status:'live', trig:'run the waste observation for {team}', note:'Watches one activity end to end and splits the time it takes into value adding, value enabling and waste, with the waste tagged by what went wrong and by why. The bottom-up counterpart to the OTE waterfall.'},
     'nps-analysis':     {label:'Customer satisfaction', type:'matrix', cat:'dimension', skill:'voc-nps-analyser', status:'envisioned', trig:'run the NPS analysis for {team}', note:'What customers say about this team, and whether anyone acts on it.'},
     'service-blueprint': {label:'Service blueprint', type:'node-map', cat:'dimension', skill:'service-blueprint-builder', status:'live', trig:'run the service blueprint for {team}', note:'Maps one service the way the customer meets it: what they do and see above the line of visibility, what the team does below it, and the systems that carry it.'},
     'kano-analysis':    {label:'What customers actually value', type:'matrix', cat:'dimension', skill:'kano-analyser', status:'envisioned', trig:'run the KANO analysis for {team}', note:'Sorts what the team delivers into what customers expect, what delights them, and what nobody asked for.'},
@@ -2193,7 +2194,7 @@ const M = {
     'mae':              {label:'Team activity map (MAE)', type:'node-map', cat:'baseline', skill:'mae-builder', status:'live', trig:'run the MAE for {team}', note:'What the team actually spends its days on, and how much effort each activity takes.'},
     'org-baseline':     {label:'Org structure & FTE', type:'org-tree', cat:'baseline', skill:'org-baseline-builder', status:'live', trig:'run the org baseline for {team}', note:'The real org chart and the real headcount — replaces the FTE you estimate here.'},
     'opex-advisor':     {label:'OpEx expert advisor', type:'freeform', cat:'cross-cutting', skill:'opex-advisor', status:'live', trig:'review the engagement as the OpEx advisor', note:'A second pair of eyes before anything reaches the client.'},
-    'hypothesis-tree':  {label:'Hypothesis tree', type:'freeform', cat:'cross-cutting', skill:'hypothesis-tree-builder', status:'in-build', trig:'build the hypothesis tree', note:'Splits the client question into branches that do not overlap and together cover it, turns each branch into a hypothesis, names the analysis that would settle it, and tracks every one to confirmed or rejected.'},
+    'hypothesis-tree':  {label:'Hypothesis tree', type:'freeform', cat:'cross-cutting', skill:'hypothesis-tree-builder', status:'live', trig:'build the hypothesis tree', note:'Splits the client question into branches that do not overlap and together cover it, turns each branch into a hypothesis, names the analysis that would settle it, and tracks every one to confirmed or rejected.'},
     'exec-sum':         {label:'Executive summary', type:'freeform', cat:'cross-cutting', skill:'exec-sum-synthesiser', status:'live', trig:'build the executive summary', note:''}
   },
   /* Three depths a team can run at. The first two mirror data/methodology.json.
@@ -2205,13 +2206,13 @@ const M = {
       activate:{'*':['lma']}, baseline:[], registers:[], ai:[]},
     'full-diagnostic':{label:'Diagnostic', short:'Diagnostic', tone:'f',
       blurb:'Every analysis the lens offers: the activity map, the process map, the wheels and the registers. Evidence you can put a number on and defend.',
-      activate:{'*':['lma'],proc:['lma','process-map'],cust:['lma','nps-analysis','kano-analysis'],
+      activate:{'*':['lma'],proc:['lma','process-map','waste-observations'],cust:['lma','nps-analysis','kano-analysis'],
         mgmt:['lma','wilo-analysis','performance-wheel','skills-wheel'],data:['lma','data-maturity'],mind:['lma','team-barometer']},
       baseline:['ote-waterfall','mae','org-baseline'],
       registers:['inefficiency-register','opportunity-register'], ai:[]},
     'redesign':{label:'Redesign', short:'Redesign', tone:'a',
       blurb:'Everything in the diagnostic, and then the design work: how this team’s work should run afterwards. Adds the verdict on every opportunity, the blueprint of the new way of working, and the target operating model.',
-      activate:{'*':['lma'],proc:['lma','process-map'],cust:['lma','nps-analysis','kano-analysis'],
+      activate:{'*':['lma'],proc:['lma','process-map','waste-observations'],cust:['lma','nps-analysis','kano-analysis'],
         mgmt:['lma','wilo-analysis','performance-wheel','skills-wheel'],data:['lma','data-maturity'],mind:['lma','team-barometer']},
       baseline:['ote-waterfall','mae','org-baseline'],
       registers:['inefficiency-register','opportunity-register'],
@@ -2343,7 +2344,7 @@ const dimOf = k => M.dims.find(d=>d.k===k) || {label:k,short:k,col:'#888'};
    files. */
 /* The maturity assessment on its own IS the quickscan. The moment a lens carries
    anything else — a map, a register, a wheel — it is a diagnostic. */
-const QUICK_INST=['lma','lens-questions','maturity-wheel'];
+const QUICK_INST=['lma'];   /* 'scan only' is the maturity scan by itself */
 function depthOf(instr,lens){
   if(!instr||!instr.length) return 0;
   return instr.every(i=>QUICK_INST.includes(i)) ? 1 : 2;
@@ -4738,33 +4739,20 @@ let roadGroup=(()=>{ try{ return localStorage.getItem('nr_roadgroup')||'div'; }c
 function setRoadGroup(m){ if(m===roadGroup) return; roadGroup=m; try{ localStorage.setItem('nr_roadgroup',m); }catch(e){} renderRoadmap(); }
 
 /* ===================== ANALYSIS CONFIGURATOR ===================== */
+/* The configurator reads the same registry as the rest of the page. It used to keep a
+   second, hand-written copy here, written against the 2026.1 vocabulary (lens-questions,
+   maturity-wheel) that the maturity scan replaced — so the two halves of this file
+   disagreed about what an analysis is even called. Derived from M now: one registry,
+   one set of names. An engagement file that carries its own methodology still wins. */
 const METHODOLOGY = window.__QS_DATA__?.methodology || {
-  label:'NR Inside-Out Quickscan', version:'2026.1',
-  instruments:{
-    'lens-questions':{label:'Light lens questionnaire', type:'question-set', scoreSource:true},
-    'maturity-wheel':{label:'Dimension maturity wheel', type:'rated-wheel', scoreSource:true},
-    'skills-wheel':{label:'Team skills wheel', type:'rated-wheel', scoreSource:true},
-    'process-map':{label:'Activity & handoff map', type:'node-map', scoreSource:false},
-    'inefficiency-register':{label:'Quantified pain points', type:'matrix', scoreSource:false},
-    'opportunity-register':{label:'Opportunity & lever register', type:'matrix', scoreSource:false}
-  },
-  lenses:[
-    {key:'proc', offers:['lens-questions','maturity-wheel','process-map','inefficiency-register','opportunity-register']},
-    {key:'cust', offers:['lens-questions','maturity-wheel']},
-    {key:'mgmt', offers:['lens-questions','maturity-wheel']},
-    {key:'data', offers:['lens-questions','maturity-wheel']},
-    {key:'mind', offers:['lens-questions','maturity-wheel']},
-    {key:'org',  offers:['lens-questions','maturity-wheel','skills-wheel']}
-  ],
-  approaches:{
-    'light-quickscan':{label:'Light quickscan (interview-led)', activate:{'*':['lens-questions']}},
-    'full-diagnostic':{label:'Full inside-out diagnostic', activate:{'*':['maturity-wheel'], proc:['maturity-wheel','process-map','inefficiency-register','opportunity-register']}}
-  }
+  label:'NR Inside-Out Quickscan', version:M.version,
+  instruments:Object.fromEntries(Object.entries(M.inst).map(([k,v])=>[k,
+    {label:v.label, type:v.type, scoreSource:!!v.scoreSource, producer:{status:v.status||''}}])),
+  lenses:M.dims.map(d=>({key:d.k, offers:(M.offers[d.k]||[]).slice()})),
+  approaches:Object.fromEntries(Object.entries(M.approaches).map(([k,v])=>[k,
+    {label:v.label, activate:v.activate}]))
 };
-const APPROACH_BLURB={
-  'light-quickscan':'Interview-led. One light questionnaire per lens — fast, directional scores at lower confidence. The quickscan baseline.',
-  'full-diagnostic':'Readiness scored on every lens, plus process map, pain-point and opportunity registers on Process. Evidence-backed, higher confidence.'
-};
+const APPROACH_BLURB=Object.fromEntries(Object.entries(M.approaches).map(([k,v])=>[k,v.blurb||'']));
 // ===== Analyses inventory — artifacts each producer skill emits per lens =====
 const ARTIFACTS=(window.__QS_DATA__&&window.__QS_DATA__.artifacts)||{counts:{total:0,produced:0,planned:0},artifacts:[]};
 function teamArtifacts(tid){ return (ARTIFACTS.artifacts||[]).filter(a=>a.team===tid); }
@@ -4901,7 +4889,7 @@ function effInstruments(tid,lk){
 const isOverridden = (tid,lk) => !!(CFG_OVERRIDES[tid]&&CFG_OVERRIDES[tid][lk]);
 /* The maturity assessment on its own IS the quickscan. Add a map, a register or a
    second wheel and the lens is a diagnostic. Nothing sits in between. */
-const QUICK_INST=['lma','lens-questions','maturity-wheel'];
+const QUICK_INST=['lma'];   /* 'scan only' is the maturity scan by itself */
 function depthOf(instr){
   if(!instr||!instr.length) return {lvl:0};
   return {lvl: instr.every(i=>QUICK_INST.includes(i)) ? 1 : 2};
