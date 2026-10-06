@@ -1,0 +1,1421 @@
+<!doctype html>
+<!-- ============================================================================
+  WASTE OBSERVATIONS  |  artifact template, derived from
+  diagnostic-skill-builder/templates/artifact-shell-editable.html
+
+  TWO FILES: scripts/render_waste.py strips the editing fences to build the client
+  waste-observations.html (the file you SEND, with the editing layer removed) and keeps
+  them for waste-observations.WORKING.html (editable, never sent).
+
+  Only the /* DATA */ block changes per team.
+============================================================================ -->
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Waste Observations</title>
+<style>
+/* Type scale — one place, not case by case. Every size below 12px is a token; the
+   whole small end lifts on a narrow screen so nothing drops under 11px on a phone. */
+:root{
+  --fs-65:6.5px; --fs-7:7px; --fs-75:7.5px; --fs-8:8px; --fs-85:8.5px; --fs-9:9px;
+  --fs-95:9.5px; --fs-10:10px; --fs-105:10.5px; --fs-11:11px; --fs-115:11.5px;
+}
+@media (max-width:760px){
+  :root{
+    --fs-65:11px; --fs-7:11px; --fs-75:11px; --fs-8:11px; --fs-85:11px; --fs-9:11px;
+    --fs-95:11px; --fs-10:11.5px; --fs-105:12px; --fs-11:12px; --fs-115:12.5px;
+  }
+}
+</style>
+<style>
+  *{box-sizing:border-box}
+  :root{--page:#FFF}
+  html,body{margin:0;height:100vh;overflow:hidden}
+  body{background:var(--page);font-family:'Aptos','Segoe UI',system-ui,sans-serif;transition:background .25s}
+  /* ===== BRAND THEME (inlined from templates/brand.css) ===== */
+  #art{--navy:#0B2347;--slate:#364156;--steel:#7991AD;--green:#1C7A4A;--accent:#6EB1D1;--sky:#A9D5E6;--navy2:#16315B;
+      --slate-10:rgba(54,65,86,.09);--navy-10:rgba(11,35,71,.10);--green-10:rgba(28,122,74,.10);--accent-10:rgba(110,177,209,.13);
+      --rag-green:#2F8F6B;--rag-amber:#D49A3A;--rag-red:#D2645A;--rag-na:#9AA4B0;--rag-green-text:#2F8F6B;--rag-amber-text:#B97F22;--rag-red-text:#C2483D;--rag-na-text:#6B7480;--tint-green:rgba(47,143,107,.12);--tint-amber:rgba(212,154,58,.16);--tint-red:rgba(210,100,90,.13);--tint-na:rgba(154,164,176,.16);--navy-fill:#0B2347;
+      --ink:#15243A;--txt:#46505C;--mut:#7A838F;--line:#E1E6EE;--card:#FFF;--bg:#FFF;
+      --sh:0 1px 2px rgba(20,30,50,.04),0 14px 32px -24px rgba(20,30,50,.30);
+      /* the value split, sharing the OTE's colours so the two instruments read as one family */
+      --wf-total:#0B2347;--wf-loss:#C0405A;--wf-value-b:#8CBF3F;--wf-value-c:#1C7A4A;
+      --tint-loss:rgba(192,64,90,.12);--tint-valb:rgba(140,191,63,.16);--tint-valc:rgba(28,122,74,.12);
+      /* ══ THE TYPE SCALE ══  ONE base, --ui, solved from the frame height by fitUI() and used by
+         BOTH columns, so the chart and the prose beside it stay in proportion at every window
+         size. Six steps, and nothing outside them. Anything in bare px below this line is
+         FURNITURE, a border or a badge circle, not type. Same scale as the OTE waterfall. */
+      --ui:11px;
+      /* the label gutter in --ui, not em: em resolves against each element's OWN font-size, so
+         the separator would indent to a different column than the labels it lines up with */
+      --labw:calc(var(--ui)*20);
+      --fs-micro:calc(var(--ui)*.78);   /* column headers, unit suffixes */
+      --fs-small:calc(var(--ui)*.88);   /* the axis note, values outside a bar */
+      --fs-body:var(--ui);              /* row labels, insight bullets */
+      --fs-lead:calc(var(--ui)*1.1);    /* insight headings */
+      --fs-sect:calc(var(--ui)*1.22);   /* section headings */
+      --fs-display:calc(var(--ui)*2.2);
+      --lh-tight:1.25;--lh-ui:1.4;--lh-prose:1.55;--rowh:29px;
+      width:100%;max-width:2200px;margin:0 auto;height:100vh;overflow:hidden;position:relative;
+      display:flex;flex-direction:column;background:var(--bg);color:var(--ink);padding:76px 40px 12px 98px}
+  #art[data-t="dark"]{--bg:#16202C;--card:#1E2937;--ink:#EAEFF5;--txt:#C4CEDA;--mut:#94A1B2;--line:#2A3744;--navy-fill:#243246;--accent:#8FC7E8;--steel:#93A9C4;--rag-green:#5FBF94;--rag-amber:#E8B96A;--rag-red:#F0968C;--rag-na:#9AA8B8;--rag-green-text:#5FBF94;--rag-amber-text:#E8B96A;--rag-red-text:#F0968C;--rag-na-text:#9AA8B8;--tint-green:rgba(95,191,148,.15);--tint-amber:rgba(232,185,106,.15);--tint-red:rgba(240,150,140,.14);--tint-na:rgba(148,161,178,.15);--sh:0 1px 2px rgba(0,0,0,.4),0 14px 32px -24px rgba(0,0,0,.6);
+      --wf-total:#5B85B8;--wf-loss:#D9647C;--wf-value-b:#A6D45C;--wf-value-c:#4FA97C;
+      --tint-loss:rgba(217,100,124,.18);--tint-valb:rgba(166,212,92,.18);--tint-valc:rgba(79,169,124,.16);
+      /* the neutral tint has to lift too, or a chip on a dark card reads as loose text */
+      --slate-10:rgba(255,255,255,.085);--navy-10:rgba(255,255,255,.10)}
+  body:has(#art[data-t="dark"]){--page:#0E1620}
+  .nr-rail{position:absolute;left:0;top:0;bottom:0;width:52px;background:var(--navy-fill)}
+  .toprow{position:absolute;top:22px;left:0;right:40px;display:flex;justify-content:space-between;align-items:center;gap:14px;z-index:3}
+  .tags{display:flex;align-items:center;gap:11px;min-width:0}
+  .nr-pill{display:inline-flex;align-items:center;gap:11px;background:var(--green);padding:10px 22px 10px 14px;border-radius:0 9px 9px 0}
+  .nr-pill img{height:21px;filter:brightness(0) invert(1)}
+  .nr-pill b{color:#fff;font-size:13px;font-weight:700;letter-spacing:.3px}
+  .nr-track{background:#E3E8EF;color:var(--navy);font-weight:700;font-size:var(--fs-115);letter-spacing:.8px;padding:9px 16px;border-radius:8px}
+  #art[data-t="dark"] .nr-track{background:#243246;color:#EAEFF5}
+  .seg{display:flex;background:var(--slate-10);border-radius:999px;padding:3px}
+  .seg button{font-size:12px;font-weight:600;border:none;background:transparent;color:var(--mut);padding:6px 13px;border-radius:999px;cursor:pointer;white-space:nowrap}
+  .seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--sh)}
+  .ctrls{display:flex;gap:9px;flex:none}
+  h1{font-size:clamp(20px,1.85vw,28px);font-weight:700;color:var(--navy);letter-spacing:-.2px;line-height:1.24;margin:0;max-width:1300px}
+  #art[data-t="dark"] h1{color:#EAEFF5}
+  h1 .hl{color:var(--green)}
+  .subrow{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:8px 0 14px}
+  .subt{font-size:15px;font-weight:600;color:var(--accent)}
+  .methodline{font-size:var(--fs-small);color:var(--mut);text-align:right;line-height:var(--lh-ui)}
+  .methodline b{color:var(--txt);font-weight:600}
+  #view{flex:1;min-height:0;position:relative;overflow:hidden}
+  #vinner{position:absolute;top:0;left:0;width:100%;transform-origin:top left;padding-bottom:20px}
+
+  /* ══ the house layout: chart left, insights right ══ */
+  .slide{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:calc(var(--ui)*2.6);align-items:start}
+  .sech{margin:0 0 calc(var(--ui)*1.05);font-size:var(--fs-sect);font-weight:700;color:var(--ink);
+    line-height:var(--lh-tight);padding-bottom:calc(var(--ui)*.55);border-bottom:1px solid var(--steel)}
+  .col-wf,.col-ins{min-width:0}
+
+  /* ── the cascade furniture, shared by all four views ── */
+  .wfmeta{display:flex;align-items:baseline;font-size:var(--fs-small);color:var(--mut);
+    line-height:var(--lh-ui);margin-bottom:calc(var(--ui)*.9)}
+  .wfmeta .a{flex:1;min-width:0}
+  .wfmeta .a b{color:var(--txt);font-weight:600}
+  .wfmeta .c{flex:none;white-space:nowrap;padding-left:.9em;text-align:right;
+    font-weight:600;font-size:var(--fs-small)}
+  .wf-row{display:flex;align-items:center;height:var(--rowh,29px)}
+  .wf-label{width:var(--labw);flex:none;display:flex;align-items:center;justify-content:flex-end;gap:.55em;
+    padding-right:.9em;font-size:var(--fs-body);color:var(--txt);white-space:nowrap}
+  .wf-label>span{overflow:hidden;text-overflow:ellipsis}
+  .wf-row.tot .wf-label>span:not(.wf-num){font-weight:700;color:var(--ink)}
+  .wf-row.na .wf-label>span:not(.wf-num){color:var(--mut)}
+  .wf-num{flex:none;width:1.5em;height:1.5em;border-radius:50%;background:var(--wf-total);
+    font-size:var(--fs-micro);font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+  .wf-label .wf-num,.wf-num{color:#fff}
+  .wf-track{flex:1;min-width:0;position:relative;
+    /* the bar grows with its row so a four-row chart still fills the frame, but never past a
+       third of the row: a 40px bar in a 58px row reads as a block, not a chart */
+    height:min(calc(var(--rowh,29px)*.7),max(calc(var(--ui)*2.1),calc(var(--rowh,29px)*.32)))}
+  .wf-bar{position:absolute;height:100%;border-radius:2px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .wf-bar span{font-size:var(--fs-small);font-weight:700;color:#fff;white-space:nowrap}
+  .wf-out{position:absolute;top:50%;transform:translateY(-50%);font-size:var(--fs-small);font-weight:700;color:var(--mut);white-space:nowrap}
+  .wf-out.na{font-weight:600;font-style:italic}
+  /* the rule between bands scales with the row, or a four-row chart reads as one tight pair
+     followed by a hole */
+  .wf-sep{height:1px;background:var(--line);
+    margin:calc(var(--rowh,29px)*.22) 0 calc(var(--rowh,29px)*.22) var(--labw)}
+  /* a hover carries what the panel has no room for. Never a callout, and never the native
+     title attribute, which waits a second and dies as soon as the pointer moves. */
+  .defd{border-bottom:1px dotted var(--steel);cursor:help}
+  #tip{position:fixed;z-index:80;max-width:340px;background:var(--navy-fill,#0B2347);color:#fff;
+    font-size:var(--fs-115);line-height:1.5;padding:9px 12px;border-radius:8px;pointer-events:none;
+    box-shadow:0 14px 32px -14px rgba(0,0,0,.55);opacity:0;transition:opacity .12s}
+  #tip.on{opacity:1}
+  #tip b{display:block;font-size:var(--fs-10);letter-spacing:.5px;text-transform:uppercase;color:#9FC7E8;margin-bottom:3px}
+  #art[data-t="dark"] #tip{background:#0B1729}
+  .wf-row[data-tiph] .wf-bar,.wf-row[data-tiph] .wf-label{cursor:help}
+  /* a thin bar is a tiny hit target, so widen the hit area without changing what is drawn */
+  .wf-row[data-tiph] .wf-bar::after{content:"";position:absolute;inset:0 -7px}
+
+  /* ── vertical columns: the shape a chart takes up to six items, where a label has room
+        to wrap under its own column instead of being squeezed into a gutter ── */
+  .vchart{display:flex;align-items:flex-end;justify-content:center;gap:2.2%;height:var(--colh,260px);
+    position:relative;border-bottom:1px solid var(--line);padding-top:calc(var(--ui)*1.9)}
+  /* three columns across a full slide would be slabs, so cap the width and centre what is left */
+  .vcol{flex:1 1 0;min-width:0;max-width:calc(var(--ui)*22);height:100%;position:relative;
+    display:flex;flex-direction:column;justify-content:flex-end;z-index:2}
+  .vcol.float{justify-content:flex-start}
+  .vcol[data-tipb]{cursor:help}
+  .vbar{width:100%;border-radius:3px 3px 0 0;position:relative}
+  .vval{position:absolute;bottom:100%;left:0;right:0;text-align:center;font-size:var(--fs-small);
+    font-weight:800;color:var(--ink);margin-bottom:.35em;white-space:nowrap}
+  .vbar.inbar .vval{bottom:auto;top:.7em;color:#fff;margin:0}
+  .vspacer{width:100%}
+  /* the connector runs under the bars, so it only shows where it should: across the gap */
+  .vconn{position:absolute;height:0;border-top:1px dashed var(--steel);opacity:.75;z-index:1}
+  .vlabs{display:flex;justify-content:center;gap:2.2%;margin-top:calc(var(--ui)*.8)}
+  .vlab{flex:1 1 0;min-width:0;max-width:calc(var(--ui)*22);text-align:center}
+  /* the label wraps under its own column and stops at four lines. Past that the column is too
+     narrow for the words, and the full name is one hover away. */
+  /* the band is a fixed four lines whether a label uses them or not, so the chart keeps one
+     baseline instead of stepping up and down with the wrapping */
+  .vlab .n{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;
+    font-size:var(--fs-body);color:var(--txt);line-height:var(--lh-ui);
+    min-height:calc(4em*var(--lh-ui))}
+  /* more columns, less width each, so the label steps down the same scale the rest of the page uses */
+  .vlabs.dense .vlab .n{font-size:var(--fs-small)}
+  /* at nine columns or more the words need a fifth line before they stop fitting at all */
+  .vlabs.dense2 .vlab .n{font-size:var(--fs-micro);line-height:1.3;-webkit-line-clamp:5;
+    min-height:calc(5em*1.3)}
+  .vlab.tot .n{font-weight:700;color:var(--ink)}
+  .vnum{display:inline-flex;width:1.5em;height:1.5em;border-radius:50%;color:#fff;
+    font-size:var(--fs-micro);font-weight:800;align-items:center;justify-content:center;margin-bottom:.3em}
+
+  /* ── insight panel: heading, bullets, evidence in italics. No rules between blocks and no
+        boxes. Every size is relative to .col-ins, whose font-size fitInsights() searches so the
+        prose always fills the height of the chart beside it. ── */
+  .col-ins{font-size:var(--ui)}
+  .inswrap{display:flex;flex-direction:column;gap:1.35em}
+  .ins .inh{display:flex;align-items:flex-start;gap:.65em;margin-bottom:.4em}
+  .ins .inum{flex:none;width:1.6em;height:1.6em;border-radius:50%;background:var(--wf-total);color:#fff;
+    font-size:.84em;font-weight:800;display:inline-flex;align-items:center;justify-content:center;margin-top:.15em}
+  .ins .inh b{font-size:1.1em;font-weight:700;color:var(--ink);line-height:1.35}
+  .ins .chip{display:inline-flex;align-items:center;font-size:.8em;font-weight:700;padding:.1em .5em;
+    border-radius:99px;vertical-align:.1em;white-space:nowrap;line-height:1.5;margin-left:.45em}
+  .ins .chip.poor{background:var(--tint-loss);color:var(--wf-loss)}
+  .ins .chip.enab{background:var(--tint-valb);color:var(--wf-value-c)}
+  .ins .chip.good{background:var(--tint-valc);color:var(--wf-value-c)}
+  .ins .chip.neu{background:var(--slate-10);color:var(--mut)}
+  .ins ul{margin:0;padding-left:2.9em;list-style:none}
+  .ins ul:empty{display:none}
+  .ins li{position:relative;font-size:1em;color:var(--txt);line-height:var(--lh-prose);margin-bottom:.3em}
+  .ins li::before{content:"";position:absolute;left:-.9em;top:.55em;width:.33em;height:.33em;border-radius:50%;background:var(--mut)}
+  .ins .inev{margin:.35em 0 0 2.9em;font-size:.88em;color:var(--mut);font-style:italic}
+  #ft{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:12px;font-size:clamp(9.5px,0.75vw,12px);color:var(--mut)}
+  #ft .l{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .legend{display:flex;gap:7px}
+  .lp{font-size:0.95em;font-weight:600;padding:0.2em 0.85em;border-radius:999px}
+  .conf{font-size:0.88em;letter-spacing:.5px;font-weight:600}
+  /*<EDIT>*/
+  #art.editing .wf-row[data-id],#art.editing .vcol[data-id]{cursor:pointer;transition:.13s}
+  #art.editing .wf-row[data-id]:hover,#art.editing .vcol[data-id]:hover{outline:2px solid var(--accent);outline-offset:2px;border-radius:5px}
+  #art.editing .nr-locked{opacity:.5;filter:saturate(.7);cursor:help;transition:.15s}
+  #lock{width:34px;height:34px;border:1px solid var(--line);background:var(--card);border-radius:9px;color:var(--mut);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+  #lock svg{width:17px;height:17px;display:block}
+  #lock.unlocked{background:var(--rag-amber);border-color:var(--rag-amber);color:#fff}
+  #save{font-size:12px;font-weight:700;border:1px solid var(--navy-fill);background:var(--navy-fill);color:#fff;padding:8px 13px;border-radius:9px;cursor:pointer;display:none}
+  #save.show{display:inline-flex} #save:disabled{opacity:.45;cursor:default}
+  #ed{position:fixed;top:0;right:0;bottom:0;width:410px;max-width:92vw;overflow:hidden;background:var(--card);border-left:1px solid var(--line);box-shadow:-18px 0 44px -24px rgba(11,35,71,.4);z-index:90;display:none;flex-direction:column}
+  #ed.on{display:flex}
+  #ed .edh{flex:none;position:relative;padding:14px 20px 12px;border-bottom:1px solid var(--line);background:var(--slate-10)}
+  #ed .edh .row{display:flex;align-items:center;gap:9px;padding-right:40px}
+  #ed .edh .kind{flex:none;font-size:var(--fs-85);font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:var(--navy-fill);padding:3px 7px;border-radius:5px}
+  #ed .edh h3{margin:0;font-size:15px;font-weight:800;color:var(--ink);line-height:1.25}
+  #ed .edh .x{position:absolute;top:12px;right:15px;width:26px;height:26px;border:0;background:none;font-size:19px;color:var(--mut);cursor:pointer;border-radius:6px}
+  #ed .edb{flex:1;min-height:0;overflow:auto;padding:16px 20px}
+  #ed .edf{flex:none;display:flex;gap:8px;align-items:center;padding:14px 20px;border-top:1px solid var(--line);background:var(--slate-10)}
+  #ed .edf .sp{flex:1}
+  #ed .f{margin-bottom:12px} #ed .f label{display:block;font-size:var(--fs-10);font-weight:700;color:var(--txt);margin:0 0 4px}
+  #ed .f input,#ed .f textarea{width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:12.5px;color:var(--ink);background:var(--card)}
+  #ed .f textarea{min-height:76px;resize:vertical;line-height:1.5}
+  #ed .hint{font-size:var(--fs-105);color:var(--mut);line-height:1.5;margin:-6px 0 12px}
+  #ed .wbtn{font-size:12px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:8px;cursor:pointer}
+  #ed .wbtn.pri{background:var(--navy-fill);color:#fff;border-color:var(--navy-fill)}
+  #ed .cselwrap{position:relative} #ed .cselwrap>select{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+  #ed .cseltrg{width:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);font:inherit;font-size:12.5px;color:var(--ink);cursor:pointer;text-align:left}
+  #ed .cselwrap.on .cseltrg{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-10)}
+  #ed .cseltrg .clab,#ed .cselopt .clab{display:flex;align-items:center;gap:7px;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  #ed .cselmenu{display:none;position:absolute;left:0;right:0;top:calc(100% + 5px);z-index:20;max-height:250px;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 16px 34px -16px rgba(11,35,71,.5);padding:4px}
+  #ed .cselwrap.on .cselmenu{display:block}
+  #ed .cselgrp{font-size:var(--fs-95);font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);padding:9px 10px 4px}
+  #ed .cselopt{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12.5px;color:var(--ink)}
+  #ed .cselopt:hover{background:var(--slate-10)} #ed .cselopt.sel{background:var(--accent-10)}
+  #ed .cselopt .tag{font-size:var(--fs-11);color:var(--mut)}
+  #ed .cdot{width:7px;height:7px;border-radius:50%;flex:none;display:inline-block}
+  #ed .cdot.va{background:var(--wf-value-c)} #ed .cdot.ve{background:var(--wf-value-b)} #ed .cdot.wa{background:var(--wf-loss)}
+  #art.editing h1{cursor:pointer}
+  #art.editing h1:hover{outline:2px solid var(--accent);outline-offset:4px;border-radius:4px}
+  #ed .kmprev{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--slate-10);
+    font-size:16px;font-weight:700;color:var(--navy);letter-spacing:-.2px;line-height:1.3;min-height:44px}
+  #art[data-t="dark"] #ed .kmprev,#ed .kmprev .dk{color:#EAEFF5}
+  #ed .kmprev .hl{color:var(--green)}
+  #ed .kmhints{border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-top:12px;font-size:var(--fs-11);color:var(--txt);line-height:1.7}
+  #ed .kmhints b{display:block;font-size:var(--fs-95);letter-spacing:.5px;text-transform:uppercase;color:var(--mut);margin-bottom:3px}
+  #ed .kchip{font-family:ui-monospace,Consolas,monospace;font-size:var(--fs-105);background:var(--slate-10);padding:1px 5px;border-radius:4px;white-space:nowrap}
+  #ed .kmhl{font-size:var(--fs-11);font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);
+    padding:5px 10px;border-radius:7px;margin-top:6px;display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+  #ed .kmhl .swch{width:10px;height:10px;border-radius:3px;background:var(--green);display:inline-block}
+  /*</EDIT>*/
+  /* ── responsive chrome: on a narrow screen the absolute toprow would collide, so drop it
+     into normal flow and let it wrap ── */
+  @media (max-width:760px){
+    #art{padding:14px 18px 10px 42px;--labw:calc(var(--ui)*13)}
+    .nr-rail{width:24px}
+    .toprow{position:static;top:auto;right:auto;margin:0 0 12px;flex-wrap:wrap;justify-content:flex-start;gap:10px 12px}
+    .tags{flex-wrap:wrap;gap:8px;margin-left:-42px}
+    .ctrls{flex-wrap:wrap;gap:8px;flex:1 1 100%}
+    .slide{grid-template-columns:1fr}
+    .methodline{text-align:left}
+  }
+</style><style id="nr-finish">
+/* == THE DECK FINISH (patch_finish.py) == one look across the toolkit: the same base size as a deck
+   in the same window, the quiet subtitle, light grey cards for ideas, icons from the house set.
+   Written with an html prefix so it wins over the template's own rules wherever they sit. */
+html{--srf:#F7F9FB;--srf-line:#E4E9EF;--sh-soft:0 1px 2px rgba(16,24,40,.05);--subt:#5E718B}
+html [data-t="dark"]{--srf:#1E2937;--srf-line:#2C3947;--sh-soft:0 1px 2px rgba(0,0,0,.35);--subt:#9FB1C8}
+html .subt{font-size:max(15px,calc(var(--nr-t,14px) * 1.22));font-weight:400;color:var(--subt)}
+/* the title follows the deck where the deck's title is the larger one (a window above about 1615 x 909);
+   below that every instrument keeps its own title, including the ones that shrink it to fit */
+@media (min-width:1615px) and (min-height:909px){html h1{font-size:calc(var(--nr-t,15.14px) * 1.85)}}
+html :is(.card,.kpi,#pw .tcard,.plan,.findings,.acard,.t-dept .nc,.t-team.in .nc,.blk.boxed,.conc-so,.node.l3){background:var(--srf);border-color:var(--srf-line);border-radius:14px;box-shadow:var(--sh-soft)}
+/* the templates paint their dark cards from #art[data-t="dark"] rules; the finish wins over those */
+html [data-t="dark"]:is(#art,#pw,#pm) :is(.card,.kpi,#pw .tcard,.plan,.findings,.acard,.t-dept .nc,.t-team.in .nc,.blk.boxed,.conc-so,.node.l3){background:var(--srf);border-color:var(--srf-line)}
+html :is(.blk.boxed,.conc-so){border:1px solid var(--srf-line)}
+html .ic{width:1.2em;height:1.2em;fill:var(--navy);flex:none;vertical-align:-.24em;margin-right:.4em}
+html [data-t="dark"] .ic{fill:#93A9C4}
+@media print{html{--sh-soft:0 0 0 transparent}}
+</style>
+<script id="nr-finish-js">
+/* == ONE TYPE SIZE PER WINDOW (patch_finish.py) == the deck's base size for this window, published
+   on <html> before any fit runs, and nrZ() for the fit caps. Never below the instrument's own 14px. */
+(function(){
+  function deck(){var W=window.innerWidth||1600,H=window.innerHeight||900;
+    return Math.max(11,Math.min(20,H/60,(W-138)/97.5));}
+  function ui(){return Math.max(14,deck());}
+  function put(){var d=document.documentElement.style;d.setProperty('--nr-t',deck().toFixed(2)+'px');
+    d.setProperty('--nr-ui',ui().toFixed(2)+'px');}
+  window.nrZ=function(){return ui()/14;};
+  put(); window.addEventListener('resize',put);
+  /* icons from the house set on the fixed vocabularies, re-applied whenever a view re-renders */
+  var I={"alt_route":"M450-80v-200q0-48-16-79t-49-64l43-43q13 11 27.5 30t24.5 35q17-26 33.5-45t31.5-32q58-47 83.5-113.5T648-766l-90 90-42-42 162-162 162 162-42 42-90-90q5 126-24.5 198.5T585-432q-44 40-59.5 73T510-280v200h-60ZM258-636q-4-18-6.5-52.5T251-765l-89 89-42-42 162-162 162 162-42 42-90-90q-2 38-1 66.5t5 49.5l-58 14Zm84 171q-17-18-37.5-47.5T273-577l59-15q9 25 24 48t28 37l-42 42Z","badge":"M140-80q-24 0-42-18t-18-42v-480q0-24 18-42t42-18h250v-140q0-24 18-42t42-18h60q24 0 42 18t18 42v140h250q24 0 42 18t18 42v480q0 24-18 42t-42 18H140Zm0-60h680v-480H570v30q0 28-18 44t-42 16h-60q-24 0-42-16t-18-44v-30H140v480Zm92-107h239v-14q0-18-9-32t-23-19q-32-11-50-14.5t-35-3.5q-19 0-40.5 4.5T265-312q-15 5-24 19t-9 32v14Zm336-67h170v-50H568v50Zm-175.5-65.5Q408-395 408-418t-15.5-38.5Q377-472 354-472t-38.5 15.5Q300-441 300-418t15.5 38.5Q331-364 354-364t38.5-15.5ZM568-427h170v-50H568v50ZM450-590h60v-230h-60v230Zm30 210Z","build":"M705-128 447-388q-23 8-46 13t-47 5q-97.08 0-165.04-67.67Q121-505.33 121-602q0-31 8.16-60.39T152-718l145 145 92-86-149-149q25.91-15.16 54.96-23.58Q324-840 354-840q99.17 0 168.58 69.42Q592-701.17 592-602q0 24-5 47t-13 46l259 258q11 10.96 11 26.48T833-198l-76 70q-10.7 11-25.85 11Q716-117 705-128Zm28-57 40-40-273-273q16-21 24-49.5t8-54.5q0-75-55.5-127T350-782l102 104q9 9 8.5 21.5T451-635L318-510q-9.27 8-21.64 8-12.36 0-20.36-8l-98-97q3 77 54.67 127T354-430q25 0 53-8t49-24l277 277ZM476-484Z","checklist":"M222-214 80-356l42-42 100 99 179-179 42 43-221 221Zm0-320L80-676l42-42 100 99 179-179 42 43-221 221Zm298 244v-60h360v60H520Zm0-320v-60h360v60H520Z","description":"M319-250h322v-60H319v60Zm0-170h322v-60H319v60ZM220-80q-24 0-42-18t-18-42v-680q0-24 18-42t42-18h361l219 219v521q0 24-18 42t-42 18H220Zm331-554v-186H220v680h520v-494H551ZM220-820v186-186 680-680Z","flag":"M200-120v-680h343l19 86h238v370H544l-18.93-85H260v309h-60Zm300-452Zm95 168h145v-250H511l-19-86H260v251h316l19 85Z","forum":"M880-81 721-240H300q-24.75 0-42.37-17.63Q240-275.25 240-300v-80h440q24.75 0 42.38-17.63Q740-415.25 740-440v-280h80q24.75 0 42.38 17.62Q880-684.75 880-660v579ZM140-425l75-75h405v-320H140v395ZM80-280v-540q0-24.75 17.63-42.38Q115.25-880 140-880h480q24.75 0 42.38 17.62Q680-844.75 680-820v320q0 24.75-17.62 42.37Q644.75-440 620-440H240L80-280Zm60-220v-320 320Z","groups":"M0-240v-53q0-38.57 41.5-62.78Q83-380 150.38-380q12.16 0 23.39.5t22.23 2.15q-8 17.35-12 35.17-4 17.81-4 37.18v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Zm540 0v-65q0-19.86-3.5-37.43T765-377.27q11-1.73 22.17-2.23 11.17-.5 22.83-.5 67.5 0 108.75 23.77T960-293v53H780Zm-480-60h360v-6q0-37-50.5-60.5T480-390q-79 0-129.5 23.5T300-305v5ZM149.57-410q-28.57 0-49.07-20.56Q80-451.13 80-480q0-29 20.56-49.5Q121.13-550 150-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T149.57-410Zm660 0q-28.57 0-49.07-20.56Q740-451.13 740-480q0-29 20.56-49.5Q781.13-550 810-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T809.57-410ZM480-480q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T600-600q0 50-34.5 85T480-480Zm.35-60Q506-540 523-557.35t17-43Q540-626 522.85-643t-42.5-17q-25.35 0-42.85 17.15t-17.5 42.5q0 25.35 17.35 42.85t43 17.5ZM480-300Zm0-300Z","monitoring":"M120-120v-76l60-60v136h-60Zm165 0v-236l60-60v296h-60Zm165 0v-296l60 61v235h-60Zm165 0v-235l60-60v295h-60Zm165 0v-396l60-60v456h-60ZM120-356v-85l280-278 160 160 280-281v85L560-474 400-634 120-356Z","psychology":"M240-80v-172q-57-52-88.5-121.5T120-520q0-150 105-255t255-105q125 0 221.5 73.5T827-615l55 218q4 14-5 25.5T853-360h-93v140q0 24.75-17.62 42.37Q724.75-160 700-160H600v80h-60v-140h160v-200h114l-45-180q-24-97-105-158.5T480-820q-125 0-212.5 86.5T180-522.46q0 64.42 26.32 122.39Q232.65-342.09 281-297l19 18v199h-60Zm257-370Zm-48 76h60l3-44q12-2 22.47-8.46Q544.94-432.92 553-441l42 14 28-48-30-24q5-14 5-29t-5-29l30-24-28-48-42 14q-8.33-7.69-19.17-13.85Q523-635 512-638l-3-44h-60l-3 44q-11 3-21.83 9.15Q413.33-622.69 405-615l-42-14-28 48 30 24q-5 14-5 29t5 29l-30 24 28 48 42-14q8.06 8.08 18.53 14.54Q434-420 446-418l3 44Zm-19.5-104.38q-20.5-20.38-20.5-49.5t20.38-49.62q20.38-20.5 49.5-20.5t49.62 20.38q20.5 20.38 20.5 49.5t-20.38 49.62q-20.38 20.5-49.5 20.5t-49.62-20.38Z","school":"M479-120 189-279v-240L40-600l439-240 441 240v317h-60v-282l-91 46v240L479-120Zm0-308 315-172-315-169-313 169 313 172Zm0 240 230-127v-168L479-360 249-485v170l230 127Zm1-240Zm-1 74Zm0 0Z","speed":"M473.5-303.5Q517-305 537-336l216-339-335 219q-30 20-32 64t21 67q23 23 66.5 21.5ZM478-799q57 0 119 18.5T716-717l-52 37q-45-30-96.5-44.5T477.98-739q-140.47 0-239.23 100.22Q140-538.57 140-396.02 140-351 152.5-305q12.5 46 35.5 85h579q22-36 35-84t13-94q0-42-12.5-90.5T758-578l39-52q38 56 57 112.5T875-404q2 60-12 113t-41 98q-12 23-25.5 28t-33.5 5H192q-17 0-33.5-8.5T134-193q-26-48-40-97.5T80-396q0-83 31.5-156.5t85.5-128Q251-735 323.68-767T478-799Zm-9 331Z","supervisor_account":"M617.5-408.5Q590-436 590-475t27.5-66.5Q645-569 684-569t66.5 27.5Q778-514 778-475t-27.5 66.5Q723-381 684-381t-66.5-27.5ZM488-160v-51q0-26 11-44.5t31-28.5q37-19 75-28t79-9q41 0 79 8.5t75 28.5q20 9 31 28t11 45v51H488ZM292-523q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42Zm108-108ZM80-160v-94q0-34 17-62.5t51-43.5q67-30 128.5-45T400-420q32 0 57 3t54 9l-25.5 25.5L460-357q-13-2-28-2.5t-32-.5q-57 0-111 11.5T172-306q-14 7-23 22t-9 30v34h288v60H80Zm348-60Zm36.5-346.5Q490-592 490-631t-25.5-64.5Q439-721 400-721t-64.5 25.5Q310-670 310-631t25.5 64.5Q361-541 400-541t64.5-25.5Z","track_changes":"M324-111.5Q251-143 197-197t-85.5-127Q80-397 80-480t31.5-156Q143-709 197-763t127-85.5Q397-880 480-880h30v326q22 9 36 29t14 45q0 33-23.5 56.5T480-400q-33 0-56.5-23.5T400-480q0-25 14-45t36-29v-104q-65 11-107.5 60.5T300-480q0 75 52.5 127.5T480-300q75 0 127.5-52.5T660-480q0-41-16-75t-44-59l43-43q35 33 56 78.5t21 98.5q0 100-70 170t-170 70q-100 0-170-70t-70-170q0-93 60-160.5T450-719v-100q-131 11-220.5 108T140-480q0 142 99 241t241 99q142 0 241-99t99-241q0-74-28.5-137T713-727l43-43q57 55 90.5 129.5T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80q-83 0-156-31.5Z","update":"M483-120q-75 0-141-28.5T226.5-226q-49.5-49-78-115T120-482q0-75 28.5-140t78-113.5Q276-784 342-812t141-28q80 0 151.5 35T758-709v-106h60v208H609v-60h105q-44-51-103.5-82T483-780q-125 0-214 85.5T180-485q0 127 88 216t215 89q125 0 211-88t86-213h60q0 150-104 255.5T483-120Zm122-197L451-469v-214h60v189l137 134-43 43Z","verified":"m346-60-76-130-151-31 17-147-96-112 96-111-17-147 151-31 76-131 134 62 134-62 77 131 150 31-17 147 96 111-96 112 17 147-150 31-77 130-134-62-134 62Zm27-79 107-45 110 45 67-100 117-30-12-119 81-92-81-94 12-119-117-28-69-100-108 45-110-45-67 100-117 28 12 119-81 94 81 92-12 121 117 28 70 100Zm107-341Zm-43 133 227-225-45-41-182 180-95-99-46 45 141 140Z","work":"M140-120q-24 0-42-18t-18-42v-480q0-24 18-42t42-18h180v-100q0-24 18-42t42-18h200q24 0 42 18t18 42v100h180q24 0 42 18t18 42v480q0 24-18 42t-42 18H140Zm0-60h680v-480H140v480Zm240-540h200v-100H380v100ZM140-180v-480 480Z"}, M={"mission & vision":"flag","metrics & objectives":"track_changes","performance tracking":"monitoring","performance dialogues":"forum","consequences & recognition":"verified","mission & target condition":"flag","roles & skills":"badge","objectives & development plans":"school","skill building & review":"psychology","existence & design":"description","adoption & usage":"checklist","deviation management":"alt_route","maintenance & update":"update","work & role":"work","team & atmosphere":"groups","workload":"speed","enablement":"build","leadership":"supervisor_account"}, SEL='.cnm,.dgrp';
+  function dec(){var n=0,els=document.querySelectorAll(SEL);for(var i=0;i<els.length;i++){var e=els[i];
+    if(e.querySelector('svg.ic'))continue;var t='';for(var j=0;j<e.childNodes.length;j++){if(e.childNodes[j].nodeType===3)t+=e.childNodes[j].textContent;}
+    var k=M[t.trim().toLowerCase()];if(!k||!I[k])continue;
+    e.insertAdjacentHTML('afterbegin','<svg class="ic" viewBox="0 -960 960 960" aria-hidden="true"><path d="'+I[k]+'"/></svg>');n++;}
+    /* an icon can move a line: let every fit measure again */
+    if(n)requestAnimationFrame(function(){window.dispatchEvent(new Event('resize'));});}
+  function start(){dec();new MutationObserver(dec).observe(document.body,{childList:true,subtree:true});}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+</script>
+<style id="nr-topbar">
+  /* patch_topbar.py: one theme button and the way home. See the script of the same
+     name at the end of the body. The doubled id outranks the stacked-chrome rules. */
+  :is(#theme,#tseg):is(#theme,#tseg).seg{padding:3px}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button.on{display:none}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button{font-size:0;line-height:0;width:34px;height:28px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button::before{content:"";width:16px;height:16px;background:currentColor;-webkit-mask:var(--nr-ico) center/16px 16px no-repeat;mask:var(--nr-ico) center/16px 16px no-repeat}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button[data-s="dark"]{--nr-ico:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M12%203a6%206%200%200%200%209%209a9%209%200%201%201-9-9z'/%3E%3C/svg%3E")}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button[data-s="light"]{--nr-ico:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Ccircle%20cx='12'%20cy='12'%20r='4'/%3E%3Cpath%20d='M12%202v2M12%2020v2M4.9%204.9l1.4%201.4M17.7%2017.7l1.4%201.4M2%2012h2M20%2012h2M4.9%2019.1l1.4-1.4M17.7%206.3l1.4-1.4'/%3E%3C/svg%3E")}
+  .nr-crumb{display:inline-flex;align-items:center;gap:8px}
+  .nr-crumb>.nr-track{background:transparent!important;padding:0!important;border-radius:0!important;color:inherit!important;margin:0!important}
+  .nr-crumb .nr-home{color:inherit;opacity:.6;text-decoration:none;text-transform:uppercase;white-space:nowrap}
+  .nr-crumb .nr-home:hover{opacity:1;text-decoration:underline}
+  .nr-crumb .nr-sep{opacity:.4}
+</style>
+</head>
+<body>
+<div id="art" data-t="light">
+  <div class="nr-rail"></div>
+  <div class="toprow">
+    <div class="tags">
+      <div class="nr-pill"><img alt="Nova Reperta" src="data:image/png;base64,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"><b id="ctx">OPEX QUICKSCAN</b></div>
+      <div class="nr-track" id="lens">PROCESSES · WASTE OBSERVATIONS</div>
+      <!--<EDIT>--><button id="save">No changes</button><button id="lock" title="Locked — click to edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></button><!--</EDIT>-->
+    </div>
+    <div class="ctrls">
+      <div class="seg" id="views"></div>
+      <div class="seg" id="theme"><button data-s="light" class="on">Light</button><button data-s="dark">Dark</button></div>
+    </div>
+  </div>
+  <h1 id="title"></h1>
+  <div class="subrow"><div class="subt" id="subt"></div><div class="methodline" id="meth"></div></div>
+  <div id="view"><div id="vinner"></div></div>
+  <div id="ft">
+    <div class="l"><span id="src"></span><div class="legend" id="lg"></div></div>
+    <span class="conf">Sample data · Northwind Assurance is fictional</span>
+  </div>
+  <!--<EDIT>--><div id="ed"></div><!--</EDIT>-->
+</div>
+<script>
+/* ============ ONLY THIS BLOCK CHANGES PER TEAM ============ */
+const DATA = /* DATA */ {
+  "context": "OPEX DIAGNOSTIC",
+  "lens": "PROCESSES · WASTE OBSERVATIONS",
+  "teamName": "Claims Handling · open and register the claim",
+  "source": "Observation, four claims followed from notification to triage, 16 Sep 2026",
+  "keyMessage": "Over half of registering a claim is **waste**, and most of it is **moving information that already exists** rather than deciding anything",
+  "editable": true,
+  "instrument": "waste-observations",
+  "team": "claims-handling",
+  "scope": {
+    "level": "activity",
+    "activityId": "act-01",
+    "activityBlockId": "act-01",
+    "observedFte": 13.5
+  },
+  "frame": {
+    "receiver": "the handler who assesses the claim next",
+    "receiverBasis": "first party who can refuse the output",
+    "receiverDisputed": false,
+    "output": "a registered claim with its cover confirmed and a triage score, ready to assess",
+    "boundary": "from the notification arriving from the contact centre to the triage score on the file"
+  },
+  "session": {
+    "observers": [
+      "Anouk Vermeer"
+    ],
+    "observed": [
+      {
+        "role": "claims handler",
+        "tenure": "6 years"
+      },
+      {
+        "role": "claims handler",
+        "tenure": "1 year"
+      }
+    ],
+    "runsWatched": 4,
+    "representativeness": {
+      "people": 2,
+      "caseTypes": "motor, own damage and third party",
+      "cyclePoint": "normal"
+    },
+    "sourceId": "SRC-W01"
+  },
+  "definitions": {
+    "valueAdding": "Work the assessing handler would pay for on sight: the circumstances read, the cover judged and the claim scored.",
+    "valueEnabling": "Work the handler would not pay for but the claims standard requires, such as one claim record and one recorded cover decision.",
+    "waste": "Work that moves the claim no further forward and that nothing nameable requires."
+  },
+  "rows": [
+    {
+      "id": "T-01",
+      "label": "Read the circumstances and judge the cover",
+      "bucket": "valueAdding",
+      "pctOfProcessTime": 19,
+      "wasteId": null,
+      "namedWaste": null,
+      "causeId": null,
+      "rootCauseText": null,
+      "evidence": "watched on all four claims, about six minutes each",
+      "why": "The circumstances go in and a cover judgement comes out, and the next handler would pay for it."
+    },
+    {
+      "id": "T-02",
+      "label": "Score the claim against the triage rules",
+      "bucket": "valueAdding",
+      "pctOfProcessTime": 9,
+      "wasteId": null,
+      "namedWaste": null,
+      "causeId": null,
+      "rootCauseText": null,
+      "evidence": "scored once per claim in ClaimsCore",
+      "why": "The score decides who handles the claim and how, which the next handler needs."
+    },
+    {
+      "id": "T-03",
+      "label": "Create the claim record",
+      "bucket": "valueEnabling",
+      "pctOfProcessTime": 10,
+      "wasteId": null,
+      "namedWaste": null,
+      "causeId": null,
+      "rootCauseText": null,
+      "evidence": "one record per claim in ClaimsCore",
+      "why": "The claims standard requires one record, and one record is what it requires."
+    },
+    {
+      "id": "T-04",
+      "label": "Record the cover decision on the file",
+      "bucket": "valueEnabling",
+      "pctOfProcessTime": 6,
+      "wasteId": null,
+      "namedWaste": null,
+      "causeId": null,
+      "rootCauseText": null,
+      "evidence": "a note and a status code per claim",
+      "why": "The decision has to be on the file for audit; writing it once is required work."
+    },
+    {
+      "id": "T-05",
+      "label": "Check the re-keyed notification against the call notes",
+      "bucket": "waste",
+      "pctOfProcessTime": 11,
+      "wasteId": "over-processing",
+      "causeId": "system-fit",
+      "namedWaste": "reading the same notification twice because it was typed twice",
+      "rootCauseText": "the contact centre and ClaimsCore are not connected, so the notification is typed again and then checked",
+      "evidence": "on three of the four claims the handler opened the call notes to compare",
+      "why": "It checks a copy of information that already exists and transforms nothing."
+    },
+    {
+      "id": "T-06",
+      "label": "Open PolicyHub and look the policy up by hand",
+      "bucket": "waste",
+      "pctOfProcessTime": 13,
+      "wasteId": "searching",
+      "causeId": "system-fit",
+      "namedWaste": "a second system opened on every claim to find the cover",
+      "rootCauseText": "cover cannot be read from the claim record, so every file needs PolicyHub open beside it",
+      "evidence": "every claim, between two and five minutes of searching per policy",
+      "why": "Judging the cover is valuable; finding where the cover is written is not."
+    },
+    {
+      "id": "T-07",
+      "label": "Match and attach the documents that came by post",
+      "bucket": "waste",
+      "pctOfProcessTime": 11,
+      "wasteId": "transport",
+      "causeId": "system-fit",
+      "namedWaste": "scanned post matched to the claim by hand, days after it was opened",
+      "rootCauseText": "scanned post lands in a shared mailbox with no claim number on it",
+      "evidence": "two batches of scanned post handled during the session",
+      "why": "Moving a document onto the file changes nothing about the document."
+    },
+    {
+      "id": "T-08",
+      "label": "Chase the customer for photos and the accident form",
+      "bucket": "waste",
+      "pctOfProcessTime": 9,
+      "wasteId": "chasing-info",
+      "causeId": "information-quality",
+      "namedWaste": "going back to the customer for what the first call did not ask for",
+      "rootCauseText": "the notification script does not ask for photos or the accident form, so they arrive later or not at all",
+      "evidence": "two of the four claims needed a call or mail back",
+      "why": "It asks a second time for information the first contact could have collected."
+    },
+    {
+      "id": "T-09",
+      "label": "Re-open the claim when a late document changes the triage",
+      "bucket": "waste",
+      "pctOfProcessTime": 7,
+      "wasteId": "correcting",
+      "causeId": "process-design",
+      "namedWaste": "triage done before the file is complete, then done again",
+      "rootCauseText": "triage starts on arrival rather than when the file is complete",
+      "evidence": "observed once, and confirmed by both handlers as weekly",
+      "why": "The second score corrects the first and moves the claim no further forward."
+    },
+    {
+      "id": "T-10",
+      "label": "Waiting for ClaimsCore screens to load",
+      "bucket": "waste",
+      "pctOfProcessTime": 5,
+      "wasteId": "waiting-systems",
+      "causeId": "system-fit",
+      "namedWaste": "genuinely idle minutes on slow screens, not time spent on other work",
+      "rootCauseText": "ClaimsCore is slow on the document screens at peak hours",
+      "evidence": "timed on the document and policy screens, only idle minutes booked",
+      "why": "Idle minutes move the claim no further forward and nothing requires them."
+    }
+  ],
+  "overrides": [
+    {
+      "type": "hidden-value",
+      "fired": false,
+      "finding": "looked for: the PolicyHub search and the document matching carry no check or pressure that would be lost if they went"
+    },
+    {
+      "type": "representativeness",
+      "fired": true,
+      "finding": "two handlers on a normal Tuesday, no storm peak; the post backlog is larger on a peak week"
+    }
+  ],
+  "excludedAboveLine": [
+    {
+      "label": "team huddle",
+      "minutes": 15
+    },
+    {
+      "label": "helping a colleague with a fraud question",
+      "minutes": 20
+    }
+  ],
+  "findingsBesideTheSplit": [
+    "the experienced handler judged the cover in half the time, so part of the value-adding time is a skills question",
+    "the contact centre loses the same minutes on its side of the re-keying, which this observation did not time"
+  ],
+  "measurementPlan": [
+    {
+      "metric": "claims needing a call back for documents",
+      "unit": "pct-volume",
+      "source": "ClaimsCore contact log",
+      "effort": "low",
+      "sizes": "T-08"
+    },
+    {
+      "metric": "days from notification to complete file",
+      "unit": "days-lead",
+      "source": "ClaimsCore dates",
+      "effort": "low",
+      "sizes": "T-07"
+    },
+    {
+      "metric": "claims triaged twice",
+      "unit": "pct-rework",
+      "source": "ClaimsCore triage history",
+      "effort": "medium",
+      "sizes": "T-09"
+    },
+    {
+      "metric": "minutes per claim in PolicyHub",
+      "unit": "minutes-case",
+      "source": "observation",
+      "effort": "low",
+      "sizes": "T-06"
+    }
+  ],
+  "proposedPains": [
+    {
+      "id": "WP-01",
+      "wasteId": "searching",
+      "blockId": "act-01",
+      "activityId": "t-05",
+      "theme": "a second system opened on every claim to find the cover",
+      "magnitude": {
+        "value": 1.76,
+        "unit": "fte"
+      },
+      "magnitudeNote": "13% of the observed process time on 13.5 FTE",
+      "dimension": "proc",
+      "causeId": "system-fit",
+      "rootCause": "cover cannot be read from the claim record, so every file needs PolicyHub open beside it",
+      "rowIds": [
+        "T-06"
+      ],
+      "sourceId": "SRC-W01"
+    },
+    {
+      "id": "WP-02",
+      "wasteId": "transport",
+      "blockId": "act-01",
+      "activityId": "t-04",
+      "theme": "scanned post matched to the claim by hand, days after it was opened",
+      "magnitude": {
+        "value": 1.49,
+        "unit": "fte"
+      },
+      "magnitudeNote": "11% of the observed process time on 13.5 FTE",
+      "dimension": "proc",
+      "causeId": "system-fit",
+      "rootCause": "scanned post lands in a shared mailbox with no claim number on it",
+      "rowIds": [
+        "T-07"
+      ],
+      "sourceId": "SRC-W01"
+    },
+    {
+      "id": "WP-03",
+      "wasteId": "over-processing",
+      "blockId": "act-01",
+      "activityId": "t-22",
+      "theme": "reading the same notification twice because it was typed twice",
+      "magnitude": {
+        "value": 1.49,
+        "unit": "fte"
+      },
+      "magnitudeNote": "11% of the observed process time on 13.5 FTE",
+      "dimension": "proc",
+      "causeId": "system-fit",
+      "rootCause": "the contact centre and ClaimsCore are not connected, so the notification is typed again and then checked",
+      "rowIds": [
+        "T-05"
+      ],
+      "sourceId": "SRC-W01"
+    },
+    {
+      "id": "WP-04",
+      "wasteId": "chasing-info",
+      "blockId": "act-01",
+      "activityId": "t-03",
+      "theme": "going back to the customer for what the first call did not ask for",
+      "magnitude": {
+        "value": 1.22,
+        "unit": "fte"
+      },
+      "magnitudeNote": "9% of the observed process time on 13.5 FTE",
+      "dimension": "proc",
+      "causeId": "information-quality",
+      "rootCause": "the notification script does not ask for photos or the accident form, so they arrive later or not at all",
+      "rowIds": [
+        "T-08"
+      ],
+      "sourceId": "SRC-W01"
+    }
+  ],
+  "proposedOpportunities": [
+    {
+      "id": "OPP-01",
+      "lever": "auto",
+      "scope": "activity",
+      "blockId": "act-01",
+      "painIds": [
+        "WP-01"
+      ],
+      "horizon": "0-6m",
+      "ownerActorId": "claims-handling",
+      "dependsOn": [],
+      "rationale": "show the cover on the claim record, so PolicyHub stays closed for the common case",
+      "constraints": [],
+      "signed": false
+    },
+    {
+      "id": "OPP-02",
+      "lever": "process",
+      "scope": "process",
+      "blockIds": [
+        "act-01"
+      ],
+      "painIds": [
+        "WP-04"
+      ],
+      "horizon": "0-6m",
+      "ownerActorId": "customer-service",
+      "dependsOn": [],
+      "rationale": "ask for photos and the accident form in the first call, with a link to upload them",
+      "constraints": [],
+      "signed": false
+    },
+    {
+      "id": "OPP-03",
+      "lever": "auto",
+      "scope": "activity",
+      "blockId": "act-01",
+      "painIds": [
+        "WP-03"
+      ],
+      "horizon": "6-12m",
+      "ownerActorId": "claims-handling",
+      "dependsOn": [],
+      "rationale": "pass the notification straight from the contact centre into ClaimsCore",
+      "constraints": [
+        "depends on the two systems being connected, which is the data foundation"
+      ],
+      "signed": false
+    },
+    {
+      "id": "OPP-04",
+      "lever": "aiacc",
+      "scope": "activity",
+      "blockId": "act-01",
+      "painIds": [
+        "WP-02"
+      ],
+      "horizon": "6-12m",
+      "ownerActorId": "claims-handling",
+      "dependsOn": [],
+      "rationale": "read the scanned post and match it to the claim before a handler sees it",
+      "constraints": [],
+      "signed": false
+    }
+  ],
+  "split": {
+    "valueAdding": 28.0,
+    "valueEnabling": 16.0,
+    "waste": 56.0
+  }
+};
+/* ========================================================= */
+(function(){
+  /* The ten waste categories are FIXED. Two teams stay comparable only while this list does,
+     and the same ten sit behind the OTE waterfall, which is what lets the bottom-up and the
+     top-down numbers be read category by category. */
+  var WASTE=[
+    ['waiting-people','waiting for people or information'],
+    ['waiting-systems','waiting for resources or systems'],
+    ['transport','transport of goods or information'],
+    ['unused-output','working on things that are not used'],
+    ['correcting','correcting mistakes'],
+    ['chasing-info','requesting missing or unclear information'],
+    ['moving-building','moving through the building'],
+    ['searching','searching for goods or documents'],
+    ['over-processing','doing more than necessary'],
+    ['status-questions','answering status questions']];
+  var CAUSE=[
+    ['system-fit','System fit'],
+    ['information-quality','Information quality'],
+    ['process-design','Process design'],
+    ['skills','Skills and experience'],
+    ['workload-scheduling','Workload and scheduling'],
+    ['governance-policy','Governance and policy']];
+  var BUCKET={valueAdding:['Value adding','var(--wf-value-c)','good'],
+              valueEnabling:['Value enabling','var(--wf-value-b)','enab'],
+              waste:['Waste','var(--wf-loss)','poor']};
+  var BORDER=['valueAdding','valueEnabling','waste'];
+
+  function esc(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function hl(t){return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1</span>');}
+  function n1(v){return (Math.round(v*10)/10).toFixed(1);}
+  function pct(v){return (Math.round(v*10)/10)+'%';}
+  function lbl(list,k){for(var i=0;i<list.length;i++){if(list[i][0]===k)return list[i][1];}return k;}
+  function rows(){return DATA.rows||[];}
+
+  /* ── one row of the cascade. `left` and `width` are percentages of process time, so every
+        view shares one scale and the bars can be compared across tabs. ── */
+  function bar(o){
+    var lab='<div class="wf-label">'+(o.num?'<span class="wf-num" style="background:'+o.col+'">'+o.num+'</span>':'')+
+      '<span'+(o.tipb?' class="defd"':'')+'>'+esc(o.label)+'</span></div>';
+    var track;
+    if(o.na){ track='<div class="wf-track"><div class="wf-out na" style="left:0">not observed</div></div>'; }
+    else{
+      /* the figure sits inside the bar when there is room, to the right of it when there is not,
+         and to the LEFT when the bar ends near the frame */
+      var end=o.left+o.width, inside=o.width>=14, flip=(!inside && end>78);
+      track='<div class="wf-track"><div class="wf-bar" style="left:'+o.left+'%;width:'+o.width+'%;background:'+o.col+
+        (o.dim?';opacity:.72':'')+'">'+(inside?'<span>'+pct(o.value)+'</span>':'')+'</div>'+
+        (inside?'':'<div class="wf-out" style="'+(flip?'right:calc('+(100-o.left)+'% + .5em)':'left:calc('+end+'% + .5em)')+'">'+pct(o.value)+'</div>')+'</div>';
+    }
+    return '<div class="wf-row'+(o.cls?' '+o.cls:'')+'"'+(o.id?' data-id="'+esc(o.id)+'"':'')+
+      (o.tipb?' data-tiph="'+esc(o.tiph||o.label)+'" data-tipb="'+esc(o.tipb)+'"':'')+'>'+lab+track+'</div>';
+  }
+  /* A chart is drawn as columns. Past fourteen items a column is narrower than the words it has
+     to carry, and it falls back to rows. Between seven and fourteen the label band steps down the
+     type scale and stops at four lines, with the full name in the hover.
+     items: {label, value, col, num, from, total, id, tiph, tipb}. `from` makes a floating
+     waterfall column, measured from the top of the plot. */
+  var VERTICAL_MAX=14;
+  function cols(items,scaleTo,carries){
+    var n=items.length, gap=2.2, w=(100-gap*(n-1))/n, chart='', labs='', conn='';
+    items.forEach(function(it){
+      var h=Math.max(0,(it.value/scaleTo)*100), from=(it.from!=null?(it.from/scaleTo)*100:null);
+      var inside=h>=22;
+      chart+='<div class="vcol'+(from!=null?' float':'')+'"'+(it.id?' data-id="'+esc(it.id)+'"':'')+
+        (it.tipb?' data-tiph="'+esc(it.tiph||it.label)+'" data-tipb="'+esc(it.tipb)+'"':'')+'>'+
+        (from!=null?'<div class="vspacer" style="height:'+from+'%"></div>':'')+
+        '<div class="vbar'+(inside?' inbar':'')+'" style="height:'+h+'%;background:'+it.col+'">'+
+        '<span class="vval">'+pct(it.value)+'</span></div></div>';
+      labs+='<div class="vlab'+(it.total?' tot':'')+'">'+
+        (it.num?'<span class="vnum" style="background:'+it.col+'">'+it.num+'</span>':'')+
+        '<span class="n">'+esc(it.label)+'</span></div>';
+    });
+    (carries||[]).forEach(function(c,i){
+      if(c==null||i>=n-1) return;
+      var y=(c/scaleTo);
+      conn+='<div class="vconn" style="left:'+(i*(w+gap))+'%;width:'+(2*w+gap)+'%;'+
+        'top:calc(var(--ui)*1.9 + (100% - var(--ui)*1.9)*'+y.toFixed(4)+')"></div>';
+    });
+    var dense=n>8?' dense2':(n>6?' dense':'');
+    return '<div class="vchart">'+chart+conn+'</div><div class="vlabs'+dense+'">'+labs+'</div>';
+  }
+  function frame(style,inner){return '<div style="'+style+'">'+inner+'</div>';}
+  function cap1(t){t=String(t||'');return t?t.charAt(0).toUpperCase()+t.slice(1):t;}
+  function head(meta,right,axis){return '<div class="wfmeta"><span class="a">'+(meta||'')+
+    '</span><span class="c'+(axis?' axis':'')+'">'+(right||'')+'</span></div>';}
+
+  /* one insight block, the house shape: numbered badge, heading with at most one chip, bullets,
+     and the evidence in italics underneath. No rule between blocks and no box around them. */
+  function insBlock(num,head,chips,bullets,ev){
+    var li=(bullets||[]).filter(Boolean).map(function(b){return '<li>'+esc(b)+'</li>';}).join('');
+    return '<div class="ins"><div class="inh"><span class="inum">'+(num||'&bull;')+'</span><b>'+
+      esc(head)+(chips||'')+'</b></div><ul>'+li+'</ul>'+
+      (ev?'<div class="inev">'+esc(ev)+'</div>':'')+'</div>';
+  }
+  function chip(cls,t){return '<span class="chip '+cls+'">'+esc(t)+'</span>';}
+  function uniq(a){return a.filter(function(x,i){return x&&a.indexOf(x)===i;});}
+  function slide(title,labw,left,right){
+    return '<div class="slide"><section class="col-wf" style="--labw:calc(var(--ui)*'+labw+')">'+
+      '<h3 class="sech">'+esc(title)+'</h3>'+left+'</section>'+
+      '<section class="col-ins"><h3 class="sech">Insights and key sources of waste</h3>'+
+      '<div class="inswrap">'+right+'</div></section></div>';
+  }
+  function byShare(a,b){return b.pctOfProcessTime-a.pctOfProcessTime;}
+
+  /* ── view 1 · the three buckets as a cascade from 100 ── */
+  function vSplit(){
+    var s=DATA.split||{}, rem=100, f=(DATA.scope||{}).observedFte;
+    var meta='Indexed to observed process time = <b>100</b>'+(f!=null?' \u00b7 <b>'+n1(f)+'</b> FTE observed':'');
+    var items=[{label:'Process time observed',value:100,col:'var(--wf-total)',total:true}], carries=[0], cum=0;
+    BORDER.forEach(function(k,i){
+      var v=+(s[k]||0);
+      items.push({label:BUCKET[k][0],value:v,from:cum,col:BUCKET[k][1],num:i+1,tipb:(DATA.definitions||{})[k]||''});
+      cum+=v; carries.push(cum);
+    });
+    var out=head(meta,'');
+    if(items.length<=VERTICAL_MAX){
+      out=head(meta,'% of process time',true)+cols(items,100,carries);
+    }else{
+      out+=bar({label:items[0].label,value:100,left:0,width:100,col:'var(--wf-total)',
+                cls:'tot'});
+      out+='<div class="wf-sep"></div>';
+      BORDER.forEach(function(k,i){
+        var v=+(s[k]||0);
+        out+=bar({label:BUCKET[k][0],value:v,left:Math.max(0,rem-v),width:v,col:BUCKET[k][1],num:i+1,
+                  tipb:(DATA.definitions||{})[k]||'',});
+        rem-=v;
+      });
+    }
+    /* the panel says what each bucket MEANS for this activity and which observed steps sit in
+       it. The definition is written per activity, so it is the one thing the reader cannot work
+       out from the chart. */
+    var ins='';
+    BORDER.forEach(function(k,i){
+      var rs=rows().filter(function(r){return r.bucket===k;}).sort(byShare);
+      var def=(DATA.definitions||{})[k]||'';
+      var bul=def?[def]:[];
+      rs.slice(0,3).forEach(function(r){
+        bul.push(r.label+', '+pct(r.pctOfProcessTime)+
+          (r.namedWaste?': '+r.namedWaste+'.':'.')); });
+      if(rs.length>3) bul.push('And '+(rs.length-3)+' more, ranked on the next tab.');
+      ins+=insBlock(i+1,BUCKET[k][0]+': '+pct(+(DATA.split||{})[k]||0),'',bul,'');
+    });
+    return slide('Breakdown of processing time',20,out,ins);
+  }
+
+  /* ── view 2 · every observed step, ranked, coloured by bucket ── */
+  function tipOf(r){
+    return (r.wasteId?cap1(lbl(WASTE,r.wasteId))+': '+(r.namedWaste||'')+' ':'')+
+           (r.why?cap1(r.why)+' ':'')+(r.evidence?'Seen: '+r.evidence+'.':'');
+  }
+  function vRows(){
+    var rs=rows().slice().sort(byShare), out='', ins='';
+    if(rs.length<=VERTICAL_MAX){
+      out=head('Ranked, largest first','% of process time',true)+
+          cols(rs.map(function(r,i){return {label:r.label,value:r.pctOfProcessTime,col:BUCKET[r.bucket][1],
+               num:i+1,id:r.id,tiph:r.label,
+               tipb:BUCKET[r.bucket][0]+'. '+tipOf(r)};}),
+               rs[0].pctOfProcessTime,null);
+    }else{
+      out=head('','');
+      rs.forEach(function(r,i){
+        out+=bar({label:r.label,value:r.pctOfProcessTime,left:0,width:r.pctOfProcessTime,
+                  col:BUCKET[r.bucket][1],num:i+1,id:r.id,
+                  tiph:BUCKET[r.bucket][0],tipb:tipOf(r)});
+      });
+    }
+    /* two bullets, and they answer the two questions a reader has: what was seen, and why it
+       was judged that way. The evidence line underneath says where it was seen. */
+    rs.slice(0,5).forEach(function(r,i){
+      var bul=[];
+      if(r.wasteId) bul.push(cap1(lbl(WASTE,r.wasteId))+': '+(r.namedWaste||r.evidence||'')+'.');
+      else if(r.namedWaste) bul.push(cap1(r.namedWaste)+'.');
+      if(r.why) bul.push(cap1(r.why));
+      if(!bul.length) bul.push(cap1(r.evidence||'')+'.');
+      ins+=insBlock(i+1,r.label+': '+pct(r.pctOfProcessTime),
+        r.wasteId?'':chip(BUCKET[r.bucket][2],BUCKET[r.bucket][0]),
+        bul, cap1(r.evidence||''));
+    });
+    return slide(((DATA.scope||{}).level==='activity')?'By activity':'By task',33,out,ins);
+  }
+
+  /* ── view 3 · the ten fixed waste categories, ranked, unobserved shown as unobserved ── */
+  function vWaste(){
+    var tot={}, ex={};
+    rows().forEach(function(r){ if(r.bucket!=='waste'||!r.wasteId) return;
+      tot[r.wasteId]=(tot[r.wasteId]||0)+r.pctOfProcessTime;
+      (ex[r.wasteId]=ex[r.wasteId]||[]).push(r); });
+    var seen=WASTE.filter(function(w){return tot[w[0]];}).sort(function(a,b){return tot[b[0]]-tot[a[0]];});
+    var total=+(DATA.split||{}).waste||0, out='', ins='';
+    function tb(w){ return ex[w].slice().sort(byShare).map(function(r){
+      return r.label+', '+pct(r.pctOfProcessTime)+(r.namedWaste?': '+r.namedWaste:'')+'.';}).join(' '); }
+    if(seen.length<=VERTICAL_MAX && seen.length){
+      /* the total moves into the meta line: a total column beside four ranked ones invites the
+         reader to compare it with them, and it is not that kind of number */
+      out=head('Ranked, largest first \u00b7 <b>'+pct(total)+'</b> of process time in total',
+               '% of process time',true)+
+          cols(seen.map(function(w,i){return {label:w[1],value:tot[w[0]],col:'var(--wf-loss)',num:i+1,tiph:'What sits in it',tipb:tb(w[0])};}),
+               tot[seen[0][0]],null);
+    }else{
+      out=head('','');
+      seen.forEach(function(w,i){
+        out+=bar({label:w[1],value:tot[w[0]],left:0,width:tot[w[0]],col:'var(--wf-loss)',num:i+1,tiph:'What sits in it',tipb:tb(w[0])});
+      });
+      out+='<div class="wf-sep"></div>';
+      out+=bar({label:'Total waste',value:total,left:0,width:total,col:'var(--wf-loss)',cls:'tot',});
+    }
+    seen.slice(0,5).forEach(function(w,i){
+      var list=ex[w[0]].slice().sort(byShare), causes=uniq(list.map(function(r){return r.causeId;}));
+      var bul=list.slice(0,2).map(function(r){
+        return r.label+': '+(r.namedWaste||r.evidence||'')+'.'+(r.why?' '+cap1(r.why):''); });
+      ins+=insBlock(i+1,cap1(w[1])+': '+pct(tot[w[0]]),
+        causes.length===1?chip('neu',lbl(CAUSE,causes[0])):'',
+        bul, cap1(list[0].evidence||''));
+    });
+    return slide('By waste category',26,out,ins);
+  }
+
+  /* ── view 4 · the same minutes on the cause axis ── */
+  function vCause(){
+    var tot={}, ex={};
+    rows().forEach(function(r){ if(r.bucket!=='waste'||!r.causeId) return;
+      tot[r.causeId]=(tot[r.causeId]||0)+r.pctOfProcessTime;
+      (ex[r.causeId]=ex[r.causeId]||[]).push(r); });
+    var seen=CAUSE.filter(function(c){return tot[c[0]];}).sort(function(a,b){return tot[b[0]]-tot[a[0]];});
+    var total=+(DATA.split||{}).waste||0, out='', ins='';
+    function tb(c){ var list=ex[c].slice().sort(byShare);
+      return uniq(list.map(function(r){return r.rootCauseText;})).map(function(x){return cap1(x)+'.';}).join(' ')+
+             ' Shows up in: '+list.map(function(r){return r.label;}).join(', ')+'.'; }
+    if(seen.length<=VERTICAL_MAX && seen.length){
+      out=head('Ranked, largest first \u00b7 <b>'+pct(total)+'</b> of process time in total',
+               '% of process time',true)+
+          cols(seen.map(function(c,i){return {label:c[1],value:tot[c[0]],col:'var(--wf-loss)',num:i+1,tiph:'Why it happens',tipb:tb(c[0])};}),
+               tot[seen[0][0]],null);
+    }else{
+      out=head('','');
+      seen.forEach(function(c,i){
+        out+=bar({label:c[1],value:tot[c[0]],left:0,width:tot[c[0]],col:'var(--wf-loss)',num:i+1,tiph:'Why it happens',tipb:tb(c[0])});
+      });
+      out+='<div class="wf-sep"></div>';
+      out+=bar({label:'Total waste',value:total,left:0,width:total,col:'var(--wf-loss)',cls:'tot',});
+    }
+    seen.slice(0,5).forEach(function(c,i){
+      var list=ex[c[0]].slice().sort(byShare);
+      var why=uniq(list.map(function(r){return r.rootCauseText;}));
+      ins+=insBlock(i+1,c[1]+': '+pct(tot[c[0]]),'',
+        (why.length?why:[list[0].namedWaste]).map(function(x){return cap1(x)+'.';}),
+        'Shows up in: '+list.map(function(r){return r.label;}).join(', ')+'.');
+    });
+    return slide('By root cause',22,out,ins);
+  }
+
+  var VIEWS=[['split','Breakdown of processing time',vSplit],
+             ['rows','',vRows],
+             ['waste','By waste category',vWaste],
+             ['cause','By root cause',vCause]];
+  VIEWS[1][1]=((DATA.scope||{}).level==='activity')?'By activity':'By task';
+  var cur='split';
+
+  document.getElementById('ctx').textContent=DATA.context||'OPEX QUICKSCAN';
+  document.getElementById('lens').textContent=DATA.lens||'PROCESSES · WASTE OBSERVATIONS';
+  document.getElementById('title').innerHTML=hl(DATA.keyMessage||'');
+  document.getElementById('subt').textContent=DATA.teamName||'';
+  document.getElementById('views').innerHTML=VIEWS.map(function(v,i){
+    return '<button data-v="'+v[0]+'"'+(i===0?' class="on"':'')+'>'+esc(v[1])+'</button>';}).join('');
+  (function(){
+    var s=DATA.session||{}, r=s.representativeness||{}, p=[];
+    if(s.runsWatched) p.push('<b>'+s.runsWatched+'</b> run'+(s.runsWatched>1?'s':'')+' watched');
+    if(r.people) p.push('<b>'+r.people+'</b> person'+(r.people>1?'s':''));
+    if(r.caseTypes) p.push(esc(r.caseTypes)+' case type'+(r.caseTypes==='one'?'':'s'));
+    if(r.cyclePoint) p.push(esc(r.cyclePoint)+' point in the cycle');
+    document.getElementById('meth').innerHTML=p.join(' &middot; ');
+  })();
+  document.getElementById('src').innerHTML=DATA.source?('<b style="color:var(--txt)">Source:</b> '+esc(DATA.source)):'';
+  document.getElementById('lg').innerHTML='<b style="color:var(--txt);margin-right:4px">Legend:</b>'+
+    BORDER.map(function(k){return '<span class="lp" style="background:rgba(0,0,0,.04);color:'+BUCKET[k][1]+'">● '+BUCKET[k][0]+'</span>';}).join('');
+
+  /* ══ THE FIT, ported from the OTE waterfall so the two instruments size identically ══
+     --ui is solved from the frame and nothing else, the chart fills by growing its ROWS rather
+     than by magnifying everything, and the prose column searches the largest base at which it
+     still fits the chart beside it. */
+  function bottomGap(ah){ return Math.max(14, ah*0.035); }
+  function fitUI(ah){
+    var art=document.getElementById('art');
+    var ui=Math.max(9.5, Math.min(14*nrZ(), ah/52));
+    art.style.setProperty('--ui', ui.toFixed(2)+'px');
+    return ui; }
+  /* Height is linear in the row height (total = fixed chrome + rows x rowh), so one solve is exact. */
+  function fitRows(ah){
+    var art=document.getElementById('art'), col=document.querySelector('.col-wf');
+    if(!col){ if(art) art.style.removeProperty('--rowh'); return; }
+    var n=col.querySelectorAll('.wf-row').length; if(!n) return;
+    var cur=parseFloat(getComputedStyle(art).getPropertyValue('--rowh'))||29;
+    var fixed=col.offsetHeight-n*cur;
+    /* no 68px ceiling: a four-row cascade has to fill the same frame a twelve-row one does,
+       and the bar height above is what stops a tall row reading as a block */
+    var h=Math.max(22,Math.min(150,(ah-16-fixed)/n));
+    art.style.setProperty('--rowh',h.toFixed(2)+'px');}
+  /* A column chart fills the frame the same way the rows do: by growing the plot, not by
+     magnifying everything. Height is linear in the plot height, so one solve is exact. */
+  function fitCols(ah){
+    var art=document.getElementById('art'), col=document.querySelector('.col-wf');
+    if(!col) return;
+    var ch=col.querySelector('.vchart');
+    if(!ch){ art.style.removeProperty('--colh'); return; }
+    var cur=parseFloat(getComputedStyle(art).getPropertyValue('--colh'))||260;
+    var fixed=col.offsetHeight-cur;
+    var h=Math.max(130,Math.min(560,ah-16-fixed));
+    art.style.setProperty('--colh',h.toFixed(2)+'px');}
+  /* The insight column carries prose, so it is not stretched like a table: search the largest
+     base font-size at which it still fits the chart beside it, banded around --ui so the prose
+     can never outgrow its own section heading. Spend any slack on the gaps, not the letters. */
+  function fitInsights(){
+    var host=document.querySelector('.col-ins'), wf=document.querySelector('.col-wf');
+    if(!host||!wf) return;
+    var wrap=host.querySelector('.inswrap'); if(!wrap) return;
+    var target=wf.offsetHeight-(wrap.offsetTop-host.offsetTop);
+    if(target<40){host.style.fontSize='';return;}
+    var ui=parseFloat(getComputedStyle(document.getElementById('art')).getPropertyValue('--ui'))||11;
+    var lo=7,hi=ui*1.06,best=lo;
+    wrap.style.gap='';
+    for(var i=0;i<11;i++){var f=(lo+hi)/2;host.style.fontSize=f+'px';
+      if(wrap.scrollHeight<=target){best=f;lo=f;}else{hi=f;}}
+    host.style.fontSize=best.toFixed(2)+'px';
+    var n=wrap.children.length;
+    if(n>1){
+      var free=target-wrap.scrollHeight;
+      var fr=document.getElementById('view'), vi=document.getElementById('vinner');
+      if(fr&&vi){
+        var sc=+(String(vi.style.transform).match(/scale\(([\d.]+)\)/)||[0,1])[1]||1;
+        var room=(fr.clientHeight-bottomGap(fr.clientHeight))/sc-vi.scrollHeight;
+        free=Math.min(free, Math.max(0, room));
+      }
+      if(free>2){
+        var base=1.35*best, extra=Math.min(free/(n-1), 2.4*best);
+        wrap.style.gap=(base+extra).toFixed(1)+'px';
+      }
+    }}
+  /* TWO PASSES, always: the fit changes the layout it is measuring, and in the working copy the
+     edit layer changes it again underneath. The second pass measures what the first produced. */
+  function fitView(){ fitOnce(); fitOnce(); }
+  function fitOnce(){var v=document.getElementById('view'),vi=document.getElementById('vinner');var ah=v.clientHeight;if(!ah)return;
+    vi.style.transform='none';vi.style.width='100%';
+    var gap=bottomGap(ah);
+    fitUI(ah); fitRows(ah-gap); fitCols(ah-gap); fitInsights();
+    var lo=0.25,hi=1.0*nrZ(),best=0.25;
+    for(var k=0;k<12;k++){var s=(lo+hi)/2;vi.style.width=(100/s)+'%';if(vi.scrollHeight*s<=ah-gap){best=s;lo=s;}else{hi=s;}}
+    vi.style.width=(100/best)+'%';vi.style.transform='scale('+best+')';
+    /* the painted bottom of the deepest element is the fact, scrollHeight is only a promise:
+       long prose rewraps when the search changes the column width, so shrink until it is in. */
+    var vt=vi.getBoundingClientRect().top;
+    for(var g=0;g<3;g++){
+      var fb=v.getBoundingClientRect().bottom-gap, deep=vt;
+      vi.querySelectorAll('*').forEach(function(e){var r=e.getBoundingClientRect();
+        if(r.height&&r.bottom>deep) deep=r.bottom;});
+      if(deep<=fb) break;
+      var q=(fb-vt)/(deep-vt); if(!(q>0&&q<1)) break;
+      best=Math.max(0.25,best*q);
+      vi.style.width=(100/best)+'%'; vi.style.transform='scale('+best+')';
+    }}
+  function viewFn(){for(var i=0;i<VIEWS.length;i++){if(VIEWS[i][0]===cur)return VIEWS[i][2];}return VIEWS[0][2];}
+  var tipEl=null;
+  function bindTips(){
+    if(!tipEl){ tipEl=document.createElement('div'); tipEl.id='tip';
+      (document.getElementById('art')||document.body).appendChild(tipEl); }
+    /* bind the BAR and the LABEL, never the whole row: the row spans the full width, so hovering
+       empty track would fire the tooltip wherever the pointer happened to be */
+    document.querySelectorAll('#vinner [data-tipb]').forEach(function(el){
+      var trig=[el.querySelector('.wf-bar'),el.querySelector('.wf-label')].filter(Boolean);
+      if(!trig.length) trig=[el];   /* a column: the whole column is the hit area */
+      trig.forEach(function(tr){
+        tr.addEventListener('mouseenter',function(){
+          tipEl.innerHTML='<b>'+esc(el.getAttribute('data-tiph')||'')+'</b>'+esc(el.getAttribute('data-tipb')||'');
+          tipEl.classList.add('on'); place(el); });
+        tr.addEventListener('mouseleave',function(){tipEl.classList.remove('on');});
+      });
+    });
+    /* anchor over the chart's own whitespace, right of the label column, rather than out over
+       the insight panel */
+    function place(el){ var r=el.getBoundingClientRect(), b=tipEl.getBoundingClientRect();
+      var lab=el.querySelector('.wf-label'), trk=el.querySelector('.wf-track');
+      if(!lab){ /* a column: above it where there is room, otherwise inside the plot rather than
+                   up over the action title */
+        var ch=el.closest('.vchart'), ct=ch?ch.getBoundingClientRect().top:0;
+        var left=Math.max(8,Math.min(r.left+r.width/2-b.width/2, window.innerWidth-b.width-8));
+        var top=Math.max(ct+6, r.top-b.height-8);
+        tipEl.style.left=left+'px'; tipEl.style.top=top+'px'; return; }
+      var top=Math.max(8,Math.min(r.top+r.height/2-b.height/2, window.innerHeight-b.height-8));
+      var left=(lab?lab.getBoundingClientRect().right:r.left+24)+10;
+      var limit=(trk?trk.getBoundingClientRect().right:r.right);
+      if(left+b.width>limit) left=Math.max(8,limit-b.width);
+      if(left+b.width>window.innerWidth-8) left=Math.max(8,window.innerWidth-b.width-8);
+      tipEl.style.left=left+'px'; tipEl.style.top=top+'px'; }
+  }
+  function render(){document.getElementById('vinner').innerHTML=viewFn()();/*<EDIT>*/bindRows();/*</EDIT>*/bindTips();requestAnimationFrame(fitView);setTimeout(fitView,60);}
+  function seg(id,attr,cb){var box=document.getElementById(id);box.querySelectorAll('button').forEach(function(b){b.onclick=function(){box.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});b.classList.add('on');cb(b.getAttribute(attr));};});}
+  seg('views','data-v',function(v){cur=v;render();});
+  seg('theme','data-s',function(t){document.getElementById('art').setAttribute('data-t',t);render();});
+  window.addEventListener('resize',fitView);
+/*<EDIT>*/
+  var ON=false, DELTA=[], edp=document.getElementById('ed');
+  var LOCK_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>', UNLOCK_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>';
+  var CHEV='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+  var CHK='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  function rowById(id){return rows().filter(function(r){return r.id===id;})[0];}
+  function bindRows(){ if(!ON) return;
+    document.querySelectorAll('#vinner [data-id]').forEach(function(el){ el.onclick=function(){ var r=rowById(el.getAttribute('data-id')); if(r) openItem(r); }; }); }
+  function pushOp(op){ DELTA.push(op); var b=document.getElementById('save'); b.className='show'; b.disabled=!DELTA.length;
+    b.textContent=DELTA.length?('Export '+DELTA.length+' change'+(DELTA.length>1?'s':'')):'No changes'; }
+  function optHTML(o,sel){ return '<option value="'+esc(o.key)+'"'+(o.key===sel?' selected':'')+(o.dot?' data-dot="'+o.dot+'"':'')+(o.tag?' data-tag="'+esc(o.tag)+'"':'')+'>'+esc(o.label)+'</option>'; }
+  function selField(label,id,list,val,grouped){ var body;
+    if(grouped){ var g={}; (list||[]).forEach(function(o){(g[o.group||'']=g[o.group||'']||[]).push(o);});
+      body=Object.keys(g).map(function(k){return (k?'<optgroup label="'+esc(k)+'">':'')+g[k].map(function(o){return optHTML(o,val);}).join('')+(k?'</optgroup>':'');}).join(''); }
+    else body=(list||[]).map(function(o){return optHTML(o,val);}).join('');
+    return '<div class="f"><label>'+esc(label)+'</label><select id="'+id+'">'+body+'</select></div>'; }
+  function enhanceSelects(root){ root.querySelectorAll('select:not([data-enh])').forEach(function(sel){ sel.setAttribute('data-enh','1');
+    var wrap=document.createElement('div'); wrap.className='cselwrap'; sel.parentNode.insertBefore(wrap,sel); wrap.appendChild(sel);
+    var trg=document.createElement('button'); trg.type='button'; trg.className='cseltrg';
+    var menu=document.createElement('div'); menu.className='cselmenu'; wrap.appendChild(trg); wrap.appendChild(menu);
+    function dot(o){var d=o.getAttribute('data-dot');return d?'<span class="cdot '+d+'"></span>':'';}
+    function tag(o){var t=o.getAttribute('data-tag');return t?'<span class="tag">'+esc(t)+'</span>':'';}
+    function row(o){return '<div class="cselopt'+(o.selected?' sel':'')+'" data-i="'+o.index+'"><span class="clab">'+dot(o)+esc(o.textContent)+'</span>'+(o.selected?CHK:tag(o))+'</div>';}
+    function draw(){var o=sel.options[sel.selectedIndex]; trg.innerHTML='<span class="clab">'+(o?dot(o)+esc(o.textContent):'')+'</span>'+CHEV;
+      var h=''; Array.prototype.forEach.call(sel.children,function(c){ if(c.tagName==='OPTION')h+=row(c);
+        else if(c.tagName==='OPTGROUP'){h+='<div class="cselgrp">'+esc(c.label)+'</div>';Array.prototype.forEach.call(c.children,function(x){h+=row(x);});} });
+      menu.innerHTML=h; menu.querySelectorAll('.cselopt').forEach(function(r){ r.onclick=function(e){e.stopPropagation();
+        sel.selectedIndex=+r.getAttribute('data-i'); sel.dispatchEvent(new Event('change',{bubbles:true})); wrap.classList.remove('on'); draw();};}); }
+    trg.onclick=function(e){e.stopPropagation(); var open=wrap.classList.contains('on'); document.querySelectorAll('.cselwrap.on').forEach(function(w){w.classList.remove('on');}); if(!open)wrap.classList.add('on');};
+    sel.addEventListener('change',draw); draw(); }); }
+  document.addEventListener('click',function(){document.querySelectorAll('.cselwrap.on').forEach(function(w){w.classList.remove('on');});});
+  var BUCKETS=[{key:'valueAdding',label:'Value adding',dot:'va'},{key:'valueEnabling',label:'Value enabling',dot:'ve'},{key:'waste',label:'Waste',dot:'wa'}];
+  function wasteOpts(){return WASTE.map(function(w){return {key:w[0],label:w[1]};});}
+  function causeOpts(){return CAUSE.map(function(c){return {key:c[0],label:c[1]};});}
+  function openItem(r){ if(!ON||!edp) return;
+    edp.innerHTML='<div class="edh"><button class="x" id="edx">&times;</button><div class="row"><span class="kind">Observed step</span><h3>'+esc(r.label)+'</h3></div></div>'+
+      '<div class="edb"><div class="f"><label>What it is called, in the team\'s words</label><input id="f_label" value="'+esc(r.label)+'"></div>'+
+      selField('Bucket','f_bucket',BUCKETS,r.bucket,false)+
+      '<div class="hint">Does it move the output forward? No, waste. Yes, and the receiver would pay for it, value adding. Yes, and something nameable requires it, value enabling.</div>'+
+      '<div class="f"><label>Share of process time (%)</label><input id="f_pct" value="'+esc(r.pctOfProcessTime)+'"></div>'+
+      selField('Waste category','f_waste',wasteOpts(),r.wasteId,false)+
+      selField('Root cause','f_cause',causeOpts(),r.causeId,false)+
+      '<div class="f"><label>What actually went wrong</label><textarea id="f_named">'+esc(r.namedWaste||'')+'</textarea></div>'+
+      '<div class="f"><label>Evidence, what was seen</label><textarea id="f_ev">'+esc(r.evidence||'')+'</textarea></div></div>'+
+      '<div class="edf"><span class="sp"></span><button class="wbtn" id="edc">Cancel</button><button class="wbtn pri" id="edok">Apply</button></div>';
+    edp.classList.add('on'); enhanceSelects(edp);
+    edp.querySelector('#edx').onclick=edp.querySelector('#edc').onclick=function(){edp.classList.remove('on');};
+    edp.querySelector('#edok').onclick=function(){
+      var b=edp.querySelector('#f_bucket').value, p=parseFloat(edp.querySelector('#f_pct').value);
+      var ch={label:edp.querySelector('#f_label').value.trim(),bucket:b,
+              pctOfProcessTime:isFinite(p)?p:r.pctOfProcessTime,
+              wasteId:b==='waste'?edp.querySelector('#f_waste').value:null,
+              causeId:b==='waste'?edp.querySelector('#f_cause').value:null,
+              namedWaste:edp.querySelector('#f_named').value.trim()||null,
+              evidence:edp.querySelector('#f_ev').value.trim()};
+      Object.assign(r,ch); pushOp({op:'update',coll:'rows',id:r.id,changes:ch});
+      recalcSplit(); edp.classList.remove('on'); render(); }; }
+  /* the split is DERIVED from the rows, so a re-classification in the room cannot leave the
+     three buckets disagreeing with what is on the page */
+  function recalcSplit(){ var s={valueAdding:0,valueEnabling:0,waste:0};
+    rows().forEach(function(r){ if(s[r.bucket]!=null) s[r.bucket]+=(+r.pctOfProcessTime||0); });
+    BORDER.forEach(function(k){ s[k]=Math.round(s[k]*10)/10; }); DATA.split=s; }
+  /* NR-KIT:BEGIN — the edit kit (scripts/patch_handover.py; editable-deliverable.md, "The edit kit").
+     The same block in every working copy that is not built on the editable shell: it hands the
+     changes over (a download as a file, the page's own store as a claude.ai artifact), keeps a
+     snapshot after each edit for Undo last and Discard all, and draws the quiet edit line under the
+     top bar. What differs per instrument is only NRK, the adapter just below. Do not edit here:
+     change the kit or the adapter in patch_handover.py and run it again. */
+  var NRK={name:'waste-observations', save:'save', root:'art', title:'#title', hide:[],
+    on:function(){return ON;}, count:function(){return DELTA.length;},
+    get:function(){return {DATA:DATA,DELTA:DELTA};},
+    put:function(s){nrInto(DATA,s.DATA);nrInto(DELTA,s.DELTA);},
+    clear:function(b){nrInto(DELTA,b.DELTA);},
+    redraw:function(){render();}};
+  /* NR-HANDOVER:BEGIN — handing the changes over (scripts/patch_handover.py, HANDOVER_JS; editable-deliverable.md,
+     "Opened as a claude.ai artifact"). As a file the delta downloads; as a claude.ai artifact with the db
+     capability it is saved in the store under changes/, status "waiting"; the page applies nothing itself.
+     One block, the same in the edit kit, the editable shell and the process map. Do not edit here: change
+     HANDOVER_JS and run patch_handover.py again. */
+  /* in a window of the findings dashboard the page is a frame of our own page: it sends through that page */
+  var NR_CL=(function(){ var L=[], W=[]; try{ var p=window.parent; if(p!==window&&p.claude&&p.claude.use){ L.push(p.claude); W.push(p); } }catch(e){} if(window.claude&&window.claude.use&&L.indexOf(window.claude)<0){ L.push(window.claude); W.push(window); } if(!L.length) return null; var at=window; return {plain:function(o){ var s=JSON.stringify(o); try{ return at.JSON.parse(s); }catch(e){ return JSON.parse(s); } }, use:function(k){ return new Promise(function(ok,no){ (function t(i){ if(i>=L.length){ try{console.warn('nr: no '+k+' on this page');}catch(e){} return no(new Error('no '+k)); } var over=false, tm=setTimeout(function(){ if(!over){ over=true; t(i+1); } },4000); function next(v){ if(over) return; over=true; clearTimeout(tm); if(v){ at=W[i]; ok(v); } else t(i+1); } try{ L[i].use(k).then(next,function(){ next(null); }); }catch(e){ next(null); } })(0); }); }}; })(),
+      NR_FRAMED=!!(NR_CL&&NR_CL.use), NR_INBOX=NR_FRAMED?null:false;
+  if(NR_FRAMED){ NR_CL.use('db').then(function(db){ NR_INBOX=db||false; nrReady(); },
+                                           function(){ NR_INBOX=false; nrReady(); }); }
+  /* who is looking (the user capability) and who decides on this page (window.NR_RIGHTS, put in by
+     build_artifact.py from rights.py): the change says who sent it, and someone who does not decide
+     here sends it as a proposal. The email (or, when the organisation withholds it, the name) is only compared on the page, never stored. */
+  var NR_ME=null;
+  if(NR_FRAMED){ NR_CL.use('user').then(function(u){ return u?u.me():null; })
+    .then(function(me){ NR_ME=me||null; nrReady(); },function(){}); }
+  function nrRights(){ return window.NR_RIGHTS||null; }
+  function nrMember(){ var R=nrRights(), e=NR_ME&&NR_ME.email, n=NR_ME&&NR_ME.name; if(!R) return null;
+    return (e&&R.team&&R.team[String(e).toLowerCase()])||(n&&R.people&&R.people[String(n).trim().toLowerCase()])||null; }
+  function nrMine(){ var R=nrRights(); if(!R||!NR_ME||!R.team||!Object.keys(R.team).length) return null; var m=nrMember(); return !!(m&&(R.decides||[]).indexOf(m)>=0); }
+  function nrWhoDecides(){ var R=nrRights(); return R&&R.names&&R.names.length?R.names.join(' and '):'the case lead'; }
+  function nrReady(){ if(window.nrInboxReady) window.nrInboxReady(); }   // the page redraws its edit line
+  function nrHandLabel(n){ if(!n) return 'No changes';
+    return NR_INBOX?(nrMine()===false?'Send as a proposal':'Send to Claude'):'Export changes'; }
+  function nrSay(m){ var t=document.getElementById('nr-hand-msg');
+    if(!t){ t=document.createElement('div'); t.id='nr-hand-msg'; t.setAttribute('role','status');
+      t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:99;max-width:520px;padding:11px 18px;border-radius:10px;background:var(--navy-fill,#0B2347);color:#fff;font-size:12.5px;font-weight:600;line-height:1.45;text-align:center;transition:opacity .25s;opacity:0;pointer-events:none';
+      document.body.appendChild(t); }
+    t.textContent=m; t.style.opacity='1'; clearTimeout(t._h); t._h=setTimeout(function(){ t.style.opacity='0'; },5200); }
+  function nrHandOver(d, done){
+    if(NR_INBOX){
+      var id=String(d.deltaId||'D').replace(/[^A-Za-z0-9._-]/g,'-')+'-'+Date.now().toString(36);
+      var R=nrRights(), mine=nrMine();
+      NR_INBOX.doc('changes/'+id).set(NR_CL.plain({status:'waiting', sentAt:new Date().toISOString(),
+          sentBy:{uid:(NR_ME&&NR_ME.id)||null, member:nrMember()}, page:(R&&R.page)||null, delta:d}))
+        .then(function(){ done(true, mine===false
+            ? (nrMember()?'Sent as a proposal: '+nrWhoDecides()+' decides on '+(R.what||'this')+'. Ask Claude in the chat to pass it on.'
+                         :"Sent. We couldn't tell who you are, so it goes to "+nrWhoDecides()+' as a proposal.')
+            : 'Sent. Ask Claude in the chat to apply the changes.'); },
+              function(e){ try{console.warn('nr: not sent', e&&e.message||e);}catch(x){} done(false,"Your changes weren't sent. Try again in a moment."); });
+      return;
+    }
+    if(NR_FRAMED && NR_INBOX===null){ done(false,'The page is still connecting. Try again in a second.'); return; }
+    if(NR_FRAMED){ done(false,"This page can't send changes yet. Ask Claude to republish it with sending switched on."); return; }
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,1)],{type:'application/json'}));
+    a.download=d.deltaId+'.json'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    done(true,'Downloaded '+d.deltaId+'.json. Give it to Claude to apply.');
+  }
+  /* NR-HANDOVER:END */
+  window.nrInboxReady=function(){ nrkBar(); };
+  /* the page's state, put back in place: objects and arrays keep their identity (items matched on
+     their id), so the instrument's own lookups still point at the live data */
+  function nrKey(x){ return (x&&typeof x==='object')?(x.id!=null?'i:'+x.id:(x.__rid!=null?'r:'+x.__rid:null)):null; }
+  function nrInto(t,s){
+    if(Array.isArray(t)&&Array.isArray(s)){ var by={}; t.forEach(function(x){ var k=nrKey(x); if(k) by[k]=x; });
+      var out=s.map(function(y,i){ var k=nrKey(y), m=(y&&typeof y==='object')?(k?by[k]:(t[i]&&typeof t[i]==='object'&&!nrKey(t[i])?t[i]:undefined)):undefined; return nrMerge(m,y); });
+      t.length=0; out.forEach(function(x){ t.push(x); }); return t; }
+    Object.keys(t).forEach(function(k){ if(!Object.prototype.hasOwnProperty.call(s,k)&&!(k.slice(0,2)==='__'&&t[k]&&typeof t[k]==='object')) delete t[k]; });
+    Object.keys(s).forEach(function(k){ t[k]=nrMerge(t[k],s[k]); }); return t; }
+  function nrMerge(a,b){ return (a&&b&&typeof a==='object'&&typeof b==='object'&&Array.isArray(a)===Array.isArray(b))?nrInto(a,b):b; }
+  var NRKH={base:null, steps:[], busy:false}, NRKS=null, NRKQ=0;
+  function nrkTitle(){ return document.querySelector(NRK.title||'#title'); }
+  /* a key that starts with __ and holds an object is a runtime link (a parent pointer), not data */
+  function nrkNow(){ var t=nrkTitle(); return {s:JSON.stringify(NRK.get(),function(k,v){ return (k.slice(0,2)==='__'&&v&&typeof v==='object')?undefined:v; }), t:t?t.innerHTML:''}; }
+  function nrkTop(){ return NRKH.steps.length?NRKH.steps[NRKH.steps.length-1]:NRKH.base; }
+  function nrkStart(){ NRKH.base=nrkNow(); NRKH.steps=[]; }
+  function nrkN(){ return NRKH.steps.length||NRK.count()||0; }
+  function nrkSync(){ NRKQ=0; if(NRKH.busy||!NRKH.base) return;
+    if(NRK.on()){ var n=nrkNow(), t=nrkTop();
+      if((n.s!==t.s||n.t!==t.t)&&(NRK.count()>0||NRKH.steps.length)) NRKH.steps.push(n); }
+    nrkBar(); }
+  function nrkSoon(){ if(!NRKQ) NRKQ=setTimeout(nrkSync,40); }
+  function nrkPut(p){ NRKH.busy=true;
+    try{ NRK.put(JSON.parse(p.s)); NRK.redraw(); var t=nrkTitle(); if(t&&t.innerHTML!==p.t) t.innerHTML=p.t; }
+    finally{ NRKH.busy=false; } }
+  function nrkBack(all){ if(!NRKH.base) return; if(all) NRKH.steps=[]; else NRKH.steps.pop();
+    nrkPut(nrkTop()); nrkBar();
+    nrSay(all?'All unsent changes discarded. The page is back as it was when you opened it.':'Last change undone.'); }
+  function nrkSend(d, note){ if(!d.deltaId) d.deltaId='D-'+new Date().toISOString().slice(0,10)+'-'+NRK.name;
+    nrHandOver(d,function(ok,msg){
+      if(ok&&NR_INBOX){ NRKH.busy=true; try{ NRK.clear(JSON.parse(NRKH.base.s)); NRK.redraw(); } finally{ NRKH.busy=false; } nrkStart(); }
+      nrkBar(); nrSay(msg+(note?' '+note:'')); }); }
+  function nrArm(btn, text, go){
+    if(btn._armed){ clearTimeout(btn._armed); btn._armed=null; btn.classList.remove('arm'); btn.textContent=btn._orig; go(); return; }
+    btn._orig=btn.textContent; btn.classList.add('arm'); btn.textContent=text;
+    btn._armed=setTimeout(function(){ btn._armed=null; btn.classList.remove('arm'); btn.textContent=btn._orig; nrkBar(); },4000); }
+  function nrkBar(){ var b=document.getElementById(NRK.save); if(!b||!NRKS) return;
+    var on=!!NRK.on(), n=nrkN(), set=function(el,k,v){ if(el[k]!==v) el[k]=v; };
+    set(NRKS.style,'display',on?'flex':'none');
+    set(NRKS._n,'textContent',on?(n?(n+' change'+(n>1?'s':'')+(NR_INBOX?' not sent yet':' not exported yet')):'No changes yet'):'');
+    if(!b.classList.contains('nr-send')) b.classList.add('nr-send');   // the instrument may reset the button's class
+    set(b,'textContent',nrHandLabel(n)); set(b.style,'display',(on&&n)?'inline-flex':'none'); set(b,'disabled',!n);
+    set(NRKS._u.style,'display',NRKH.steps.length?'':'none');
+    if(!NRKS._d._armed) set(NRKS._d.style,'display',NRKH.steps.length?'':'none');
+    (NRK.hide||[]).forEach(function(q){ var e=document.querySelector(q); if(e) set(e.style,'display','none'); }); }
+  setTimeout(function(){ var b=document.getElementById(NRK.save), h=nrkTitle(); if(!b||!h) return;
+    if(!document.getElementById('nr-kit-css')){ var st=document.createElement('style'); st.id='nr-kit-css'; st.textContent=
+      '.nr-strip{display:none;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 12px;padding:0 0 8px;min-height:34px;border-bottom:1px solid var(--line,#E3E8EF);color:var(--mut,#6B7A8F);font-size:12px;position:relative;z-index:60}'+
+      '.nr-strip>b{font-weight:700;color:var(--ink,#0B2347);display:inline-flex;align-items:center;gap:7px}'+
+      '.nr-strip>b::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--rag-amber,#D49A3A)}'+
+      '.nr-strip>b::after{content:"\\00B7";font-weight:400;color:var(--mut,#6B7A8F)}'+
+      '.nr-strip .sp{flex:1}.nr-strip .nr-strip-n{font-weight:500}'+
+      '#nrstrip .nrk-link{border:0;background:none;padding:2px;margin:0;font:inherit;font-size:12px;font-weight:600;color:var(--mut,#6B7A8F);text-decoration:underline;text-underline-offset:3px;cursor:pointer;box-shadow:none}'+
+      '#nrstrip .nrk-link:hover{color:var(--ink,#0B2347)}'+
+      '#nrstrip .nrk-link.arm{color:var(--rag-red-text,#C2483D);text-decoration:none;font-weight:800}'+
+      '#nrstrip .nr-send.nr-send,#nrstrip .nr-send.nr-send:hover{margin:0;padding:6px 13px;font-size:var(--fs-115);font-weight:700;line-height:1.3;border-radius:8px;border:1px solid var(--navy-fill,#0B2347);background:var(--navy-fill,#0B2347);color:#fff;cursor:pointer;white-space:nowrap;box-shadow:none;opacity:1;align-items:center}'+
+      '.nr-asking{outline:2px solid var(--rag-red,#D2645A)!important;outline-offset:2px}';
+      document.head.appendChild(st); }
+    var s=document.createElement('div'); s.className='nr-strip'; s.id='nrstrip';
+    s.innerHTML='<b>Editing</b><span class="nr-strip-n"></span><span class="sp"></span>'+
+      '<button type="button" class="nrk-link" title="Take back your last unsent change">Undo last</button>'+
+      '<button type="button" class="nrk-link" title="Throw away every unsent change">Discard all</button>';
+    s._n=s.children[1]; s._u=s.children[3]; s._d=s.children[4];
+    h.parentNode.insertBefore(s,h); s.appendChild(b); b.classList.add('nr-send'); NRKS=s;
+    s._u.onclick=function(e){ e.stopPropagation(); nrkBack(false); };
+    s._d.onclick=function(e){ e.stopPropagation(); var k=nrkN(); nrArm(s._d,'Discard '+k+' change'+(k>1?'s':'')+'?',function(){ nrkBack(true); }); };
+    ['click','change','drop','dragend','pointerup','focusout'].forEach(function(ev){ document.addEventListener(ev,nrkSoon,true); });
+    if(window.MutationObserver){ new MutationObserver(function(){ nrkBar(); }).observe(b,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['class','disabled','style']});
+      var R=document.getElementById(NRK.root)||document.body;
+      new MutationObserver(function(){ nrkBar(); if(window.fitChrome) requestAnimationFrame(window.fitChrome); }).observe(R,{attributes:true,attributeFilter:['class']}); }
+    window.addEventListener('beforeunload',function(e){ if(NRKH.steps.length){ e.preventDefault(); e.returnValue=''; } });
+    window.__nrk={n:nrkN, steps:function(){ return NRKH.steps.length; }, back:nrkBack, sync:nrkSync};   // for the checks (check_handover.js)
+    nrkStart(); nrkBar(); if(window.fitChrome) requestAnimationFrame(window.fitChrome); },0);
+  /* NR-KIT:END */
+  function exportDelta(){ if(!DELTA.length) return; var d={deltaId:'D-'+new Date().toISOString().slice(0,10),author:'consultant',instrument:'waste-observations',team:DATA.team||null,split:DATA.split,proposals:DELTA};
+    nrkSend(d); }
+  function setEditing(on){ ON=!!on; document.getElementById('art').classList.toggle('editing',ON);
+    var g=document.getElementById('lock'); g.classList.toggle('unlocked',ON); g.innerHTML=ON?UNLOCK_SVG:LOCK_SVG; g.title=ON?'Editing unlocked — click to lock':'Locked — click to edit';
+    document.getElementById('save').className=ON?'show':''; render(); }
+/*</EDIT>*/
+  render();
+/*<EDIT>*/
+  /* the action-title editor, the house standard: sidebar, rendered preview, hints, highlight helper */
+  var KM_MAX=150; function kmCount(){ var ta=document.getElementById('f_km'), c=document.getElementById('km_count'); if(!ta||!c) return; var n=ta.value.replace(/\*\*/g,'').replace(/<[^>]+>/g,'').trim().length, over=n>KM_MAX; c.style.cssText='display:flex;justify-content:space-between;gap:10px;margin:6px 0 2px;font-size:12px;font-weight:600;line-height:1.35;color:'+(over?'var(--rag-red-text,#B3261E)':'var(--mut,#5B6B82)'); c.innerHTML='<span>'+(over?'Runs past two lines on the slide. Keep the verdict, cut the evidence.':'Fits on two lines.')+'</span><span style="white-space:nowrap">'+n+' / '+KM_MAX+'</span>'; } document.addEventListener('input',function(e){ if(e.target&&e.target.id==='f_km') kmCount(); },true); new MutationObserver(function(){ var c=document.getElementById('km_count'); if(c&&!c.firstChild) kmCount(); }).observe(document.documentElement,{childList:true,subtree:true}); function openTitle(){ if(!ON||!edp) return;
+    edp.innerHTML='<div class="edh"><button class="x" id="edx">&times;</button><div class="row"><span class="kind">Narrative</span><h3>Action title</h3></div></div>'+
+      '<div class="edb"><div class="f"><label>Action title</label><textarea id="f_km">'+esc(DATA.keyMessage||'')+'</textarea><div id="km_count"></div>'+
+      '<button class="kmhl" id="km_hl" title="Wrap the selected words in **…** so they render green"><span class="swch"></span>Highlight selection</button></div>'+
+      '<div class="f"><label>Preview — exactly as it renders</label><div class="kmprev" id="km_prev"></div></div>'+
+      '<div class="kmhints"><b>Formatting</b>'+
+      '<span class="kchip">**70%**</span> &rarr; <span style="color:var(--green);font-weight:700">70%</span> — green highlight for the load-bearing numbers and words.<br>'+
+      'Everything else renders <span style="color:var(--navy);font-weight:700" class="dk">bold navy</span> automatically — no HTML needed (tags are not interpreted).<br>'+
+      '<b style="margin-top:7px">Good title checklist</b>'+
+      'Cover the slide with your hand: can the reader still tell how good or bad this team is? &middot; the conclusion, not the topic &middot; numbers only where they carry the claim &middot; one verdict &middot; two lines at most.</div></div>'+
+      '<div class="edf"><span class="sp"></span><button class="wbtn" id="edc">Cancel</button><button class="wbtn pri" id="edok">Apply</button></div>';
+    edp.classList.add('on');
+    var ta=edp.querySelector('#f_km'), pv=edp.querySelector('#km_prev');
+    function upd(){kmCount();pv.innerHTML=ta.value?hl(ta.value):'<span style="color:var(--mut);font-style:italic;font-weight:600;font-size:.85em">Action title to be drafted</span>';}
+    function grow(){ta.style.height='auto';ta.style.height=(ta.scrollHeight+2)+'px';}
+    ta.addEventListener('input',function(){upd();grow();}); upd(); setTimeout(grow,10); ta.focus();
+    edp.querySelector('#km_hl').onclick=function(){
+      var s=ta.selectionStart,e=ta.selectionEnd,v=ta.value;
+      if(s===e){ta.focus();return;} /* nrSnapWord: a highlight never starts or ends inside a word */ while(s<e&&/\s/.test(v.charAt(s)))s++; while(e>s&&/\s/.test(v.charAt(e-1)))e--; while(s>0&&/[\p{L}\p{N}]/u.test(v.charAt(s-1))&&/[\p{L}\p{N}]/u.test(v.charAt(s)))s--; while(e<v.length&&/[\p{L}\p{N}]/u.test(v.charAt(e))&&/[\p{L}\p{N}]/u.test(v.charAt(e-1)))e++;
+      var sl=v.slice(s,e);
+      if(/^\*\*[\s\S]*\*\*$/.test(sl)){ta.value=v.slice(0,s)+sl.slice(2,-2)+v.slice(e);ta.setSelectionRange(s,e-4);}
+      else{ta.value=v.slice(0,s)+'**'+sl+'**'+v.slice(e);ta.setSelectionRange(s,e+4);}
+      upd();grow();ta.focus(); };
+    edp.querySelector('#edx').onclick=edp.querySelector('#edc').onclick=function(){edp.classList.remove('on');};
+    edp.querySelector('#edok').onclick=function(){ var km=ta.value.trim();
+      if(km!==(DATA.keyMessage||'')){DATA.keyMessage=km;document.getElementById('title').innerHTML=hl(km);pushOp({op:'keyMessage',value:km});}
+      edp.classList.remove('on'); }; }
+  (function(){ var g=document.getElementById('lock'), b=document.getElementById('save');
+    if(g) g.onclick=function(e){e.stopPropagation(); setEditing(!ON);};
+    if(b) b.onclick=exportDelta;
+    var h=document.getElementById('title'); if(h) h.onclick=function(){ if(ON) openTitle(); };
+    setEditing(false); })();
+/*</EDIT>*/
+})();
+</script>
+<script id="nr-topbar-js">
+/* patch_topbar.py: one theme switch and the way home, the same in every instrument.
+   Theme: the choice is kept under the cockpit's key, nr_dark, so every page of an
+   engagement opens the same way. Home: a page that carries
+   <meta name="nr-home" content="index.html"> (the engagement artifact adds it) gets
+   "< Cockpit /" in front of its section tag. */
+(function(){
+  var K='nr_dark', box=document.getElementById('theme')||document.getElementById('tseg');
+  if(box){
+    box.querySelectorAll('button').forEach(function(b){ var d=b.getAttribute('data-s')==='dark';
+      b.title=d?'Dark mode':'Light mode'; b.setAttribute('aria-label',b.title);
+      b.addEventListener('click',function(){ try{ localStorage.setItem(K,d?'1':'0'); }catch(e){} }); });
+    var v=null; try{ v=localStorage.getItem(K); }catch(e){}
+    var dk=box.querySelector('button[data-s="dark"]');
+    if(v==='1'&&dk&&!dk.classList.contains('on')) dk.click();
+  }
+  var m=document.querySelector('meta[name="nr-home"]'), lens=document.getElementById('lens')||document.querySelector('.toprow .nr-track');
+  if(m&&lens&&!document.querySelector('.nr-crumb')){
+    var c=document.createElement('div'); c.className='nr-track nr-crumb';
+    var a=document.createElement('a'); a.className='nr-home'; a.href=m.getAttribute('content')||'index.html';
+    a.textContent='\u2039 '+(m.getAttribute('data-label')||'Cockpit'); a.title='Back to the engagement cockpit';
+    /* opened in a window of the findings dashboard (a frame of our own page): go back in that page, not in the frame */
+    try{ if(window.parent!==window&&window.parent.document) a.target='_parent'; }catch(e){}
+    var s=document.createElement('span'); s.className='nr-sep'; s.textContent='/';
+    lens.parentNode.insertBefore(c,lens); c.appendChild(a); c.appendChild(s); c.appendChild(lens);
+    if(window.fitChrome) requestAnimationFrame(window.fitChrome);
+  }
+})();
+</script>
+<style>
+/* ── READ MODE · narrow screens ──────────────────────────────────────────────
+   This artifact normally scales its whole body down so the page fits one screen.
+   On a phone that turns 13px type into 4px. Below 760px the scaling is switched
+   off and the page simply flows and scrolls at its real size. Desktop is
+   untouched — every rule here lives inside the media query. */
+@media (max-width:760px){
+  html,body{height:auto!important;overflow:auto!important}
+  #art,#pw,#pm{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;padding:12px 14px 22px 34px!important}
+  #view{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;flex:none!important;position:static!important}
+  #vinner{position:static!important;transform:none!important;width:100%!important;
+    padding-bottom:14px!important}
+  .nr-rail{width:22px!important}
+  .toprow{position:static!important;top:auto!important;right:auto!important;left:auto!important;
+    margin:0 0 10px!important;flex-wrap:wrap!important;gap:8px 10px!important;justify-content:flex-start!important}
+  .tags{flex-wrap:wrap!important;gap:8px!important;margin-left:-34px!important}
+  .ctrls{flex-wrap:wrap!important;gap:8px!important;flex:1 1 100%!important}
+  #ft{position:static!important;flex-wrap:wrap!important;row-gap:6px!important;margin-top:14px!important}
+  h1{font-size:19px!important;max-width:none!important}
+  .grid,.classic,.cols-grid{grid-template-columns:1fr!important}
+  table{min-width:0!important}
+  .tbl-wrap,.wrap-x{overflow-x:auto!important}
+}
+</style>
+<style>/* READ-MODE TYPE FLOOR — nothing under 11px once the page stops scaling */
+
+@media (max-width:760px){
+  #ft{font-size:11px!important}
+  .conf,.lp,.li,.nr-track,.nr-foot,.lbl,.note{font-size:11px!important}
+  .inum,.chip,.inev,.num,.wf-num,.vnum{font-size:11px!important}
+  #ft b,.legend b,.l b{font-size:11px!important}
+  /* a row label truncated to '…' is worse than a wrapped one once the page flows */
+  [style*="ellipsis"]{white-space:normal!important;text-overflow:clip!important;overflow:visible!important}
+}
+</style>
+</body></html>

@@ -468,38 +468,34 @@ const DATA = /* DATA */ {
   "teamId": "claims-handling",
   "teamActorId": "claims-handling",
   "engagement": "Northwind Assurance",
-  "source": "Team lead, two coordinators and four handlers, 3-4 Sep 2026; Customer Service team lead, 4 Sep 2026; claims system and contact-centre report packs",
-  "baselineVersion": "baseline/2026.6",
-  "baselineStamp": "21bf379a6c203e79",
-  "baselinePath": "baseline.json",
-  "generatedAt": "2026-09-08",
-  "keyMessage": "The customer sees a claim that never reports back, and it costs **6,5 FTE**: a notification typed twice and updates they have to ring for.",
   "mappingUnit": "key process",
-  "coverage": {},
+  "moment": "to-be",
+  "keyMessage": "Agents tell the customer **what happens before they ask**, and the handlers **keep every decision**",
+  "source": "Target service designed from the as-is blueprint and the opportunities agreed on the baseline (o-01 to o-07). Sample data, fictional client.",
   "stages": [
     {
       "id": "s1",
       "name": "I report the damage",
       "order": 1,
       "want": "I want to report it once and know it is in hand",
-      "sentiment": "negative",
-      "sentimentNote": "Tells the story, then tells it again"
+      "sentiment": "positive",
+      "sentimentNote": "Reported in minutes, day or night"
     },
     {
       "id": "s2",
       "name": "I find out where I stand",
       "order": 2,
       "want": "I want to know if I am covered",
-      "sentiment": "negative",
-      "sentimentNote": "Sends the papers into silence"
+      "sentiment": "positive",
+      "sentimentNote": "Told what is covered and what comes next"
     },
     {
       "id": "s3",
       "name": "Someone assesses the damage",
       "order": 3,
       "want": "I want someone to look at the damage soon",
-      "sentiment": "negative",
-      "sentimentNote": "Rings to ask where it stands"
+      "sentiment": "neutral",
+      "sentimentNote": "Still waits for the adjuster, but knows when"
     },
     {
       "id": "s4",
@@ -514,16 +510,16 @@ const DATA = /* DATA */ {
       "name": "I get paid",
       "order": 5,
       "want": "I want to be paid, and to understand the amount",
-      "sentiment": "neutral",
-      "sentimentNote": "Paid, never told why that amount"
+      "sentiment": "positive",
+      "sentimentNote": "Paid, and knows why that amount"
     },
     {
       "id": "s6",
       "name": "It is over",
       "order": 6,
       "want": "I want it to be finished",
-      "sentiment": "neutral",
-      "sentimentNote": "Hears nothing, assumes it is over"
+      "sentiment": "positive",
+      "sentimentNote": "Told the claim is closed"
     }
   ],
   "actors": {
@@ -542,162 +538,130 @@ const DATA = /* DATA */ {
     "finance-control": {
       "name": "Finance Control",
       "kind": "team"
+    },
+    "intake-agent": {
+      "name": "Intake agent",
+      "kind": "agent"
+    },
+    "status-agent": {
+      "name": "Status agent",
+      "kind": "agent"
+    },
+    "document-agent": {
+      "name": "Document agent",
+      "kind": "agent"
+    },
+    "followup-agent": {
+      "name": "Follow-up agent",
+      "kind": "agent"
     }
   },
-  "sources": [
-    {
-      "id": "src-01",
-      "label": "Team lead interview, Claims Handling",
-      "role": "Claims Handling"
-    },
-    {
-      "id": "src-02",
-      "label": "Coordinator interviews",
-      "role": "Claims Handling"
-    },
-    {
-      "id": "src-03",
-      "label": "Handler interviews across tenure",
-      "role": "Claims Handling"
-    },
-    {
-      "id": "src-04",
-      "label": "Claims system report pack, Jan-Aug 2026",
-      "role": ""
-    },
-    {
-      "id": "src-05",
-      "label": "Customer Service team lead interview",
-      "role": "Customer Service"
-    }
-  ],
   "steps": [
     {
       "id": "c-01",
       "stageId": "s1",
       "visibility": "customer-action",
       "actorId": "customer",
-      "name": "Report the damage by phone",
+      "name": "Reports the damage in the app, by chat or by phone",
       "system": null,
-      "channel": "phone",
+      "channel": "chat",
       "unitName": null,
-      "pains": [],
       "blockId": null,
       "processId": null
+    },
+    {
+      "id": "n-01",
+      "stageId": "s1",
+      "visibility": "frontstage",
+      "actorId": "intake-agent",
+      "name": "Takes the notification, day and night",
+      "system": "ClaimsCore",
+      "channel": "chat",
+      "unitName": "Notification and registration",
+      "sees": "Tells what happened in their own words, at any hour, and gets a claim number and the next step straight away.",
+      "does": "Asks only what the claim needs and writes it straight into ClaimsCore. A call with injuries or a dispute goes to a person."
     },
     {
       "id": "t-01",
       "stageId": "s1",
       "visibility": "frontstage",
       "actorId": "customer-service",
-      "name": "Take the call and capture the circumstances",
+      "name": "Takes the calls with injuries or a dispute",
       "system": "Contact Centre",
       "channel": "phone",
       "unitName": "Notification and registration",
-      "pains": [],
       "blockId": "act-01",
-      "processId": "intake"
+      "processId": "intake",
+      "does": "Customer Service keeps the calls that need a person. The agent hands them over with the notes."
     },
     {
-      "id": "t-02",
+      "id": "n-02",
       "stageId": "s1",
       "visibility": "backstage",
-      "actorId": "customer-service",
-      "name": "Re-key the notification into the claims system",
+      "actorId": "intake-agent",
+      "name": "Registers the claim in ClaimsCore",
       "system": "ClaimsCore",
       "channel": null,
       "unitName": "Notification and registration",
-      "pains": [
-        {
-          "id": "p-01",
-          "theme": "The same notification is typed twice, once by the contact centre and once into the claims system",
-          "magnitude": {
-            "value": 2.5,
-            "unit": "fte"
-          },
-          "magnitudeNote": "Estimated with the Customer Service team lead",
-          "dimension": "proc",
-          "sourceId": "src-05"
-        }
+      "fixes": [
+        "p-01"
       ],
-      "blockId": "act-01",
-      "processId": "intake"
+      "does": "One entry, at the source. Nobody types the notification a second time."
     },
     {
       "id": "c-02",
       "stageId": "s2",
       "visibility": "customer-action",
       "actorId": "customer",
-      "name": "Send in the photos and the paperwork",
+      "name": "Uploads photos and papers in the app",
       "system": null,
-      "channel": "email",
+      "channel": "app",
       "unitName": null,
-      "pains": [],
       "blockId": null,
       "processId": null
+    },
+    {
+      "id": "n-03",
+      "stageId": "s2",
+      "visibility": "backstage",
+      "actorId": "document-agent",
+      "name": "Reads and files documents as they arrive",
+      "system": "ClaimsCore",
+      "channel": null,
+      "unitName": "Notification and registration",
+      "fixes": [
+        "p-08"
+      ],
+      "does": "Attaches every document to the claim the day it arrives and flags what is missing or unreadable."
     },
     {
       "id": "t-03",
       "stageId": "s2",
       "visibility": "backstage",
       "actorId": "claims-handling",
-      "name": "Create the claim record",
+      "name": "Checks the claim record the agent opened",
       "system": "ClaimsCore",
       "channel": null,
       "unitName": "Notification and registration",
-      "pains": [
-        {
-          "id": "p-08",
-          "theme": "Documents arriving by mail are attached by hand, often days after the claim is opened",
-          "magnitude": {
-            "value": 1.5,
-            "unit": "fte"
-          },
-          "magnitudeNote": "Estimated with the coordinators",
-          "dimension": "proc",
-          "sourceId": "src-02"
-        }
-      ],
       "blockId": "act-01",
-      "processId": "intake"
-    },
-    {
-      "id": "t-04",
-      "stageId": "s2",
-      "visibility": "backstage",
-      "actorId": "claims-handling",
-      "name": "Attach the documents received by mail",
-      "system": "ClaimsCore",
-      "channel": null,
-      "unitName": "Notification and registration",
-      "pains": [],
-      "blockId": "act-01",
-      "processId": "intake"
+      "processId": "intake",
+      "does": "The handler reviews what the agent registered and corrects it where needed."
     },
     {
       "id": "t-05",
       "stageId": "s2",
       "visibility": "backstage",
       "actorId": "claims-handling",
-      "name": "Look up the policy and read the cover",
-      "system": "PolicyHub",
+      "name": "Reads the cover on the claim record",
+      "system": "ClaimsCore",
       "channel": null,
       "unitName": "Notification and registration",
-      "pains": [
-        {
-          "id": "p-02",
-          "theme": "Cover cannot be read from the claim, so every file needs a second system open",
-          "magnitude": {
-            "value": 1.8,
-            "unit": "fte"
-          },
-          "magnitudeNote": "Estimated with the coordinators from observed handling time",
-          "dimension": "data",
-          "sourceId": "src-02"
-        }
-      ],
       "blockId": "act-01",
-      "processId": "intake"
+      "processId": "intake",
+      "fixes": [
+        "p-02"
+      ],
+      "does": "Cover shows on the claim itself (a read-only view of PolicyHub). The second system stays closed."
     },
     {
       "id": "t-06",
@@ -708,7 +672,6 @@ const DATA = /* DATA */ {
       "system": "ClaimsCore",
       "channel": null,
       "unitName": "Notification and registration",
-      "pains": [],
       "blockId": "act-01",
       "processId": "intake"
     },
@@ -721,18 +684,19 @@ const DATA = /* DATA */ {
       "system": "ClaimsCore",
       "channel": null,
       "unitName": "Notification and registration",
-      "pains": [
-        {
-          "id": "p-06",
-          "theme": "Triage sends complex files to whoever is free rather than to who can handle them",
-          "magnitude": null,
-          "magnitudeNote": "Not quantified this round",
-          "dimension": "org",
-          "sourceId": "src-02"
-        }
-      ],
       "blockId": "act-01",
       "processId": "intake"
+    },
+    {
+      "id": "n-04",
+      "stageId": "s2",
+      "visibility": "frontstage",
+      "actorId": "status-agent",
+      "name": "Confirms cover and the next step",
+      "system": null,
+      "channel": "app",
+      "unitName": "Notification and registration",
+      "sees": "A message saying what is covered, what happens next and roughly when."
     },
     {
       "id": "c-03",
@@ -743,7 +707,6 @@ const DATA = /* DATA */ {
       "system": null,
       "channel": "in person",
       "unitName": null,
-      "pains": [],
       "blockId": null,
       "processId": null
     },
@@ -756,34 +719,23 @@ const DATA = /* DATA */ {
       "system": "Email",
       "channel": null,
       "unitName": "Assessment",
-      "pains": [
-        {
-          "id": "p-03",
-          "theme": "Adjuster reports arrive late and are chased by hand",
-          "magnitude": {
-            "value": 3.0,
-            "unit": "fte"
-          },
-          "magnitudeNote": "Estimated from the chase volume the coordinators walked through",
-          "dimension": "proc",
-          "sourceId": "src-02"
-        }
-      ],
       "blockId": "act-02",
-      "processId": "assessment"
+      "processId": "assessment",
+      "does": "The handler still chooses the adjuster, and the instruction now carries a due date."
     },
     {
-      "id": "t-09",
+      "id": "n-05",
       "stageId": "s3",
       "visibility": "backstage",
-      "actorId": "claims-handling",
-      "name": "Chase the adjuster report",
+      "actorId": "followup-agent",
+      "name": "Tracks adjuster due dates and chases",
       "system": "Email",
       "channel": null,
       "unitName": "Assessment",
-      "pains": [],
-      "blockId": "act-02",
-      "processId": "assessment"
+      "fixes": [
+        "p-03"
+      ],
+      "does": "Chases the adjuster before the due date and tells the handler only when a report is really late."
     },
     {
       "id": "t-10",
@@ -794,7 +746,6 @@ const DATA = /* DATA */ {
       "system": "ClaimsCore",
       "channel": null,
       "unitName": "Assessment",
-      "pains": [],
       "blockId": "act-02",
       "processId": "assessment"
     },
@@ -807,7 +758,6 @@ const DATA = /* DATA */ {
       "system": "ClaimsCore",
       "channel": null,
       "unitName": "Assessment",
-      "pains": [],
       "blockId": "act-02",
       "processId": "assessment"
     },
@@ -820,47 +770,36 @@ const DATA = /* DATA */ {
       "system": "Email",
       "channel": null,
       "unitName": "Assessment",
-      "pains": [],
       "blockId": "act-02",
       "processId": "assessment"
     },
     {
-      "id": "c-05",
+      "id": "n-06",
       "stageId": "s3",
-      "visibility": "customer-action",
-      "actorId": "customer",
-      "name": "Call again to ask where the claim stands",
+      "visibility": "frontstage",
+      "actorId": "status-agent",
+      "name": "Sends an update at each milestone",
       "system": null,
-      "channel": "phone",
-      "unitName": null,
-      "pains": [],
-      "blockId": null,
-      "processId": null
+      "channel": "app",
+      "unitName": "Assessment",
+      "fixes": [
+        "p-05"
+      ],
+      "sees": "A message when the adjuster is booked, when the report is in and when a decision is near.",
+      "does": "Watches the claim status and writes the update. It never gives a decision."
     },
     {
       "id": "t-19",
       "stageId": "s3",
       "visibility": "frontstage",
       "actorId": "customer-service",
-      "name": "Answer status calls on open claims",
+      "name": "Answers the status calls that still come in",
       "system": "Contact Centre",
       "channel": "phone",
       "unitName": "Assessment",
-      "pains": [
-        {
-          "id": "p-05",
-          "theme": "Customers call to ask where their claim is",
-          "magnitude": {
-            "value": 4.0,
-            "unit": "fte"
-          },
-          "magnitudeNote": "Call volume from the contact-centre report pack",
-          "dimension": "cust",
-          "sourceId": "src-05"
-        }
-      ],
       "blockId": "act-04",
-      "processId": "assessment"
+      "processId": "assessment",
+      "does": "Fewer calls, same team: the measure of whether the updates work."
     },
     {
       "id": "c-04",
@@ -871,7 +810,6 @@ const DATA = /* DATA */ {
       "system": null,
       "channel": "in person",
       "unitName": null,
-      "pains": [],
       "blockId": null,
       "processId": null
     },
@@ -884,7 +822,6 @@ const DATA = /* DATA */ {
       "system": "RepairPortal",
       "channel": null,
       "unitName": "Assessment",
-      "pains": [],
       "blockId": "act-02",
       "processId": "assessment"
     },
@@ -897,7 +834,6 @@ const DATA = /* DATA */ {
       "system": "RepairPortal",
       "channel": null,
       "unitName": "Assessment",
-      "pains": [],
       "blockId": "act-02",
       "processId": "assessment"
     },
@@ -906,22 +842,16 @@ const DATA = /* DATA */ {
       "stageId": "s5",
       "visibility": "backstage",
       "actorId": "claims-handling",
-      "name": "Calculate the settlement",
-      "system": "Excel",
+      "name": "Calculates the settlement in the claim",
+      "system": "ClaimsCore",
       "channel": null,
       "unitName": "Settlement",
-      "pains": [
-        {
-          "id": "p-04",
-          "theme": "The settlement is calculated in a spreadsheet outside the claims system",
-          "magnitude": null,
-          "magnitudeNote": "Not quantified this round",
-          "dimension": "data",
-          "sourceId": "src-03"
-        }
-      ],
       "blockId": "act-03",
-      "processId": "settlement"
+      "processId": "settlement",
+      "fixes": [
+        "p-04"
+      ],
+      "does": "The calculation lives in ClaimsCore, not in a personal spreadsheet, so it can be checked."
     },
     {
       "id": "t-16",
@@ -932,7 +862,6 @@ const DATA = /* DATA */ {
       "system": "Email",
       "channel": null,
       "unitName": "Settlement",
-      "pains": [],
       "blockId": "act-03",
       "processId": "settlement"
     },
@@ -945,7 +874,6 @@ const DATA = /* DATA */ {
       "system": "ClaimsCore",
       "channel": null,
       "unitName": "Settlement",
-      "pains": [],
       "blockId": "act-03",
       "processId": "settlement"
     },
@@ -958,9 +886,19 @@ const DATA = /* DATA */ {
       "system": "Ledger",
       "channel": null,
       "unitName": "Settlement",
-      "pains": [],
       "blockId": "act-03",
       "processId": "settlement"
+    },
+    {
+      "id": "n-07",
+      "stageId": "s5",
+      "visibility": "frontstage",
+      "actorId": "status-agent",
+      "name": "Explains the amount and the payment date",
+      "system": null,
+      "channel": "app",
+      "unitName": "Settlement",
+      "sees": "The amount, how it was worked out, the date it will be paid and who to ask."
     },
     {
       "id": "c-06",
@@ -971,32 +909,32 @@ const DATA = /* DATA */ {
       "system": null,
       "channel": null,
       "unitName": null,
-      "pains": [],
       "blockId": null,
       "processId": null
     },
     {
+      "id": "n-08",
+      "stageId": "s6",
+      "visibility": "backstage",
+      "actorId": "document-agent",
+      "name": "Drafts the recovery file from the claim",
+      "system": "ClaimsCore",
+      "channel": null,
+      "unitName": "Closure",
+      "fixes": [
+        "p-07"
+      ],
+      "does": "Builds the recovery file from what the claim already holds. The handler checks it and sends it."
+    },
+    {
       "id": "t-20",
       "stageId": "s6",
-      "visibility": "support",
+      "visibility": "backstage",
       "actorId": "claims-handling",
-      "name": "Build and send the recovery file",
+      "name": "Checks and sends the recovery file",
       "system": "Excel",
       "channel": null,
       "unitName": "Closure",
-      "pains": [
-        {
-          "id": "p-07",
-          "theme": "Recovery files are built from scratch each time",
-          "magnitude": {
-            "value": 1.2,
-            "unit": "fte"
-          },
-          "magnitudeNote": "Estimated with the team lead",
-          "dimension": "proc",
-          "sourceId": "src-01"
-        }
-      ],
       "blockId": "act-05",
       "processId": "closure"
     },
@@ -1009,12 +947,576 @@ const DATA = /* DATA */ {
       "system": "ClaimsCore",
       "channel": null,
       "unitName": "Closure",
-      "pains": [],
       "blockId": "act-05",
       "processId": "closure"
+    },
+    {
+      "id": "n-09",
+      "stageId": "s6",
+      "visibility": "frontstage",
+      "actorId": "status-agent",
+      "name": "Tells the customer the claim is closed",
+      "system": null,
+      "channel": "app",
+      "unitName": "Closure",
+      "sees": "A last message that the claim is closed, and where to go if something comes back."
     }
   ],
-  "moment": "as-is",
+  "asis": {
+    "context": "OPEX QUICKSCAN",
+    "lens": "CLIENTS · SERVICE BLUEPRINT",
+    "teamName": "Claims Handling",
+    "teamId": "claims-handling",
+    "teamActorId": "claims-handling",
+    "engagement": "Northwind Assurance",
+    "source": "Team lead, two coordinators and four handlers, 3-4 Sep 2026; Customer Service team lead, 4 Sep 2026; claims system and contact-centre report packs",
+    "baselineVersion": "baseline/2026.6",
+    "baselineStamp": "21bf379a6c203e79",
+    "baselinePath": "baseline.json",
+    "generatedAt": "2026-09-08",
+    "keyMessage": "The customer sees a claim that never reports back, and it costs **6,5 FTE**: a notification typed twice and updates they have to ring for.",
+    "mappingUnit": "key process",
+    "coverage": {},
+    "stages": [
+      {
+        "id": "s1",
+        "name": "I report the damage",
+        "order": 1,
+        "want": "I want to report it once and know it is in hand",
+        "sentiment": "negative",
+        "sentimentNote": "Tells the story, then tells it again"
+      },
+      {
+        "id": "s2",
+        "name": "I find out where I stand",
+        "order": 2,
+        "want": "I want to know if I am covered",
+        "sentiment": "negative",
+        "sentimentNote": "Sends the papers into silence"
+      },
+      {
+        "id": "s3",
+        "name": "Someone assesses the damage",
+        "order": 3,
+        "want": "I want someone to look at the damage soon",
+        "sentiment": "negative",
+        "sentimentNote": "Rings to ask where it stands"
+      },
+      {
+        "id": "s4",
+        "name": "My car gets repaired",
+        "order": 4,
+        "want": "I want my car back",
+        "sentiment": "positive",
+        "sentimentNote": "The garage takes over"
+      },
+      {
+        "id": "s5",
+        "name": "I get paid",
+        "order": 5,
+        "want": "I want to be paid, and to understand the amount",
+        "sentiment": "neutral",
+        "sentimentNote": "Paid, never told why that amount"
+      },
+      {
+        "id": "s6",
+        "name": "It is over",
+        "order": 6,
+        "want": "I want it to be finished",
+        "sentiment": "neutral",
+        "sentimentNote": "Hears nothing, assumes it is over"
+      }
+    ],
+    "actors": {
+      "claims-handling": {
+        "name": "Claims Handling",
+        "kind": "team"
+      },
+      "customer": {
+        "name": "The customer",
+        "kind": "customer"
+      },
+      "customer-service": {
+        "name": "Customer Service",
+        "kind": "team"
+      },
+      "finance-control": {
+        "name": "Finance Control",
+        "kind": "team"
+      }
+    },
+    "sources": [
+      {
+        "id": "src-01",
+        "label": "Team lead interview, Claims Handling",
+        "role": "Claims Handling"
+      },
+      {
+        "id": "src-02",
+        "label": "Coordinator interviews",
+        "role": "Claims Handling"
+      },
+      {
+        "id": "src-03",
+        "label": "Handler interviews across tenure",
+        "role": "Claims Handling"
+      },
+      {
+        "id": "src-04",
+        "label": "Claims system report pack, Jan-Aug 2026",
+        "role": ""
+      },
+      {
+        "id": "src-05",
+        "label": "Customer Service team lead interview",
+        "role": "Customer Service"
+      }
+    ],
+    "steps": [
+      {
+        "id": "c-01",
+        "stageId": "s1",
+        "visibility": "customer-action",
+        "actorId": "customer",
+        "name": "Report the damage by phone",
+        "system": null,
+        "channel": "phone",
+        "unitName": null,
+        "pains": [],
+        "blockId": null,
+        "processId": null
+      },
+      {
+        "id": "t-01",
+        "stageId": "s1",
+        "visibility": "frontstage",
+        "actorId": "customer-service",
+        "name": "Take the call and capture the circumstances",
+        "system": "Contact Centre",
+        "channel": "phone",
+        "unitName": "Notification and registration",
+        "pains": [],
+        "blockId": "act-01",
+        "processId": "intake"
+      },
+      {
+        "id": "t-02",
+        "stageId": "s1",
+        "visibility": "backstage",
+        "actorId": "customer-service",
+        "name": "Re-key the notification into the claims system",
+        "system": "ClaimsCore",
+        "channel": null,
+        "unitName": "Notification and registration",
+        "pains": [
+          {
+            "id": "p-01",
+            "theme": "The same notification is typed twice, once by the contact centre and once into the claims system",
+            "magnitude": {
+              "value": 2.5,
+              "unit": "fte"
+            },
+            "magnitudeNote": "Estimated with the Customer Service team lead",
+            "dimension": "proc",
+            "sourceId": "src-05"
+          }
+        ],
+        "blockId": "act-01",
+        "processId": "intake"
+      },
+      {
+        "id": "c-02",
+        "stageId": "s2",
+        "visibility": "customer-action",
+        "actorId": "customer",
+        "name": "Send in the photos and the paperwork",
+        "system": null,
+        "channel": "email",
+        "unitName": null,
+        "pains": [],
+        "blockId": null,
+        "processId": null
+      },
+      {
+        "id": "t-03",
+        "stageId": "s2",
+        "visibility": "backstage",
+        "actorId": "claims-handling",
+        "name": "Create the claim record",
+        "system": "ClaimsCore",
+        "channel": null,
+        "unitName": "Notification and registration",
+        "pains": [
+          {
+            "id": "p-08",
+            "theme": "Documents arriving by mail are attached by hand, often days after the claim is opened",
+            "magnitude": {
+              "value": 1.5,
+              "unit": "fte"
+            },
+            "magnitudeNote": "Estimated with the coordinators",
+            "dimension": "proc",
+            "sourceId": "src-02"
+          }
+        ],
+        "blockId": "act-01",
+        "processId": "intake"
+      },
+      {
+        "id": "t-04",
+        "stageId": "s2",
+        "visibility": "backstage",
+        "actorId": "claims-handling",
+        "name": "Attach the documents received by mail",
+        "system": "ClaimsCore",
+        "channel": null,
+        "unitName": "Notification and registration",
+        "pains": [],
+        "blockId": "act-01",
+        "processId": "intake"
+      },
+      {
+        "id": "t-05",
+        "stageId": "s2",
+        "visibility": "backstage",
+        "actorId": "claims-handling",
+        "name": "Look up the policy and read the cover",
+        "system": "PolicyHub",
+        "channel": null,
+        "unitName": "Notification and registration",
+        "pains": [
+          {
+            "id": "p-02",
+            "theme": "Cover cannot be read from the claim, so every file needs a second system open",
+            "magnitude": {
+              "value": 1.8,
+              "unit": "fte"
+            },
+            "magnitudeNote": "Estimated with the coordinators from observed handling time",
+            "dimension": "data",
+            "sourceId": "src-02"
+          }
+        ],
+        "blockId": "act-01",
+        "processId": "intake"
+      },
+      {
+        "id": "t-06",
+        "stageId": "s2",
+        "visibility": "backstage",
+        "actorId": "claims-handling",
+        "name": "Record the cover decision on the file",
+        "system": "ClaimsCore",
+        "channel": null,
+        "unitName": "Notification and registration",
+        "pains": [],
+        "blockId": "act-01",
+        "processId": "intake"
+      },
+      {
+        "id": "t-07",
+        "stageId": "s2",
+        "visibility": "backstage",
+        "actorId": "claims-handling",
+        "name": "Score the claim against the triage rules",
+        "system": "ClaimsCore",
+        "channel": null,
+        "unitName": "Notification and registration",
+        "pains": [
+          {
+            "id": "p-06",
+            "theme": "Triage sends complex files to whoever is free rather than to who can handle them",
+            "magnitude": null,
+            "magnitudeNote": "Not quantified this round",
+            "dimension": "org",
+            "sourceId": "src-02"
+          }
+        ],
+        "blockId": "act-01",
+        "processId": "intake"
+      },
+      {
+        "id": "c-03",
+        "stageId": "s3",
+        "visibility": "customer-action",
+        "actorId": "customer",
+        "name": "Meet the adjuster",
+        "system": null,
+        "channel": "in person",
+        "unitName": null,
+        "pains": [],
+        "blockId": null,
+        "processId": null
+      },
+      {
+        "id": "t-08",
+        "stageId": "s3",
+        "visibility": "backstage",
+        "actorId": "claims-handling",
+        "name": "Select and instruct a loss adjuster",
+        "system": "Email",
+        "channel": null,
+        "unitName": "Assessment",
+        "pains": [
+          {
+            "id": "p-03",
+            "theme": "Adjuster reports arrive late and are chased by hand",
+            "magnitude": {
+              "value": 3.0,
+              "unit": "fte"
+            },
+            "magnitudeNote": "Estimated from the chase volume the coordinators walked through",
+            "dimension": "proc",
+            "sourceId": "src-02"
+          }
+        ],
+        "blockId": "act-02",
+        "processId": "assessment"
+      },
+      {
+        "id": "t-09",
+        "stageId": "s3",
+        "visibility": "backstage",
+        "actorId": "claims-handling",
+        "name": "Chase the adjuster report",
+        "system": "Email",
+        "channel": null,
+        "unitName": "Assessment",
+        "pains": [],
+        "blockId": "act-02",
+        "processId": "assessment"
+      },
+      {
+        "id": "t-10",
+        "stageId": "s3",
+        "visibility": "backstage",
+        "actorId": "claims-handling",
+        "name": "Read the report and update the reserve",
+        "system": "ClaimsCore",
+        "channel": null,
+        "unitName": "Assessment",
+        "pains": [],
+        "blockId": "act-02",
+        "processId": "assessment"
+      },
+      {
+        "id": "t-11",
+        "stageId": "s3",
+        "visibility": "support",
+        "actorId": "claims-handling",
+        "name": "Run the fraud indicator checklist",
+        "system": "ClaimsCore",
+        "channel": null,
+        "unitName": "Assessment",
+        "pains": [],
+        "blockId": "act-02",
+        "processId": "assessment"
+      },
+      {
+        "id": "t-12",
+        "stageId": "s3",
+        "visibility": "support",
+        "actorId": "claims-handling",
+        "name": "Refer a flagged file to investigation",
+        "system": "Email",
+        "channel": null,
+        "unitName": "Assessment",
+        "pains": [],
+        "blockId": "act-02",
+        "processId": "assessment"
+      },
+      {
+        "id": "c-05",
+        "stageId": "s3",
+        "visibility": "customer-action",
+        "actorId": "customer",
+        "name": "Call again to ask where the claim stands",
+        "system": null,
+        "channel": "phone",
+        "unitName": null,
+        "pains": [],
+        "blockId": null,
+        "processId": null
+      },
+      {
+        "id": "t-19",
+        "stageId": "s3",
+        "visibility": "frontstage",
+        "actorId": "customer-service",
+        "name": "Answer status calls on open claims",
+        "system": "Contact Centre",
+        "channel": "phone",
+        "unitName": "Assessment",
+        "pains": [
+          {
+            "id": "p-05",
+            "theme": "Customers call to ask where their claim is",
+            "magnitude": {
+              "value": 4.0,
+              "unit": "fte"
+            },
+            "magnitudeNote": "Call volume from the contact-centre report pack",
+            "dimension": "cust",
+            "sourceId": "src-05"
+          }
+        ],
+        "blockId": "act-04",
+        "processId": "assessment"
+      },
+      {
+        "id": "c-04",
+        "stageId": "s4",
+        "visibility": "customer-action",
+        "actorId": "customer",
+        "name": "Drop the car at the network garage",
+        "system": null,
+        "channel": "in person",
+        "unitName": null,
+        "pains": [],
+        "blockId": null,
+        "processId": null
+      },
+      {
+        "id": "t-13",
+        "stageId": "s4",
+        "visibility": "frontstage",
+        "actorId": "claims-handling",
+        "name": "Book the vehicle into a network garage",
+        "system": "RepairPortal",
+        "channel": null,
+        "unitName": "Assessment",
+        "pains": [],
+        "blockId": "act-02",
+        "processId": "assessment"
+      },
+      {
+        "id": "t-14",
+        "stageId": "s4",
+        "visibility": "backstage",
+        "actorId": "claims-handling",
+        "name": "Approve the repair estimate",
+        "system": "RepairPortal",
+        "channel": null,
+        "unitName": "Assessment",
+        "pains": [],
+        "blockId": "act-02",
+        "processId": "assessment"
+      },
+      {
+        "id": "t-15",
+        "stageId": "s5",
+        "visibility": "backstage",
+        "actorId": "claims-handling",
+        "name": "Calculate the settlement",
+        "system": "Excel",
+        "channel": null,
+        "unitName": "Settlement",
+        "pains": [
+          {
+            "id": "p-04",
+            "theme": "The settlement is calculated in a spreadsheet outside the claims system",
+            "magnitude": null,
+            "magnitudeNote": "Not quantified this round",
+            "dimension": "data",
+            "sourceId": "src-03"
+          }
+        ],
+        "blockId": "act-03",
+        "processId": "settlement"
+      },
+      {
+        "id": "t-16",
+        "stageId": "s5",
+        "visibility": "support",
+        "actorId": "claims-handling",
+        "name": "Obtain the second signature above the limit",
+        "system": "Email",
+        "channel": null,
+        "unitName": "Settlement",
+        "pains": [],
+        "blockId": "act-03",
+        "processId": "settlement"
+      },
+      {
+        "id": "t-17",
+        "stageId": "s5",
+        "visibility": "backstage",
+        "actorId": "claims-handling",
+        "name": "Record the settlement decision",
+        "system": "ClaimsCore",
+        "channel": null,
+        "unitName": "Settlement",
+        "pains": [],
+        "blockId": "act-03",
+        "processId": "settlement"
+      },
+      {
+        "id": "t-18",
+        "stageId": "s5",
+        "visibility": "support",
+        "actorId": "finance-control",
+        "name": "Prepare and release the payment run",
+        "system": "Ledger",
+        "channel": null,
+        "unitName": "Settlement",
+        "pains": [],
+        "blockId": "act-03",
+        "processId": "settlement"
+      },
+      {
+        "id": "c-06",
+        "stageId": "s5",
+        "visibility": "customer-action",
+        "actorId": "customer",
+        "name": "Receive the payment",
+        "system": null,
+        "channel": null,
+        "unitName": null,
+        "pains": [],
+        "blockId": null,
+        "processId": null
+      },
+      {
+        "id": "t-20",
+        "stageId": "s6",
+        "visibility": "support",
+        "actorId": "claims-handling",
+        "name": "Build and send the recovery file",
+        "system": "Excel",
+        "channel": null,
+        "unitName": "Closure",
+        "pains": [
+          {
+            "id": "p-07",
+            "theme": "Recovery files are built from scratch each time",
+            "magnitude": {
+              "value": 1.2,
+              "unit": "fte"
+            },
+            "magnitudeNote": "Estimated with the team lead",
+            "dimension": "proc",
+            "sourceId": "src-01"
+          }
+        ],
+        "blockId": "act-05",
+        "processId": "closure"
+      },
+      {
+        "id": "t-21",
+        "stageId": "s6",
+        "visibility": "backstage",
+        "actorId": "claims-handling",
+        "name": "Check the file is complete and close it",
+        "system": "ClaimsCore",
+        "channel": null,
+        "unitName": "Closure",
+        "pains": [],
+        "blockId": "act-05",
+        "processId": "closure"
+      }
+    ],
+    "moment": "as-is"
+  },
   "vocab": {
     "magnitudeUnits": [
       {

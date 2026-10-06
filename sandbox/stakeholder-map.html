@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stakeholder map</title>
+<style>
+/* Type scale — one place, not case by case. Every size below 12px is a token; the
+   whole small end lifts on a narrow screen so nothing drops under 11px on a phone. */
+:root{
+  --fs-65:6.5px; --fs-7:7px; --fs-75:7.5px; --fs-8:8px; --fs-85:8.5px; --fs-9:9px;
+  --fs-95:9.5px; --fs-10:10px; --fs-105:10.5px; --fs-11:11px; --fs-115:11.5px;
+}
+@media (max-width:760px){
+  :root{
+    --fs-65:11px; --fs-7:11px; --fs-75:11px; --fs-8:11px; --fs-85:11px; --fs-9:11px;
+    --fs-95:11px; --fs-10:11.5px; --fs-105:12px; --fs-11:12px; --fs-115:12.5px;
+  }
+}
+</style>
+<style>
+  *{box-sizing:border-box}
+  :root{--page:#FFF}
+  html,body{margin:0;height:100vh;overflow:hidden}
+  body{background:var(--page);font-family:'Aptos','Segoe UI',system-ui,sans-serif;transition:background .25s}
+  /* ===== BRAND THEME (inlined from templates/brand.css) ===== */
+  #art{--navy:#0B2347;--slate:#364156;--steel:#7991AD;--green:#1C7A4A;--accent:#6EB1D1;--sky:#A9D5E6;--navy2:#16315B;
+      --slate-10:rgba(54,65,86,.09);--navy-10:rgba(11,35,71,.10);--green-10:rgba(28,122,74,.10);
+      --rag-green:#2F8F6B;--rag-amber:#D49A3A;--rag-red:#D2645A;--rag-na:#9AA4B0;--rag-green-text:#2F8F6B;--rag-amber-text:#B97F22;--rag-red-text:#C2483D;--rag-na-text:#6B7480;--tint-green:rgba(47,143,107,.12);--tint-amber:rgba(212,154,58,.16);--tint-red:rgba(210,100,90,.13);--tint-na:rgba(154,164,176,.16);--navy-fill:#0B2347;
+      --ink:#15243A;--txt:#46505C;--mut:#7A838F;--line:#E1E6EE;--card:#FFF;--bg:#FFF;
+      --sh:0 1px 2px rgba(20,30,50,.04),0 14px 32px -24px rgba(20,30,50,.30);
+      width:100%;max-width:2200px;margin:0 auto;height:100vh;overflow:hidden;position:relative;
+      display:flex;flex-direction:column;background:var(--bg);color:var(--ink);padding:76px 40px 12px 98px}
+  #art[data-t="dark"]{--bg:#16202C;--card:#1E2937;--ink:#EAEFF5;--txt:#C4CEDA;--mut:#94A1B2;--line:#2A3744;--navy-fill:#243246;--accent:#8FC7E8;--steel:#93A9C4;--rag-green:#5FBF94;--rag-amber:#E8B96A;--rag-red:#F0968C;--rag-na:#9AA8B8;--rag-green-text:#5FBF94;--rag-amber-text:#E8B96A;--rag-red-text:#F0968C;--rag-na-text:#9AA8B8;--tint-green:rgba(95,191,148,.15);--tint-amber:rgba(232,185,106,.15);--tint-red:rgba(240,150,140,.14);--tint-na:rgba(148,161,178,.15);--sh:0 1px 2px rgba(0,0,0,.4),0 14px 32px -24px rgba(0,0,0,.6)}
+  body:has(#art[data-t="dark"]){--page:#0E1620}
+  .nr-rail{position:absolute;left:0;top:0;bottom:0;width:52px;background:var(--navy-fill)}
+  .toprow{position:absolute;top:22px;left:0;right:40px;display:flex;justify-content:space-between;align-items:center;gap:14px;z-index:3}
+  .tags{display:flex;align-items:center;gap:11px;min-width:0}
+  .nr-pill{display:inline-flex;align-items:center;gap:11px;background:var(--green);padding:10px 22px 10px 14px;border-radius:0 9px 9px 0}
+  .nr-pill img{height:21px;filter:brightness(0) invert(1)}
+  .nr-pill b{color:#fff;font-size:13px;font-weight:700;letter-spacing:.3px}
+  .nr-track{background:#E3E8EF;color:var(--navy);font-weight:700;font-size:var(--fs-115);letter-spacing:.8px;padding:9px 16px;border-radius:8px}
+  #art[data-t="dark"] .nr-track{background:#243246;color:#EAEFF5}
+  .seg{display:flex;background:var(--slate-10);border-radius:999px;padding:3px}
+  .seg button{font-size:12px;font-weight:600;border:none;background:transparent;color:var(--mut);padding:6px 14px;border-radius:999px;cursor:pointer}
+  .seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--sh)}
+  .ctrls{display:flex;gap:9px;flex:none}
+  h1{font-size:clamp(20px,1.85vw,28px);font-weight:700;color:var(--navy);letter-spacing:-.2px;line-height:1.24;margin:0;max-width:1300px}
+  #art[data-t="dark"] h1{color:#EAEFF5}
+  h1 .hl{color:var(--green)}
+  .subrow{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:8px 0 16px}
+  .subt{font-size:15px;font-weight:600;color:var(--accent)}
+  #view{flex:1;min-height:0;position:relative;overflow:hidden}
+  #vinner{position:absolute;top:0;left:0;width:100%;transform-origin:top left;padding-bottom:24px}
+  table{border-collapse:collapse;width:100%}
+  th{text-align:left;font-size:var(--fs-105);letter-spacing:.6px;text-transform:uppercase;color:var(--mut);font-weight:700;padding:0 20px 9px 0;border-bottom:2px solid var(--line)}
+  td{font-size:13px;color:var(--txt);padding:11px 20px 11px 0;border-bottom:1px solid var(--line);vertical-align:top}
+  td b{color:var(--ink)}
+  #ft{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:12px;font-size:clamp(9.5px,0.75vw,12px);color:var(--mut)}
+  #ft .l{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .legend{display:flex;gap:7px}
+  .lp{font-size:0.95em;font-weight:600;padding:0.2em 0.85em;border-radius:999px}
+  .conf{font-size:0.88em;letter-spacing:.5px;font-weight:600}
+  /* ── stakeholder map: the board, the rings and the engagement plan ── */
+  #view{overflow-x:hidden;overflow-y:hidden}
+  .chip{display:inline-block;font-size:var(--fs-8);font-weight:800;letter-spacing:.4px;text-transform:uppercase;padding:1px 4px;border-radius:4px;vertical-align:1px}
+  .chip.two{background:var(--slate-10);color:var(--txt)} .chip.fb{background:var(--tint-amber);color:var(--rag-amber-text)}
+  .tt{display:inline-block;font-size:var(--fs-95);font-weight:800;letter-spacing:.4px;text-transform:uppercase;padding:2px 7px;border-radius:999px}
+  .tt.deliver{background:#E3F1E9;color:#1F6B4E} .tt.support{background:#E4EDF6;color:#2C5A85} .tt.know{background:#EEF0F3;color:#5E6773}
+  #art[data-t="dark"] .tt.deliver{background:rgba(95,191,148,.18);color:#8FD6B4} #art[data-t="dark"] .tt.support{background:rgba(143,199,232,.16);color:#A9D5E6} #art[data-t="dark"] .tt.know{background:rgba(148,161,178,.16);color:#C4CEDA}
+  .av{flex:none;width:26px;height:26px;border-radius:50%;background:#E4EDF6;color:#2C5A85;font-size:var(--fs-10);font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+  #art[data-t="dark"] .av{background:rgba(143,199,232,.16);color:#A9D5E6}
+  .num{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--navy-fill);color:#fff;font-size:var(--fs-115);font-weight:700;align-items:center;justify-content:center;flex:none}
+  .none{font-size:12px;color:var(--mut);font-style:italic}
+  /* the board */
+  .board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start}
+  .col{background:var(--slate-10);border-radius:14px;padding:10px;min-width:0}
+  .colh{display:flex;align-items:center;gap:8px} .colh .tt{font-size:var(--fs-11);padding:4px 11px} .colh .cnt{margin-left:auto;font-size:12px;font-weight:700;color:var(--mut)}
+  .col .rule{margin:4px 2px 8px;font-size:var(--fs-11);color:var(--mut);line-height:1.4}
+  .sk{background:var(--card);border:1px solid var(--line);border-radius:9px;margin-bottom:4px;box-shadow:0 1px 2px rgba(20,30,50,.04);transition:box-shadow .15s}
+  .sk:hover{box-shadow:0 6px 18px -10px rgba(11,35,71,.35)}
+  .skh{display:flex;align-items:center;gap:8px;padding:5px 9px;cursor:pointer}
+  .cm{flex:1;min-width:0}
+  .cn{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap} .cn b{font-size:12px;color:var(--ink)}
+  .cr{font-size:var(--fs-105);color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .grp{display:inline-block;margin-left:6px;font-size:var(--fs-95);font-weight:600;color:var(--txt);background:var(--slate-10);padding:0 6px;border-radius:999px}
+  .chev{flex:none;display:inline-block;color:var(--mut);font-size:12px;transition:transform .15s}
+  .sk.open .chev{transform:rotate(180deg)}
+  .skb{display:none;border-top:1px solid var(--line);padding:4px 12px 12px}
+  .sk.open .skb{display:block} .sk.open{box-shadow:0 10px 26px -14px rgba(11,35,71,.45)}
+  .sec{margin-top:10px} .sec h5{margin:0 0 6px;font-size:var(--fs-10);font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--mut)}
+  .kv{font-size:12px;color:var(--txt);display:flex;gap:6px;margin-bottom:4px} .kv i{font-style:normal;color:var(--mut);flex:none;width:74px}
+  .pln{border:1px solid var(--line);border-radius:9px;padding:7px 9px;margin-top:6px;font-size:12px} .pln.past{opacity:.6}
+  .plh{display:flex;align-items:center;gap:6px} .plh b{font-size:12.5px;color:var(--navy)} #art[data-t="dark"] .plh b{color:#EAEFF5}
+  .plh .num{width:18px;height:18px;font-size:var(--fs-10)} .plh .dt{font-size:var(--fs-11);font-weight:700;color:var(--accent)}
+  .dn{font-size:var(--fs-95);font-weight:700;color:var(--rag-green-text);background:var(--tint-green);padding:1px 6px;border-radius:999px}
+  .plw{color:var(--mut);margin:3px 0 2px} .plq{font-style:italic;color:var(--txt)} .pla{color:var(--ink);margin-top:2px}
+  /* the rings */
+  .rings{display:flex;justify-content:center}
+  .onion{width:100%;max-width:900px;height:auto;display:block} .onion text{font-family:inherit}
+  .onion .r-deliver{fill:#E6F0EA} .onion .r-support{fill:#EEF2F7} .onion .r-know{fill:#F7F8FA} .onion circle.ring{stroke:var(--line)}
+  #art[data-t="dark"] .onion .r-deliver{fill:#1F3A30} #art[data-t="dark"] .onion .r-support{fill:#1E2B3B} #art[data-t="dark"] .onion .r-know{fill:#1A2430}
+  .onion .rl1{font-size:var(--fs-10);font-weight:800;letter-spacing:.8px;fill:var(--mut);text-anchor:middle}
+  .onion .gl{font-size:var(--fs-105);font-weight:800;letter-spacing:.5px;fill:var(--mut)}
+  .onion .on{font-size:14px;font-weight:600;fill:var(--ink)} .onion .more{font-size:var(--fs-11);fill:var(--mut);font-style:italic}
+  .onion .pd{fill:var(--navy-fill)}
+  /* the engagement plan: one table on a timeline */
+  table.v1{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed}
+  .v1 col.c-n{width:44px} .v1 col.c-g{width:15%} .v1 col.c-w{width:18%} .v1 col.c-q{width:17%} .v1 col.c-a{width:22%} .v1 col.c-ny{width:14%} .v1 col.c-l{width:15%}
+  .v1 thead th{position:sticky;top:0;z-index:2;background:var(--card);padding:0 14px 10px 0}
+  .v1 td{padding:12px 16px 12px 0;line-height:1.45}
+  .v1 td.rail{position:relative;padding:12px 0;border-bottom:0}
+  .v1 td.rail:before{content:'';position:absolute;left:11px;top:0;bottom:0;width:2px;background:var(--line)}
+  .v1 td.rail .num{position:relative;z-index:1;box-shadow:0 0 0 4px var(--card)}
+  .v1 tr.ms td{border-bottom:0;padding:22px 0 8px;font-size:16px} .msr{display:flex;align-items:baseline} .v1 tr.ms b{color:var(--navy)} #art[data-t="dark"] .v1 tr.ms b{color:#EAEFF5}
+  .v1 tr.ms td.rail i{position:absolute;left:5px;top:26px;width:14px;height:14px;border-radius:50%;background:var(--card);border:3px solid var(--accent);z-index:1}
+  .v1 tr.ms.done td.rail i{background:var(--rag-green);border-color:var(--rag-green)}
+  .v1 tbody tr.ms:first-child td.rail:before{top:30px}
+  .v1 .dt{font-size:12.5px;font-weight:700;color:var(--accent);margin-left:10px} .v1 .dn{font-size:var(--fs-105);padding:2px 8px;margin-left:8px}
+  .v1 .n{margin-left:auto;font-size:var(--fs-115);color:var(--mut);font-weight:600}
+  .v1 .gn{display:block;font-size:13.5px;color:var(--ink);margin-bottom:4px}
+  .v1 .who{display:flex;gap:9px;align-items:flex-start} .v1 .who b{display:block;font-size:13px;color:var(--ink)} .v1 .who div span{display:block;font-size:12px;color:var(--mut)}
+  .v1 td.q{font-style:italic;color:var(--ink)} .v1 td.q:before{content:'\201C';color:var(--accent);font-size:20px;font-weight:800;line-height:0;margin-right:2px;vertical-align:-5px;font-style:normal}
+  .v1 td.a{color:var(--ink)}
+  .ck{display:inline-flex;width:16px;height:16px;border-radius:50%;background:var(--tint-green);color:var(--rag-green-text);font-size:var(--fs-10);font-weight:800;align-items:center;justify-content:center;margin-right:7px;vertical-align:1px}
+  .v1 tr.ln.done td:not(.rail){color:var(--mut)} .v1 tr.ln.done .num{background:#9AA8B8}
+  .v1 tr.ln:hover td:not(.rail){background:rgba(110,177,209,.07)}
+  @media (max-width:1100px){.board{grid-template-columns:minmax(0,1fr)}}
+  
+  /* ── responsive chrome: on a narrow screen the absolute toprow would collide, so drop it
+     into normal flow and let it wrap (applies to every artifact that uses this chrome) ── */
+  @media (max-width:760px){
+    #art,#pm{padding:14px 18px 10px 42px}
+    .nr-rail{width:24px}
+  }
+
+  /* ── responsive chrome ──────────────────────────────────────────────────────
+     The toprow stacks when it does not fit, and the switch is DETECTED, not
+     guessed: fitChrome() below measures the one-row layout and adds .stacked to
+     the artifact root. Never hard-code a breakpoint for the chrome — see
+     brand-guide.html, "Responsive chrome". Stacked order is brand row, then
+     navigation, then working controls: where am I, what am I looking at, what
+     can I change. ── */
+  #art.stacked .toprow,#pm.stacked .toprow,#pw.stacked .toprow{
+    position:static;top:auto;left:auto;right:auto;margin:0 0 12px;
+    display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:center;gap:10px 12px}
+  #art.stacked .tags,#pm.stacked .tags,#pw.stacked .tags{display:contents}
+  /* only the brand pill bleeds out onto the navy rail — that is why it is
+     border-radius:0 9px 9px 0. The negative margin is given back as padding, so
+     its right edge does not move and no sibling shifts. */
+  #art.stacked .nr-pill,#pm.stacked .nr-pill,#pw.stacked .nr-pill{
+    order:1;margin-left:calc(-1 * var(--padl,0px));padding-left:calc(14px + var(--padl,0px))}
+  /* no text in an artifact is ever cut to make it fit: the lens badge wraps, it
+     does not ellipsise. An instrument that truncates it looks fine to a gate and
+     wrong to a client. */
+  #art.stacked .nr-track,#pm.stacked .nr-track,#pw.stacked .nr-track{
+    order:2;max-width:none;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+  #art.stacked .ctrls,#pm.stacked .ctrls,#pw.stacked .ctrls{
+    order:3;flex:1 1 100%;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:8px}
+  /* a shell whose view switch sits straight in the toprow, with no .ctrls group */
+  #art.stacked .toprow>.seg,#pm.stacked .toprow>.seg,#pw.stacked .toprow>.seg{order:3;flex:1 1 100%}
+  #art.stacked .seg,#pm.stacked .seg,#pw.stacked .seg{flex-wrap:wrap;max-width:100%}
+  #art.stacked .wgrp,#pm.stacked .wgrp,#pw.stacked .wgrp{
+    order:4;flex:1 1 100%;flex-wrap:wrap;gap:8px}
+  #art.stacked #save,#art.stacked #lock,#pm.stacked #save,#pm.stacked #lock,
+  #pw.stacked #save,#pw.stacked #lock{order:4}
+  /* the narrow-screen media query keeps only what it was really for: padding and
+     rail width on a phone. Chrome layout is no longer its business. */
+  @media (max-width:760px){
+    #art.stacked,#pm.stacked,#pw.stacked{padding:14px 18px 10px 42px}
+    #art.stacked .nr-rail,#pm.stacked .nr-rail,#pw.stacked .nr-rail{width:24px}
+  }
+</style><style id="nr-topbar">
+  /* patch_topbar.py: one theme button and the way home. See the script of the same
+     name at the end of the body. The doubled id outranks the stacked-chrome rules. */
+  :is(#theme,#tseg):is(#theme,#tseg).seg{padding:3px}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button.on{display:none}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button{font-size:0;line-height:0;width:34px;height:28px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button::before{content:"";width:16px;height:16px;background:currentColor;-webkit-mask:var(--nr-ico) center/16px 16px no-repeat;mask:var(--nr-ico) center/16px 16px no-repeat}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button[data-s="dark"]{--nr-ico:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M12%203a6%206%200%200%200%209%209a9%209%200%201%201-9-9z'/%3E%3C/svg%3E")}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button[data-s="light"]{--nr-ico:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Ccircle%20cx='12'%20cy='12'%20r='4'/%3E%3Cpath%20d='M12%202v2M12%2020v2M4.9%204.9l1.4%201.4M17.7%2017.7l1.4%201.4M2%2012h2M20%2012h2M4.9%2019.1l1.4-1.4M17.7%206.3l1.4-1.4'/%3E%3C/svg%3E")}
+  .nr-crumb{display:inline-flex;align-items:center;gap:8px}
+  .nr-crumb>.nr-track{background:transparent!important;padding:0!important;border-radius:0!important;color:inherit!important;margin:0!important}
+  .nr-crumb .nr-home{color:inherit;opacity:.6;text-decoration:none;text-transform:uppercase;white-space:nowrap}
+  .nr-crumb .nr-home:hover{opacity:1;text-decoration:underline}
+  .nr-crumb .nr-sep{opacity:.4}
+</style>
+</head>
+<body>
+<div id="art" data-t="light">
+  <div class="nr-rail"></div>
+  <div class="toprow">
+    <div class="tags">
+      <div class="nr-pill"><img alt="Nova Reperta" src="data:image/png;base64,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"><b id="ctx">OPEX QUICKSCAN</b></div>
+      <div class="nr-track" id="lens">CHANGE · STAKEHOLDER MAP</div>
+          
+      </div>
+    <div class="ctrls">
+      <div class="seg" id="views"><button data-v="map" class="on">Map</button><button data-v="rings">Rings</button><button data-v="plan">Engagement plan</button></div>
+      <div class="seg" id="theme"><button data-s="light" class="on">Light</button><button data-s="dark">Dark</button></div>
+    </div>
+  </div>
+  <h1 id="title"></h1>
+  <div class="subrow"><div class="subt" id="subt"></div></div>
+  
+  <div id="view"><div id="vinner"></div></div>
+  <div id="ft">
+    <div class="l"><span id="src"></span><div class="legend" id="lg"></div></div>
+    <span class="conf">Sample data · Northwind Assurance is fictional</span>
+  </div>
+  
+</div>
+<script>
+/* ============ ONLY THIS BLOCK CHANGES PER ENGAGEMENT ============ */
+const DATA = /* DATA */ {
+ "context": "OPEX QUICKSCAN",
+ "lens": "CHANGE · STAKEHOLDER MAP",
+ "engagement": "Northwind Assurance · OpEx diagnostic",
+ "source": "Kick-off, one-to-ones and SteerCo, Sep 2026 (sample data, fictional client)",
+ "keyMessage": "Five of six people are read and **the sponsor leads**, but **IT moved down** before the baseline read-out",
+ "asOf": "2026-09-28",
+ "nrTeam": [
+  {
+   "id": "NR1",
+   "name": "Thomas Merckx"
+  },
+  {
+   "id": "NR2",
+   "name": "Anouk Vermeer"
+  }
+ ],
+ "people": [
+  {
+   "id": "P01",
+   "name": "Marleen Ruysse",
+   "title": "COO, sponsor of the diagnostic",
+   "owns": "The operating budget and the diagnostic's result",
+   "group": "G1",
+   "tier": "deliver",
+   "twoRoles": false,
+   "formal": false,
+   "doorName": "Direct",
+   "ownerName": "Thomas Merckx",
+   "reached": [
+    "Kick-off, 1 Sep 2026"
+   ]
+  },
+  {
+   "id": "P02",
+   "name": "Ilse Vermeulen",
+   "title": "Head of Claims Handling",
+   "owns": "The first team assessed, 42 FTE",
+   "group": "G2",
+   "tier": "deliver",
+   "twoRoles": false,
+   "formal": false,
+   "doorName": "Marleen Ruysse",
+   "ownerName": "Anouk Vermeer",
+   "reached": [
+    "Kick-off, 1 Sep 2026",
+    "MAE session, 17 Sep 2026"
+   ]
+  },
+  {
+   "id": "P03",
+   "name": "Bram Hendrickx",
+   "title": "Head of Customer Service",
+   "owns": "Customer Service, 15 FTE",
+   "group": "G2",
+   "tier": "support",
+   "twoRoles": false,
+   "formal": false,
+   "doorName": "Ilse Vermeulen",
+   "ownerName": "Anouk Vermeer",
+   "reached": [
+    "Team-lead meeting, 10 Sep 2026"
+   ]
+  },
+  {
+   "id": "P04",
+   "name": "Joris Van Acker",
+   "title": "Head of Recovery & Legal",
+   "owns": "Recovery from third parties",
+   "group": "G2",
+   "tier": "know",
+   "twoRoles": false,
+   "formal": false,
+   "doorName": "Ilse Vermeulen",
+   "ownerName": "Anouk Vermeer",
+   "reached": []
+  },
+  {
+   "id": "P05",
+   "name": "Dirk Peeters",
+   "title": "Head of IT & Systems",
+   "owns": "ClaimsCore and PolicyHub",
+   "group": "G3",
+   "tier": "support",
+   "twoRoles": false,
+   "formal": false,
+   "doorName": "Marleen Ruysse",
+   "ownerName": "Thomas Merckx",
+   "reached": [
+    "Data request, 8 Sep 2026"
+   ]
+  },
+  {
+   "id": "P06",
+   "name": "Wouter Segers",
+   "title": "Head of Compliance & Risk",
+   "owns": "Sign-off on any use of claims data",
+   "group": "G3",
+   "tier": "support",
+   "twoRoles": false,
+   "formal": false,
+   "doorName": "Marleen Ruysse",
+   "ownerName": "Thomas Merckx",
+   "reached": [
+    "One-to-one, 12 Sep 2026"
+   ]
+  }
+ ],
+ "groups": [
+  {
+   "id": "G1",
+   "name": "Executive committee",
+   "channel": "Weekly sponsor sync",
+   "ownerName": "Thomas Merckx",
+   "formalBody": false,
+   "tier": "deliver"
+  },
+  {
+   "id": "G2",
+   "name": "Claims Operations",
+   "channel": "Team-lead meeting",
+   "ownerName": "Anouk Vermeer",
+   "formalBody": false,
+   "tier": "deliver"
+  },
+  {
+   "id": "G3",
+   "name": "IT, risk and compliance",
+   "channel": "SteerCo",
+   "ownerName": "Thomas Merckx",
+   "formalBody": false,
+   "tier": "support"
+  }
+ ],
+ "plan": [],
+ "milestones": [
+  {
+   "id": "M1",
+   "name": "Intake call",
+   "date": "2026-08-18",
+   "status": "done"
+  },
+  {
+   "id": "M2",
+   "name": "Data request",
+   "date": "2026-08-21",
+   "status": "done"
+  },
+  {
+   "id": "M3",
+   "name": "Kick-off",
+   "date": "2026-09-01",
+   "status": "done"
+  },
+  {
+   "id": "M4",
+   "name": "SteerCo · Scope and first team",
+   "date": "2026-09-15",
+   "status": "done"
+  },
+  {
+   "id": "M5",
+   "name": "SteerCo · First findings",
+   "date": "2026-10-13",
+   "status": "planned"
+  },
+  {
+   "id": "M6",
+   "name": "SteerCo · Diagnostic read-out",
+   "date": "2026-10-29",
+   "status": "planned"
+  }
+ ],
+ "build": "client"
+};
+/* ========================================================= */
+(function(){
+  var ORDER=['deliver','support','know'];
+  var TN={deliver:'Deliver',support:'Support',know:'Need to know'};
+  var RULE={deliver:'Work on the engagement or own part of its result.',
+            support:'Can clear, slow or stop the work, or their team’s work changes a lot.',
+            know:'Everyone else the work touches.'};
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function esc(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function hl(t){return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1</span>');}
+  function fmt(d,yr){if(!d)return '';var p=String(d).split('-');return (+p[2])+' '+MON[(+p[1])-1]+(yr?' '+p[0]:'');}
+  function ini(n){return String(n||'').replace(/[()]/g,'').split(/\s+/).filter(Boolean).slice(0,2).map(function(w){return w.charAt(0);}).join('').toUpperCase();}
+  function gById(id){return (DATA.groups||[]).filter(function(g){return g.id===id;})[0]||null;}
+  function pById(id){return (DATA.people||[]).filter(function(p){return p.id===id;})[0]||null;}
+  function gIndex(id){var i=(DATA.groups||[]).map(function(g){return g.id;}).indexOf(id);return i<0?99:i;}
+  function people(){return (DATA.people||[]).filter(function(p){return p.tier;});}
+  function moments(){var ms=(DATA.milestones||[]).slice(),ids=ms.map(function(m){return m.id;});
+    (DATA.plan||[]).forEach(function(l){if(l.milestone&&ids.indexOf(l.milestone)<0){ids.push(l.milestone);ms.push({id:l.milestone,name:l.milestone,date:'',status:'planned'});}});
+    return ms.sort(function(a,b){return String(a.date||'9').localeCompare(String(b.date||'9'));});}
+  function msTitle(m){return m.status==='done'?m.name:'Before the '+m.name.charAt(0).toLowerCase()+m.name.slice(1);}
+  function lines(mid,gid){return (DATA.plan||[]).filter(function(l){return l.milestone===mid&&(!gid||l.group===gid);}).sort(function(a,b){return (a.order||0)-(b.order||0);});}
+  function kv(k,v){return v?'<div class="kv"><i>'+k+'</i><span>'+esc(v)+'</span></div>':'';}
+
+  /* The working copy fills these in, inside its edit fence. The client build keeps the empty ones,
+     so nothing it draws can show where someone stands. */
+  var H={pill:function(){return '';},chips:function(){return '';},cls:function(){return '';},strat:function(){return '';},
+         ny:function(){return '';},nyCell:function(){return '';},nyHead:'',nyCol:'',sections:function(){return '';},
+         dot:function(){return '';},gap:function(){return '';},add:function(){return '';},addLine:function(){return '';},
+         legend:function(){return '';},pre:function(){return '';}};
+
+  function planLines(gid){var out='';
+    moments().forEach(function(m){lines(m.id,gid).forEach(function(l){var done=m.status==='done';
+      out+='<div class="pln'+(done?' past':'')+'"><div class="plh"><span class="num">'+esc(l.order)+'</span><b>'+esc(msTitle(m))+'</b><span class="dt">'+fmt(m.date)+'</span>'+(done?'<span class="dn">Done</span>':'')+'</div>'+
+        '<div class="plw">'+esc(l.messenger)+(l.where?' · '+esc(l.where):'')+'</div><div class="plq">“'+esc(l.question)+'”</div><div class="pla">'+esc(l.answer)+'</div>'+H.ny(l)+'</div>';});});
+    return out||'<div class="none">Nothing planned for this group yet.</div>';}
+
+  function card(p){var g=gById(p.group)||{};
+    var chips=(p.twoRoles?'<span class="chip two">Two roles</span>':'')+(p.formal?'<span class="chip fb">Formal body</span>':'')+H.chips(p);
+    var body='<div class="sec"><h5>Engagement plan</h5>'+kv('Door',p.doorName)+kv('Our owner',p.ownerName)+H.strat(p)+
+      kv('Reached',(p.reached&&p.reached.length)?p.reached.join(', '):'Nothing yet')+planLines(p.group)+'</div>'+H.sections(p);
+    return '<div class="sk'+H.cls(p)+(OPEN[p.id]?' open':'')+'" data-id="'+esc(p.id)+'"><div class="skh"><div class="cm"><div class="cn"><b>'+esc(p.name)+'</b>'+chips+'</div>'+
+      '<div class="cr">'+esc(p.title)+'<span class="grp">'+esc(g.name||'')+'</span></div></div>'+H.pill(p)+'<span class="chev">▾</span></div><div class="skb">'+body+'</div></div>';}
+
+  function board(){return H.pre()+'<div class="board">'+ORDER.map(function(t){
+      var ps=people().filter(function(p){return p.tier===t;}).sort(function(a,b){return gIndex(a.group)-gIndex(b.group);});
+      return '<div class="col" data-tier="'+t+'"><div class="colh nr-locked"><span class="tt '+t+'">'+TN[t]+'</span><span class="cnt">'+ps.length+'</span></div>'+
+        '<p class="rule nr-locked">'+RULE[t]+'</p>'+ps.map(card).join('')+H.add(t)+'</div>';}).join('')+'</div>';}
+
+  function rings(){var cx=470,cy=440,R={deliver:170,support:290,know:420},IN={deliver:0,support:170,know:290};
+    var s='<div class="rings"><svg viewBox="0 0 940 880" class="onion">';
+    ['know','support','deliver'].forEach(function(t){s+='<circle class="ring r-'+t+'" cx="'+cx+'" cy="'+cy+'" r="'+R[t]+'"/>';});
+    s+='<text x="'+cx+'" y="'+(cy+R.deliver-20)+'" class="rl1">DELIVER</text>';
+    s+='<text x="'+(cx-230)+'" y="'+(cy+4)+'" class="rl1">SUPPORT</text>';
+    s+='<text x="'+(cx-355)+'" y="'+(cy-3)+'" class="rl1">NEED TO</text><text x="'+(cx-355)+'" y="'+(cy+11)+'" class="rl1">KNOW</text>';
+    ORDER.forEach(function(t){
+      var gs=(DATA.groups||[]).filter(function(g){return people().some(function(p){return p.group===g.id&&p.tier===t;});});
+      var blocks=gs.map(function(g){var ps=people().filter(function(p){return p.group===g.id&&p.tier===t;});
+        var shown=ps.slice(0,ps.length>7?6:7),more=ps.length-shown.length;
+        var w=Math.max(g.name.length*6.7,Math.max.apply(null,shown.map(function(p){return p.name.length*7.9;}))+16);
+        return {g:g,shown:shown,more:more,w:w,h:22+(shown.length+(more?1:0))*19};});
+      var total=blocks.reduce(function(a,b){return a+b.w;},0)+24*Math.max(0,blocks.length-1),run=cx-total/2;
+      blocks.forEach(function(b,i){var x,y;
+        if(t==='deliver'){x=run+b.w/2;run+=b.w+24;y=cy-18;}
+        else{var a=(180+(i+0.5)*360/blocks.length)*Math.PI/180,rm=IN[t]+(R[t]-IN[t])*(t==='support'?0.58:0.5);x=cx+rm*Math.cos(a);y=cy+rm*Math.sin(a);}
+        var left=x-b.w/2,top=y-b.h/2;
+        s+='<text x="'+left.toFixed(0)+'" y="'+(top+11).toFixed(0)+'" class="gl" data-g="'+esc(b.g.id)+'">'+esc(b.g.name.toUpperCase())+'</text>';
+        b.shown.forEach(function(p,j){var yy=top+32+j*19;
+          s+='<circle cx="'+(left+5).toFixed(0)+'" cy="'+(yy-5).toFixed(0)+'" r="5" class="pd"'+H.dot(p)+'/><text x="'+(left+15).toFixed(0)+'" y="'+yy.toFixed(0)+'" class="on">'+esc(p.name)+'</text>';});
+        if(b.more)s+='<text x="'+(left+15).toFixed(0)+'" y="'+(top+32+b.shown.length*19).toFixed(0)+'" class="more">and '+b.more+' more</text>';});});
+    return s+'</svg></div>';}
+
+  function plan(){var W=!!H.nyCol,ncol=W?7:6;
+    var cols='<col class="c-n"><col class="c-g"><col class="c-w"><col class="c-q"><col class="c-a">'+H.nyCol+'<col class="c-l">';
+    var head='<thead><tr><th></th><th>Group</th><th>Who tells them</th><th>Their question</th><th>Our answer today</th>'+H.nyHead+'<th>How we know it landed</th></tr></thead>';
+    var body='';
+    moments().forEach(function(m){var ls=lines(m.id),done=m.status==='done';
+      body+='<tr class="ms nr-locked'+(done?' done':'')+'"><td class="rail"><i></i></td><td colspan="'+(ncol-1)+'"><div class="msr"><b>'+esc(msTitle(m))+'</b><span class="dt">'+fmt(m.date)+'</span>'+(done?'<span class="dn">Done</span>':'')+
+        '<span class="n">'+(ls.length?ls.length+' group'+(ls.length>1?'s':'')+', in this order':'')+'</span></div></td></tr>';
+      if(!ls.length)body+=H.gap(m,ncol);
+      ls.forEach(function(l){var g=gById(l.group)||{name:l.group};
+        body+='<tr class="ln'+(done?' done':'')+'" data-line="'+esc(l.id)+'"><td class="rail"><span class="num">'+esc(l.order)+'</span></td>'+
+          '<td><b class="gn" data-g="'+esc(g.id||'')+'">'+esc(g.name)+'</b>'+(g.tier?'<span class="tt '+g.tier+'">'+TN[g.tier]+'</span>':'')+(g.formalBody?' <span class="chip fb">Formal body</span>':'')+'</td>'+
+          '<td><div class="who"><span class="av">'+esc(ini(l.messenger))+'</span><div><b>'+esc(l.messenger)+'</b><span>'+esc(l.where||'')+'</span></div></div></td>'+
+          '<td class="q">'+esc(l.question)+'</td><td class="a">'+esc(l.answer)+'</td>'+H.nyCell(l)+'<td class="l"><span class="ck">✓</span>'+esc(l.landed)+'</td></tr>';});
+      body+=H.addLine(m,ncol);});
+    return '<table class="v1"><colgroup>'+cols+'</colgroup>'+head+'<tbody>'+body+'</tbody></table>';}
+
+  var VIEWS={map:board,rings:rings,plan:plan},cur='map',OPEN={};
+  function chrome(){
+    document.getElementById('ctx').textContent=DATA.context||'OPEX QUICKSCAN';
+    document.getElementById('lens').textContent=DATA.lens||'CHANGE · STAKEHOLDER MAP';
+    document.getElementById('title').innerHTML=hl(DATA.keyMessage||'');
+    var n=people().length,gs={};people().forEach(function(p){gs[p.group]=1;});
+    document.getElementById('subt').textContent=[DATA.engagement,n+' people in '+Object.keys(gs).length+' groups',DATA.asOf?'as of '+fmt(DATA.asOf,1):''].filter(Boolean).join(' · ');
+    document.getElementById('src').innerHTML=DATA.source?('<b style="color:var(--txt)">Source:</b> '+esc(DATA.source)):'';
+    var lg=(cur==='plan'?'<span class="lp" style="background:var(--slate-10);color:var(--txt)">1, 2, 3 = who hears first</span>':'')+H.legend(cur);
+    document.getElementById('lg').innerHTML=lg?'<b style="color:var(--txt);margin-right:4px">Legend:</b>'+lg:'';}
+  // Largest scale that fits the frame, never below .72: a board with forty names stays readable and
+  // scrolls inside the frame instead of shrinking to nothing. Expanding a card does not refit.
+  function fitView(){var v=document.getElementById('view'),vi=document.getElementById('vinner');var ah=v.clientHeight;if(!ah)return;
+    vi.style.transform='none';var svg=vi.querySelector('.onion');if(svg){svg.style.height=Math.max(360,ah-14)+'px';svg.style.width='auto';svg.style.maxWidth='100%';}
+    var lo=0.72,hi=1.1,best=0.72;
+    for(var k=0;k<12;k++){var s=(lo+hi)/2;vi.style.width=(100/s)+'%';if(vi.scrollHeight*s<=ah-10){best=s;lo=s;}else{hi=s;}}
+    vi.style.width=(100/best)+'%';vi.style.transform='scale('+best+')';
+    v.style.overflowY=(vi.scrollHeight*best>ah-10)?'auto':'hidden';}
+  function bindOpen(){document.querySelectorAll('#vinner .sk .skh').forEach(function(h){h.onclick=function(e){
+      var c=h.closest('.sk');
+      c.classList.toggle('open');OPEN[c.getAttribute('data-id')]=c.classList.contains('open');};});}
+  function render(){chrome();document.getElementById('vinner').innerHTML=VIEWS[cur]();bindOpen();
+    requestAnimationFrame(fitView);setTimeout(fitView,60);if(window.fitChrome)window.fitChrome();}
+  function seg(id,attr,cb){var box=document.getElementById(id);box.querySelectorAll('button').forEach(function(b){b.onclick=function(){box.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});b.classList.add('on');cb(b.getAttribute(attr));};});}
+  seg('views','data-v',function(v){cur=v;render();});
+  seg('theme','data-s',function(t){document.getElementById('art').setAttribute('data-t',t);render();});
+  window.addEventListener('resize',fitView);
+
+  render();
+
+})();
+</script>
+<script>
+/* ── fitChrome() — the chrome stacks when it does not fit ────────────────────
+   Measures the one-row layout and adds .stacked to the artifact root when any of
+   six things is true: the two groups are closer than 12px · a control runs past
+   either edge · a label has been squeezed narrower than its own text · the
+   toprow wraps · the toprow comes within 6px of the action title · the viewport
+   is at or below 760px (the floor). Exposed as window.fitChrome() so a render
+   pass can call it after it changes a label. ── */
+(function(){
+  var busy=false,lastW=-1;
+  function root(){return document.querySelector('#art,#pm,#pw');}
+  function skip(e){
+    if(!e) return true;
+    if(e.id==='wpop'||(e.closest&&e.closest('#wpop'))) return true;
+    var cs=getComputedStyle(e);
+    if(cs.visibility==='hidden'||cs.display==='none') return true;
+    return false;
+  }
+  function fitChrome(){
+    if(busy) return; busy=true;
+    try{
+      var R=root(); if(!R) return;
+      var tr=R.querySelector('.toprow'); if(!tr) return;
+      R.classList.remove('stacked');
+      void tr.offsetWidth;                                  /* force the reflow we measure */
+      var need=window.innerWidth<=760, i, r, e;
+      var trb=tr.getBoundingClientRect();
+      /* 1. the two groups are closer than 12px */
+      var tags=R.querySelector('.tags'), ctrls=R.querySelector('.ctrls');
+      if(!need&&tags&&ctrls&&!skip(tags)&&!skip(ctrls)){
+        var a=tags.getBoundingClientRect(), b=ctrls.getBoundingClientRect();
+        if(b.left-a.right<12) need=true;
+      }
+      /* 2. a control runs past either edge */
+      if(!need){
+        var kids=tr.querySelectorAll('.nr-pill,.nr-track,.seg,.wgrp,button,#wnote');
+        for(i=0;i<kids.length;i++){
+          e=kids[i]; if(skip(e)) continue;
+          r=e.getBoundingClientRect(); if(!r.width&&!r.height) continue;
+          if(r.right>trb.right+0.5||r.left<trb.left-0.5){need=true;break;}
+        }
+      }
+      /* 3. a label has been squeezed narrower than its own text */
+      if(!need){
+        var ls=tr.querySelectorAll('.nr-pill b,.nr-track,.seg button,button,#wnote,span');
+        for(i=0;i<ls.length;i++){
+          e=ls[i]; if(skip(e)) continue;
+          if(!e.textContent||!e.textContent.trim()) continue;
+          if(e.scrollWidth>e.clientWidth+1){need=true;break;}
+        }
+      }
+      /* 4. the toprow wraps — a floating row that wraps grows downwards into the
+         title without pushing anything down */
+      if(!need){
+        var tall=0,ch=tr.children;
+        for(i=0;i<ch.length;i++){var h=ch[i].getBoundingClientRect().height;if(h>tall)tall=h;}
+        if(trb.height>tall+2) need=true;
+      }
+      /* 5. the toprow sits on, or within 6px of, the action title */
+      if(!need){
+        var t=R.querySelector('.nr-strip'); if(!t||skip(t)) t=R.querySelector('h1');
+        if(t&&!skip(t)){var tb=t.getBoundingClientRect(); if(tb.top-trb.bottom<6) need=true;}
+      }
+      if(need) R.classList.add('stacked');
+      /* --padl is read AFTER the class lands: the class itself changes the padding */
+      R.style.setProperty('--padl',(parseFloat(getComputedStyle(R).paddingLeft)||0)+'px');
+    } finally { busy=false; }
+  }
+  window.fitChrome=fitChrome;
+  function kick(){requestAnimationFrame(fitChrome);}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',kick); else kick();
+  window.addEventListener('load',kick);
+  window.addEventListener('resize',function(){lastW=-1;kick();});
+  if(window.ResizeObserver){
+    var ro=new ResizeObserver(function(en){
+      var w=en&&en[0]?Math.round(en[0].contentRect.width):-1;
+      if(w===lastW) return;                                 /* stacking must not re-trigger us */
+      lastW=w; kick();
+    });
+    var r0=root(); if(r0) ro.observe(r0);
+  }
+})();
+</script>
+<script id="nr-ask">
+/* patch_handover.py: the on-page stand-in for confirm(), which the claude.ai artifact viewer never shows. The first click says what will happen, the second goes ahead. */
+(function(){
+  function nrAsk(msg){ var ev=window.event, el=ev&&ev.target&&ev.target.closest?ev.target.closest('button,a,[role="button"],.cselopt,li,div'):null;
+    el=el||document.activeElement||document.body; var now=Date.now();
+    if(el._nrAsk&&now-el._nrAsk<5000){ el._nrAsk=0; el.classList.remove('nr-asking'); return true; }
+    el._nrAsk=now; el.classList.add('nr-asking'); setTimeout(function(){ if(el._nrAsk===now){ el._nrAsk=0; el.classList.remove('nr-asking'); } },5000);
+    var t=document.getElementById('nr-ask-msg');
+    if(!t){ t=document.createElement('div'); t.id='nr-ask-msg'; t.setAttribute('role','status');
+      t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:99;max-width:520px;padding:11px 18px;border-radius:10px;background:var(--navy-fill,#0B2347);color:#fff;font-size:12.5px;font-weight:600;line-height:1.45;text-align:center;transition:opacity .25s;opacity:0;pointer-events:none';
+      document.body.appendChild(t); }
+    t.textContent=String(msg).replace(/\s*\?\s*$/,'?')+' Click again to go ahead.'; t.style.opacity='1'; clearTimeout(t._h); t._h=setTimeout(function(){ t.style.opacity='0'; },5000);
+    return false; }
+  window.nrAsk=window.nrAsk||nrAsk;
+})();
+</script>
+<style id="nr-ask-css">.nr-asking{outline:2px solid var(--rag-red,#D2645A)!important;outline-offset:2px}</style>
+<script id="nr-topbar-js">
+/* patch_topbar.py: one theme switch and the way home, the same in every instrument.
+   Theme: the choice is kept under the cockpit's key, nr_dark, so every page of an
+   engagement opens the same way. Home: a page that carries
+   <meta name="nr-home" content="index.html"> (the engagement artifact adds it) gets
+   "< Cockpit /" in front of its section tag. */
+(function(){
+  var K='nr_dark', box=document.getElementById('theme')||document.getElementById('tseg');
+  if(box){
+    box.querySelectorAll('button').forEach(function(b){ var d=b.getAttribute('data-s')==='dark';
+      b.title=d?'Dark mode':'Light mode'; b.setAttribute('aria-label',b.title);
+      b.addEventListener('click',function(){ try{ localStorage.setItem(K,d?'1':'0'); }catch(e){} }); });
+    var v=null; try{ v=localStorage.getItem(K); }catch(e){}
+    var dk=box.querySelector('button[data-s="dark"]');
+    if(v==='1'&&dk&&!dk.classList.contains('on')) dk.click();
+  }
+  var m=document.querySelector('meta[name="nr-home"]'), lens=document.getElementById('lens')||document.querySelector('.toprow .nr-track');
+  if(m&&lens&&!document.querySelector('.nr-crumb')){
+    var c=document.createElement('div'); c.className='nr-track nr-crumb';
+    var a=document.createElement('a'); a.className='nr-home'; a.href=m.getAttribute('content')||'index.html';
+    a.textContent='\u2039 '+(m.getAttribute('data-label')||'Cockpit'); a.title='Back to the engagement cockpit';
+    /* opened in a window of the findings dashboard (a frame of our own page): go back in that page, not in the frame */
+    try{ if(window.parent!==window&&window.parent.document) a.target='_parent'; }catch(e){}
+    var s=document.createElement('span'); s.className='nr-sep'; s.textContent='/';
+    lens.parentNode.insertBefore(c,lens); c.appendChild(a); c.appendChild(s); c.appendChild(lens);
+    if(window.fitChrome) requestAnimationFrame(window.fitChrome);
+  }
+})();
+</script>
+<style>
+/* ── READ MODE · narrow screens ──────────────────────────────────────────────
+   This artifact normally scales its whole body down so the page fits one screen.
+   On a phone that turns 13px type into 4px. Below 760px the scaling is switched
+   off and the page simply flows and scrolls at its real size. Desktop is
+   untouched — every rule here lives inside the media query. */
+@media (max-width:760px){
+  html,body{height:auto!important;overflow:auto!important}
+  #art,#pw,#pm{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;padding:12px 14px 22px 34px!important}
+  #view{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;flex:none!important;position:static!important}
+  #vinner{position:static!important;transform:none!important;width:100%!important;
+    padding-bottom:14px!important}
+  .nr-rail{width:22px!important}
+  .toprow{position:static!important;top:auto!important;right:auto!important;left:auto!important;
+    margin:0 0 10px!important;flex-wrap:wrap!important;gap:8px 10px!important;justify-content:flex-start!important}
+  .tags{flex-wrap:wrap!important;gap:8px!important;margin-left:-34px!important}
+  .ctrls{flex-wrap:wrap!important;gap:8px!important;flex:1 1 100%!important}
+  #ft{position:static!important;flex-wrap:wrap!important;row-gap:6px!important;margin-top:14px!important}
+  h1{font-size:19px!important;max-width:none!important}
+  .grid,.classic,.cols-grid{grid-template-columns:1fr!important}
+  table{min-width:0!important}
+  .tbl-wrap,.wrap-x{overflow-x:auto!important}
+}
+</style>
+<style>/* READ-MODE TYPE FLOOR — nothing under 11px once the page stops scaling */
+
+@media (max-width:760px){
+  #ft{font-size:11px!important}
+  .conf,.lp,.li,.nr-track,.nr-foot,.lbl,.note{font-size:11px!important}
+  .inum,.chip,.inev,.num,.wf-num,.vnum{font-size:11px!important}
+  #ft b,.legend b,.l b{font-size:11px!important}
+  /* a row label truncated to '…' is worse than a wrapped one once the page flows */
+  [style*="ellipsis"]{white-space:normal!important;text-overflow:clip!important;overflow:visible!important}
+}
+</style>
+</body></html>
