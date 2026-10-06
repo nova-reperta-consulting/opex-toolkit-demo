@@ -994,7 +994,7 @@ html.dark .foot a{color:var(--link)}
 .x-sheet .x-bdg{align-self:flex-start;font-size:10.5px;padding:3px 6px;margin-bottom:6%}
 .x-kind{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:var(--fs-11);color:var(--ink-3)}
 </style>
-<script>window.__NR_SHELL__={"screen": "findings", "client": "Northwind Assurance", "name": "OpEx diagnostic (one frame)", "where": "Diagnose · week 6 of 9", "built": "6 Oct 16:38", "switch": true};</script>
+<script>window.__NR_SHELL__={"screen": "findings", "client": "Northwind Assurance", "name": "OpEx diagnostic (one frame)", "where": "Diagnose · week 6 of 9", "built": "6 Oct 17:08", "switch": true};</script>
 </head>
 <body>
 <!-- @@NR-SHELL:BEGIN  The shared frame of the Cockpit, the Findings dashboard and Engagement setup.
@@ -1106,7 +1106,7 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
   if(read()==='1') root.classList.add('dark');
   var P={moon:'<path d="M20 13.5A8 8 0 1 1 10.5 4a6.5 6.5 0 0 0 9.5 9.5z"/>', menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
     gear:'<circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.6M12 18.4V21M3 12h2.6M18.4 12H21M5.6 5.6l1.9 1.9M16.5 16.5l1.9 1.9M5.6 18.4l1.9-1.9M16.5 7.5l1.9-1.9"/>',
-    back:'<path d="M15 5l-7 7 7 7"/>'};
+    back:'<path d="M15 5l-7 7 7 7"/>', play:'<circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/>'};
   function svg(p){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(p||'')+'</svg>'; }
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
   var SCREENS=[['cockpit','Cockpit','../Cockpit.html'],['findings','Findings','../Findings dashboard.html']];
@@ -1144,8 +1144,10 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
     setupLink:function(c){ if(!c||!c.screen) return '';
       if(c.screen==='setup') return '<a class="nrs-i nrs-set" href="'+encodeURI(SCREENS[0][2])+'">'+svg(P.back)+'<span class="nrs-l">Back to the cockpit</span></a>';
       return '<a class="nrs-i nrs-set" href="'+encodeURI(SETUP_HREF)+'">'+svg(P.gear)+'<span class="nrs-l">Engagement setup</span></a>'; },
+    /* the walkthrough (the @@NR-TOUR block) on the screens that carry it: the cockpit and findings */
+    tourLink:function(){ return window.NRTour?'<button type="button" class="nrs-i nrs-set" data-nrs-tour>'+svg(P.play)+'<span class="nrs-l">Take the tour</span></button>':''; },
     foot:function(){ var c=S.cfg(), d=S.isDark();
-      return '<div class="nrs-foot">'+S.setupLink(c)+'<button type="button" class="nrs-dm" data-nrs-theme aria-pressed="'+d+'">'+svg(P.moon)+'<span class="nrs-l">Dark mode</span><i class="nrs-tg" aria-hidden="true"></i></button>'+
+      return '<div class="nrs-foot">'+S.tourLink()+S.setupLink(c)+'<button type="button" class="nrs-dm" data-nrs-theme aria-pressed="'+d+'">'+svg(P.moon)+'<span class="nrs-l">Dark mode</span><i class="nrs-tg" aria-hidden="true"></i></button>'+
         (c&&c.built?'<p class="nrs-built">Built '+esc(c.built)+' from the engagement folder</p>':'')+'</div>'; },
     /* groups: [{label, items:[{k, label, icon (svg paths) | glyph (html), on, n, nCls, cls, title}]}] */
     nav:function(groups){ return (groups||[]).map(function(g){
@@ -1166,6 +1168,7 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
   document.addEventListener('click',function(e){
     var t=e.target&&e.target.closest?e.target:null; if(!t) return;
     if(t.closest('[data-nrs-theme]')){ S.toggle(); return; }
+    if(t.closest('[data-nrs-tour]')){ S.close(); if(window.NRTour) window.NRTour.open(); return; }
     if(t.closest('[data-nrs-menu]')){ e.stopPropagation(); S.open(); return; }
     if(t.classList&&t.classList.contains('nrs-scrim')){ S.close(); return; }
     var it=t.closest('[data-nrs-k]'); if(it&&GO){ S.close(); GO(it.getAttribute('data-nrs-k')); }
