@@ -258,7 +258,7 @@ html.dark .tbt-av { background:var(--green); }
 .kpi-boxes { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
 .kpi-box { display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:72px; background:var(--surface); border:1px solid var(--divider); border-radius:var(--r); box-shadow:var(--sh); padding:11px 15px; transition:box-shadow .25s var(--ease), transform .25s var(--ease); }
 .kpi-box:hover { box-shadow:var(--sh-hov); transform:translateY(-2px); }
-.kpi-eyebrow { font-size:var(--fs-95); font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); }
+.kpi-eyebrow { font-size:var(--fs-95); font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .kpi-v { font-family:var(--fh); font-size:25px; font-weight:900; letter-spacing:-1px; line-height:1; margin-top:5px; white-space:nowrap; }
 .kpi-sub { font-size:var(--fs-10); color:var(--muted); margin-top:3px; }
 .kpi-icon { width:38px; height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:var(--surface-2); color:var(--neutral); }
@@ -795,6 +795,13 @@ html.dark .tcard { border-color:rgba(255,255,255,.06); }
 .rm-init > div:first-child { padding:8px 14px 8px 36px; font-size:var(--fs-115); font-weight:600; }
 .rm-init .rm-cell { min-height:34px; padding:6px 14px; }
 .rm-tag { font-size:var(--fs-95); font-weight:700; padding:3px 8px; border-radius:5px; }
+/* on a phone: the division on its own line, the three horizons side by side under it */
+@media (max-width:560px){
+  .rm-head, .rm-row, .rm-init { grid-template-columns:repeat(3,minmax(0,1fr)) !important; }
+  .rm-head > div:first-child, .rm-row > .rm-lbl, .rm-init > div:first-child { grid-column:1/-1; border-bottom:1px solid var(--divider); }
+  .rm-head > div:nth-child(2), .rm-row > .rm-cell:nth-child(2), .rm-init > .rm-cell:nth-child(2) { border-left:none; }
+  .rm-head > div { padding:10px; } .rm-cell { padding:8px 10px; } .rm-init > div:first-child { padding-left:14px; }
+}
 
 /* ── findings · benefits ── */
 .chart { height:230px; display:flex; align-items:flex-end; gap:22px; padding:22px 6px 0; position:relative; }
@@ -936,6 +943,12 @@ html.dark .fo-pbt i.t, html.dark .fo-pbk i.t{ background:#7A3B2E; }
 .fo-pbv{ font-size:var(--fs-11); color:var(--muted); text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; }
 .fo-pbv b{ color:var(--green); font-size:12.5px; }
 .fo-pbn{ font-size:var(--fs-11); }
+/* on a phone the bar takes its own line under the name and the number, so nothing is squeezed */
+@media (max-width:560px){
+  .fo-pbr{ grid-template-columns:minmax(0,1fr) auto; gap:5px 10px; }
+  .fo-pbr .fo-pbt{ grid-column:1/-1; grid-row:2; }
+  .fo-pbr .fo-pbn{ grid-column:2; text-align:right; }
+}
 .fo-pbk{ display:flex; flex-wrap:wrap; gap:4px 14px; font-size:var(--fs-11); color:var(--muted); margin:0 0 8px; }
 .fo-pbk i{ display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:5px; vertical-align:-1px; }
 .fo-tipc{ display:none; position:fixed; z-index:9999; width:290px; background:var(--surface); border:1px solid var(--border-heavy); border-radius:12px; box-shadow:0 18px 50px rgba(15,30,60,.30); padding:13px 14px; font-size:12px; line-height:1.45; color:var(--text); pointer-events:none; }
@@ -1188,7 +1201,7 @@ html.dark .hmx-fte{ background:#1b2b44; color:#cfe0f5; }
 .qsx .kpi-boxes{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
 .qsx .kpi-box{ display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:72px; background:var(--surface); border:1px solid var(--divider); border-radius:var(--r); box-shadow:var(--sh); padding:11px 15px; transition:box-shadow .25s var(--ease), transform .25s var(--ease); }
 .qsx .kpi-box:hover{ box-shadow:var(--sh-hov); transform:translateY(-2px); }
-.qsx .kpi-eyebrow{ font-size:var(--fs-95); font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); }
+.qsx .kpi-eyebrow{ font-size:var(--fs-95); font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .qsx .kpi-v{ font-family:var(--fh); font-size:25px; font-weight:900; letter-spacing:-1px; line-height:1; margin-top:5px; white-space:nowrap; }
 .qsx .kpi-pre{ font-size:12px; font-weight:800; letter-spacing:0; opacity:.72; margin-right:4px; vertical-align:baseline; }
 .qsx .kpi-grp.pot .kpi-v{ color:var(--green); }
@@ -1248,6 +1261,16 @@ html.dark .hmx-fte{ background:#1b2b44; color:#cfe0f5; }
 html.dark .oc-team.ongoing .oc-chip{ background:rgba(255,255,255,.08); }
 .qsx .oc-dept-dot{ display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:5px; vertical-align:middle; }
 .qsx .oc-nm{ font-family:var(--fh); font-size:var(--fs-11); font-weight:800; line-height:1.15; }
+/* on a phone the org chart stacks: one division per row, its teams two by two under it */
+@media (max-width:560px){
+  .qsx .orgchart{ min-width:0; text-align:left; }
+  .qsx .oc-root{ margin-bottom:12px; }
+  .qsx .oc-root::after, .qsx .oc-divs::before, .qsx .oc-col::before, .qsx .oc-dept::after{ display:none; }
+  .qsx .oc-divs{ flex-direction:column; align-items:stretch; gap:16px; padding-top:0; }
+  .qsx .oc-col{ min-width:0; }
+  .qsx .oc-dept{ height:auto; align-items:flex-start; text-align:left; padding:7px 10px; }
+  .qsx .oc-teams{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:8px; }
+}
 .qsx .oc-foot{ display:flex; align-items:center; gap:6px; }
 .qsx .oc-chip{ font-family:var(--fh); font-weight:800; font-size:12px; background:var(--chipbg, rgba(255,255,255,.22)); border-radius:6px; padding:2px 8px; white-space:nowrap; }
 .qsx .oc-chip small{ font-size:var(--fs-8); font-weight:600; opacity:.85; }
@@ -1794,6 +1817,7 @@ html.dark .nat-K{background:#2A2440;}
 .qsx .wf-chip-fte{ font-family:var(--fh); font-weight:800; font-size:12px; color:var(--green); white-space:nowrap; flex-shrink:0; }
 .qsx /* overview · key-initiatives card — a table grouped by transformation type */
 .ov-kp-tblwrap{ flex:1; min-height:0; overflow-y:auto; }
+.ov-kp-card .ov-kp-tblwrap{ flex:1 0 auto; overflow-y:visible; }
 .qsx .ov-kp-tbl{ width:100%; border-collapse:separate; border-spacing:0; }
 .qsx .ov-kp-tbl thead th{ position:sticky; top:0; z-index:2; background:var(--surface); font-family:var(--fh); font-size:var(--fs-9); font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--muted-2); text-align:left; padding:0 8px 7px; border-bottom:1px solid var(--divider); }
 .qsx .ov-kp-tbl thead th.r{ text-align:right; }
@@ -2239,7 +2263,8 @@ html.dark .ib-av { background:#33405C; }
   #main { margin-left:0; }
   .page { padding:14px 14px 40px; }
 
-  #topbar.teammode { height:56px; padding:0 14px 0 0; }
+  #topbar.teammode { height:auto; min-height:56px; padding:0 14px 0 0; flex-wrap:nowrap; }
+  #topbar.teammode #tb-team { width:auto; flex:1 1 0; min-width:0; height:auto; min-height:56px; }
   #topbar.teammode #sb-burger { margin-left:12px; }
   .tbt-rail { width:4px; }
   .tbt-dd { margin-left:8px; }
@@ -2292,6 +2317,25 @@ html.dark .ib-av { background:#33405C; }
   .vc-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
   .vc-grid { min-width:620px; }
 }
+/* laptop width: the chain keeps its columns; the cards fold their figures so nothing spills */
+@media (max-width:1180px){
+  .qsx .vc-card .vc-row { flex-wrap:wrap; }
+  .qsx .vc-card .vc-st { max-width:100%; overflow:hidden; text-overflow:ellipsis; }
+  .qsx .vc-card .vc-mlbl { flex-wrap:wrap; column-gap:6px; }
+}
+/* on a phone: one stage per row, its teams under it */
+@media (max-width:760px){
+  .vc-grid, .qsx .vc-grid { grid-template-columns:repeat(2,minmax(0,1fr)) !important; min-width:0 !important; }
+  .vc-grid > * { order:var(--o,9999); }
+  .vc-grid > .vc-chev { grid-column:1/-1; clip-path:polygon(0 0,calc(100% - 13px) 0,100% 50%,calc(100% - 13px) 100%,0 100%) !important; padding-left:14px !important; margin-top:8px; align-items:flex-start !important; }
+  .vc-grid > .vc-empty { display:none; }
+  .vc-grid > .vc-card.vc-ong { min-height:0; padding-bottom:14px; }
+  .vc-card .vc-st { max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+}
+@media (max-width:760px){
+  .fo-hm { min-width:560px; }
+  .fo-hm th:first-child { width:112px; }
+}
 
 @media (max-width:560px){
   .ov-st { flex:1 1 100%; border-right:0; }
@@ -2331,7 +2375,7 @@ textarea.tinp.grow { resize:none; overflow:hidden; line-height:1.45; min-height:
 .bl-row { align-items:flex-start; }
 .bl-row .bd { margin-top:13px; }
 .bl-row .xb { margin-top:3px; }
-table.tteams { table-layout:fixed; min-width:900px; }
+table.tteams { table-layout:fixed; min-width:600px; }
 table.tteams input[type=number] { -moz-appearance:textfield; appearance:textfield; }
 table.tteams input[type=number]::-webkit-inner-spin-button, table.tteams input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
 table.tteams thead th, table.tteams tbody td { padding-left:5px; padding-right:5px; }
@@ -2340,10 +2384,17 @@ table.tteams tbody td { padding-top:8px; padding-bottom:8px; vertical-align:top;
 table.tteams .tinp { padding:7px 8px; }
 table.tteams .tt-c { vertical-align:top; padding-top:13px; }
 table.tteams tbody td:last-child { padding-top:9px; }
-table.tteams col.c-in { width:58px; } table.tteams col.c-id { width:104px; } table.tteams col.c-fte { width:60px; } table.tteams col.c-hc { width:60px; }
+table.tteams col.c-in { width:58px; } table.tteams col.c-id { width:104px; } table.tteams col.c-fte { width:56px; } table.tteams col.c-hc { width:56px; }
 table.tteams col.c-stage { width:150px; } table.tteams.multi col.c-stage { width:130px; }
-table.tteams col.c-depth { width:212px; } table.tteams col.c-x { width:30px; }
-table.tteams col.c-team { width:36%; } table.tteams col.c-div { width:34%; } table.tteams col.c-lead { width:30%; }
+table.tteams col.c-depth { width:200px; } table.tteams col.c-x { width:30px; }
+table.tteams col.c-team { width:100%; }
+table.tteams .tt-meta { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+table.tteams .tt-meta .tinp-s { flex:1 1 110px; min-width:0; width:auto; font-size:12px; padding:5px 8px; }
+table.tteams .tt-meta select.tinp-s { padding-right:26px !important; }
+table.tteams .tt-hsub { font-weight:500; text-transform:none; letter-spacing:0; color:var(--muted-2); }
+.dsel-w { display:flex; align-items:center; gap:6px; }
+.dsel-w .dsel { flex:1 1 auto; min-width:0; font-size:12px; padding-left:8px; }
+.dsel.moved { border-color:var(--s2-t); }
 table.tteams .dpill button { padding:5px 7px; }
 table.tteams .tgl { margin-top:1px; }
 .tt-sub { display:block; font-size:var(--fs-10); color:var(--muted-2); padding:3px 0 0 9px; line-height:1.3; }
@@ -2614,8 +2665,8 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
 </script>
 <!-- @@NR-SHELL:END -->
 <script>window.__NR_APP__='setup';</script>
-<script>window.__NR_FOLDER_BUILD__={"id": "northwind", "builtAt": "2026-10-06 17:08"};</script>
-<script>window.__NR_SHELL__={"screen": "setup", "client": "Northwind Assurance", "name": "OpEx diagnostic (one frame)", "where": "Diagnose · week 6 of 9", "built": "6 Oct 17:08", "switch": false};</script>
+<script>window.__NR_FOLDER_BUILD__={"id": "northwind", "builtAt": "2026-10-06 18:31"};</script>
+<script>window.__NR_SHELL__={"screen": "setup", "client": "Northwind Assurance", "name": "OpEx diagnostic (one frame)", "where": "Diagnose · week 6 of 9", "built": "6 Oct 18:31", "switch": false};</script>
 </head>
 <body>
 
@@ -2702,17 +2753,24 @@ const M = {
      `ai-enabled` is NOT yet in methodology.json — it is the diagnostic depth plus the
      redesign work, and should be added there when Gilles signs it off. */
   approaches:{
-    'light-quickscan':{label:'Quickscan', short:'Quickscan', tone:'q',
+    /* Depth follows the four offers: one depth per offer, shown under the offer's name.
+       The AI Readiness Scan's activation is a proposal still to be signed off (see its note in
+       data/methodology.json): the activity map, data maturity, the maturity scan on processes and
+       mindset, and the opportunity register for the use cases. */
+    'ai-readiness-scan':{label:'AI Readiness Scan', short:'AI Readiness Scan', tone:'q',
+      blurb:'How far AI can take each block of work today: the activity map, the data maturity assessment, a maturity scan on processes and mindset, and the use cases worth starting with.',
+      activate:{'*':[],proc:['lma'],data:['data-maturity'],mind:['lma']}, baseline:['mae'], registers:['opportunity-register'], ai:[]},
+    'light-quickscan':{label:'OpEx Improvement Scan', short:'OpEx Improvement Scan', tone:'q',
       blurb:'One maturity scan per lens, from interviews. Fast and directional — enough to see where the weight sits, not enough to build a business case on.',
       activate:{'*':['lma']}, baseline:[], registers:[], ai:[]},
-    'full-diagnostic':{label:'Diagnostic', short:'Diagnostic', tone:'f',
+    'full-diagnostic':{label:'Full OpEx engagement', short:'Full OpEx engagement', tone:'f',
       blurb:'Every built analysis the lens offers: the activity map, the process map, the wheels and the registers. Evidence you can put a number on and defend.',
       activate:{'*':[],proc:['process-map','waste-observations'],cust:['service-blueprint'],
         mgmt:['performance-wheel','skills-wheel'],data:['data-maturity'],mind:['team-barometer'],
         org:['raci-diagnostic']},
       baseline:['ote-waterfall','mae','org-baseline'],
       registers:['inefficiency-register','opportunity-register'], ai:[]},
-    'redesign':{label:'Redesign', short:'Redesign', tone:'a',
+    'redesign':{label:'AI-first redesign', short:'AI-first redesign', tone:'a',
       blurb:'Everything in the diagnostic, and then the design work: how this team’s work should run afterwards. Adds the verdict on every opportunity, the blueprint of the new way of working, and the target operating model.',
       activate:{'*':[],proc:['process-map','waste-observations'],cust:['service-blueprint'],
         mgmt:['performance-wheel','skills-wheel'],data:['data-maturity'],mind:['team-barometer'],
@@ -2739,7 +2797,7 @@ const M = {
      opex-quickscan is the OpEx Improvement Scan, opex-diagnostic the full OpEx engagement. */
   /* Every assignment is described the same way: what goes in, what comes out. */
   types:{
-    'ai-readiness-scan':{label:'AI Readiness Scan', group:'scan', depth:'light-quickscan', ai:false,
+    'ai-readiness-scan':{label:'AI Readiness Scan', group:'scan', depth:'ai-readiness-scan', ai:false,
       input:'A light assessment, team by team, against the AI ambition agreed with the COO. Interviews with the team leads and data owners, and a few data extracts.',
       output:['Per block of work, the AI level it can reach today',
               'The gap to the ambition, and the prerequisites to close it',
@@ -3238,9 +3296,9 @@ function issues(){
   if(dup.length)                out.push({k:'dup',s:'Two teams share the same name or code ('+[...new Set(dup)].join(', ')+'). Give each team its own name in Teams in scope.'});
   const noFte=inScopeTeams().filter(t=>!(+t.fte));
   if(noFte.length)              out.push({k:'fte',soft:1,s:noFte.length+' team'+(noFte.length>1?'s have':' has')+' no FTE estimate. Allowed — the org baseline sets the factual number — but the value case stays unquantified until it runs.'});
-  const deepTeams=inScopeTeams().filter(t=>teamDepth(t)==='full-diagnostic').length;
+  const deepTeams=inScopeTeams().filter(t=>teamDepth(t)==='full-diagnostic'||teamDepth(t)==='redesign').length;
   if((M.types[E.assignment.type]||{}).group==='scan'&&deepTeams)
-    out.push({k:'mix',soft:1,s:deepTeams+' team'+(deepTeams>1?'s are':' is')+' set to full-diagnostic depth inside a scan. Deliberate is fine — the plan is what counts — but check the timeline.'});
+    out.push({k:'mix',soft:1,s:deepTeams+' team'+(deepTeams>1?'s are':' is')+' set to a full engagement’s depth inside a scan. Deliberate is fine — the plan is what counts — but check the timeline.'});
   const offCells=cellStats().off;
   if(offCells) out.push({k:'off',soft:1,s:offCells+' team-and-dimension combination'+(offCells>1?'s have':' has')+' nothing planned. Those dimensions will carry no score for that team.'});
   return out;
@@ -3515,7 +3573,7 @@ const TITLES={
   plan:['Which analyses run','How far each team goes on each dimension, and exactly which analyses run'],
   run:['Run an analysis','What to say to Claude, for each one'],
   config:['Key parameters','The facts about the client that every number later uses'],
-  export:['Hand over','Send it to Claude, or save the file'],
+  export:['Hand over','Give the changes made here to Claude'],
   how:['The method','How the system works, and the words it uses']
 };
 
@@ -3836,9 +3894,10 @@ const TYPE_GROUPS=[['scan','Scans · 1 to 4 weeks · a light assessment'],['full
 PAGES.s1=()=>{
   const a=E.assignment, opex=isOpex(), pr=practiceOf(a);
   const startsAt={
-    'light-quickscan':'Every team starts at scan depth. You can change it per team in Teams in scope.',
-    'full-diagnostic':'Every team starts at full diagnostic depth. You can lower it per team in Teams in scope.',
-    'redesign':'Every team starts at redesign depth: the full diagnostic plus the redesign. You can lower it per team in Teams in scope.'
+    'ai-readiness-scan':'Every team starts at AI Readiness Scan depth. You can change it per team in Teams in scope.',
+    'light-quickscan':'Every team starts at OpEx Improvement Scan depth. You can change it per team in Teams in scope.',
+    'full-diagnostic':'Every team starts at Full OpEx engagement depth. You can lower it per team in Teams in scope.',
+    'redesign':'Every team starts at AI-first redesign depth: the Full OpEx engagement plus the redesign. You can lower it per team in Teams in scope.'
   }[a.depth]||'';
   const card=(on,click,label,c)=>`<div class="ch-card ${on?'on':''}" onclick="${click}">
       <div class="ch-t"><span class="ch-rad"></span>${esc(label)}</div>
@@ -4003,18 +4062,18 @@ PAGES.s3=()=>{
   const deptLine=t=>{ const d=String(t.dept||'').trim(); return d&&d!==String(t.division||'').trim()?`<small class="tt-sub">${esc(d)}</small>`:''; };
   const rows=E.teams.map((t,i)=>`<tr class="${t.inScope===false?'off':''}">
     <td class="tt-c"><div class="tgl tgl-sm ${t.inScope!==false?'on':''}" role="switch" aria-checked="${t.inScope!==false}" title="In scope" onclick="tSet(${i},'inScope',${t.inScope===false})"><span class="sw"></span></div></td>
-    <td><input class="tinp" value="${esc(t.name)}" placeholder="Customer Service" aria-label="Team name" onchange="tName(${i},this.value)">${deptLine(t)}</td>
-    <td><input class="tinp" list="dl-div" value="${esc(t.division)}" placeholder="Division" aria-label="Division" oninput="tSet(${i},'division',this.value)"></td>
-    ${chains.map(c=>`<td><select class="tinp" aria-label="${esc(c.name||'Value-chain stage')}" onchange="tPlace(${i},'${c.id}',this.value)">
-      <option value=""${placedOn(t,c.id)?'':' selected'}>— not on it —</option>
-      ${(c.stages||[]).filter(Boolean).map(x=>`<option${placedOn(t,c.id)===x?' selected':''}>${esc(x)}</option>`).join('')}</select></td>`).join('')}
+    <td><input class="tinp tt-nm" value="${esc(t.name)}" placeholder="Customer Service" aria-label="Team name" onchange="tName(${i},this.value)">
+      <div class="tt-meta"><input class="tinp tinp-s" list="dl-div" value="${esc(t.division)}" placeholder="Division" aria-label="Division" oninput="tSet(${i},'division',this.value)">
+      ${chains.map(c=>`<select class="tinp tinp-s" aria-label="${esc(c.name||'Value-chain stage')}" title="${esc(c.name||'Value-chain stage')}" onchange="tPlace(${i},'${c.id}',this.value)">
+        <option value=""${placedOn(t,c.id)?'':' selected'}>${chains.length>1?esc(c.name||'Chain')+': not on it':'Not on the value chain'}</option>
+        ${(c.stages||[]).filter(Boolean).map(x=>`<option${placedOn(t,c.id)===x?' selected':''}>${esc(x)}</option>`).join('')}</select>`).join('')}
+      <input class="tinp tinp-s" list="dl-lead" value="${esc(t.lead)}" placeholder="Team lead" aria-label="Lead" title="Team lead" oninput="tSet(${i},'lead',this.value)"></div>${deptLine(t)}</td>
     <td><input class="tinp" type="number" min="0" step="1" value="${t.hc==null?'':t.hc}" placeholder="—" aria-label="People (headcount)" oninput="tSet(${i},'hc',this.value===''?null:+this.value)"></td>
     <td><input class="tinp" type="number" min="0" step="0.1" value="${t.fte==null?'':t.fte}" placeholder="—" aria-label="FTE" oninput="tSet(${i},'fte',this.value===''?null:+this.value)"></td>
-    <td><input class="tinp" list="dl-lead" value="${esc(t.lead)}" placeholder="Team lead" aria-label="Lead" oninput="tSet(${i},'lead',this.value)"></td>
     <td>${depthPill(i)}</td>
     <td class="tt-c"><button class="xb" title="Remove this team" onclick="tDel(${i})">&times;</button></td></tr>`).join('');
   const dl=(id,vals)=>`<datalist id="${id}">${[...new Set(vals.filter(Boolean))].map(v=>`<option value="${esc(v)}">`).join('')}</datalist>`;
-  const cols=`<colgroup><col class="c-in"><col class="c-team"><col class="c-div">${chains.map(()=>'<col class="c-stage">').join('')}<col class="c-hc"><col class="c-fte"><col class="c-lead"><col class="c-depth"><col class="c-x"></colgroup>`;
+  const cols=`<colgroup><col class="c-in"><col class="c-team"><col class="c-hc"><col class="c-fte"><col class="c-depth"><col class="c-x"></colgroup>`;
   return lead('One row per team we assess. People is the headcount the client gives you. Leave FTE empty until the client gives FTE figures: the org baseline sets the real number.')+
   dl('dl-div',E.teams.map(t=>t.division))+dl('dl-lead',E.teams.map(t=>t.lead))+
   `<div class="card">
@@ -4026,9 +4085,7 @@ PAGES.s3=()=>{
       <div class="sugg" style="margin-bottom:14px">${Object.keys(TEAM_EXAMPLES).map(k=>
         `<button onclick="loadExampleTeams('${k}')">+ ${k} · ${TEAM_EXAMPLES[k].length} teams</button>`).join('')}</div></div>`}
     <div class="tbl-wrap"><table class="tbl tteams ${chains.length>1?'multi':''}">${cols}
-      <thead><tr><th>In scope</th><th>Team</th><th>Division</th>${
-        chains.map(c=>`<th>${chains.length>1?esc(c.name||'Chain'):'Value-chain stage'}</th>`).join('')
-      }<th title="Headcount: the number of people">People</th><th>FTE</th><th>Lead</th><th>Depth</th><th></th></tr></thead>
+      <thead><tr><th>In scope</th><th>Team <span class="tt-hsub">· division${chains.length?' · '+(chains.length>1?'stage on each chain':'value-chain stage'):''} · lead</span></th><th title="Headcount: the number of people">People</th><th>FTE</th><th>Depth</th><th></th></tr></thead>
       <tbody>${rows}</tbody></table></div>
     ${chains.length?(unplaced().length?`<p class="tt-note warn">
         <b>${unplaced().length} team${unplaced().length>1?'s are':' is'} not on the value chain yet:</b> ${esc(unplaced().map(t=>t.name).join(', '))}.
@@ -4039,14 +4096,9 @@ PAGES.s3=()=>{
 /* The team's depth, selected like any other choice. A team set away from the assignment's
    depth gets a small dot; clicking the assignment's depth takes it back. */
 function depthPill(i){
-  const t=E.teams[i], inh=E.assignment.depth, exp=t.depth, eff=exp||inh;
-  const btn=k=>{
-    const a=M.approaches[k], on=eff===k;
-    return `<button class="${on?'on '+a.tone:''}" aria-pressed="${on}" title="${k===inh?'The assignment’s depth':'Run this team at '+esc(a.label)+' depth'}"
-      onclick="tDepth(${i},'${k}')">${a.short}</button>`;
-  };
-  const moved=!!exp&&exp!==inh;
-  return `<span class="dpill-w"><span class="dpill">${Object.keys(M.approaches).map(btn).join('')}</span>${moved?'<span class="dp-dot" title="Not the assignment’s depth" aria-label="Not the assignment’s depth"></span>':''}</span>`;
+  const t=E.teams[i], inh=E.assignment.depth, eff=t.depth||inh, moved=!!t.depth&&t.depth!==inh;
+  return `<span class="dsel-w"><select class="tinp dsel${moved?' moved':''}" aria-label="Depth for ${esc(t.name||'this team')}" title="${moved?'Not the assignment’s depth':'The assignment’s depth'}" onchange="tDepth(${i},this.value)">
+    ${Object.keys(M.approaches).map(k=>`<option value="${k}"${eff===k?' selected':''}>${esc(M.approaches[k].label)}${k===inh?' (the assignment)':''}</option>`).join('')}</select>${moved?'<span class="dp-dot" title="Not the assignment’s depth" aria-label="Not the assignment’s depth"></span>':''}</span>`;
 }
 function VCS(){ return (((E&&E.scope)||{}).valueChains||[]).filter(c=>c&&(c.stages||[]).filter(Boolean).length); }
 function unplaced(){ return VCS().length?inScopeTeams().filter(t=>!placementsOf(t).length):[]; }
@@ -4324,7 +4376,7 @@ function teamLensDetail(t){
 PAGES.s5=()=>{
   const s=cellStats(), teams=inScopeTeams();
   if(OPEN_TEAM && !teams.some(t=>t.id===OPEN_TEAM)) OPEN_TEAM=null;
-  return lead(`${planCount()} analyses across ${teams.length} team${teams.length===1?'':'s'}. ${s.diag} of the ${s.cells} squares are covered in full, ${s.quick} by a scan only${s.off?`, ${s.off} not at all`:''}.`)+
+  return lead(`${planCount()} analyses across ${teams.length} team${teams.length===1?'':'s'}. ${s.diag===s.cells?(teams.length===1?'The team has every dimension covered in full.':'Every team has every dimension covered in full.'):`Across the teams and their ${M.dims.length} dimensions: ${s.diag} covered in full, ${s.quick} by a scan only${s.off?`, ${s.off} not assessed`:''}.`}`)+
   `<div class="dd-section"><span class="eyebrow">The baseline</span>
     <div class="setup-grid">
       <div class="card"><div class="ch" style="margin-bottom:7px"><span class="ct">Always captured</span></div>
@@ -5039,7 +5091,7 @@ PAGES.execplain=()=>{
             .map(([n,c])=>`<span class="lgd"><i style="background:${c};border:1px solid rgba(15,43,82,.10)"></i>${n}</span>`).join('')}
           <span class="lgd"><i style="border:1.5px dashed var(--border-heavy);background:transparent"></i>Assessment ongoing</span>
         </div>
-        ${divs.length?tree:`<p style="font-size:12.5px;color:var(--muted-2)">No teams in scope yet — add them in the configurator.</p>`}
+        ${divs.length?tree:`<p style="font-size:12.5px;color:var(--muted-2)">No teams in scope yet. Add them in Engagement setup, under Teams in scope.</p>`}
       </div></div>
     <div><span class="eyebrow" style="display:block;margin-bottom:9px">Where the six dimensions stand</span>
       <div class="card" style="height:calc(100% - 26px)">
@@ -5506,12 +5558,12 @@ function diagChainHtml(c,m,O){
   stages.forEach(s=>s.teams.forEach(t=>{ X[t.id]=X[t.id]||diagTeam(t.id,m,O); }));
   const rows=Math.max(1,...stages.map(s=>s.teams.length));
   let cells=stages.map((s,i)=>{ const st=s.teams.reduce((a,t)=>a+X[t.id].tied,0);
-    return `<div class="vc-chev${i===0?' first':''}"><span class="vc-chev-nm">${esc(s.name)}</span><span class="vc-chev-avg">${st?f1(st)+' FTE potential':s.teams.some(t=>X[t.id].P.length)?'potential not in FTE yet':'not assessed'}</span></div>`; }).join('');
-  for(let r=0;r<rows;r++) stages.forEach(s=>{ const t=s.teams[r]; if(!t){ cells+='<div class="vc-empty"></div>'; return; }
+    return `<div class="vc-chev${i===0?' first':''}" style="--o:${i*100}"><span class="vc-chev-nm">${esc(s.name)}</span><span class="vc-chev-avg">${st?f1(st)+' FTE potential':s.teams.some(t=>X[t.id].P.length)?'potential not in FTE yet':'not assessed'}</span></div>`; }).join('');
+  for(let r=0;r<rows;r++) stages.forEach((s,si)=>{ const t=s.teams[r], o=` style="--o:${si*100+r+1}"`; if(!t){ cells+='<div class="vc-empty"></div>'; return; }
     const x=X[t.id];
-    if(!x.P.length){ cells+=`<div class="vc-card vc-ong" data-team="${t.id}" onclick="openTeam('${t.id}')" role="button" tabindex="0"><div class="vc-nm">${esc(t.name)}</div><div class="vc-ong-b">${x.ran?'No pain point found yet':'Assessment ongoing'}</div></div>`; return; }
+    if(!x.P.length){ cells+=`<div class="vc-card vc-ong" data-team="${t.id}"${o} onclick="openTeam('${t.id}')" role="button" tabindex="0"><div class="vc-nm">${esc(t.name)}</div><div class="vc-ong-b">${x.ran?'No pain point found yet':'Assessment ongoing'}</div></div>`; return; }
     const L=x.lever?lev(x.lever):null, ws=x.tied?Math.min(100,x.win/x.tied*100):0;
-    cells+=`<div class="vc-card" data-team="${t.id}" onclick="openTeam('${t.id}')" role="button" tabindex="0"><div class="vc-nm">${esc(t.name)}</div>
+    cells+=`<div class="vc-card" data-team="${t.id}"${o} onclick="openTeam('${t.id}')" role="button" tabindex="0"><div class="vc-nm">${esc(t.name)}</div>
       ${L?`<span class="vc-st" style="background:${L.bg};color:${L.t}">${esc(L.label)}</span>`:''}
       <div class="vc-row"><span class="vc-sc"><b style="color:${FO_RED}">${f1(x.tied)}</b><span>FTE potential</span></span><span class="vc-pot"><b>${Math.round(x.share*100)}%</b><span>of scope</span></span></div>
       <div class="vc-mlbl"><span>Addressable potential</span><span>${f1(x.win)} FTE</span></div>
@@ -5694,14 +5746,14 @@ PAGES.benefits=()=>{
 
   return head+`<div class="kpi-row">
     <div class="kpi-grp pot"><div class="kpi-grp-label">Value released · gross cost-out</div><div class="kpi-boxes">
-      ${box('Annual run-rate',o.length?eur(v.annual):'—','at full ramp','euro')}
+      ${box('Run-rate',o.length?eur(v.annual):'—','a year, at full ramp','euro')}
       ${box('Releasable FTE',o.length?'~'+v.fte.toFixed(0):'—','capacity freed','users')}
       ${box('3-year value',o.length?eur(v.cum):'—','phased by horizon','spark')}
     </div></div>
     <div class="kpi-grp"><div class="kpi-grp-label">Investment &amp; return</div><div class="kpi-boxes">
       ${box('Implementation',o.length?eur(v.invest):'—','one-off, indicative','bolt')}
       ${box('Payback',o.length?'~'+Math.round(v.payback)+' mo':'—','to recover the build','check')}
-      ${box('Cost per FTE',eur(v.cost),'fully-loaded assumption','grid')}
+      ${box('Cost per FTE',eur(v.cost),'a year, fully loaded','grid')}
     </div></div>
   </div>
 
@@ -5984,7 +6036,7 @@ PAGES.run=()=>{
     Object.entries(E.plan.perTeam||{}).forEach(([tid,pt])=>(pt.ai||[]).forEach(k=>{(aiMap[k]=aiMap[k]||new Set()).add(tid);}));
     const keys=Object.keys(aiMap); if(!keys.length) return '';
     return `<div class="dd-section"><span class="eyebrow">Redesign · once the diagnosis lands</span>
-      <p class="lead-in" style="margin-top:-2px">Only for teams you set to Redesign. These design what the work should look like afterwards, so they need the diagnosis finished first.</p>
+      <p class="lead-in" style="margin-top:-2px">Only for teams set to AI-first redesign. These design what the work should look like afterwards, so they need the diagnosis finished first.</p>
       ${keys.map(k=>{const x=M.aiWork[k], list=[...aiMap[k]], trig=x.trig.replace('{team}',name(list[0]));
         const pr=progress(k,list);
         return `<div class="run${pr.all?' is-done':''}">
@@ -6034,23 +6086,20 @@ PAGES.config=()=>{
 
 PAGES.export=()=>
   `<div class="card" style="margin-bottom:16px">
-    <div class="ch"><span class="ct">Give it to Claude</span></div>
-    <p class="lead-in">This copies your whole setup plus the instructions for what to do with it. Paste it into Claude in this project — it will challenge what is thin, build the engagement, and propose an order of work before it runs anything.</p>
-    <button class="fchip go" onclick="copy(PROMPT()+JSON.stringify(buildExport(),null,2),'Copied — paste it into Claude')">Copy everything for Claude</button>
+    <div class="ch"><span class="ct">Give your changes to Claude</span></div>
+    <p class="lead-in">What you change on this screen, such as the analyses ticked from the gear on a team, stays in this browser until Claude puts it in the engagement folder. ${canSend()?'This sends it to Claude from the page.':'This copies it for your Cowork chat.'} Claude checks it, updates the folder, rebuilds the Cockpit and this screen, and tells you what changed.</p>
+    <p class="lead-in" id="hand-say" style="margin-top:-4px">${esc(handSay())}</p>
+    <button class="fchip go" id="hand-claude" onclick="handToClaude()">${handLabel()}</button>
+    <p class="hint" id="hand-sent" ${handSent()?'':'hidden'} style="margin-top:10px;font-weight:700">${esc(handSent())}</p>
   </div>
   <div class="card" style="margin-bottom:16px">
-    <div class="ch"><span class="ct">Or save the file</span></div>
-    <p class="lead-in">One small file holds the whole setup. Keep it with the engagement — it is what every analysis reads to know who is in scope and what to run.</p>
-    <div style="display:flex;gap:9px;flex-wrap:wrap">
-      <button class="fchip" onclick="download()">Download the setup file</button>
-      <button class="fchip" onclick="copy(JSON.stringify(buildExport(),null,2),'Copied')">Copy it to the clipboard</button>
-    </div>
+    <div class="ch"><span class="ct">Where the numbers come from</span></div>
+    <p class="lead-in" style="margin-bottom:0">Nothing on the findings pages is typed in here. Each analysis writes its results into the engagement folder, and the Cockpit and this screen are built from that folder, so the two never disagree. To see the latest, ask Claude in the chat to refresh the engagement.</p>
   </div>
   <div class="card">
-    <div class="ch"><span class="ct">What Claude is told to do</span>
-      <button class="fchip" onclick="copy(PROMPT(),'Copied')">Copy just the instructions</button></div>
-    <p class="lead-in">No hidden prompt — this is the whole of it.</p>
-    <div class="pre" style="max-height:none">${esc(PROMPT())}</div></div>`;
+    <div class="ch"><span class="ct">Changing the setup</span></div>
+    <p class="lead-in" style="margin-bottom:0">Scope, teams, the team, work streams and key dates are changed in <b>Engagement setup</b>, at the bottom of the menu. Its last step hands the setup to Claude the same way.</p>
+  </div>`;
 
 /* ── New for your teams ─────────────────────────────────────────────────
    Several consultants work one engagement, each owning their own teams. What one of
@@ -6220,30 +6269,31 @@ PAGES.how=()=>
 `<div class="finding-grid" style="margin-bottom:22px">
   <div class="finding blue"><div class="fi-tag"><span class="fi-dot"></span>First · You set it up</div>
     <div class="fi-title">One place: Engagement setup</div>
-    <p>Who the client is, what kind of work this is, who is on it, who owns which work stream, and the key dates. For an OpEx assignment also the scope, the teams and how deep to go per team. You hand it to Claude, which keeps it as one file, engagement.json. The cockpit and this dashboard are both built from it.</p></div>
+    <p>Who the client is, what we sold, who is on it, who owns which work stream, and the key dates. For an OpEx assignment also the value chain, the teams in scope and how deep each team goes. You hand it to Claude, which keeps it in the engagement folder as one file, engagement.json.</p></div>
   <div class="finding"><div class="fi-tag"><span class="fi-dot"></span>Then · Claude builds it</div>
     <div class="fi-title">It pushes back before it builds</div>
-    <p>Claude reads the engagement file against the NR method, questions a scope that is too vague or a team that is set deeper than the assignment warrants, answers your open questions, then sets the engagement up and proposes an order of work. It never runs an analysis without asking you first.</p></div>
+    <p>Claude reads the setup against the NR method, questions a scope that is too vague or a team set deeper than the assignment warrants, then sets up the folder and proposes the plan. It never runs an analysis without asking you first.</p></div>
   <div class="finding amber"><div class="fi-tag"><span class="fi-dot"></span>After that · You work from it</div>
-    <div class="fi-title">This dashboard, as the findings land</div>
-    <p>Scope, teams, the plan and — on <b>Run an analysis</b> — the exact sentence to say to Claude for each analysis. It prepares the session, walks you through it, and writes the results back where every other deliverable can find them.</p></div>
+    <div class="fi-title">Two views of one folder</div>
+    <p>The <b>Cockpit</b> shows where the engagement stands: the plan, actions, people and risks. This screen, <b>Findings</b>, shows what we found, team by team. To run an analysis, ask Claude in the chat: it prepares the session, walks you through it and writes the results back to the folder.</p></div>
 </div>
 
 <div class="dd-section"><span class="eyebrow">What each page is for</span>
   <div class="card"><div class="tbl-wrap"><table class="tbl">
     <thead><tr><th style="width:190px">Page</th><th>The question it answers</th></tr></thead><tbody>
-    <tr><td class="tnm">Wave setup</td><td>What is this wave for, what does it cover, and how is it configured? Objectives, scope, constraints, assumptions, the project team and the value chain. Read only here: it is changed in Engagement setup.</td></tr>
-    <tr><td class="tnm">Executive summary</td><td>What have we found so far? One page for the steering committee: every team, how it scores, and the one thing to fix first.</td></tr>
-    <tr><td class="tnm">Value chain</td><td>Where along the client's business does it hurt? The same teams, arranged the way the client earns its money — one board per product or service line, and a team that serves several appears on each.</td></tr>
+    <tr><td class="tnm">Summary</td><td>What have we found so far? One page for the steering committee: our answer today, every team, and where the potential sits.</td></tr>
+    <tr><td class="tnm">Value chain</td><td>Where along the client's business does it hurt? The teams arranged the way the client earns its money, with the potential found at each stage.</td></tr>
+    <tr><td class="tnm">Teams</td><td>One team at a time: its baseline, the findings on each dimension, the improvement potential, AI readiness, the analyses that ran and the opportunities that followed.</td></tr>
+    <tr><td class="tnm">Hypothesis tree</td><td>The problem broken down into hypotheses, and which analysis tests each one.</td></tr>
+    <tr><td class="tnm">Exhibits</td><td>The evidence behind each hypothesis: every analysis and what it produced.</td></tr>
+    <tr><td class="tnm">All outputs</td><td>Every analysis in the engagement, where it stands and where its file lives.</td></tr>
     <tr><td class="tnm">Transformation roadmap</td><td>What happens when? Every opportunity placed in a horizon, by when the client can actually start.</td></tr>
-    <tr><td class="tnm">Benefits overview</td><td>What is it worth, and what does it cost to get? The business case, on the cost of an FTE from Key parameters.</td></tr>
-    <tr><td class="tnm">Teams &amp; analyses</td><td>One row per team. Open one for its whole story: what runs on each of the six dimensions, whether each analysis can run today, what came back, and the opportunities that followed.</td></tr>
-    <tr><td class="tnm">Which analyses run</td><td>Every team against every dimension, and how deep each square goes. The one place to compare the plan across all teams at once.</td></tr>
-    <tr><td class="tnm">Run an analysis</td><td>What do I say to Claude to start one? The exact sentence, per analysis.</td></tr>
-    <tr><td class="tnm">Key parameters</td><td>Set in Engagement setup. What one FTE costs a year, the hours an FTE works, and the currency.</td></tr>
-    <tr><td class="tnm">Hand over</td><td>Sending the engagement to Claude, or saving the file to share it.</td></tr>
+    <tr><td class="tnm">Benefits overview</td><td>What is it worth, and what does it cost to get? The business case, on the cost per FTE set in Engagement setup.</td></tr>
+    <tr><td class="tnm">New for your teams</td><td>What colleagues heard in their interviews that belongs to your teams. You decide whether it goes in.</td></tr>
+    <tr><td class="tnm">Hand over</td><td>Giving what you changed on this screen to Claude, so it lands in the engagement folder.</td></tr>
+    <tr><td class="tnm">Engagement setup</td><td>Scope, teams, our team, work streams, key dates and the key parameters. At the bottom of the menu.</td></tr>
     </tbody></table></div>
-    <p class="lead-in" style="margin:11px 0 0">The four findings pages stay empty until analyses land, and say so — they never show a number nobody has measured.</p></div>
+    <p class="lead-in" style="margin:11px 0 0">The findings pages stay empty until analyses land, and say so. They never show a number nobody has measured.</p></div>
 </div>
 
 <div class="dd-section"><span class="eyebrow">The words you will keep seeing</span>
@@ -6251,8 +6301,8 @@ PAGES.how=()=>
     <thead><tr><th style="width:180px">Word</th><th>What it means here</th></tr></thead><tbody>
     <tr><td class="tnm">Dimension</td><td>One of the six angles we assess every team from: process, customer, management, data, mindset, organisation.</td></tr>
     <tr><td class="tnm">Analysis</td><td>One concrete piece of work on one dimension — a maturity scan, a process map, a survey. Each has a guided version you trigger by talking to Claude.</td></tr>
-    <tr><td class="tnm">Depth</td><td>How hard the whole engagement runs: <b>Quickscan</b>, <b>Diagnostic</b> or <b>Redesign</b>. Set once for the assignment, overridable per team — different words from coverage on purpose, because the two are not the same setting.</td></tr>
-    <tr><td class="tnm">Coverage</td><td>How much of <i>one</i> dimension you do for <i>one</i> team — the six blocks on each team row, and each square in the configurator's plan. Three levels, below. Not the same thing as depth: depth is set once for the whole assignment, coverage is what one team actually gets on one dimension.</td></tr>
+    <tr><td class="tnm">Depth</td><td>How hard the whole engagement runs, named after the four offers: <b>AI Readiness Scan</b>, <b>OpEx Improvement Scan</b>, <b>Full OpEx engagement</b> or <b>AI-first redesign</b>. Set once for the assignment, overridable per team — different words from coverage on purpose, because the two are not the same setting.</td></tr>
+    <tr><td class="tnm">Coverage</td><td>How much of <i>one</i> dimension you do for <i>one</i> team — the six blocks on each team row, and each square under Analyses per team in Engagement setup. Three levels, below. Not the same thing as depth: depth is set once for the whole assignment, coverage is what one team actually gets on one dimension.</td></tr>
     <tr><td class="tnm">Maturity scan</td><td>The one analysis that produces the score for a dimension. Everything else is evidence that makes that score hold up.</td></tr>
     <tr><td class="tnm">FTE</td><td>Full-time equivalents. Your estimate at setup; the org structure analysis replaces it with the real number.</td></tr>
     </tbody></table></div></div>
@@ -6850,7 +6900,7 @@ function renderConfigurator(){
     ${SETUP_BANNER}
     <div class="dd-verdict">
       <span class="dd-verdict-l">Configurator</span>
-      <span class="dd-verdict-t">Default approach <b>${(METHODOLOGY.approaches[CFG_APPROACH]||{}).label||CFG_APPROACH}</b> · across ${cells} squares: ${diag} covered in full · ${quick} a scan only · ${off} not assessed · <b>${ovc}</b> manual override${ovc===1?'':'s'}. Scan only is the maturity scan by itself; full is that plus whatever else you tick.</span>
+      <span class="dd-verdict-t">Default approach <b>${(METHODOLOGY.approaches[CFG_APPROACH]||{}).label||CFG_APPROACH}</b> · across the teams and dimensions: ${diag} covered in full · ${quick} a scan only · ${off} not assessed · <b>${ovc}</b> manual override${ovc===1?'':'s'}. Scan only is the maturity scan by itself; full is that plus whatever else you tick.</span>
     </div>
 
     <div class="dd-section">
@@ -7097,14 +7147,14 @@ function renderValueChain(stagesOpt,elOpt){
   const maxRows=Math.max(...stageTeams.map(a=>a.length));
   let cells='';
   STAGES.forEach((s,i)=>{ const tm=stageTeams[i].filter(t=>!isOngoing(t)); const da=tm.length?tm.reduce((a,t)=>a+overall(t),0)/tm.length:0;
-    cells+=`<div class="vc-chev${i===0?' first':''}"><span class="vc-chev-nm">${s.name}</span><span class="vc-chev-avg">${da?da.toFixed(1)+' /5 lean avg':''}</span></div>`; });
+    cells+=`<div class="vc-chev${i===0?' first':''}" style="--o:${i*100}"><span class="vc-chev-nm">${s.name}</span><span class="vc-chev-avg">${da?da.toFixed(1)+' /5 lean avg':''}</span></div>`; });
   for(let r=0;r<maxRows;r++){ for(let i=0;i<STAGES.length;i++){ const t=stageTeams[i][r];
     if(!t){ cells+='<div class="vc-empty"></div>'; continue; }
     const go=window.nrOpenTeam?"nrOpenTeam('"+t.id+"')":"nav('teams');pickTeam('"+t.id+"')";
-    if(isOngoing(t)){ cells+=`<div class="vc-card vc-ong" data-team="${t.id}" onclick="${go}" role="button" tabindex="0"><div class="vc-nm">${t.name}</div><div class="vc-ong-b">Assessment ongoing</div></div>`; continue; }
+    if(isOngoing(t)){ cells+=`<div class="vc-card vc-ong" data-team="${t.id}" style="--o:${i*100+r+1}" onclick="${go}" role="button" tabindex="0"><div class="vc-nm">${t.name}</div><div class="vc-ong-b">Assessment ongoing</div></div>`; continue; }
     const ov=overall(t), st=ST(ov), L=lev(t.lever), fte=t.opps.reduce((a,o)=>a+(o.fte[0]+o.fte[1])/2,0);
     const rs=RST(t), rsc=Math.round(t.readinessScore||0);
-    cells+=`<div class="vc-card" data-team="${t.id}" onclick="${go}" role="button" tabindex="0">`
+    cells+=`<div class="vc-card" data-team="${t.id}" style="--o:${i*100+r+1}" onclick="${go}" role="button" tabindex="0">`
       +`<div class="vc-nm">${t.name}</div>`
       +`<span class="vc-st" style="background:${rs[2]};color:${rs[1]}">${rs[0]}</span>`
       +`<div class="vc-row"><span class="vc-sc"><b style="color:${scoreColor(ov)}">${ov.toFixed(1)}</b><span>/5</span></span><span class="vc-pot"><b>${fte.toFixed(1)}</b><span>FTE</span></span></div>`
@@ -8419,7 +8469,7 @@ function renderTeamContent(){
   const posturePhrase={ foundation:'needs to get its data and operating basics in place before leaning on technology', build:'can build the missing foundations while scaling what already works', scale:'is ready to act now — its data and appetite are strong enough to start today' }[teamPosture(t)]||'is still being assessed';
   const leverPhrase={ ia:'use AI to take on its judgment-heavy, semi-structured work', auto:'automate its stable, rule-based work', exop:'tighten its processes and management routines before adding technology', mining:'mine its high-volume process to pinpoint where redesign pays off', data:'fix its data foundation, which unlocks every technology lever' }[hl.key]||'improve how it works';
   const focusLine=`<b>${t.name}</b> ${posturePhrase}. The biggest opportunity is to ${leverPhrase}${topG?`, leading with ${topG.label}`:''}. So far about <b>${+oppSum.toFixed(1)} FTE — roughly ${Math.round(oppSum/Math.max(0.1,totActFte)*100)}% of the team's ${+totActFte.toFixed(0)} FTE scope</b> — has been turned into concrete opportunities, out of an estimated ${+totalOpt.toFixed(1)} FTE of total improvement potential.`;
-  const keyPrioCard=`<div class="card span3" style="display:flex;flex-direction:column;height:clamp(300px, calc((100vh - 300px) / 2), 560px);">
+  const keyPrioCard=`<div class="card span3 ov-kp-card" style="display:flex;flex-direction:column;min-height:clamp(300px, calc((100vh - 300px) / 2), 560px);">
       <div class="ch"><div><div class="ct">Key initiatives</div><div style="font-size:var(--fs-10);color:var(--muted-2);margin-top:2px;">${grps.reduce((s,g)=>s+g.n,0)} initiatives · ~${+oppSum.toFixed(1)} FTE of the team's ${+totActFte.toFixed(0)} FTE scope</div></div><button class="ov-gobtn" onclick="QS.setTeamSub('roadmap')">Roadmap →</button></div>
       ${(function(){
         if(!grps.length) return '<div class="ov-kp-levers" style="justify-content:center;"><div class="trm-empty">No opportunities identified yet.</div></div>';
@@ -8515,10 +8565,18 @@ function renderTeamContent(){
     const acts=[...t.activities].sort((a,b)=>b.fte-a.fte);
     const wrapLbl=(s,max=14)=>{ const words=String(s).split(' '); const lines=[]; let cur=''; words.forEach(w=>{ if((cur+' '+w).trim().length>max){ if(cur)lines.push(cur); cur=w; } else cur=(cur+' '+w).trim(); }); if(cur)lines.push(cur); return lines; };
     newChart('ov-workload',{ type:'bar',
-      data:{ labels:acts.map(a=>wrapLbl(a.name)), datasets:[{ data:acts.map(a=>a.fte), backgroundColor:acts.map(a=>natC[a.nature]||'#94a3b8'), borderRadius:4, maxBarThickness:48 }] },
+      data:{ labels:acts.map(a=>a.name), datasets:[{ data:acts.map(a=>a.fte), backgroundColor:acts.map(a=>natC[a.nature]||'#94a3b8'), borderRadius:4, maxBarThickness:48 }] },
       options:{ responsive:true, maintainAspectRatio:false, layout:{ padding:{ bottom:2 } },
-        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ title:items=>{ const l=items[0]?.label; return Array.isArray(l)?l.join(' '):l; }, label:c=>' '+c.parsed.y+' FTE' } } },
-        scales:{ x:{ grid:{display:false}, ticks:{color:txt, font:{size:8.5}, maxRotation:0, minRotation:0, autoSkip:false } }, y:{ grid:{color:grid}, ticks:{color:txt, font:{size:10}}, beginAtZero:true } } } });
+        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ title:items=>acts[items[0].dataIndex].name, label:c=>' '+c.parsed.y+' FTE' } } },
+        scales:{ x:{ grid:{display:false}, ticks:{color:txt, font:{size:9.5}, maxRotation:0, minRotation:0, autoSkip:false,
+            /* a name wraps under its own bar; when the bars are too narrow it is cut short, and the full name shows on hover */
+            callback:function(v,i){ const ch=this.chart, ca=ch.chartArea, slot=(this.width>0?this.width:ch.width-50)/Math.max(1,acts.length)-10; if(slot<26) return '';
+              const ctx=ch.ctx; ctx.save(); ctx.font='9.5px '+((window.Chart&&Chart.defaults.font&&Chart.defaults.font.family)||'sans-serif');
+              const fit=x=>ctx.measureText(x).width<=slot, cutw=x=>{ while(x.length>1&&!fit(x+'…')) x=x.slice(0,-1); return x+'…'; };
+              const L=[]; let cur=''; String(acts[i].name).split(' ').forEach(w=>{ const t=(cur+' '+w).trim(); if(fit(t)||!cur) cur=t; else { L.push(cur); cur=w; } }); if(cur) L.push(cur);
+              let out=L.map(x=>fit(x)?x:cutw(x)); if(out.length>3){ out=out.slice(0,3); out[2]=cutw(out[2].replace(/…$/,'')); }
+              ctx.restore(); return out; } } },
+          y:{ grid:{color:grid}, ticks:{color:txt, font:{size:10}}, beginAtZero:true, title:{display:true,text:'FTE',color:txt,font:{size:10,weight:'600'}} } } } });
     // waterfall tooltips — compact, structured (title · value · sub) in the shared tooltip
     wireWaterfallTips();
   }
@@ -8569,13 +8627,14 @@ function valueWaterfall(t, opt){
   const cov=Math.min(100,Math.round(oppSum/Math.max(0.1,totActFte)*100));
   const wfEnd=Math.max(0,totActFte-totalOpt);
 
-  const wfW=opt.w||580, wfH=opt.h||242, wfPT=opt.pt||42, wfPB=opt.pb||44, wfPL=12, wfPR=12;
+  const fs=opt.fs || (window.matchMedia && window.matchMedia('(max-width:900px)').matches ? 1.55 : 1);
+  /* larger type on a small screen needs more room above the bars for the bracket label */
+  const wfW=opt.w||580, wfH=(opt.h||242)+(fs>1?18:0), wfPT=(opt.pt||42)+(fs>1?18:0), wfPB=opt.pb||44, wfPL=12, wfPR=12;
   const wfPH=wfH-wfPT-wfPB, wfIW=wfW-wfPL-wfPR, wfN=5, wfSlot=wfIW/wfN, wfBar=Math.min(opt.bar||54,wfSlot-22);
   const wfCx=i=>wfPL+wfSlot*i+wfSlot/2, wfBx=i=>wfCx(i)-wfBar/2;
   const wfScale=Math.max(totActFte,0.1), wfY=v=>wfPT+wfPH*(1-v/wfScale), wfHt=v=>wfPH*Math.max(0,v)/wfScale;
   /* the SVG is drawn in a 580-unit box and squeezed into the card, so on a phone a
      nominal 10px label lands at about 6px — scale the type with the squeeze */
-  const fs=opt.fs || (window.matchMedia && window.matchMedia('(max-width:900px)').matches ? 1.55 : 1);
   const cTxt=cssVar('--muted')||'#64748b', cMut=cssVar('--muted-2')||'#94a3b8', cGreen=cssVar('--green')||'#006843',
         cAmber=cssVar('--amber')||'#B8620A', cScope='#cbd5e1', cGhost='#e9edf1';
   const T=(x,y,str,sz,col,w,a)=>`<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${a||'middle'}" font-family="Inter,sans-serif" font-size="${(sz*fs).toFixed(1)}" fill="${col}"${w?` font-weight="${w}"`:''}>${str}</text>`;
@@ -8625,7 +8684,10 @@ function valueWaterfall(t, opt){
     + svgBody;
 
   const XL=[['Total scope','today'],['Addressable now','clears the readiness bar'],['After the enablers','scoped but gated'],['Not yet identified','still to scope'],['Remaining scope','if all captured']];
-  svgBody += XL.map((p,i)=>T(wfCx(i),wfPT+wfPH+16,p[0],9.5,i===1?cGreen:i===2?cAmber:cTxt,700)+T(wfCx(i),wfPT+wfPH+28,p[1],8,cMut,600)).join('');
+  /* each label fits its own slot: as large as the squeeze allows, never wider than the slot */
+  const fitSz=(str,sz,k)=>Math.min(sz*fs,(wfSlot-8)/(String(str).length*k))/fs;
+  svgBody += XL.map((p,i)=>{ const a=fitSz(p[0],10.5,0.6), b=fitSz(p[1],8.5,0.56), y1=wfPT+wfPH+6+a*fs*0.95, y2=y1+3+b*fs*0.95;
+    return T(wfCx(i),y1,p[0],a,i===1?cGreen:i===2?cAmber:cTxt,700)+T(wfCx(i),y2,p[1],b,cMut,600); }).join('');
 
   const svg=`<svg viewBox="0 0 ${wfW} ${wfH}" width="100%" style="max-height:100%;" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">${svgBody}</svg>`;
   return { svg, grps, cov, totActFte, totalOpt, oppSum, nowFte, laterFte, notYet, wfEnd:r3, cGreen };
