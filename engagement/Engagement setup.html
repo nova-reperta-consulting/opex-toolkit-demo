@@ -258,6 +258,8 @@ html.dark .tbt-av { background:var(--green); }
 .kpi-boxes { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
 .kpi-box { display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:72px; background:var(--surface); border:1px solid var(--divider); border-radius:var(--r); box-shadow:var(--sh); padding:11px 15px; transition:box-shadow .25s var(--ease), transform .25s var(--ease); }
 .kpi-box:hover { box-shadow:var(--sh-hov); transform:translateY(-2px); }
+/* KPI cards: one height across both groups */
+.kpi-grp{display:flex;flex-direction:column}.kpi-grp .kpi-boxes{flex:1}.kpi-box{height:100%;box-sizing:border-box}
 .kpi-eyebrow { font-size:var(--fs-95); font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .kpi-v { font-family:var(--fh); font-size:25px; font-weight:900; letter-spacing:-1px; line-height:1; margin-top:5px; white-space:nowrap; }
 .kpi-sub { font-size:var(--fs-10); color:var(--muted); margin-top:3px; }
@@ -2484,7 +2486,7 @@ table.tteams .tgl { margin-top:1px; }
 }
 </style>
 <!-- @@NR-SHELL:BEGIN  The shared frame of the Cockpit, the Findings dashboard and Engagement setup.
-     One definition: this block in NR OpEx Quickscan Builder/engagement-dashboard.html. Edit it there only;
+     One definition: this block in NR OpEx Quickscan Builder/2 Toolkit/engagement-dashboard.html. Edit it there only;
      scripts/copy_dashboard.py copies it into the cockpit template, and --check fails when the two differ. -->
 <style id="nrs-css">
 /* Sizes: responsive, one place. They lift on a narrow screen like the pages' own --fs-* do. */
@@ -2665,8 +2667,8 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
 </script>
 <!-- @@NR-SHELL:END -->
 <script>window.__NR_APP__='setup';</script>
-<script>window.__NR_FOLDER_BUILD__={"id": "northwind", "builtAt": "2026-10-06 20:00"};</script>
-<script>window.__NR_SHELL__={"screen": "setup", "client": "Northwind Assurance", "name": "OpEx diagnostic (one frame)", "where": "Diagnose · week 6 of 9", "built": "6 Oct 20:00", "switch": false};</script>
+<script>window.__NR_FOLDER_BUILD__={"id": "northwind", "builtAt": "2026-10-13 09:21"};</script>
+<script>window.__NR_SHELL__={"screen": "setup", "client": "Northwind Assurance", "name": "OpEx diagnostic (one frame)", "where": "Diagnose · week 7 of 9", "built": "13 Oct 09:21", "switch": false};</script>
 </head>
 <body>
 
@@ -5543,12 +5545,39 @@ function diagSummaryHtml(){
         <span class="fo-sw" style="background:${SHARE_BG.p1}"></span>under 10%<span class="fo-sw" style="background:${SHARE_BG.p2}"></span>10 to 25%<span class="fo-sw" style="background:${SHARE_BG.p3}"></span>25% and over
         <span class="hm-key"><span class="hm-key-dash"></span>Assessment ongoing</span></div>
       <div class="org">${org}</div></div></div>
-    <div class="diag-grp"><div class="eyebrow">Overall diagnostic</div><div class="card diag-box">
+    ${hasSplit()?splitPanel(X):`<div class="diag-grp"><div class="eyebrow">Overall diagnostic</div><div class="card diag-box">
       <div class="diag-titlerow"><h2 class="diag-h2">Total and addressable potential per dimension</h2></div>
       <div class="fo-pbk"><span><i class="t"></i>Total potential</span><span><i class="a"></i>Addressable potential</span><span class="fo-mut">FTE, across all teams \u00b7 hover a dimension for our judgement</span></div>
       ${potBars(rows,{fill:true})}
       ${best?`<div class="diag-prio"><div class="diag-prio-l">Biggest lever</div><div class="diag-prio-row"><div class="diag-prio-tx"><b>${esc(best.d.label)}</b>, ${f1(best.f)} of the ${f1(tied)} FTE total potential${bj?`: ${esc(bj.charAt(0).toLowerCase()+bj.slice(1))}`:'.'}</div></div></div>`:''}
-    </div></div></div>`;
+    </div></div>`}</div>`;
+}
+/* The potential of each team, split by where its time goes. The split comes from the team's OTE waterfall
+   (window.__NR_SPLIT__, filled by generate_dashboard.py from the folder; the rule lives there, in ote_split).
+   A team without a time analysis shows its potential without a split. */
+const SPLIT_KINDS=[['waste','Waste','#D85A30'],['rigidity','Rigidity','#EF9F27'],['variability','Variability','#7F77DD'],['other','Other','#A9A79E']];
+function hasSplit(){ const B=window.__NR_SPLIT__; return !!(B&&Object.keys(B).length); }
+function splitPanel(X){
+  const B=window.__NR_SPLIT__||{}, rows=X.filter(x=>x.tied>0).sort((a,b)=>b.tied-a.tied), mx=Math.max(...rows.map(x=>x.tied),1), tot={};
+  let open=0;
+  const R=rows.map(x=>{ const sh=B[x.t.id];
+    const seg=sh?SPLIT_KINDS.map(([k,l,c])=>{ const v=x.tied*(sh[k]||0); tot[k]=(tot[k]||0)+v;
+        return v>0.05?`<i style="width:${v/mx*100}%;background:${c}" title="${esc(x.t.name)} · ${l}: ${f1(v)} FTE"></i>`:''; }).join('')
+      :(open+=x.tied,`<i class="bk-na" style="width:${x.tied/mx*100}%" title="${esc(x.t.name)}: no time analysis yet, ${f1(x.tied)} FTE"></i>`);
+    return `<div class="bk-row" onclick="openTeam('${x.t.id}')"><span class="bk-nm">${esc(x.t.name)}</span><span class="bk-bar">${seg}</span><span class="bk-v">${f1(x.tied)}</span></div>`; }).join('');
+  const how="Each team's potential is split by its time analysis (OTE): half of its waste, four in ten hours of its rigidity and of its variability, and the management, meeting and training time above the middle of the teams it is compared with (Other). A team without a time analysis shows its potential without a split. Totals are the team's potential in FTE. Click a team to open it.";
+  return `<style>.bk-row{display:grid;grid-template-columns:minmax(120px,190px) 1fr 42px;gap:10px;align-items:center;padding:7px 0;cursor:pointer;border-bottom:1px solid var(--divider,#e4e2dc)}
+.bk-row:last-of-type{border-bottom:0}.bk-row:hover .bk-nm{text-decoration:underline}.bk-nm{font-size:13px;font-weight:600}.bk-bar{display:flex;height:16px;border-radius:4px;overflow:hidden}.bk-bar i{display:block;height:100%}
+.bk-bar i.bk-na{background:repeating-linear-gradient(135deg,var(--divider,#e4e2dc) 0 6px,transparent 6px 10px);box-shadow:inset 0 0 0 1px var(--divider,#e4e2dc);border-radius:4px}
+.bk-v{font-size:13px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}.bk-lg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;margin:2px 0 8px;color:var(--muted,#7a818d)}
+.bk-lg b{color:var(--text,#1b2230);font-variant-numeric:tabular-nums;margin-left:3px}.bk-lg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.bk-lg i.bk-na{background:repeating-linear-gradient(135deg,var(--divider,#e4e2dc) 0 3px,transparent 3px 5px);box-shadow:inset 0 0 0 1px var(--divider,#e4e2dc)}
+.bk-info{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;border:1px solid var(--muted,#7a818d);color:var(--muted,#7a818d);font-size:10px;font-weight:700;font-style:normal;margin-left:6px;cursor:help;vertical-align:2px}</style>
+  <div class="diag-grp"><div class="eyebrow">Overall diagnostic</div><div class="card diag-box" style="display:flex;flex-direction:column">
+    <div class="diag-titlerow"><h2 class="diag-h2">Potential per team, by where the time goes<span class="bk-info" title="${esc(how)}" aria-label="${esc(how)}">i</span></h2></div>
+    <div class="bk-lg">${SPLIT_KINDS.filter(([k])=>tot[k]>0.05).map(([k,l,c])=>`<span><i style="background:${c}"></i>${l}<b>${f1(tot[k])}</b></span>`).join('')}${open>0.05?`<span><i class="bk-na"></i>No time analysis yet<b>${f1(open)}</b></span>`:''}</div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:${rows.length>=5?'space-around':'flex-start'}">${R}</div>
+  </div></div>`;
 }
 
 /* the value chain view for a diagnostic: the same chevrons and cards, filled with pain and potential */
@@ -7258,7 +7287,7 @@ function buildOrgChart(){
       <div class="oc-teams">${tiles}</div></div>`;
   });
   const busInset=(50/DIVISIONS.length).toFixed(2);
-  g.innerHTML=`<div class="orgchart"><div class="oc-root">Northwind Assurance · ${totFte} FTE</div><div class="oc-divs" style="--bus:${busInset}%">${cols}</div></div>`;
+  g.innerHTML=`<div class="orgchart"><div class="oc-root">${(window.__QS_DATA__||{}).client||''} · ${totFte} FTE</div><div class="oc-divs" style="--bus:${busInset}%">${cols}</div></div>`;
   g.querySelectorAll('.oc-team').forEach(el=>{
     const t=teamById(el.dataset.team);
     if(!isOngoing(t)) el.onclick=()=>selectSummaryTeam(t.id);
@@ -10004,7 +10033,7 @@ function boot(){
   const teamCountEl=$('#nav-team-count'); if(teamCountEl) teamCountEl.textContent = TEAMS.length;
   updateProgBadge();
   const totFte=TEAMS.reduce((s,t)=>s+t.fte,0);
-  const foot=$('#sb-foot'); if(foot) foot.innerHTML='<b>Northwind Assurance</b><br>'+TEAMS.length+' teams · '+totFte+' FTE in scope<br>Updated 18 Jun 2026';
+  const foot=$('#sb-foot'); if(foot) foot.innerHTML='<b>'+((window.__QS_DATA__||{}).client||'')+'</b><br>'+TEAMS.length+' teams · '+totFte+' FTE in scope<br>Updated 18 Jun 2026';
   renderSummary();
 }
 /* boot disabled — the host mounts this */
@@ -10022,6 +10051,7 @@ return {actIneff, actMatch, actOpp, addMember, aiReadinessVerdict, analysesPage,
 <script>window.__NR_BASELINE__ = /*NR_BASELINE*/{"schemaVersion":"baseline/2026.14","actors":[{"id":"claims-handling","name":"Claims Handling","kind":"team","fte":42.0},{"id":"customer-service","name":"Customer Service","kind":"team","fte":15.0},{"id":"finance-control","name":"Finance Control","kind":"team","fte":5.0},{"id":"fraud-investigation","name":"Fraud & Investigation","kind":"internal"},{"id":"repair-network","name":"Repair Network","kind":"external"},{"id":"loss-adjusters","name":"Loss Adjusters","kind":"external"}],"activityBlocks":[{"id":"act-01","name":"Open and register the claim"},{"id":"act-02","name":"Assess the claim"},{"id":"act-03","name":"Settle and pay the claim"},{"id":"act-04","name":"Answer the customer while the claim runs"},{"id":"act-05","name":"Recover and close the file"}],"activities":[{"id":"t-01","actorId":"customer-service","blockId":"act-01","name":"Take the call and capture the circumstances"},{"id":"t-02","actorId":"customer-service","blockId":"act-01","name":"Re-key the notification into the claims system"},{"id":"t-22","actorId":"claims-handling","blockId":"act-01","name":"Take over the notification from the contact centre"},{"id":"t-03","actorId":"claims-handling","blockId":"act-01","name":"Create the claim record"},{"id":"t-04","actorId":"claims-handling","blockId":"act-01","name":"Attach the documents received by mail"},{"id":"t-05","actorId":"claims-handling","blockId":"act-01","name":"Look up the policy and read the cover"},{"id":"t-06","actorId":"claims-handling","blockId":"act-01","name":"Record the cover decision on the file"},{"id":"t-07","actorId":"claims-handling","blockId":"act-01","name":"Score the claim against the triage rules"},{"id":"t-08","actorId":"claims-handling","blockId":"act-02","name":"Select and instruct a loss adjuster"},{"id":"t-09","actorId":"claims-handling","blockId":"act-02","name":"Chase the adjuster report"},{"id":"t-10","actorId":"claims-handling","blockId":"act-02","name":"Read the report and update the reserve"},{"id":"t-11","actorId":"claims-handling","blockId":"act-02","name":"Run the fraud indicator checklist"},{"id":"t-12","actorId":"claims-handling","blockId":"act-02","name":"Refer a flagged file to investigation"},{"id":"t-13","actorId":"claims-handling","blockId":"act-02","name":"Book the vehicle into a network garage"},{"id":"t-14","actorId":"claims-handling","blockId":"act-02","name":"Approve the repair estimate"},{"id":"t-15","actorId":"claims-handling","blockId":"act-03","name":"Calculate the settlement"},{"id":"t-16","actorId":"claims-handling","blockId":"act-03","name":"Obtain the second signature above the limit"},{"id":"t-17","actorId":"claims-handling","blockId":"act-03","name":"Record the settlement decision"},{"id":"t-23","actorId":"claims-handling","blockId":"act-03","name":"Check the payment run before release"},{"id":"t-18","actorId":"finance-control","blockId":"act-03","name":"Prepare and release the payment run"},{"id":"t-19","actorId":"customer-service","blockId":"act-04","name":"Answer status calls on open claims"},{"id":"t-24","actorId":"claims-handling","blockId":"act-04","name":"Take the status calls the contact centre passes on"},{"id":"t-20","actorId":"claims-handling","blockId":"act-05","name":"Build and send the recovery file"},{"id":"t-21","actorId":"claims-handling","blockId":"act-05","name":"Check the file is complete and close it"}],"pains":[{"id":"p-01","blockId":"act-01","activityId":"t-02","theme":"The same notification is typed twice, once by the contact centre and once into the claims system","magnitude":{"value":2.5,"unit":"fte"},"dimension":"proc","rootCause":"The contact-centre tool and the claims system were never connected, so the second entry is the only way the claim reaches a handler","sourceId":"src-05"},{"id":"p-02","blockId":"act-01","activityId":"t-05","theme":"Cover cannot be read from the claim, so every file needs a second system open","magnitude":{"value":1.8,"unit":"fte"},"dimension":"data","rootCause":"Policy data lives in PolicyHub and is not surfaced in the claim record","sourceId":"src-02"},{"id":"p-03","blockId":"act-02","activityId":"t-09","theme":"Adjuster reports arrive late and are chased by hand","magnitude":{"value":3.0,"unit":"fte"},"dimension":"proc","rootCause":"No service agreement with the adjusters carries a due date the system can track","sourceId":"src-02"},{"id":"p-04","blockId":"act-03","activityId":"t-15","theme":"The settlement is calculated in a spreadsheet outside the claims system","magnitude":null,"dimension":"data","rootCause":"The claims system cannot hold the calculation, so each handler keeps a personal copy of the sheet","sourceId":"src-03"},{"id":"p-05","blockId":"act-04","activityId":"t-19","theme":"Customers call to ask where their claim is","magnitude":{"value":4.0,"unit":"fte"},"dimension":"cust","rootCause":"Nothing tells the customer what has happened since the notification, so the phone is the only status channel","sourceId":"src-04"},{"id":"p-06","blockId":"act-01","activityId":"t-07","theme":"Triage sends complex files to whoever is free rather than to who can handle them","magnitude":null,"dimension":"org","rootCause":"No record exists of which handler can take which claim type","sourceId":"src-02"},{"id":"p-07","blockId":"act-05","activityId":"t-20","theme":"Recovery files are built from scratch each time","magnitude":{"value":1.2,"unit":"fte"},"dimension":"proc","rootCause":"The documents needed for recovery are scattered across the file and no template collects them","sourceId":"src-01"},{"id":"p-08","blockId":"act-01","activityId":"t-04","theme":"Documents arriving by mail are attached by hand, often days after the claim is opened","magnitude":{"value":1.5,"unit":"fte"},"dimension":"proc","rootCause":"Post is scanned centrally once a day and matched to claims manually","sourceId":"src-02"}],"opportunities":[{"id":"o-01","title":"Pass the notification straight through from the contact centre","lever":"auto","horizon":"6-12m","status":"agreed","painIds":["p-01"],"sizing":{"method":"measured","value":2.5,"unit":"fte","sourceId":"src-05"},"ownerActorId":"claims-handling"},{"id":"o-02","title":"Show cover on the claim record","lever":"auto","horizon":"0-6m","status":"agreed","painIds":["p-02"],"sizing":{"method":"estimated","value":1.8,"unit":"fte","sourceId":"src-01"},"ownerActorId":"claims-handling"},{"id":"o-03","title":"Track adjuster due dates and chase automatically","lever":"auto","horizon":"6-12m","status":"identified","painIds":["p-03"],"sizing":{"method":"estimated","value":1.0,"unit":"fte","sourceId":"src-01"},"ownerActorId":"claims-handling"},{"id":"o-04","title":"Tell the customer what happened without them asking","lever":"aienh","horizon":"6-12m","status":"agreed","painIds":["p-05"],"sizing":{"method":"measured","value":3.2,"unit":"fte","sourceId":"src-04"},"ownerActorId":"customer-service"},{"id":"o-05","title":"Move the settlement calculation into the claim","lever":"process","horizon":"12-24m","status":"identified","painIds":["p-04"],"sizing":{"method":"estimated","value":1.5,"unit":"fte","sourceId":"src-01"},"ownerActorId":"finance-control"},{"id":"o-06","title":"Triage on skill as well as complexity","lever":"process","horizon":"12-24m","status":"identified","painIds":["p-06"],"sizing":null,"ownerActorId":"claims-handling"},{"id":"o-07","title":"Recover and close the file - automate","lever":"auto","status":"identified","painIds":[],"sizing":null}],"allocations":[{"blockId":"act-01","actorId":"customer-service","fte":6.0},{"blockId":"act-01","actorId":"claims-handling","fte":13.5},{"blockId":"act-02","actorId":"claims-handling","fte":13.5},{"blockId":"act-03","actorId":"claims-handling","fte":8.0},{"blockId":"act-03","actorId":"finance-control","fte":3.5},{"blockId":"act-04","actorId":"customer-service","fte":9.0},{"blockId":"act-04","actorId":"claims-handling","fte":2.0},{"blockId":"act-05","actorId":"claims-handling","fte":5.0},{"blockId":"act-05","actorId":"finance-control","fte":1.5}],"sources":[{"id":"src-01","label":"Team lead interview, Claims Handling","kind":"interview","date":"2026-09-03"},{"id":"src-02","label":"Coordinator interviews","kind":"interview","date":"2026-09-04"},{"id":"src-03","label":"Handler interviews across tenure","kind":"interview","date":"2026-09-04"},{"id":"src-04","label":"Claims system report pack, Jan-Aug 2026","kind":"system","date":"2026-09-02"},{"id":"src-05","label":"Customer Service team lead interview","kind":"interview","date":"2026-09-05"}]}/*END_NR_BASELINE*/;</script>
 <script>window.__NR_FINDINGS_EMBED__ = /*NR_FX*/null/*END_NR_FX*/;</script>
 <script>window.__NR_OUTPUTS__ = /*NR_OUTPUTS*/null/*END_NR_OUTPUTS*/;
+window.__NR_SPLIT__ = /*NR_SPLIT*/null/*END_NR_SPLIT*/;
 window.__NR_EXECSUM__ = /*NR_EXECSUM*/null/*END_NR_EXECSUM*/;</script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════════
