@@ -219,7 +219,22 @@
     #art.stacked,#pm.stacked,#pw.stacked{padding:14px 18px 10px 42px}
     #art.stacked .nr-rail,#pm.stacked .nr-rail,#pw.stacked .nr-rail{width:24px}
   }
-</style></head>
+</style><style id="nr-topbar">
+  /* patch_topbar.py: one theme button and the way home. See the script of the same
+     name at the end of the body. The doubled id outranks the stacked-chrome rules. */
+  :is(#theme,#tseg):is(#theme,#tseg).seg{padding:3px}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button.on{display:none}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button{font-size:0;line-height:0;width:34px;height:28px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button::before{content:"";width:16px;height:16px;background:currentColor;-webkit-mask:var(--nr-ico) center/16px 16px no-repeat;mask:var(--nr-ico) center/16px 16px no-repeat}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button[data-s="dark"]{--nr-ico:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M12%203a6%206%200%200%200%209%209a9%209%200%201%201-9-9z'/%3E%3C/svg%3E")}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button[data-s="light"]{--nr-ico:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Ccircle%20cx='12'%20cy='12'%20r='4'/%3E%3Cpath%20d='M12%202v2M12%2020v2M4.9%204.9l1.4%201.4M17.7%2017.7l1.4%201.4M2%2012h2M20%2012h2M4.9%2019.1l1.4-1.4M17.7%206.3l1.4-1.4'/%3E%3C/svg%3E")}
+  .nr-crumb{display:inline-flex;align-items:center;gap:8px}
+  .nr-crumb>.nr-track{background:transparent!important;padding:0!important;border-radius:0!important;color:inherit!important;margin:0!important}
+  .nr-crumb .nr-home{color:inherit;opacity:.6;text-decoration:none;text-transform:uppercase;white-space:nowrap}
+  .nr-crumb .nr-home:hover{opacity:1;text-decoration:underline}
+  .nr-crumb .nr-sep{opacity:.4}
+</style>
+</head>
 <body>
 <div id="pw" data-t="light">
   <div class="nr-rail"></div>
@@ -506,7 +521,7 @@ const DATA = /* DATA */ {
   function setEditing(on){ON=!!on;document.getElementById('pw').classList.toggle('editing',ON);
     var g=document.getElementById('lock');g.classList.toggle('unlocked',ON);g.innerHTML=ON?UNLOCK_SVG:LOCK_SVG;g.title=ON?'Editing unlocked — click to lock':'Locked — click to edit';
     if(!ON&&edp)edp.classList.remove('on');bump();render();}
-  function dl(obj,name){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(obj,null,1)],{type:'application/json'}));a.download=name;a.click();}
+  function dl(obj,name){nrkSend(obj);}
   function bindEdit(){ if(!ON) return;
     document.querySelectorAll('#vinner [data-ek]').forEach(function(el){el.onclick=function(){openAspect(el.getAttribute('data-ek'));};});
     document.getElementById('title').onclick=function(){openTitle();};}
@@ -579,6 +594,127 @@ const DATA = /* DATA */ {
           CHANGES[k+'|'+sg.name]={aspect:k,segment:sg.name,score:score,points:pts,evidence:ev};}});
       steps.forEach(function(z){if(z.k===k){z.avg=mean(a.segments.map(function(x){return x.score;}));z.rag=aggRag(z.avg);}});
       bump();edp.classList.remove('on');render();};}
+  /* NR-KIT:BEGIN — the edit kit (scripts/patch_handover.py; editable-deliverable.md, "The edit kit").
+     The same block in every working copy that is not built on the editable shell: it hands the
+     changes over (a download as a file, the page's own store as a claude.ai artifact), keeps a
+     snapshot after each edit for Undo last and Discard all, and draws the quiet edit line under the
+     top bar. What differs per instrument is only NRK, the adapter just below. Do not edit here:
+     change the kit or the adapter in patch_handover.py and run it again. */
+  var NRK={name:'sop-wheel', save:'save', root:'art', title:'#title', hide:[],
+    on:function(){return ON;}, count:function(){return Object.keys(CHANGES).length;},
+    get:function(){return {DATA:DATA,CHANGES:CHANGES};},
+    put:function(s){nrInto(DATA,s.DATA);nrInto(CHANGES,s.CHANGES);},
+    clear:function(b){nrInto(CHANGES,b.CHANGES);},
+    redraw:function(){render();bump();}};
+  /* NR-HANDOVER:BEGIN — handing the changes over (scripts/patch_handover.py, HANDOVER_JS; editable-deliverable.md,
+     "Opened as a claude.ai artifact"). As a file the delta downloads; as a claude.ai artifact with the db
+     capability it is saved in the store under changes/, status "waiting"; the page applies nothing itself.
+     One block, the same in the edit kit, the editable shell and the process map. Do not edit here: change
+     HANDOVER_JS and run patch_handover.py again. */
+  /* in a window of the findings dashboard the page is a frame of our own page: it sends through that page */
+  var NR_CL=(function(){ var L=[], W=[]; try{ var p=window.parent; if(p!==window&&p.claude&&p.claude.use){ L.push(p.claude); W.push(p); } }catch(e){} if(window.claude&&window.claude.use&&L.indexOf(window.claude)<0){ L.push(window.claude); W.push(window); } if(!L.length) return null; var at=window; return {plain:function(o){ var s=JSON.stringify(o); try{ return at.JSON.parse(s); }catch(e){ return JSON.parse(s); } }, use:function(k){ return new Promise(function(ok,no){ (function t(i){ if(i>=L.length){ try{console.warn('nr: no '+k+' on this page');}catch(e){} return no(new Error('no '+k)); } var over=false, tm=setTimeout(function(){ if(!over){ over=true; t(i+1); } },4000); function next(v){ if(over) return; over=true; clearTimeout(tm); if(v){ at=W[i]; ok(v); } else t(i+1); } try{ L[i].use(k).then(next,function(){ next(null); }); }catch(e){ next(null); } })(0); }); }}; })(),
+      NR_FRAMED=!!(NR_CL&&NR_CL.use), NR_INBOX=NR_FRAMED?null:false;
+  if(NR_FRAMED){ NR_CL.use('db').then(function(db){ NR_INBOX=db||false; nrReady(); },
+                                           function(){ NR_INBOX=false; nrReady(); }); }
+  function nrReady(){ if(window.nrInboxReady) window.nrInboxReady(); }   // the page redraws its edit line
+  function nrHandLabel(n){ if(!n) return 'No changes';
+    return NR_INBOX?'Send to Claude':'Export changes'; }
+  function nrSay(m){ var t=document.getElementById('nr-hand-msg');
+    if(!t){ t=document.createElement('div'); t.id='nr-hand-msg'; t.setAttribute('role','status');
+      t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:99;max-width:520px;padding:11px 18px;border-radius:10px;background:var(--navy-fill,#0B2347);color:#fff;font-size:12.5px;font-weight:600;line-height:1.45;text-align:center;transition:opacity .25s;opacity:0;pointer-events:none';
+      document.body.appendChild(t); }
+    t.textContent=m; t.style.opacity='1'; clearTimeout(t._h); t._h=setTimeout(function(){ t.style.opacity='0'; },5200); }
+  function nrHandOver(d, done){
+    if(NR_INBOX){
+      var id=String(d.deltaId||'D').replace(/[^A-Za-z0-9._-]/g,'-')+'-'+Date.now().toString(36);
+      NR_INBOX.doc('changes/'+id).set(NR_CL.plain({status:'waiting', sentAt:new Date().toISOString(), delta:d}))
+        .then(function(){ done(true,'Sent. Ask Claude in the chat to apply the changes.'); },
+              function(e){ try{console.warn('nr: not sent', e&&e.message||e);}catch(x){} done(false,"Your changes weren't sent. Try again in a moment."); });
+      return;
+    }
+    if(NR_FRAMED && NR_INBOX===null){ done(false,'The page is still connecting. Try again in a second.'); return; }
+    if(NR_FRAMED){ done(false,"This page can't send changes yet. Ask Claude to republish it with sending switched on."); return; }
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,1)],{type:'application/json'}));
+    a.download=d.deltaId+'.json'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    done(true,'Downloaded '+d.deltaId+'.json. Give it to Claude to apply.');
+  }
+  /* NR-HANDOVER:END */
+  window.nrInboxReady=function(){ nrkBar(); };
+  /* the page's state, put back in place: objects and arrays keep their identity (items matched on
+     their id), so the instrument's own lookups still point at the live data */
+  function nrKey(x){ return (x&&typeof x==='object')?(x.id!=null?'i:'+x.id:(x.__rid!=null?'r:'+x.__rid:null)):null; }
+  function nrInto(t,s){
+    if(Array.isArray(t)&&Array.isArray(s)){ var by={}; t.forEach(function(x){ var k=nrKey(x); if(k) by[k]=x; });
+      var out=s.map(function(y,i){ var k=nrKey(y), m=(y&&typeof y==='object')?(k?by[k]:(t[i]&&typeof t[i]==='object'&&!nrKey(t[i])?t[i]:undefined)):undefined; return nrMerge(m,y); });
+      t.length=0; out.forEach(function(x){ t.push(x); }); return t; }
+    Object.keys(t).forEach(function(k){ if(!Object.prototype.hasOwnProperty.call(s,k)&&!(k.slice(0,2)==='__'&&t[k]&&typeof t[k]==='object')) delete t[k]; });
+    Object.keys(s).forEach(function(k){ t[k]=nrMerge(t[k],s[k]); }); return t; }
+  function nrMerge(a,b){ return (a&&b&&typeof a==='object'&&typeof b==='object'&&Array.isArray(a)===Array.isArray(b))?nrInto(a,b):b; }
+  var NRKH={base:null, steps:[], busy:false}, NRKS=null, NRKQ=0;
+  function nrkTitle(){ return document.querySelector(NRK.title||'#title'); }
+  /* a key that starts with __ and holds an object is a runtime link (a parent pointer), not data */
+  function nrkNow(){ var t=nrkTitle(); return {s:JSON.stringify(NRK.get(),function(k,v){ return (k.slice(0,2)==='__'&&v&&typeof v==='object')?undefined:v; }), t:t?t.innerHTML:''}; }
+  function nrkTop(){ return NRKH.steps.length?NRKH.steps[NRKH.steps.length-1]:NRKH.base; }
+  function nrkStart(){ NRKH.base=nrkNow(); NRKH.steps=[]; }
+  function nrkN(){ return NRKH.steps.length||NRK.count()||0; }
+  function nrkSync(){ NRKQ=0; if(NRKH.busy||!NRKH.base) return;
+    if(NRK.on()){ var n=nrkNow(), t=nrkTop();
+      if((n.s!==t.s||n.t!==t.t)&&(NRK.count()>0||NRKH.steps.length)) NRKH.steps.push(n); }
+    nrkBar(); }
+  function nrkSoon(){ if(!NRKQ) NRKQ=setTimeout(nrkSync,40); }
+  function nrkPut(p){ NRKH.busy=true;
+    try{ NRK.put(JSON.parse(p.s)); NRK.redraw(); var t=nrkTitle(); if(t&&t.innerHTML!==p.t) t.innerHTML=p.t; }
+    finally{ NRKH.busy=false; } }
+  function nrkBack(all){ if(!NRKH.base) return; if(all) NRKH.steps=[]; else NRKH.steps.pop();
+    nrkPut(nrkTop()); nrkBar();
+    nrSay(all?'All unsent changes discarded. The page is back as it was when you opened it.':'Last change undone.'); }
+  function nrkSend(d, note){ if(!d.deltaId) d.deltaId='D-'+new Date().toISOString().slice(0,10)+'-'+NRK.name;
+    nrHandOver(d,function(ok,msg){
+      if(ok&&NR_INBOX){ NRKH.busy=true; try{ NRK.clear(JSON.parse(NRKH.base.s)); NRK.redraw(); } finally{ NRKH.busy=false; } nrkStart(); }
+      nrkBar(); nrSay(msg+(note?' '+note:'')); }); }
+  function nrArm(btn, text, go){
+    if(btn._armed){ clearTimeout(btn._armed); btn._armed=null; btn.classList.remove('arm'); btn.textContent=btn._orig; go(); return; }
+    btn._orig=btn.textContent; btn.classList.add('arm'); btn.textContent=text;
+    btn._armed=setTimeout(function(){ btn._armed=null; btn.classList.remove('arm'); btn.textContent=btn._orig; nrkBar(); },4000); }
+  function nrkBar(){ var b=document.getElementById(NRK.save); if(!b||!NRKS) return;
+    var on=!!NRK.on(), n=nrkN(), set=function(el,k,v){ if(el[k]!==v) el[k]=v; };
+    set(NRKS.style,'display',on?'flex':'none');
+    set(NRKS._n,'textContent',on?(n?(n+' change'+(n>1?'s':'')+(NR_INBOX?' not sent yet':' not exported yet')):'No changes yet'):'');
+    if(!b.classList.contains('nr-send')) b.classList.add('nr-send');   // the instrument may reset the button's class
+    set(b,'textContent',nrHandLabel(n)); set(b.style,'display',(on&&n)?'inline-flex':'none'); set(b,'disabled',!n);
+    set(NRKS._u.style,'display',NRKH.steps.length?'':'none');
+    if(!NRKS._d._armed) set(NRKS._d.style,'display',NRKH.steps.length?'':'none');
+    (NRK.hide||[]).forEach(function(q){ var e=document.querySelector(q); if(e) set(e.style,'display','none'); }); }
+  setTimeout(function(){ var b=document.getElementById(NRK.save), h=nrkTitle(); if(!b||!h) return;
+    if(!document.getElementById('nr-kit-css')){ var st=document.createElement('style'); st.id='nr-kit-css'; st.textContent=
+      '.nr-strip{display:none;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 12px;padding:0 0 8px;min-height:34px;border-bottom:1px solid var(--line,#E3E8EF);color:var(--mut,#6B7A8F);font-size:12px;position:relative;z-index:60}'+
+      '.nr-strip>b{font-weight:700;color:var(--ink,#0B2347);display:inline-flex;align-items:center;gap:7px}'+
+      '.nr-strip>b::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--rag-amber,#D49A3A)}'+
+      '.nr-strip>b::after{content:"\\00B7";font-weight:400;color:var(--mut,#6B7A8F)}'+
+      '.nr-strip .sp{flex:1}.nr-strip .nr-strip-n{font-weight:500}'+
+      '#nrstrip .nrk-link{border:0;background:none;padding:2px;margin:0;font:inherit;font-size:12px;font-weight:600;color:var(--mut,#6B7A8F);text-decoration:underline;text-underline-offset:3px;cursor:pointer;box-shadow:none}'+
+      '#nrstrip .nrk-link:hover{color:var(--ink,#0B2347)}'+
+      '#nrstrip .nrk-link.arm{color:var(--rag-red-text,#C2483D);text-decoration:none;font-weight:800}'+
+      '#nrstrip .nr-send.nr-send,#nrstrip .nr-send.nr-send:hover{margin:0;padding:6px 13px;font-size:var(--fs-115);font-weight:700;line-height:1.3;border-radius:8px;border:1px solid var(--navy-fill,#0B2347);background:var(--navy-fill,#0B2347);color:#fff;cursor:pointer;white-space:nowrap;box-shadow:none;opacity:1;align-items:center}'+
+      '.nr-asking{outline:2px solid var(--rag-red,#D2645A)!important;outline-offset:2px}';
+      document.head.appendChild(st); }
+    var s=document.createElement('div'); s.className='nr-strip'; s.id='nrstrip';
+    s.innerHTML='<b>Editing</b><span class="nr-strip-n"></span><span class="sp"></span>'+
+      '<button type="button" class="nrk-link" title="Take back your last unsent change">Undo last</button>'+
+      '<button type="button" class="nrk-link" title="Throw away every unsent change">Discard all</button>';
+    s._n=s.children[1]; s._u=s.children[3]; s._d=s.children[4];
+    h.parentNode.insertBefore(s,h); s.appendChild(b); b.classList.add('nr-send'); NRKS=s;
+    s._u.onclick=function(e){ e.stopPropagation(); nrkBack(false); };
+    s._d.onclick=function(e){ e.stopPropagation(); var k=nrkN(); nrArm(s._d,'Discard '+k+' change'+(k>1?'s':'')+'?',function(){ nrkBack(true); }); };
+    ['click','change','drop','dragend','pointerup','focusout'].forEach(function(ev){ document.addEventListener(ev,nrkSoon,true); });
+    if(window.MutationObserver){ new MutationObserver(function(){ nrkBar(); }).observe(b,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['class','disabled','style']});
+      var R=document.getElementById(NRK.root)||document.body;
+      new MutationObserver(function(){ nrkBar(); if(window.fitChrome) requestAnimationFrame(window.fitChrome); }).observe(R,{attributes:true,attributeFilter:['class']}); }
+    window.addEventListener('beforeunload',function(e){ if(NRKH.steps.length){ e.preventDefault(); e.returnValue=''; } });
+    window.__nrk={n:nrkN, steps:function(){ return NRKH.steps.length; }, back:nrkBack, sync:nrkSync};   // for the checks (check_handover.js)
+    nrkStart(); nrkBar(); if(window.fitChrome) requestAnimationFrame(window.fitChrome); },0);
+  /* NR-KIT:END */
   function exportDelta(){var keys=Object.keys(CHANGES);if(!keys.length)return;
     var segs=[],km=null;keys.forEach(function(x){if(x==='**title')km=CHANGES[x];else segs.push(CHANGES[x]);});
     var out={kind:'sop-wheel-delta',team:DATA.teamName,exportedAt:new Date().toISOString().slice(0,10),changes:segs};
@@ -651,7 +787,7 @@ const DATA = /* DATA */ {
       }
       /* 5. the toprow sits on, or within 6px of, the action title */
       if(!need){
-        var t=R.querySelector('h1');
+        var t=R.querySelector('.nr-strip'); if(!t||skip(t)) t=R.querySelector('h1');
         if(t&&!skip(t)){var tb=t.getBoundingClientRect(); if(tb.top-trb.bottom<6) need=true;}
       }
       if(need) R.classList.add('stacked');
@@ -671,6 +807,35 @@ const DATA = /* DATA */ {
       lastW=w; kick();
     });
     var r0=root(); if(r0) ro.observe(r0);
+  }
+})();
+</script>
+<script id="nr-topbar-js">
+/* patch_topbar.py: one theme switch and the way home, the same in every instrument.
+   Theme: the choice is kept under the cockpit's key, nr_dark, so every page of an
+   engagement opens the same way. Home: a page that carries
+   <meta name="nr-home" content="index.html"> (the engagement artifact adds it) gets
+   "< Cockpit /" in front of its section tag. */
+(function(){
+  var K='nr_dark', box=document.getElementById('theme')||document.getElementById('tseg');
+  if(box){
+    box.querySelectorAll('button').forEach(function(b){ var d=b.getAttribute('data-s')==='dark';
+      b.title=d?'Dark mode':'Light mode'; b.setAttribute('aria-label',b.title);
+      b.addEventListener('click',function(){ try{ localStorage.setItem(K,d?'1':'0'); }catch(e){} }); });
+    var v=null; try{ v=localStorage.getItem(K); }catch(e){}
+    var dk=box.querySelector('button[data-s="dark"]');
+    if(v==='1'&&dk&&!dk.classList.contains('on')) dk.click();
+  }
+  var m=document.querySelector('meta[name="nr-home"]'), lens=document.getElementById('lens')||document.querySelector('.toprow .nr-track');
+  if(m&&lens&&!document.querySelector('.nr-crumb')){
+    var c=document.createElement('div'); c.className='nr-track nr-crumb';
+    var a=document.createElement('a'); a.className='nr-home'; a.href=m.getAttribute('content')||'index.html';
+    a.textContent='\u2039 '+(m.getAttribute('data-label')||'Cockpit'); a.title='Back to the engagement cockpit';
+    /* opened in a window of the findings dashboard (a frame of our own page): go back in that page, not in the frame */
+    try{ if(window.parent!==window&&window.parent.document) a.target='_parent'; }catch(e){}
+    var s=document.createElement('span'); s.className='nr-sep'; s.textContent='/';
+    lens.parentNode.insertBefore(c,lens); c.appendChild(a); c.appendChild(s); c.appendChild(lens);
+    if(window.fitChrome) requestAnimationFrame(window.fitChrome);
   }
 })();
 </script>

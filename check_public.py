@@ -25,7 +25,10 @@ TEXT = (".html", ".md", ".json", ".js", ".css", ".txt", ".py", ".svg")
 # cries wolf is a gate people learn to ignore. Strip the encoded blobs before
 # scanning. Nothing is lost: a name inside a PICTURE was never findable by a text
 # search anyway, so look at what you are embedding before you embed it.
-B64 = re.compile(r"data:[a-z0-9.+/-]+;base64,[A-Za-z0-9+/=\s]+", re.I)
+# A page that EMBEDS another page carries that page's data URIs JSON-escaped, so the
+# mime type arrives as "image\/png". Without the backslash in the character class the
+# blob is not recognised and its random letters trip the three-letter list.
+B64 = re.compile(r"data:[a-z0-9.+/\\-]+;base64,[A-Za-z0-9+/=\\s]+", re.I)
 
 
 def hits(text):

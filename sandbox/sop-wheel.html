@@ -165,7 +165,22 @@
     #art.stacked,#pm.stacked,#pw.stacked{padding:14px 18px 10px 42px}
     #art.stacked .nr-rail,#pm.stacked .nr-rail,#pw.stacked .nr-rail{width:24px}
   }
-</style></head>
+</style><style id="nr-topbar">
+  /* patch_topbar.py: one theme button and the way home. See the script of the same
+     name at the end of the body. The doubled id outranks the stacked-chrome rules. */
+  :is(#theme,#tseg):is(#theme,#tseg).seg{padding:3px}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button.on{display:none}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button{font-size:0;line-height:0;width:34px;height:28px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button::before{content:"";width:16px;height:16px;background:currentColor;-webkit-mask:var(--nr-ico) center/16px 16px no-repeat;mask:var(--nr-ico) center/16px 16px no-repeat}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button[data-s="dark"]{--nr-ico:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M12%203a6%206%200%200%200%209%209a9%209%200%201%201-9-9z'/%3E%3C/svg%3E")}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button[data-s="light"]{--nr-ico:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Ccircle%20cx='12'%20cy='12'%20r='4'/%3E%3Cpath%20d='M12%202v2M12%2020v2M4.9%204.9l1.4%201.4M17.7%2017.7l1.4%201.4M2%2012h2M20%2012h2M4.9%2019.1l1.4-1.4M17.7%206.3l1.4-1.4'/%3E%3C/svg%3E")}
+  .nr-crumb{display:inline-flex;align-items:center;gap:8px}
+  .nr-crumb>.nr-track{background:transparent!important;padding:0!important;border-radius:0!important;color:inherit!important;margin:0!important}
+  .nr-crumb .nr-home{color:inherit;opacity:.6;text-decoration:none;text-transform:uppercase;white-space:nowrap}
+  .nr-crumb .nr-home:hover{opacity:1;text-decoration:underline}
+  .nr-crumb .nr-sep{opacity:.4}
+</style>
+</head>
 <body>
 <div id="pw" data-t="light">
   <div class="nr-rail"></div>
@@ -508,7 +523,7 @@ const DATA = /* DATA */ {
       }
       /* 5. the toprow sits on, or within 6px of, the action title */
       if(!need){
-        var t=R.querySelector('h1');
+        var t=R.querySelector('.nr-strip'); if(!t||skip(t)) t=R.querySelector('h1');
         if(t&&!skip(t)){var tb=t.getBoundingClientRect(); if(tb.top-trb.bottom<6) need=true;}
       }
       if(need) R.classList.add('stacked');
@@ -528,6 +543,35 @@ const DATA = /* DATA */ {
       lastW=w; kick();
     });
     var r0=root(); if(r0) ro.observe(r0);
+  }
+})();
+</script>
+<script id="nr-topbar-js">
+/* patch_topbar.py: one theme switch and the way home, the same in every instrument.
+   Theme: the choice is kept under the cockpit's key, nr_dark, so every page of an
+   engagement opens the same way. Home: a page that carries
+   <meta name="nr-home" content="index.html"> (the engagement artifact adds it) gets
+   "< Cockpit /" in front of its section tag. */
+(function(){
+  var K='nr_dark', box=document.getElementById('theme')||document.getElementById('tseg');
+  if(box){
+    box.querySelectorAll('button').forEach(function(b){ var d=b.getAttribute('data-s')==='dark';
+      b.title=d?'Dark mode':'Light mode'; b.setAttribute('aria-label',b.title);
+      b.addEventListener('click',function(){ try{ localStorage.setItem(K,d?'1':'0'); }catch(e){} }); });
+    var v=null; try{ v=localStorage.getItem(K); }catch(e){}
+    var dk=box.querySelector('button[data-s="dark"]');
+    if(v==='1'&&dk&&!dk.classList.contains('on')) dk.click();
+  }
+  var m=document.querySelector('meta[name="nr-home"]'), lens=document.getElementById('lens')||document.querySelector('.toprow .nr-track');
+  if(m&&lens&&!document.querySelector('.nr-crumb')){
+    var c=document.createElement('div'); c.className='nr-track nr-crumb';
+    var a=document.createElement('a'); a.className='nr-home'; a.href=m.getAttribute('content')||'index.html';
+    a.textContent='\u2039 '+(m.getAttribute('data-label')||'Cockpit'); a.title='Back to the engagement cockpit';
+    /* opened in a window of the findings dashboard (a frame of our own page): go back in that page, not in the frame */
+    try{ if(window.parent!==window&&window.parent.document) a.target='_parent'; }catch(e){}
+    var s=document.createElement('span'); s.className='nr-sep'; s.textContent='/';
+    lens.parentNode.insertBefore(c,lens); c.appendChild(a); c.appendChild(s); c.appendChild(lens);
+    if(window.fitChrome) requestAnimationFrame(window.fitChrome);
   }
 })();
 </script>

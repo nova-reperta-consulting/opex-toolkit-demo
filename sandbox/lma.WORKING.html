@@ -1,0 +1,4067 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lean Maturity Assessment</title>
+<style>
+/* Type scale — one place, not case by case. Every size below 12px is a token; the
+   whole small end lifts on a narrow screen so nothing drops under 11px on a phone. */
+:root{
+  --fs-65:6.5px; --fs-7:7px; --fs-75:7.5px; --fs-8:8px; --fs-85:8.5px; --fs-9:9px;
+  --fs-95:9.5px; --fs-10:10px; --fs-105:10.5px; --fs-11:11px; --fs-115:11.5px;
+}
+@media (max-width:760px){
+  :root{
+    --fs-65:11px; --fs-7:11px; --fs-75:11px; --fs-8:11px; --fs-85:11px; --fs-9:11px;
+    --fs-95:11px; --fs-10:11.5px; --fs-105:12px; --fs-11:12px; --fs-115:12.5px;
+  }
+}
+</style>
+<style>
+  *{box-sizing:border-box}
+  :root{--page:#FFF}
+  html,body{margin:0;height:100vh;overflow:hidden}
+  body{background:var(--page);font-family:'Aptos','Segoe UI',system-ui,sans-serif;transition:background .25s}
+  /* ===== BRAND THEME (inlined from templates/brand.css) ===== */
+  #art{--navy:#0B2347;--slate:#364156;--steel:#7991AD;--green:#1C7A4A;--accent:#6EB1D1;--sky:#A9D5E6;--navy2:#16315B;
+      --slate-10:rgba(54,65,86,.09);--navy-10:rgba(11,35,71,.10);--green-10:rgba(28,122,74,.10);
+      --rag-green:#2F8F6B;--rag-amber:#D49A3A;--rag-red:#D2645A;--rag-na:#9AA4B0;--rag-green-text:#2F8F6B;--rag-amber-text:#B97F22;--rag-red-text:#C2483D;--rag-na-text:#6B7480;--tint-green:rgba(47,143,107,.12);--tint-amber:rgba(212,154,58,.16);--tint-red:rgba(210,100,90,.13);--tint-na:rgba(154,164,176,.16);--navy-fill:#0B2347;
+      --ink:#15243A;--txt:#46505C;--mut:#7A838F;--line:#E1E6EE;--card:#FFF;--bg:#FFF;
+      --sh:0 1px 2px rgba(20,30,50,.04),0 14px 32px -24px rgba(20,30,50,.30);
+      width:100%;max-width:2200px;margin:0 auto;height:100vh;overflow:hidden;position:relative;
+      display:flex;flex-direction:column;background:var(--bg);color:var(--ink);padding:76px 40px 12px 98px}
+  #art[data-t="dark"]{--bg:#16202C;--card:#1E2937;--ink:#EAEFF5;--txt:#C4CEDA;--mut:#94A1B2;--line:#2A3744;--navy-fill:#243246;--accent:#8FC7E8;--steel:#93A9C4;--rag-green:#5FBF94;--rag-amber:#E8B96A;--rag-red:#F0968C;--rag-na:#9AA8B8;--rag-green-text:#5FBF94;--rag-amber-text:#E8B96A;--rag-red-text:#F0968C;--rag-na-text:#9AA8B8;--tint-green:rgba(95,191,148,.15);--tint-amber:rgba(232,185,106,.15);--tint-red:rgba(240,150,140,.14);--tint-na:rgba(148,161,178,.15);--sh:0 1px 2px rgba(0,0,0,.4),0 14px 32px -24px rgba(0,0,0,.6)}
+  body:has(#art[data-t="dark"]){--page:#0E1620}
+  .nr-rail{position:absolute;left:0;top:0;bottom:0;width:52px;background:var(--navy-fill)}
+  .toprow{position:absolute;top:22px;left:0;right:40px;display:flex;justify-content:space-between;align-items:center;gap:14px;z-index:3}
+  .tags{display:flex;align-items:center;gap:11px;min-width:0}
+  .nr-pill{display:inline-flex;align-items:center;gap:11px;background:var(--green);padding:10px 22px 10px 14px;border-radius:0 9px 9px 0}
+  .nr-pill img{height:21px;filter:brightness(0) invert(1)}
+  .nr-pill b{color:#fff;font-size:13px;font-weight:700;letter-spacing:.3px}
+  .nr-track{background:#E3E8EF;color:var(--navy);font-weight:700;font-size:var(--fs-115);letter-spacing:.8px;padding:9px 16px;border-radius:8px}
+  #art[data-t="dark"] .nr-track{background:#243246;color:#EAEFF5}
+  .seg{display:flex;background:var(--slate-10);border-radius:999px;padding:3px}
+  .seg button{font-size:12px;font-weight:600;border:none;background:transparent;color:var(--mut);padding:6px 14px;border-radius:999px;cursor:pointer}
+  .seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--sh)}
+  .ctrls{display:flex;gap:9px;flex:none}
+  h1{font-size:clamp(20px,1.85vw,28px);font-weight:700;color:var(--navy);letter-spacing:-.2px;line-height:1.24;margin:0;max-width:1300px}
+  #art[data-t="dark"] h1{color:#EAEFF5}
+  h1 .hl{color:var(--green)}
+  .subrow{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:8px 0 16px}
+  .subt{font-size:15px;font-weight:600;color:var(--accent)}
+  #view{flex:1;min-height:0;position:relative;overflow:hidden}
+  #vinner{position:absolute;top:0;left:0;width:100%;transform-origin:top left;padding-bottom:24px}
+  /* ── LMA read-out (lma-builder): the house slide, as the OTE waterfall lays it out ──
+     No boxes around the exhibit or the insights. Section heads with a steel rule. The page is
+     filled: rows stretch to the frame height (fitView), type follows the deck size (--nr-ui). */
+  select.tsel{font:inherit;font-size:12px;font-weight:600;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer;max-width:280px}
+  #vinner{font-size:var(--lui,14px)}
+  .slide{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:2.6em;height:100%;align-items:stretch}
+  .slide.full{grid-template-columns:minmax(0,1fr)}
+  .slide.wide{grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:2.2em}
+  .colx,.colins{min-width:0;display:flex;flex-direction:column;height:100%}
+  .sech{margin:0 0 .9em;font-size:1.15em;font-weight:700;color:var(--ink);line-height:1.25;padding-bottom:.5em;border-bottom:1px solid var(--steel);flex:none}
+  .sech small{font-weight:500;color:var(--mut);font-size:.8em;margin-left:.4em}
+  .meta{font-size:.82em;color:var(--mut);margin:-.3em 0 .6em;flex:none}
+  .grow{flex:1;min-height:0;display:flex;flex-direction:column}
+  .empty{color:var(--mut);font-style:italic}
+  /* insights, exactly the OTE's */
+  .inswrap{display:flex;flex-direction:column;justify-content:space-between;gap:1.1em;flex:1}
+  .ins{border-radius:8px}
+  .ins .inh{display:flex;align-items:flex-start;gap:.65em;margin-bottom:.35em}
+  .ins .inum{flex:none;width:1.6em;height:1.6em;border-radius:50%;background:var(--navy-fill);color:#fff;font-size:.84em;font-weight:800;display:inline-flex;align-items:center;justify-content:center;margin-top:.15em}
+  .ins .inh b{font-size:1.1em;font-weight:700;color:var(--ink);line-height:1.35}
+  .ins .inh .sc{font-weight:700}
+  .ins ul{margin:0;padding-left:2.9em;list-style:none}
+  .ins li{position:relative;font-size:1em;color:var(--txt);line-height:1.5;margin-bottom:.3em}
+  .ins li::before{content:"";position:absolute;left:-.9em;top:.6em;width:.33em;height:.33em;border-radius:50%;background:var(--mut)}
+  .ins li b{color:var(--ink)}
+  /* band tokens: Bronze/Silver/Gold keep their names, the house RAG carries the colour */
+  .green{--rg:var(--rag-green);--rt:var(--rag-green-text);--tn:var(--tint-green)}
+  .amber{--rg:var(--rag-amber);--rt:var(--rag-amber-text);--tn:var(--tint-amber)}
+  .red{--rg:var(--rag-red);--rt:var(--rag-red-text);--tn:var(--tint-red)}
+  .na{--rg:var(--rag-na);--rt:var(--rag-na-text);--tn:var(--tint-na)}
+  .bt{color:var(--rt);font-weight:700}
+  /* department overview: behaviours as rows, teams as columns, the department as a column of pills */
+  .mxg{flex:1;min-height:0;display:grid;column-gap:.3em;row-gap:.25em;align-content:space-between;margin-top:.2em}
+  .slide.many{grid-template-columns:minmax(0,2.6fr) minmax(0,1fr)}
+  .tx-th{font-size:.9em;font-weight:800;color:var(--ink);text-align:center;line-height:1.25;padding:0 .2em .45em;border-bottom:2px solid var(--ink);align-self:end;text-wrap:balance}
+  .tx-th:first-child{border-bottom:0}
+  .many .tx-th{font-size:.76em;padding:0 0 .45em;hyphens:auto;-webkit-hyphens:auto}
+  .tx-dh{grid-column:1 / -1;font-size:.82em;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);display:flex;align-items:center;padding:.55em 0 .1em}
+  .tx-dh .inum{display:inline-flex;flex:none;width:1.45em;height:1.45em;border-radius:50%;background:var(--navy-fill);color:#fff;font-size:.9em;align-items:center;justify-content:center;margin-right:.45em;letter-spacing:0}
+  .tx-bl{grid-column:1;font-size:.95em;color:var(--txt);display:flex;align-items:center;padding-left:2.1em;line-height:1.3;min-width:0}
+  .tx-ov{font-weight:800;color:var(--ink);padding-left:0}
+  .tx-rule{grid-column:1 / -1;height:1.5px;background:var(--ink);align-self:center;margin:.2em 0}
+  .cell{display:flex;align-items:center;justify-content:center;height:1.9em;border-radius:6px;font-size:1em;font-weight:700;background:var(--tn);color:var(--rt);cursor:help}
+  .cell.ov{font-weight:800;box-shadow:inset 0 0 0 1.5px var(--rg)}
+  .cell.dep{background:var(--rt);color:var(--card);font-weight:800;box-shadow:none;border-radius:999px}
+  /* key takeaways: six open blocks, no cards */
+  .tkg{flex:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:1fr;gap:1.6em 2.4em}
+  .tk{display:flex;flex-direction:column;border-top:1px solid var(--steel);padding-top:.9em}
+  .tkh{display:flex;align-items:center;gap:.7em;margin-bottom:.5em}
+  .tkico{flex:none;width:2.4em;height:2.4em;border-radius:.7em;background:var(--green-10);display:flex;align-items:center;justify-content:center}
+  .tkico svg{width:1.35em;height:1.35em;stroke:var(--green);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  #art[data-t="dark"] .tkico svg{stroke:#5FBF94}
+  .tkt{flex:1;min-width:0;font-size:1.1em;font-weight:700;color:var(--ink);line-height:1.3}
+  .tk ul{margin:0;padding-left:1.1em;list-style:none}
+  .tk li{position:relative;font-size:1em;color:var(--txt);line-height:1.5;margin-bottom:.35em}
+  .tk li::before{content:"";position:absolute;left:-.9em;top:.6em;width:.33em;height:.33em;border-radius:50%;background:var(--mut)}
+  .tk li b{color:var(--ink)}
+  /* team deepdive: dimension | behaviour | track on the left, insights on the right */
+  .ddg{flex:1;display:grid;grid-template-columns:7.2em minmax(9em,1fr) minmax(10em,1.35fr);gap:0 1.1em;align-content:stretch}
+  .dimcell{display:flex;padding:.35em 0}
+  .dimblk{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25em;text-align:center;border-radius:10px;background:var(--navy-fill);color:#fff;font-weight:700;padding:.5em}
+  .dimblk .dn{display:inline-flex;align-items:center;gap:.4em;font-size:.95em}
+  .dimblk .dn i{font-style:normal;display:inline-flex;width:1.45em;height:1.45em;border-radius:50%;background:#fff;color:var(--navy-fill);font-size:.8em;align-items:center;justify-content:center}
+  .dimblk .dsc{font-size:1.25em;font-weight:800}
+  .dimblk .dsc small{font-size:.6em;color:rgba(255,255,255,.7)}
+  #art[data-t="dark"] .dimblk{background:#2E5C8A}
+  #art[data-t="dark"] .dimblk .dn i{color:#2E5C8A}
+  .bnm{display:flex;align-items:center;justify-content:flex-end;gap:.5em;text-align:right;font-size:.95em;font-weight:600;color:var(--ink);line-height:1.3;padding:.35em 0}
+  .ctd{flex:none;font-size:.72em;font-weight:700;padding:.15em .55em;border-radius:999px;color:var(--rag-amber-text);box-shadow:inset 0 0 0 1px var(--rag-amber);white-space:nowrap}
+  .bsc{display:flex;align-items:center;padding:.35em 0;cursor:help}
+  .top{border-top:1px dashed var(--line);margin-top:.35em;padding-top:.7em}
+  .trk{position:relative;display:block;width:100%;height:1.75em;border-radius:6px;background:var(--slate-10);overflow:hidden}
+  .trk .tick{position:absolute;top:0;bottom:0;width:1px;background:var(--line);z-index:2}
+  .trk .fill{z-index:3;position:absolute;left:0;top:0;bottom:0;display:flex;align-items:center;justify-content:flex-end;padding-right:.55em;font-size:.88em;font-weight:800;border-radius:6px 0 0 6px;background:var(--tn);color:var(--rt);box-shadow:inset -2px 0 0 var(--rg)}
+  #art[data-t="dark"] .trk{background:rgba(255,255,255,.05)}
+  #art[data-t="dark"] .trk .tick{background:rgba(255,255,255,.18)}
+  .scale{padding-top:.5em}
+  .trk.sc{height:1.45em;background:none;overflow:visible}
+  .trk.sc .z{position:absolute;top:0;bottom:0;display:flex;align-items:center;justify-content:center;font-size:.72em;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border-radius:5px;background:var(--tn);color:var(--rt);text-decoration:none}
+  /* the bottom line of an exhibit, the place the OTE puts its formula: the headline figures */
+  .sumrow{flex:none;display:flex;align-items:baseline;gap:2.2em;flex-wrap:wrap;margin-top:.9em;padding-top:.75em;border-top:1.5px solid var(--ink)}
+  .sumrow .k{font-size:.85em;color:var(--mut);margin-right:.4em}
+  .sumrow .v{font-size:1.45em;font-weight:800;color:var(--ink)}
+  .sumrow .v small{font-size:.55em;color:var(--mut);font-weight:600;margin-left:.15em}
+  .sumrow .v.hl{color:var(--green)} #art[data-t="dark"] .sumrow .v.hl{color:#5FBF94}
+  .sumrow .note{margin-left:auto;font-size:.82em;color:var(--mut)}
+  /* tool panels: four open columns that run the full height */
+  .tg4{flex:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2.2em}
+  .tgp{display:flex;flex-direction:column;min-width:0}
+  .tgph{display:flex;align-items:center;gap:.5em;padding-bottom:.55em;margin-bottom:.2em;border-bottom:2px solid var(--ink)}
+  .tgph .inum{display:inline-flex;flex:none;width:1.45em;height:1.45em;border-radius:50%;background:var(--navy-fill);color:#fff;font-size:.8em;font-weight:800;align-items:center;justify-content:center}
+  .tgph .hcnt{margin-left:auto;font-size:.9em;color:var(--mut);font-weight:600;white-space:nowrap}
+  .tgph .hcnt b{color:var(--ink);font-size:1.15em;font-weight:800}
+  .tgph .d{font-size:.95em;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink)}
+  .tgph .a{margin-left:auto;font-size:1.1em;font-weight:800;color:var(--ink)}
+  .tgph .a small{font-size:.65em;color:var(--mut);font-weight:600}
+  .pcount{font-size:.68em;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:.2em .6em;border-radius:999px;background:var(--tn);color:var(--rt);white-space:nowrap}
+  .tgpb{flex:1;display:grid}
+  .trow{display:flex;align-items:center;gap:.7em;min-height:2.3em;border-bottom:1px solid var(--line);cursor:help}
+  .trow:last-child{border-bottom:none}
+  .trow .tl{flex:0 0 44%;min-width:0;font-size:.92em;font-weight:600;color:var(--ink);line-height:1.25}
+  .lad .trow .tl{flex:1}
+  .trow.gone .tl{color:var(--rag-red-text)}
+  .trow .tsc{flex:none;min-width:2.4em;text-align:right;font-size:.95em;font-weight:800;color:var(--rt)}
+  .dt{position:relative;flex:1;height:.75em;border-radius:5px;background:var(--slate-10)}
+  .dt .thr{position:absolute;top:-.25em;bottom:-.25em;width:1px;background:var(--line);z-index:1}
+  #art[data-t="dark"] .dt .thr{background:rgba(255,255,255,.16)}
+  .dt .rng{position:absolute;top:0;bottom:0;border-radius:5px;background:var(--tn);z-index:2}
+  #art[data-t="dark"] .dt .rng{background:var(--rg);opacity:.38}
+  .dt .mk{position:absolute;top:50%;width:.85em;height:.85em;border-radius:50%;background:var(--rg);border:2px solid var(--card);transform:translate(-50%,-50%);z-index:3;box-shadow:0 1px 2px rgba(11,35,71,.28)}
+  .ladd{display:inline-flex;gap:3px;align-items:center;flex:none}
+  .ladd i{width:1.15em;height:.55em;border-radius:3px;background:var(--line)}
+  .ladd i.on{background:var(--rg)}
+  /* the hover card: what a level means, and why this team got its score */
+  #tip{position:fixed;z-index:95;width:340px;max-width:calc(100vw - 24px);background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 40px -18px rgba(11,35,71,.45);padding:12px 16px 0;font-size:13px;line-height:1.45;pointer-events:none;opacity:0;transition:opacity .1s}
+  #tip{visibility:hidden;left:-9999px;top:0}
+  #tip.on{opacity:1;visibility:visible}
+  #tip .th{font-weight:800;font-size:13.5px;margin-bottom:6px;color:var(--ink)}
+  #tip .tc{border-top:1px solid var(--line);padding-top:7px;margin-top:7px}
+  #tip .tc:first-of-type{border-top:0;margin-top:0;padding-top:0}
+  #tip .cn{font-weight:700;display:flex;justify-content:space-between;gap:10px}
+  #tip .lv{display:grid;grid-template-columns:1.6em 1fr;gap:2px 6px;margin:4px 0 12px;color:var(--txt)}
+  #tip .lv .n{font-weight:800;color:var(--mut);text-align:center;border-radius:4px}
+  #tip .lv .on{background:var(--slate-10);font-weight:700;color:var(--ink);border-radius:4px}
+  #tip .lv .n.on{color:var(--ink)}
+  #tip .ans{color:var(--mut);font-size:var(--fs-115);margin-top:2px}
+  #tip .tk2{font-size:var(--fs-105);font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+  #tip .th2{display:flex;justify-content:space-between;gap:14px;align-items:baseline;font-size:14px;font-weight:800;margin:2px 0 8px}
+  #tip .th2>span:last-child,#why h4>span:last-child{white-space:nowrap}
+  #tip .tcl{border-top:1px solid var(--line);padding:6px 0 4px}
+  #tip .cn2{display:flex;justify-content:space-between;gap:12px;padding:3px 0;font-weight:600}
+  #tip .tft{border-top:1px solid var(--line);margin:0 -16px;padding:7px 16px 9px;font-size:var(--fs-115);color:var(--mut)}
+  /* the "Why this score" panel: opens on click, in the client build too */
+  #why{position:fixed;z-index:96;top:0;right:0;bottom:0;width:min(480px,100vw);background:var(--card);color:var(--ink);border-left:1px solid var(--line);box-shadow:-20px 0 40px -24px rgba(11,35,71,.45);display:flex;flex-direction:column;font-size:13px;line-height:1.45;transform:translateX(105%);transition:transform .18s ease}
+  #why:not(.on){visibility:hidden;transition:transform .18s ease,visibility 0s .18s}
+  #why.on{transform:none}
+  #why .wh{position:relative;padding:18px 22px 14px;border-bottom:1px solid var(--line)}
+  #why .wx{position:absolute;top:12px;right:14px;border:0;background:none;color:var(--mut);font-size:22px;line-height:1;cursor:pointer}
+  #why .wk{font-size:var(--fs-105);font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);padding-right:28px}
+  #why h4{margin:4px 0 0;font-size:17px;font-weight:800;display:flex;justify-content:space-between;gap:14px;align-items:baseline}
+  #why .wb{flex:1;overflow:auto;padding:4px 22px 18px}
+  #why .wsec{padding:14px 0;border-bottom:1px solid var(--line)}
+  #why .wch{display:flex;justify-content:space-between;gap:12px;font-size:14px;font-weight:800}
+  #why .wsm{font-size:var(--fs-115);color:var(--mut);margin-top:2px}
+  #why .wsm b{font-weight:700}
+  #why .wstp{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin:10px 0 4px}
+  #why .wstp div{border-radius:6px;padding:6px 7px;font-size:var(--fs-115);line-height:1.35;background:var(--slate-10);color:var(--mut)}
+  #why .wstp div b{display:block;font-size:12px;margin-bottom:2px}
+  #why .wstp div.on{background:var(--tn);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--rg)}
+  #why .wlab{font-size:var(--fs-105);font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-top:12px}
+  #why .wq{font-style:italic;color:var(--txt);margin-top:6px;padding-left:10px;border-left:2px solid var(--line)}
+  /* footer legend */
+  #ft .l{min-width:0}
+  .legend{flex-wrap:wrap;align-items:center}
+  .lp{background:var(--tn);color:var(--rt);display:inline-flex;align-items:center;gap:.45em}
+  .lpd{display:inline-block;width:.55em;height:.55em;border-radius:50%;background:var(--rg)}
+  .lx{display:inline-flex;align-items:center;gap:5px;margin-left:8px;color:var(--txt)}
+  .lx .rngk{width:22px;height:8px;border-radius:4px;background:rgba(122,131,143,.25);display:inline-block}
+  .lx .mkk{width:11px;height:11px;border-radius:50%;background:var(--mut);border:2px solid var(--card);display:inline-block}
+  .conf{white-space:nowrap;flex:none}
+  #art.editing #tip .tft{display:none}
+  #ft{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:12px;font-size:clamp(9.5px,0.75vw,12px);color:var(--mut)}
+  #ft .l{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .legend{display:flex;gap:7px}
+  .lp{font-size:0.95em;font-weight:600;padding:0.2em 0.85em;border-radius:999px}
+  .conf{font-size:0.88em;letter-spacing:.5px;font-weight:600}
+  /*<EDIT>*/
+  #art.editing .edz{cursor:pointer;transition:outline-color .13s;border-radius:10px}
+  #art.editing .edz:hover{outline:2px solid var(--accent);outline-offset:3px}
+  /* the calculator panel (working copy only), the OTE's Inputs panel */
+  #ed .csum{background:var(--green-10);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12.5px;color:var(--txt)}
+  #ed .csum .cdims{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:4px}
+  #ed .csum .cdep{margin-top:4px;color:var(--mut);font-size:var(--fs-115)}
+  #ed .cchips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+  #ed .cgl{font-size:var(--fs-10);font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);margin:2px 0 4px}
+  #ed .ctm{margin-bottom:12px}
+  #ed .cchip{font:inherit;font-size:var(--fs-115);font-weight:700;border:1px solid var(--line);background:var(--slate-10);color:var(--mut);padding:4px 10px;border-radius:999px;cursor:pointer}
+  #ed .cchip.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+  #ed .cnote{font-size:var(--fs-115);color:var(--mut);margin-bottom:8px;line-height:1.45}
+  #ed .cgh{font-size:var(--fs-10);font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);margin:14px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+  #ed .crow{padding:8px 0 10px;border-bottom:1px dashed var(--line)}
+  #ed .crow.chg{background:linear-gradient(90deg,var(--tint-amber),transparent 70%);border-radius:6px;padding-left:6px}
+  #ed .crow .cl{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--ink)}
+  #ed .crow .cv{font-weight:800}
+  #ed .crow .cq{font-size:var(--fs-115);color:var(--mut);font-style:italic;margin:2px 0 4px;line-height:1.4}
+  #ed .crow .cs{position:relative;margin:4px 0 2px}
+  #ed .crow .cs input{width:100%;accent-color:var(--navy-fill)}
+  #ed .crow .cmark{position:absolute;top:-2px;width:2px;height:16px;background:var(--rag-amber);margin-left:-1px;pointer-events:none}
+  #ed .crow .cmeta{font-size:var(--fs-11);color:var(--mut)}
+  #ed .crow .cmeta a{color:var(--accent)}
+  #ed .crow .canch{font-size:var(--fs-115);color:var(--txt);margin-top:3px;line-height:1.4}
+  /* the two unlocked-state rules every instrument keeps: editable regions get the accent
+     hover outline (above); locked regions carry .nr-locked and DIM, with a toast on click */
+  #art.editing .nr-locked{opacity:.5;filter:saturate(.7);cursor:help;transition:opacity .15s,filter .15s,box-shadow .15s,background-color .15s,border-color .15s,outline-color .15s}
+  #lock{width:34px;height:34px;border:1px solid var(--line);background:var(--card);border-radius:9px;color:var(--mut);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+  #lock svg{width:17px;height:17px;display:block}
+  #lock.unlocked{background:var(--rag-amber);border-color:var(--rag-amber);color:#fff}
+  #save{font-size:12px;font-weight:700;border:1px solid var(--navy-fill);background:var(--navy-fill);color:#fff;padding:8px 13px;border-radius:9px;cursor:pointer;display:none}
+  #save.show{display:inline-flex} #save:disabled{opacity:.45;cursor:default}
+  #undo,#discard{font-size:12px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 12px;border-radius:9px;cursor:pointer;white-space:nowrap;display:none}
+  #undo.show,#discard.show{display:inline-flex} #undo:hover,#discard:hover{border-color:var(--accent)}
+  #discard{color:var(--rag-red-text)} #discard.arm{background:var(--rag-red);border-color:var(--rag-red);color:#fff}
+  /* the edit strip: while unlocked, the working controls sit in their own row under the
+     chrome, so the top bar never changes width (editable-deliverable.md, "The edit strip") */
+  .nr-strip{display:none;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 12px;padding:0 0 8px;min-height:34px;border-bottom:1px solid var(--line);color:var(--mut);font-size:12px;position:relative;z-index:60}
+  #pm.editing .nr-strip,#art.editing .nr-strip{display:flex}
+  .nr-strip>b{font-weight:700;color:var(--ink);display:inline-flex;align-items:center;gap:7px}
+  .nr-strip>b::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--rag-amber)}
+  .nr-strip>b::after{content:"\00B7";font-weight:400;color:var(--mut)}
+  .nr-strip .sp{flex:1}
+  .nr-strip .nr-strip-n,.nr-strip #wnote.wchip{background:none;padding:0;border-radius:0;font-size:12px;font-weight:500;letter-spacing:0;text-transform:none;color:inherit}
+  .nr-strip #wnote.wchip.bad{color:var(--rag-red-text)}
+  /* undo and discard are text links; the send button is the one button */
+  .nr-strip #wundo,.nr-strip #wdiscard,.nr-strip #undo,.nr-strip #discard{border:0;background:none;padding:2px;font-size:12px;font-weight:600;color:var(--mut);text-decoration:underline;text-underline-offset:3px}
+  .nr-strip #wundo:hover,.nr-strip #wdiscard:hover,.nr-strip #undo:hover,.nr-strip #discard:hover{color:var(--ink)}
+  .nr-strip #wdiscard.arm,.nr-strip #discard.arm{background:none;color:var(--rag-red-text);text-decoration:none;font-weight:800}
+  .nr-strip #wsave,.nr-strip #save{padding:6px 13px;font-size:var(--fs-115)}
+  /* with the working controls in the strip, the lock alone is left in the top bar: when the
+     chrome stacks it stays on the brand row instead of taking a row of its own */
+  #pm#pm.stacked .wgrp,#art#art.stacked .wgrp{order:2;flex:none}
+  #art#art.stacked #lock{order:2}
+  #art .nr-hist{margin:0 0 12px;padding:9px 11px;background:var(--soft);border:1px solid var(--line);border-radius:8px}
+  #art .nr-hist b{display:block;font-size:var(--fs-10);letter-spacing:.4px;text-transform:uppercase;color:var(--mut)}
+  #art .nr-hist ol{margin:5px 0 0;padding-left:18px} #art .nr-hist li{font-size:var(--fs-115);line-height:1.5;color:var(--txt)}
+  #ed{position:fixed;top:0;right:0;bottom:0;width:410px;max-width:92vw;overflow:hidden;background:var(--card);border-left:1px solid var(--line);box-shadow:-18px 0 44px -24px rgba(11,35,71,.4);z-index:90;display:none;flex-direction:column}
+  #ed.on{display:flex}
+  #ed .edh{flex:none;position:relative;padding:14px 20px 12px;border-bottom:1px solid var(--line);background:var(--slate-10)}
+  #ed .edh .row{display:flex;align-items:center;gap:9px;padding-right:40px}
+  #ed .edh .kind{flex:none;font-size:var(--fs-85);font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:var(--navy-fill);padding:3px 7px;border-radius:5px}
+  #ed .edh h3{margin:0;font-size:15px;font-weight:800;color:var(--ink);line-height:1.25}
+  #ed .edh .x{position:absolute;top:12px;right:15px;width:26px;height:26px;border:0;background:none;font-size:19px;color:var(--mut);cursor:pointer;border-radius:6px}
+  #ed .edb{flex:1;min-height:0;overflow:auto;padding:16px 20px}
+  #ed .edf{flex:none;display:flex;gap:8px;align-items:center;padding:14px 20px;border-top:1px solid var(--line);background:var(--slate-10)}
+  #ed .edf .sp{flex:1}
+  #ed .f{margin-bottom:12px} #ed .f label{display:block;font-size:var(--fs-10);font-weight:700;color:var(--txt);margin:0 0 4px}
+  #ed .f input,#ed .f textarea{width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:12.5px;color:var(--ink);background:var(--card)}
+  #ed .f textarea{min-height:84px;resize:vertical;line-height:1.5}
+  #ed .wbtn{font-size:12px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:8px;cursor:pointer}
+  #ed .wbtn.pri{background:var(--navy-fill);color:#fff;border-color:var(--navy-fill)}
+  #ed .cselwrap{position:relative} #ed .cselwrap>select{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+  #ed .cseltrg{width:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);font:inherit;font-size:12.5px;color:var(--ink);cursor:pointer;text-align:left}
+  #ed .cselwrap.on .cseltrg{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-10)}
+  #ed .cseltrg .clab,#ed .cselopt .clab{display:flex;align-items:center;gap:7px;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  #ed .cselmenu{display:none;position:absolute;left:0;right:0;top:calc(100% + 5px);z-index:20;max-height:250px;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 16px 34px -16px rgba(11,35,71,.5);padding:4px}
+  #ed .cselwrap.on .cselmenu{display:block}
+  #ed .cselgrp{font-size:var(--fs-95);font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);padding:9px 10px 4px}
+  #ed .cselopt{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12.5px;color:var(--ink)}
+  #ed .cselopt:hover{background:var(--slate-10)} #ed .cselopt.sel{background:var(--accent-10)}
+  #ed .cselopt .tag{font-size:var(--fs-11);color:var(--mut)}
+  #ed .cdot{width:7px;height:7px;border-radius:50%;flex:none;display:inline-block}
+  #ed .cdot.team{background:var(--green)} #ed .cdot.ext{background:var(--rag-amber)} #ed .cdot.int{background:var(--mut)}
+  /* action-title editor (the standard): rendered preview + formatting hints + highlight helper */
+  #art.editing h1{cursor:pointer}
+  #art.editing h1:hover{outline:2px solid var(--accent);outline-offset:4px;border-radius:4px}
+  #ed .kmprev{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--slate-10);
+    font-size:16px;font-weight:700;color:var(--navy);letter-spacing:-.2px;line-height:1.3;min-height:44px}
+  #art[data-t="dark"] #ed .kmprev,#ed .kmprev .dk{color:#EAEFF5}
+  #ed .kmprev .hl{color:var(--green)}
+  #ed .kmhints{border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-top:12px;font-size:var(--fs-11);color:var(--txt);line-height:1.7}
+  #ed .kmhints b{display:block;font-size:var(--fs-95);letter-spacing:.5px;text-transform:uppercase;color:var(--mut);margin-bottom:3px}
+  #ed .kchip{font-family:ui-monospace,Consolas,monospace;font-size:var(--fs-105);background:var(--slate-10);padding:1px 5px;border-radius:4px;white-space:nowrap}
+  #ed .kmhl{font-size:var(--fs-11);font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);
+    padding:5px 10px;border-radius:7px;margin-top:6px;display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+  #ed .kmhl .swch{width:10px;height:10px;border-radius:3px;background:var(--green);display:inline-block}
+  /*</EDIT>*/
+  /* ── responsive chrome: on a narrow screen the absolute toprow would collide, so drop it
+     into normal flow and let it wrap (applies to every artifact that uses this chrome) ── */
+  @media (max-width:760px){
+    #art,#pm{padding:14px 18px 10px 42px}
+    .nr-rail{width:24px}
+  }
+
+  /* ── responsive chrome ──────────────────────────────────────────────────────
+     The toprow stacks when it does not fit, and the switch is DETECTED, not
+     guessed: fitChrome() below measures the one-row layout and adds .stacked to
+     the artifact root. Never hard-code a breakpoint for the chrome — see
+     brand-guide.html, "Responsive chrome". Stacked order is brand row, then
+     navigation, then working controls: where am I, what am I looking at, what
+     can I change. ── */
+  #art.stacked .toprow,#pm.stacked .toprow,#pw.stacked .toprow{
+    position:static;top:auto;left:auto;right:auto;margin:0 0 12px;
+    display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:center;gap:10px 12px}
+  #art.stacked .tags,#pm.stacked .tags,#pw.stacked .tags{display:contents}
+  /* only the brand pill bleeds out onto the navy rail — that is why it is
+     border-radius:0 9px 9px 0. The negative margin is given back as padding, so
+     its right edge does not move and no sibling shifts. */
+  #art.stacked .nr-pill,#pm.stacked .nr-pill,#pw.stacked .nr-pill{
+    order:1;margin-left:calc(-1 * var(--padl,0px));padding-left:calc(14px + var(--padl,0px))}
+  /* no text in an artifact is ever cut to make it fit: the lens badge wraps, it
+     does not ellipsise. An instrument that truncates it looks fine to a gate and
+     wrong to a client. */
+  #art.stacked .nr-track,#pm.stacked .nr-track,#pw.stacked .nr-track{
+    order:2;max-width:none;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+  #art.stacked .ctrls,#pm.stacked .ctrls,#pw.stacked .ctrls{
+    order:3;flex:1 1 100%;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:8px}
+  /* a shell whose view switch sits straight in the toprow, with no .ctrls group */
+  #art.stacked .toprow>.seg,#pm.stacked .toprow>.seg,#pw.stacked .toprow>.seg{order:3;flex:1 1 100%}
+  #art.stacked .seg,#pm.stacked .seg,#pw.stacked .seg{flex-wrap:wrap;max-width:100%}
+  #art.stacked .wgrp,#pm.stacked .wgrp,#pw.stacked .wgrp{
+    order:4;flex:1 1 100%;flex-wrap:wrap;gap:8px}
+  #art.stacked #save,#art.stacked #lock,#pm.stacked #save,#pm.stacked #lock,
+  #pw.stacked #save,#pw.stacked #lock{order:4}
+  /* the narrow-screen media query keeps only what it was really for: padding and
+     rail width on a phone. Chrome layout is no longer its business. */
+  @media (max-width:760px){
+    #art.stacked,#pm.stacked,#pw.stacked{padding:14px 18px 10px 42px}
+    #art.stacked .nr-rail,#pm.stacked .nr-rail,#pw.stacked .nr-rail{width:24px}
+  }
+</style><style id="nr-finish">
+/* == THE DECK FINISH (patch_finish.py) == one look across the toolkit: the same base size as a deck
+   in the same window, the quiet subtitle, light grey cards for ideas, icons from the house set.
+   Written with an html prefix so it wins over the template's own rules wherever they sit. */
+html{--srf:#F7F9FB;--srf-line:#E4E9EF;--sh-soft:0 1px 2px rgba(16,24,40,.05);--subt:#5E718B}
+html [data-t="dark"]{--srf:#1E2937;--srf-line:#2C3947;--sh-soft:0 1px 2px rgba(0,0,0,.35);--subt:#9FB1C8}
+html .subt{font-size:max(15px,calc(var(--nr-t,14px) * 1.22));font-weight:400;color:var(--subt)}
+/* the title follows the deck where the deck's title is the larger one (a window above about 1615 x 909);
+   below that every instrument keeps its own title, including the ones that shrink it to fit */
+@media (min-width:1615px) and (min-height:909px){html h1{font-size:calc(var(--nr-t,15.14px) * 1.85)}}
+html :is(.card,.kpi,#pw .tcard,.plan,.findings,.acard,.t-dept .nc,.t-team.in .nc,.blk.boxed,.conc-so,.node.l3){background:var(--srf);border-color:var(--srf-line);border-radius:14px;box-shadow:var(--sh-soft)}
+/* the templates paint their dark cards from #art[data-t="dark"] rules; the finish wins over those */
+html [data-t="dark"]:is(#art,#pw,#pm) :is(.card,.kpi,#pw .tcard,.plan,.findings,.acard,.t-dept .nc,.t-team.in .nc,.blk.boxed,.conc-so,.node.l3){background:var(--srf);border-color:var(--srf-line)}
+html :is(.blk.boxed,.conc-so){border:1px solid var(--srf-line)}
+html .ic{width:1.2em;height:1.2em;fill:var(--navy);flex:none;vertical-align:-.24em;margin-right:.4em}
+html [data-t="dark"] .ic{fill:#93A9C4}
+@media print{html{--sh-soft:0 0 0 transparent}}
+</style>
+<script id="nr-finish-js">
+/* == ONE TYPE SIZE PER WINDOW (patch_finish.py) == the deck's base size for this window, published
+   on <html> before any fit runs, and nrZ() for the fit caps. Never below the instrument's own 14px. */
+(function(){
+  function deck(){var W=window.innerWidth||1600,H=window.innerHeight||900;
+    return Math.max(11,Math.min(20,H/60,(W-138)/97.5));}
+  function ui(){return Math.max(14,deck());}
+  function put(){var d=document.documentElement.style;d.setProperty('--nr-t',deck().toFixed(2)+'px');
+    d.setProperty('--nr-ui',ui().toFixed(2)+'px');}
+  window.nrZ=function(){return ui()/14;};
+  put(); window.addEventListener('resize',put);
+  /* icons from the house set on the fixed vocabularies, re-applied whenever a view re-renders */
+  var I={"alt_route":"M450-80v-200q0-48-16-79t-49-64l43-43q13 11 27.5 30t24.5 35q17-26 33.5-45t31.5-32q58-47 83.5-113.5T648-766l-90 90-42-42 162-162 162 162-42 42-90-90q5 126-24.5 198.5T585-432q-44 40-59.5 73T510-280v200h-60ZM258-636q-4-18-6.5-52.5T251-765l-89 89-42-42 162-162 162 162-42 42-90-90q-2 38-1 66.5t5 49.5l-58 14Zm84 171q-17-18-37.5-47.5T273-577l59-15q9 25 24 48t28 37l-42 42Z","badge":"M140-80q-24 0-42-18t-18-42v-480q0-24 18-42t42-18h250v-140q0-24 18-42t42-18h60q24 0 42 18t18 42v140h250q24 0 42 18t18 42v480q0 24-18 42t-42 18H140Zm0-60h680v-480H570v30q0 28-18 44t-42 16h-60q-24 0-42-16t-18-44v-30H140v480Zm92-107h239v-14q0-18-9-32t-23-19q-32-11-50-14.5t-35-3.5q-19 0-40.5 4.5T265-312q-15 5-24 19t-9 32v14Zm336-67h170v-50H568v50Zm-175.5-65.5Q408-395 408-418t-15.5-38.5Q377-472 354-472t-38.5 15.5Q300-441 300-418t15.5 38.5Q331-364 354-364t38.5-15.5ZM568-427h170v-50H568v50ZM450-590h60v-230h-60v230Zm30 210Z","build":"M705-128 447-388q-23 8-46 13t-47 5q-97.08 0-165.04-67.67Q121-505.33 121-602q0-31 8.16-60.39T152-718l145 145 92-86-149-149q25.91-15.16 54.96-23.58Q324-840 354-840q99.17 0 168.58 69.42Q592-701.17 592-602q0 24-5 47t-13 46l259 258q11 10.96 11 26.48T833-198l-76 70q-10.7 11-25.85 11Q716-117 705-128Zm28-57 40-40-273-273q16-21 24-49.5t8-54.5q0-75-55.5-127T350-782l102 104q9 9 8.5 21.5T451-635L318-510q-9.27 8-21.64 8-12.36 0-20.36-8l-98-97q3 77 54.67 127T354-430q25 0 53-8t49-24l277 277ZM476-484Z","checklist":"M222-214 80-356l42-42 100 99 179-179 42 43-221 221Zm0-320L80-676l42-42 100 99 179-179 42 43-221 221Zm298 244v-60h360v60H520Zm0-320v-60h360v60H520Z","description":"M319-250h322v-60H319v60Zm0-170h322v-60H319v60ZM220-80q-24 0-42-18t-18-42v-680q0-24 18-42t42-18h361l219 219v521q0 24-18 42t-42 18H220Zm331-554v-186H220v680h520v-494H551ZM220-820v186-186 680-680Z","flag":"M200-120v-680h343l19 86h238v370H544l-18.93-85H260v309h-60Zm300-452Zm95 168h145v-250H511l-19-86H260v251h316l19 85Z","forum":"M880-81 721-240H300q-24.75 0-42.37-17.63Q240-275.25 240-300v-80h440q24.75 0 42.38-17.63Q740-415.25 740-440v-280h80q24.75 0 42.38 17.62Q880-684.75 880-660v579ZM140-425l75-75h405v-320H140v395ZM80-280v-540q0-24.75 17.63-42.38Q115.25-880 140-880h480q24.75 0 42.38 17.62Q680-844.75 680-820v320q0 24.75-17.62 42.37Q644.75-440 620-440H240L80-280Zm60-220v-320 320Z","groups":"M0-240v-53q0-38.57 41.5-62.78Q83-380 150.38-380q12.16 0 23.39.5t22.23 2.15q-8 17.35-12 35.17-4 17.81-4 37.18v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Zm540 0v-65q0-19.86-3.5-37.43T765-377.27q11-1.73 22.17-2.23 11.17-.5 22.83-.5 67.5 0 108.75 23.77T960-293v53H780Zm-480-60h360v-6q0-37-50.5-60.5T480-390q-79 0-129.5 23.5T300-305v5ZM149.57-410q-28.57 0-49.07-20.56Q80-451.13 80-480q0-29 20.56-49.5Q121.13-550 150-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T149.57-410Zm660 0q-28.57 0-49.07-20.56Q740-451.13 740-480q0-29 20.56-49.5Q781.13-550 810-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T809.57-410ZM480-480q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T600-600q0 50-34.5 85T480-480Zm.35-60Q506-540 523-557.35t17-43Q540-626 522.85-643t-42.5-17q-25.35 0-42.85 17.15t-17.5 42.5q0 25.35 17.35 42.85t43 17.5ZM480-300Zm0-300Z","monitoring":"M120-120v-76l60-60v136h-60Zm165 0v-236l60-60v296h-60Zm165 0v-296l60 61v235h-60Zm165 0v-235l60-60v295h-60Zm165 0v-396l60-60v456h-60ZM120-356v-85l280-278 160 160 280-281v85L560-474 400-634 120-356Z","psychology":"M240-80v-172q-57-52-88.5-121.5T120-520q0-150 105-255t255-105q125 0 221.5 73.5T827-615l55 218q4 14-5 25.5T853-360h-93v140q0 24.75-17.62 42.37Q724.75-160 700-160H600v80h-60v-140h160v-200h114l-45-180q-24-97-105-158.5T480-820q-125 0-212.5 86.5T180-522.46q0 64.42 26.32 122.39Q232.65-342.09 281-297l19 18v199h-60Zm257-370Zm-48 76h60l3-44q12-2 22.47-8.46Q544.94-432.92 553-441l42 14 28-48-30-24q5-14 5-29t-5-29l30-24-28-48-42 14q-8.33-7.69-19.17-13.85Q523-635 512-638l-3-44h-60l-3 44q-11 3-21.83 9.15Q413.33-622.69 405-615l-42-14-28 48 30 24q-5 14-5 29t5 29l-30 24 28 48 42-14q8.06 8.08 18.53 14.54Q434-420 446-418l3 44Zm-19.5-104.38q-20.5-20.38-20.5-49.5t20.38-49.62q20.38-20.5 49.5-20.5t49.62 20.38q20.5 20.38 20.5 49.5t-20.38 49.62q-20.38 20.5-49.5 20.5t-49.62-20.38Z","school":"M479-120 189-279v-240L40-600l439-240 441 240v317h-60v-282l-91 46v240L479-120Zm0-308 315-172-315-169-313 169 313 172Zm0 240 230-127v-168L479-360 249-485v170l230 127Zm1-240Zm-1 74Zm0 0Z","speed":"M473.5-303.5Q517-305 537-336l216-339-335 219q-30 20-32 64t21 67q23 23 66.5 21.5ZM478-799q57 0 119 18.5T716-717l-52 37q-45-30-96.5-44.5T477.98-739q-140.47 0-239.23 100.22Q140-538.57 140-396.02 140-351 152.5-305q12.5 46 35.5 85h579q22-36 35-84t13-94q0-42-12.5-90.5T758-578l39-52q38 56 57 112.5T875-404q2 60-12 113t-41 98q-12 23-25.5 28t-33.5 5H192q-17 0-33.5-8.5T134-193q-26-48-40-97.5T80-396q0-83 31.5-156.5t85.5-128Q251-735 323.68-767T478-799Zm-9 331Z","supervisor_account":"M617.5-408.5Q590-436 590-475t27.5-66.5Q645-569 684-569t66.5 27.5Q778-514 778-475t-27.5 66.5Q723-381 684-381t-66.5-27.5ZM488-160v-51q0-26 11-44.5t31-28.5q37-19 75-28t79-9q41 0 79 8.5t75 28.5q20 9 31 28t11 45v51H488ZM292-523q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42Zm108-108ZM80-160v-94q0-34 17-62.5t51-43.5q67-30 128.5-45T400-420q32 0 57 3t54 9l-25.5 25.5L460-357q-13-2-28-2.5t-32-.5q-57 0-111 11.5T172-306q-14 7-23 22t-9 30v34h288v60H80Zm348-60Zm36.5-346.5Q490-592 490-631t-25.5-64.5Q439-721 400-721t-64.5 25.5Q310-670 310-631t25.5 64.5Q361-541 400-541t64.5-25.5Z","track_changes":"M324-111.5Q251-143 197-197t-85.5-127Q80-397 80-480t31.5-156Q143-709 197-763t127-85.5Q397-880 480-880h30v326q22 9 36 29t14 45q0 33-23.5 56.5T480-400q-33 0-56.5-23.5T400-480q0-25 14-45t36-29v-104q-65 11-107.5 60.5T300-480q0 75 52.5 127.5T480-300q75 0 127.5-52.5T660-480q0-41-16-75t-44-59l43-43q35 33 56 78.5t21 98.5q0 100-70 170t-170 70q-100 0-170-70t-70-170q0-93 60-160.5T450-719v-100q-131 11-220.5 108T140-480q0 142 99 241t241 99q142 0 241-99t99-241q0-74-28.5-137T713-727l43-43q57 55 90.5 129.5T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80q-83 0-156-31.5Z","update":"M483-120q-75 0-141-28.5T226.5-226q-49.5-49-78-115T120-482q0-75 28.5-140t78-113.5Q276-784 342-812t141-28q80 0 151.5 35T758-709v-106h60v208H609v-60h105q-44-51-103.5-82T483-780q-125 0-214 85.5T180-485q0 127 88 216t215 89q125 0 211-88t86-213h60q0 150-104 255.5T483-120Zm122-197L451-469v-214h60v189l137 134-43 43Z","verified":"m346-60-76-130-151-31 17-147-96-112 96-111-17-147 151-31 76-131 134 62 134-62 77 131 150 31-17 147 96 111-96 112 17 147-150 31-77 130-134-62-134 62Zm27-79 107-45 110 45 67-100 117-30-12-119 81-92-81-94 12-119-117-28-69-100-108 45-110-45-67 100-117 28 12 119-81 94 81 92-12 121 117 28 70 100Zm107-341Zm-43 133 227-225-45-41-182 180-95-99-46 45 141 140Z","work":"M140-120q-24 0-42-18t-18-42v-480q0-24 18-42t42-18h180v-100q0-24 18-42t42-18h200q24 0 42 18t18 42v100h180q24 0 42 18t18 42v480q0 24-18 42t-42 18H140Zm0-60h680v-480H140v480Zm240-540h200v-100H380v100ZM140-180v-480 480Z"}, M={"mission & vision":"flag","metrics & objectives":"track_changes","performance tracking":"monitoring","performance dialogues":"forum","consequences & recognition":"verified","mission & target condition":"flag","roles & skills":"badge","objectives & development plans":"school","skill building & review":"psychology","existence & design":"description","adoption & usage":"checklist","deviation management":"alt_route","maintenance & update":"update","work & role":"work","team & atmosphere":"groups","workload":"speed","enablement":"build","leadership":"supervisor_account"}, SEL='.cnm,.dgrp';
+  function dec(){var n=0,els=document.querySelectorAll(SEL);for(var i=0;i<els.length;i++){var e=els[i];
+    if(e.querySelector('svg.ic'))continue;var t='';for(var j=0;j<e.childNodes.length;j++){if(e.childNodes[j].nodeType===3)t+=e.childNodes[j].textContent;}
+    var k=M[t.trim().toLowerCase()];if(!k||!I[k])continue;
+    e.insertAdjacentHTML('afterbegin','<svg class="ic" viewBox="0 -960 960 960" aria-hidden="true"><path d="'+I[k]+'"/></svg>');n++;}
+    /* an icon can move a line: let every fit measure again */
+    if(n)requestAnimationFrame(function(){window.dispatchEvent(new Event('resize'));});}
+  function start(){dec();new MutationObserver(dec).observe(document.body,{childList:true,subtree:true});}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+</script>
+<style id="nr-topbar">
+  /* patch_topbar.py: one theme button and the way home. See the script of the same
+     name at the end of the body. The doubled id outranks the stacked-chrome rules. */
+  :is(#theme,#tseg):is(#theme,#tseg).seg{padding:3px}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button.on{display:none}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button{font-size:0;line-height:0;width:34px;height:28px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button::before{content:"";width:16px;height:16px;background:currentColor;-webkit-mask:var(--nr-ico) center/16px 16px no-repeat;mask:var(--nr-ico) center/16px 16px no-repeat}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button[data-s="dark"]{--nr-ico:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M12%203a6%206%200%200%200%209%209a9%209%200%201%201-9-9z'/%3E%3C/svg%3E")}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button[data-s="light"]{--nr-ico:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Ccircle%20cx='12'%20cy='12'%20r='4'/%3E%3Cpath%20d='M12%202v2M12%2020v2M4.9%204.9l1.4%201.4M17.7%2017.7l1.4%201.4M2%2012h2M20%2012h2M4.9%2019.1l1.4-1.4M17.7%206.3l1.4-1.4'/%3E%3C/svg%3E")}
+  .nr-crumb{display:inline-flex;align-items:center;gap:8px}
+  .nr-crumb>.nr-track{background:transparent!important;padding:0!important;border-radius:0!important;color:inherit!important;margin:0!important}
+  .nr-crumb .nr-home{color:inherit;opacity:.6;text-decoration:none;text-transform:uppercase;white-space:nowrap}
+  .nr-crumb .nr-home:hover{opacity:1;text-decoration:underline}
+  .nr-crumb .nr-sep{opacity:.4}
+</style>
+</head>
+<body>
+<div id="art" data-t="light">
+  <div class="nr-rail"></div>
+  <div class="toprow">
+    <div class="tags">
+      <div class="nr-pill"><img alt="Nova Reperta" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEkAAAAvCAYAAACv3uebAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFxEAABcRAcom8z8AAAzdSURBVGhD7VoL9KVTFfdINXlNBnmOZzRUXolMnomIjEYpkhiP8mZFHsWEVnqoaJWKUIkQSS9KL1lSxptVaDBFXiPTPN3v27/faf0+e1/7nvmPaVXKX/Zad917z9lnn/Pt75z9+O2zwAIvYCqlvIbkBAAXm9ldZvYYgEcB3A7g2yT3Jvnqetz/BZHcEsAlAP5e5kNm9gSAC0huUst5QVIp5RUATgUws1LE/QCuA/AjfczsegBTMg+AJ0keX0p5aS33BUOllFcCuKh68O+b2ftIrlHzk1zLzPYG8JNqzNdLKYvV/MOe9PYBXJge9H4z2+Of2RUkR5jZvmb21zT+nFLKwjXvsKZSysR4QDO7heS6qW9hktuR/CiALwI408yOJ7l1KWXB4GuaZiMAdyU5R/UnGO5EclMA0/3B/iSPlvpkwK8GMCsePkhjAPwgG+xSihT1F5c1leTr+hMNVyqlLBLHDEBLcrfoI/leAE9UinkwHyuRmT3Stu0uMU5HL/Gf059suFIpZf3wZAC+V0pZSO1t224DYEZ6WLn4t5Ic0+v11iW5I4BLk6KebJpmY42dNGmSFH+Ntz9KcqV63mFFJI9yJTRt23a7iOSicvHRTvKIepxICpXLNzM478/C0JPcC0DXbma712OHFfnu0QPeS3IZtZEcHw8I4MvBS3J5M9vfzPYJXpdxgfMaye2dd42Io4b1kZM9MrM/+oNcHe0AzvA2Rdvrq02pB4Cb0/G6Po6RDDeAno85zWUvBOBa5705TTu8SMGjmXVeTXmYt71ECvO2W0spI9UeissEYKKPWRrAHd52YcgHcLnaZJcUH7wxzT1AJF9FcjOSY0muWff/L8kj7CvM7KaIaUi+DMBnAdwE4PNhY+JYVko6z+WMBPBbb7ss5AP4jrf9TX8ebtt2hzR/n0opByShF9T9w4VI7pMV5PQu9c2ePXtlAA+pIdsf5XhqM7MHpIju/ErQgOSnhe8fEgF8s+5/vhDJJbTT58yZswbJ1Uopq/r36mr3o3mimd2ngJPkhyPtIPn+eEYzO9LbFg8bJq/XKcn/NKWUY3OoTnK/1P+NvDBtZZI7k/wYgNNJfoTkFql/W5KHkDy4TjB7vd6G3n5wKWW02jyHejeAUwB8spQyTm+Z5J7Ot1GWkYnkYSZfDswBMNvM+h95OpI7Od8IHck0bhUzu8ef77HAlpqmeVOCWSb2lRSkB5YBdCFDKklvSCG95q/GKtSXkVQM8sHU3jeIbjd+qXYP/VeYNWvWSgB+mGV5/+9jDikuZNRE8oR6bCaFBZlfG0G21sxuDB69nOgHcHIaO3YuJYk8Ql1UoX1q65TkmM0vUvujpZRJOT8KV5qCOkW/nTtu2/btSiHUbmaHasEymGmsUolJZjaQb5E8KT3nAGnXCuJQ8qrjYWYDL4/kO8WnpJbkcQLkzKyPObn96TyhdheAP6tdyXIHmyTGbuHp/0W+9eNNdkoys/4Z1oL86Ixq23Y7AN3WNbNpsglt2+6UeM/U+FAIgD88/vjjizdNs0Wa4wYlrHLLTdMoOe3HNs+mpCAFiQB+HmPS2E5JpZTz6z49p7x4yADQ59FL7BoT8z3aZmb2eGLSGR9QUopQZ5Fc75klDnrDcAQAfu38U8zs4MjYZUfUT/JE75dNHJflKSWIlzc/JfkO+F1a+xQAT/nYTkkAPiebBeABAD8l+Z7I91yGkMkYf51OU9cRjQAmS6N6g3J70Z76Q0nhGh/T0Xtmmd0kmwe/PIi37eYK0Jhui3ukPBDoAZgLmtAuFazq8uapJO1a2a+01vOUf5nZgJJIrt22rRLdtarxI/zUmI9/mOQb+gxJ8P0yyGprmkah+m3R5/2hpK/4/6fatt06zaXJjgt+HUuXryi4M9RB8nppTGd0tUAz27OSt28sfF5KktHXWw/ZAK6Uc5CdSlN2MVFNpZSXkxRicFUwKopv23bA0A8oKUfV+m1m3VHx/k5JJHdIAm/zMGCMPKEbcfE+qO2fZO2cju3t06dPXzrNv1UcKdkpZfMk1yG5h3Z3zDWUkhQXmdlvggfAj8O+NE2zuSJpt2tb+Vyr63fbtrua2bFeFOiSYR8/WY6lnicraUqdepBcSp7A+zs3riAsG0AdpYhYg0genuU4OCYoQn0HDdEn8D3kKd4ZAMaculwrjVu48opX5eze47hRJJdN6cmnZRO1ZbNgt1MX6jjmOfqUGPX25yrUucs/1xHAzsh5vvMF1ayqySab2YCCgmSbHH9eaoi+UQDOUvCXZM1QLJaS2JOHGLeTHI12k+Ktur8m2aq8XkXgAL7Vtu2ONe8AlVLeLCxYhmpe1QV/K+ofqCD0er3Xy0OQ/JCMY9i0ocjjrjE5oq9JybZXVScowlZ60DTNpo4q9o9vpqZplIAP2VcTybcpQ/B0a1sd15rnBU/a6Tq+2a3/R0hnufqouiAIQp5quZr/+Uwkj1YwKZhjqGP9L1M+ozUBuLGOKZ7PpIsRvu7p2Yj/25QUouj6BjOT25yT2i+vx7h92cQz/bmMvUMXq4QxFVQhuyf7p981fyaHOd6iBLSUsmTVJ8+6nGRHnwODG+q3HIyv+RG3aSv4OkZUckY6kLjltGnTuh0nDNx5l8i8MSCUMaXX662nyVUiDk/jkXCnCBldr5/f5t5H7l/XWeQ+VwuZJA+VGwdwZynlNDO7U6Ufd78C7Y8IpCGNWcGT1Edc7iwAdztMEtjP8gpMXfZnBOpr3Xq5jkuf7WsW6YqN+B4h2cU+mtPMDjGzux2x0Jru8Gj7FvGrApPX1VFS0n3pzWvCe719RgcXPL3I/SLGUHBoZn9L42+KQE4eJNrnRQLB0hqWLqX8KvqUiphZl8qIoixEcsVYl5k9lKoiCjr7ShqCuohbmFfdUVOGTPqUOh8g+VpBA4p6IxHVThIwNmPGjGUjyPMoVtt5WeHLdRLq4F1HniSf5m78pBT3CA3tjkmkM56CTPQjNAZAF0171XW0B7fanbHmVjyOgUlJuuig9ieUu7nLFxKh47VOVHTNTKfg47ojAOATCiZD5lCRfVaSkLxr5R0kJLVf6g+ijDnaztIDSlFt224bpWPlUM7bf2PK8vN8UVD0vsM9t+vgDclp2/YdurzQ6/U2UNaeePWwi4WSZDcjPwyKYFGBcW3PdMySrGOqvv7Of1Yl1eTpgepTnT1SCSb6zGwAewrSkXXU72j/P5PkQDWm1+upNN1BowA+pV2jq3r+XztjADALInmgjGoq/1yT5YqSkpQmDYQvsmHqMzPNPQAFK1CONT2rktxQyniFzZmdqygZInU+gXJX+Odi4UwBscZOcqRgIOT3mx6xvaX4kWZ2u/PLmF6p3etyL1NNzYExRdZKX0JJ52a5osgpPcUalft0rLxvpuCg3CdvGsjq/JQ0Wd6tugx1WQDnOt+pXZcNFqnkrBptGTLxxHNF2Yzp06cLOewnpVFnT+VqwRS7Zrkebqzsv4WFx3Hr6maZAHzVRQsZ7ZzN1KlTl/Bq7+4xbynlEq1Fa5o5c+ZyeiHRMT8lCSpZxkvCfa8lQF98WmyGRh2kl/HT5ajL/QZGF3hmJYkc9dQN2G4XeNvN4Q119SV2sIA5wTLajV5olLs+2+XKu8VFq/OrR1G/bFxHCjWkSDO71W+9LSkPnPoVlugEdKXyoPkpSfFEB5XIPUe7zjDJDXwRwpj6+E0mDw26BDd5K0EQc8EefsFhs7wOufl53ZYF8DXn0U7SRS21daXtSoYKjf3bakHxopumGSvl1f26o5TMzKm1XG3Rc/TmFPTFm/US8ulqVx6keljwezQtgO27UpgqJwC+5NfrohQVSlL4ME7ewz2neE+ZF1pAcmPfPdfIU+piqJSnIFL9vq6TPTebq5gqEiaka3+aT6ChfssUpP7V/IauvLjWpNMw1ue9QN51UOJzROm4yTYMFAteJKdKSd0NshepogTuK6Xp4iQFggHq+W9VeeV5hAEJkNdx7R9DbwvP2pWnhZKqXd5KpWgH8UY6r0riXQlI/QLskiyNW1KBrwOFgnTVtqDmFNin4kftsZ9TivqVpx7dThLA7pcTFjOzE9y176rCghZNcnev+8eNtQ3M7DBXkL7XFojvCOhoL5KO83F7tW27fUqEJftQH6P0SfcOdlHhU/clfR6hAOuZmZDV/aT0+jmeU9IDqmxUSvmAFKA2r9TKSE4ws2N011oGXS7Xqy0TVMrRFWOP2tdUAKiykmp4nv4c7jI2l8fSTVmvxJzhChihHeNKUt+RrmB99tU6tJNcueP9auDGLmcd35UD6cx/lYQ/6ejJjXtNfrwXCrcxMylTO2G0AkLn0fER9r6SH62DtJMc8xZ8IixLl9jHS6GCQzzNOdCPsPolR1dwtAO3VzLucoQ6rO/lMSW/Rygz8IsSB9Rr/wcS5txQy6GnOwAAAABJRU5ErkJggg=="><b id="ctx">OPEX QUICKSCAN</b></div>
+      <div class="nr-track" id="lens">LEAN MATURITY</div>
+          <!--<EDIT>--><button id="lock" title="Locked — click to edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></button><!--</EDIT>-->
+      </div>
+    <div class="ctrls">
+      <div class="seg" id="scope"><button data-v="dept" class="on">Department</button><button data-v="team">Team</button></div>
+      <div class="seg" id="dview"><button data-v="overview" class="on">Overview</button><button data-v="takeaways">Key takeaways</button><button data-v="tools">Tool deployment</button></div>
+      <select class="tsel" id="teamSel" aria-label="Team" style="display:none"></select>
+      <div class="seg" id="tview" style="display:none"><button data-v="deepdive" class="on">Deepdive</button><button data-v="tooling">Tooling</button></div>
+      <div class="seg" id="theme"><button data-s="light" class="on">Light</button><button data-s="dark">Dark</button></div>
+    </div>
+  </div>
+<!--<EDIT>--><div class="nr-strip" id="nrstrip"><b>Editing</b><span class="nr-strip-n" id="nrstripn"></span><span class="sp"></span><button id="save">No changes</button></div><!--</EDIT>-->
+  <h1 id="title"></h1>
+  <div class="subrow"><div class="subt" id="subt"></div></div>
+  <div id="view"><div id="vinner"></div></div>
+  <div id="ft">
+    <div class="l"><span id="src"></span><div class="legend" id="lg"></div></div>
+    <span class="conf">Sample data · Northwind Assurance is fictional</span>
+  </div>
+  <!--<EDIT>--><div id="ed"></div><!--</EDIT>-->
+</div>
+<script>
+/* ============ ONLY THIS BLOCK CHANGES PER RENDER (render_lma.py writes it) ============ */
+const DATA = /* DATA */ {
+ "context": "OPEX QUICKSCAN",
+ "focus": {
+  "scope": "dept"
+ },
+ "model": {
+  "dimensions": [
+   "Deliver",
+   "Discover",
+   "Enable",
+   "Connect"
+  ],
+  "behaviours": [
+   {
+    "id": "b1",
+    "name": "Deliver what the customer wants",
+    "dim": "Deliver",
+    "crit": [
+     1
+    ]
+   },
+   {
+    "id": "b2",
+    "name": "Monitor performance",
+    "dim": "Deliver",
+    "crit": [
+     7
+    ]
+   },
+   {
+    "id": "b3",
+    "name": "Match demand and supply",
+    "dim": "Deliver",
+    "crit": [
+     2
+    ]
+   },
+   {
+    "id": "b4",
+    "name": "Pursue waste and optimise processes",
+    "dim": "Discover",
+    "crit": [
+     3,
+     4
+    ]
+   },
+   {
+    "id": "b5",
+    "name": "Embrace problems",
+    "dim": "Discover",
+    "crit": [
+     5
+    ]
+   },
+   {
+    "id": "b6",
+    "name": "Be flexible by standardising",
+    "dim": "Enable",
+    "crit": [
+     6
+    ]
+   },
+   {
+    "id": "b7",
+    "name": "Strengthen the team's skills",
+    "dim": "Enable",
+    "crit": [
+     8,
+     9
+    ]
+   },
+   {
+    "id": "b8",
+    "name": "Give and take constructive feedback",
+    "dim": "Enable",
+    "crit": [
+     14,
+     15
+    ]
+   },
+   {
+    "id": "b9",
+    "name": "Communicate results, be open and learn",
+    "dim": "Connect",
+    "crit": [
+     10,
+     11,
+     12,
+     13
+    ]
+   },
+   {
+    "id": "b10",
+    "name": "Share the vision",
+    "dim": "Connect",
+    "crit": [
+     16,
+     17
+    ]
+   }
+  ],
+  "tools": {
+   "Deliver": [
+    "KANO",
+    "Feedback Monitoring",
+    "Complaints monitoring",
+    "Capacity Management",
+    "KPI Tree",
+    "KPI Dashboard",
+    "Performance Dialogue"
+   ],
+   "Discover": [
+    "OTE Waterfall",
+    "Control Maps",
+    "MIFA",
+    "PSS Template",
+    "TIP Management (CI Log)",
+    "WILO / DILO"
+   ],
+   "Enable": [
+    "SOPs / Process maps",
+    "Sit-ins / process confirmations",
+    "Skills Matrix",
+    "Training Plan",
+    "Best Practice Sharing",
+    "1-on-1 coaching",
+    "Personal Development Plan"
+   ],
+   "Connect": [
+    "Daily Whiteboard",
+    "Meeting Cascade",
+    "Team Charter",
+    "Team Goals / Objectives",
+    "OKRs"
+   ]
+  },
+  "takeawayLabels": [
+   {
+    "label": "Client focus and engagement",
+    "icon": "client"
+   },
+   {
+    "label": "Performance and capacity measures",
+    "icon": "perf"
+   },
+   {
+    "label": "Process efficiency management",
+    "icon": "proc"
+   },
+   {
+    "label": "Continuous improvement",
+    "icon": "ci"
+   },
+   {
+    "label": "Standards, knowledge and skills",
+    "icon": "sop"
+   },
+   {
+    "label": "Leadership and communication",
+    "icon": "lead"
+   }
+  ],
+  "criteria": {
+   "1": {
+    "short": "Customer expectations captured",
+    "gold": "There is a common definition and shared understanding of who the client is and the service provided. The demands and expectations of clients are captured, so the team delivers what the customer wants.",
+    "anchors": [
+     "Nobody asks the client anything during the year.",
+     "Client feedback was collected once, and nothing changed after it.",
+     "Client feedback is collected regularly, but it is not turned into changes in how the team works.",
+     "The team shares one definition of its clients and what they expect, and checks its delivery against it."
+    ]
+   },
+   "2": {
+    "short": "Capacity management",
+    "gold": "A capacity management process takes into account expected demand, staff availability and the time needed for other tasks (problem solving, non-production time, projects, coaching). It is managed at the right frequency and level of detail.",
+    "anchors": [
+     "No capacity planning: work is absorbed as it comes.",
+     "Headcount is planned, not capacity, or the plan is one person's outdated spreadsheet.",
+     "Short-term planning works, but mismatches are absorbed with overtime instead of re-planning.",
+     "Capacity is planned on expected demand, availability and non-production time, and re-planned every week against real volume."
+    ]
+   },
+   "3": {
+    "short": "Continuous improvement tracking",
+    "gold": "Improvement actions are encouraged and consolidated to optimise processes. A framework captures waste and improvement ideas, and continuous improvement is part of the mindset.",
+    "anchors": [
+     "No place where improvement ideas are captured.",
+     "An improvement log exists, but deadlines slip and nothing gets closed.",
+     "Ideas are captured and partly followed up, with irregular updates and vague ownership.",
+     "Ideas and waste are captured in one place, reviewed every week, and followed through to visible results."
+    ]
+   },
+   "4": {
+    "short": "Process and control maps",
+    "gold": "Process maps or control maps are used to understand and monitor processes and to find waste and improvement opportunities.",
+    "anchors": [
+     "No process maps, or the ones that exist are outdated and not trusted.",
+     "The process was mapped once for a project and never maintained.",
+     "Maps are accurate for the main flow, but exceptions are missing or nobody owns them.",
+     "Process and control maps are kept current and used in daily work."
+    ]
+   },
+   "5": {
+    "short": "Problem-solving sessions",
+    "gold": "Problem-solving, co-creation and brainstorming sessions are organised whenever a problem needs a structured approach. The full Plan-Do-Check-Act cycle is applied, so actions are followed up, reviewed and shown to work.",
+    "anchors": [
+     "Problems are not worked through in a structured way.",
+     "A problem-solving template is used, but it stops at the action list.",
+     "Root causes are analysed and actions implemented, but nobody checks whether they worked.",
+     "The full Plan-Do-Check-Act cycle is applied and results are shown to the people affected."
+    ]
+   },
+   "6": {
+    "short": "Standards and best-practice sharing",
+    "gold": "Best-practice tools (SOPs, checklists, quick cards, tips) are used to harmonise day-to-day work. Changes are communicated openly, and sharing best practice is part of how everyone works.",
+    "anchors": [
+     "No standards or SOPs for the daily work.",
+     "SOPs exist on paper but are unusable or not read.",
+     "SOPs are used, but mechanically, and sharing best practice only happens when someone asks.",
+     "Standards are used by everyone, kept current, and sharing best practice is a reflex."
+    ]
+   },
+   "7": {
+    "short": "KPIs",
+    "gold": "A cascading set of KPIs covers quality, quantity, productivity and efficiency. KPIs are updated at the required frequency and performance against them is followed up.",
+    "anchors": [
+     "No KPIs for the team.",
+     "A dashboard exists but is late, incomplete or unknown to part of the team.",
+     "KPIs are updated on time, but deviations are discussed and then left alone, or a key area is missing.",
+     "A complete KPI set sets the weekly focus and deviations trigger real actions."
+    ]
+   },
+   "8": {
+    "short": "Skills matrix",
+    "gold": "There is a clear overview of the team's skills, used to manage them actively and close gaps. Training and development paths follow business needs and team capacity, and link to individual development plans.",
+    "anchors": [
+     "No overview of the team's skills.",
+     "A skills matrix was built once and has not been kept up.",
+     "The matrix is maintained but used at evaluation time only, with no plan behind the gaps.",
+     "Skills are managed actively, with targets per person and a plan to close the gaps."
+    ]
+   },
+   "9": {
+    "short": "Capability building",
+    "gold": "There is a defined approach to building the capabilities the business needs to grow, in line with the corporate strategy.",
+    "anchors": [
+     "Nobody has the mandate to coach or support change.",
+     "Support comes after things go wrong, or the role exists on paper only.",
+     "Coaching support exists but is limited and not consistent over time.",
+     "A defined approach builds the capabilities the business needs, with someone mandated to coach and follow changes through."
+    ]
+   },
+   "10": {
+    "short": "Whiteboard meetings",
+    "gold": "A whiteboard meeting is part of the weekly routine. It is engaging and structured, inclusive and transparent, and drives the team to keep improving the service to the client.",
+    "anchors": [
+     "No team whiteboard routine.",
+     "The meeting happens but is a status update, not a conversation.",
+     "The team takes part, but the meeting is mechanical and rarely leads to action.",
+     "The whole team contributes, actions come out of it, and improvement lives there."
+    ]
+   },
+   "11": {
+    "short": "Meeting cascade",
+    "gold": "The meeting cascade (business updates, management meetings, coordination meetings, whiteboards, coaching debriefs, one-to-ones) adds real value for the participants and keeps the business transparent.",
+    "anchors": [
+     "No structured meeting cascade.",
+     "Meetings happen but are not prepared.",
+     "The cascade is structured but mostly top-down, and escalating upwards is hard.",
+     "Each meeting has a clear purpose, team members co-own the agenda, and information flows both ways."
+    ]
+   },
+   "12": {
+    "short": "Line management presence",
+    "gold": "Line management is present on the floor or remotely, to stay close to the team and keep the connection.",
+    "anchors": [
+     "Line management is not present with the team.",
+     "Line management shows up when there is an escalation.",
+     "Line management sets up contact moments but is not always there.",
+     "Line management is close to the team every day and knows what is going on."
+    ]
+   },
+   "13": {
+    "short": "Senior management presence",
+    "gold": "Senior management (the levels above the team's line manager) is present on the floor or remotely, to stay close to the teams and keep the connection.",
+    "anchors": [
+     "Senior management is not seen, or once a year at a kick-off.",
+     "Senior management shows up when there is a problem.",
+     "Senior management visits now and then, announced well ahead and often moved.",
+     "Senior management is present regularly and knows the team's work."
+    ]
+   },
+   "14": {
+    "short": "Feedback within the team",
+    "gold": "Constructive feedback is seen as a way to grow and is given naturally and positively. The team has a forum to review what goes well and what does not, and acts on it.",
+    "anchors": [
+     "The team has no place to give collective feedback.",
+     "Feedback is given when something goes wrong, or the feedback slot is skipped under pressure.",
+     "Feedback is constructive but only when asked for, or the forum exists without follow-up.",
+     "Feedback is given naturally, and the team acts on what its regular review brings up."
+    ]
+   },
+   "15": {
+    "short": "Feedback from senior management",
+    "gold": "Senior management walks the talk by giving constructive feedback, which keeps the feedback culture alive.",
+    "anchors": [
+     "Senior management gives no feedback.",
+     "Feedback from senior management is ad hoc, usually after an incident.",
+     "Good intentions, uneven practice: it depends on the individual manager.",
+     "Senior management gives constructive feedback as a habit and keeps the culture alive."
+    ]
+   },
+   "16": {
+    "short": "Strategy awareness",
+    "gold": "Line and senior management make sure team members know how their work fits the company's strategy and how they contribute to its purpose. Updates are shared regularly through set channels.",
+    "anchors": [
+     "The team does not know the strategy.",
+     "The strategy is shared once a year and quickly forgotten.",
+     "The strategy is understood, but the link to daily work or the why behind it is missing.",
+     "The link between the team's work and the company's strategy is explicit to everyone."
+    ]
+   },
+   "17": {
+    "short": "Objectives cascade",
+    "gold": "Objectives are set at division level and cascaded so they add up to the corporate strategy and culture. Delivery of the objectives is followed up in a structured way.",
+    "anchors": [
+     "No objectives cascaded to the team.",
+     "Objectives are set once, copied from last year, and not followed up.",
+     "Objectives are cascaded and monitored, but follow-up is uneven or they lack business relevance.",
+     "Objectives come clearly from division goals, are co-created and reviewed during the year."
+    ]
+   }
+  }
+ },
+ "dept": {
+  "lens": "LEAN MATURITY · DEPARTMENT",
+  "deptId": "northwind-insurance-ops",
+  "department": "Insurance Operations",
+  "client": "Northwind Assurance",
+  "date": "October 2026",
+  "keyMessage": "The department sits at **Silver**, but the spread is wide: Client Servicing leads at 2.31 while Claims Handling is **Bronze** on 9 of 10 behaviours",
+  "model": "lma/2026.10",
+  "teams": [
+   {
+    "teamId": "falcon",
+    "teamName": "Team Falcon - Policy Administration"
+   },
+   {
+    "teamId": "heron",
+    "teamName": "Team Heron - Claims Handling"
+   },
+   {
+    "teamId": "ibis",
+    "teamName": "Team Ibis - Client Servicing"
+   }
+  ],
+  "response": {
+   "teams": 3,
+   "respondents": 9
+  },
+  "overall": {
+   "avg": 1.77,
+   "band": "Silver"
+  },
+  "dimensions": [
+   {
+    "name": "Deliver",
+    "avg": 2.0,
+    "band": "Silver"
+   },
+   {
+    "name": "Discover",
+    "avg": 1.67,
+    "band": "Silver"
+   },
+   {
+    "name": "Enable",
+    "avg": 1.56,
+    "band": "Silver"
+   },
+   {
+    "name": "Connect",
+    "avg": 1.86,
+    "band": "Silver"
+   }
+  ],
+  "behaviours": [
+   {
+    "id": "b1",
+    "avg": 1.78,
+    "band": "Silver"
+   },
+   {
+    "id": "b2",
+    "avg": 2.34,
+    "band": "Silver"
+   },
+   {
+    "id": "b3",
+    "avg": 1.89,
+    "band": "Silver"
+   },
+   {
+    "id": "b4",
+    "avg": 1.78,
+    "band": "Silver"
+   },
+   {
+    "id": "b5",
+    "avg": 1.56,
+    "band": "Silver"
+   },
+   {
+    "id": "b6",
+    "avg": 1.67,
+    "band": "Silver"
+   },
+   {
+    "id": "b7",
+    "avg": 1.61,
+    "band": "Silver"
+   },
+   {
+    "id": "b8",
+    "avg": 1.39,
+    "band": "Bronze"
+   },
+   {
+    "id": "b9",
+    "avg": 1.89,
+    "band": "Silver"
+   },
+   {
+    "id": "b10",
+    "avg": 1.84,
+    "band": "Silver"
+   }
+  ],
+  "criteria": [
+   {
+    "id": "1",
+    "avg": 1.78,
+    "band": "Silver"
+   },
+   {
+    "id": "2",
+    "avg": 1.89,
+    "band": "Silver"
+   },
+   {
+    "id": "3",
+    "avg": 1.89,
+    "band": "Silver"
+   },
+   {
+    "id": "4",
+    "avg": 1.67,
+    "band": "Silver"
+   },
+   {
+    "id": "5",
+    "avg": 1.56,
+    "band": "Silver"
+   },
+   {
+    "id": "6",
+    "avg": 1.67,
+    "band": "Silver"
+   },
+   {
+    "id": "7",
+    "avg": 2.34,
+    "band": "Silver"
+   },
+   {
+    "id": "8",
+    "avg": 2.0,
+    "band": "Silver"
+   },
+   {
+    "id": "9",
+    "avg": 1.22,
+    "band": "Bronze"
+   },
+   {
+    "id": "10",
+    "avg": 2.44,
+    "band": "Silver"
+   },
+   {
+    "id": "11",
+    "avg": 2.0,
+    "band": "Silver"
+   },
+   {
+    "id": "12",
+    "avg": 2.0,
+    "band": "Silver"
+   },
+   {
+    "id": "13",
+    "avg": 1.11,
+    "band": "Bronze"
+   },
+   {
+    "id": "14",
+    "avg": 1.45,
+    "band": "Bronze"
+   },
+   {
+    "id": "15",
+    "avg": 1.33,
+    "band": "Bronze"
+   },
+   {
+    "id": "16",
+    "avg": 1.89,
+    "band": "Silver"
+   },
+   {
+    "id": "17",
+    "avg": 1.78,
+    "band": "Silver"
+   }
+  ],
+  "tools": [
+   {
+    "name": "KANO",
+    "avg": 0.44,
+    "status": "Not in place",
+    "min": 0.0,
+    "max": 1.33
+   },
+   {
+    "name": "Feedback Monitoring",
+    "avg": 1.78,
+    "status": "Active but manual",
+    "min": 0.67,
+    "max": 2.67
+   },
+   {
+    "name": "Complaints monitoring",
+    "avg": 2.22,
+    "status": "Active but manual",
+    "min": 1.67,
+    "max": 3.0
+   },
+   {
+    "name": "Capacity Management",
+    "avg": 1.22,
+    "status": "In place, not used",
+    "min": 0.67,
+    "max": 1.67
+   },
+   {
+    "name": "KPI Tree",
+    "avg": 1.67,
+    "status": "Active but manual",
+    "min": 0.67,
+    "max": 2.33
+   },
+   {
+    "name": "KPI Dashboard",
+    "avg": 2.22,
+    "status": "Active but manual",
+    "min": 1.33,
+    "max": 3.0
+   },
+   {
+    "name": "Performance Dialogue",
+    "avg": 1.67,
+    "status": "Active but manual",
+    "min": 0.67,
+    "max": 2.33
+   },
+   {
+    "name": "OTE Waterfall",
+    "avg": 0.33,
+    "status": "Not in place",
+    "min": 0.0,
+    "max": 0.67
+   },
+   {
+    "name": "Control Maps",
+    "avg": 1.45,
+    "status": "In place, not used",
+    "min": 0.67,
+    "max": 2.0
+   },
+   {
+    "name": "MIFA",
+    "avg": 0.78,
+    "status": "In place, not used",
+    "min": 0.33,
+    "max": 1.0
+   },
+   {
+    "name": "PSS Template",
+    "avg": 1.33,
+    "status": "In place, not used",
+    "min": 0.33,
+    "max": 2.0
+   },
+   {
+    "name": "TIP Management (CI Log)",
+    "avg": 1.55,
+    "status": "Active but manual",
+    "min": 0.33,
+    "max": 2.33
+   },
+   {
+    "name": "WILO / DILO",
+    "avg": 0.56,
+    "status": "In place, not used",
+    "min": 0.0,
+    "max": 1.0
+   },
+   {
+    "name": "SOPs / Process maps",
+    "avg": 1.67,
+    "status": "Active but manual",
+    "min": 1.0,
+    "max": 2.0
+   },
+   {
+    "name": "Sit-ins / process confirmations",
+    "avg": 1.0,
+    "status": "In place, not used",
+    "min": 0.0,
+    "max": 1.67
+   },
+   {
+    "name": "Skills Matrix",
+    "avg": 1.67,
+    "status": "Active but manual",
+    "min": 1.0,
+    "max": 2.33
+   },
+   {
+    "name": "Training Plan",
+    "avg": 1.44,
+    "status": "In place, not used",
+    "min": 1.0,
+    "max": 2.0
+   },
+   {
+    "name": "Best Practice Sharing",
+    "avg": 1.22,
+    "status": "In place, not used",
+    "min": 0.33,
+    "max": 2.0
+   },
+   {
+    "name": "1-on-1 coaching",
+    "avg": 1.78,
+    "status": "Active but manual",
+    "min": 1.0,
+    "max": 2.67
+   },
+   {
+    "name": "Personal Development Plan",
+    "avg": 2.0,
+    "status": "Active but manual",
+    "min": 1.33,
+    "max": 2.67
+   },
+   {
+    "name": "Daily Whiteboard",
+    "avg": 2.22,
+    "status": "Active but manual",
+    "min": 1.67,
+    "max": 3.0
+   },
+   {
+    "name": "Meeting Cascade",
+    "avg": 1.33,
+    "status": "In place, not used",
+    "min": 1.0,
+    "max": 2.0
+   },
+   {
+    "name": "Team Charter",
+    "avg": 1.33,
+    "status": "In place, not used",
+    "min": 0.67,
+    "max": 2.0
+   },
+   {
+    "name": "Team Goals / Objectives",
+    "avg": 2.22,
+    "status": "Active but manual",
+    "min": 1.33,
+    "max": 3.0
+   },
+   {
+    "name": "OKRs",
+    "avg": 0.67,
+    "status": "In place, not used",
+    "min": 0.0,
+    "max": 1.33
+   }
+  ],
+  "narrative": {
+   "insights": [
+    {
+     "dim": "Deliver",
+     "bullets": [
+      "**KPIs are the department's strongest routine (2.34/3)**, scored 2.67 in both Client Servicing and Policy Administration.",
+      "Customer expectations are captured unevenly: 2.67 in Client Servicing, 1.00 in Claims Handling."
+     ]
+    },
+    {
+     "dim": "Discover",
+     "bullets": [
+      "**Problem solving stops before the check (1.56/3)**: respondents in every team say actions are not reviewed once implemented.",
+      "Process maps are kept up in Policy Administration (2.67) but have lapsed in Claims Handling (0.33)."
+     ]
+    },
+    {
+     "dim": "Enable",
+     "bullets": [
+      "**Feedback is the weakest behaviour (1.39/3)**. Feedback from senior management scores 1.33 and is described as ad hoc in every team.",
+      "Capability building scores 1.22: support for change comes after things go wrong, or the role exists on paper only."
+     ]
+    },
+    {
+     "dim": "Connect",
+     "bullets": [
+      "Whiteboards are the best-rated routine in the department (2.44/3).",
+      "**Senior management presence is the lowest criterion (1.11/3)**: in two teams, senior managers show up when there is a problem."
+     ]
+    }
+   ],
+   "takeaways": {
+    "keyMessage": "KPIs and whiteboards give a sound base, while follow-through on problems, feedback and senior presence keep the department at **Silver**",
+    "cards": [
+     {
+      "label": "Client focus and engagement",
+      "icon": "client",
+      "bullets": [
+       "Customer expectations score 1.78/3, from 2.67 in Client Servicing to 1.00 in Claims Handling.",
+       "Satisfaction surveys run, but respondents in all three teams say nothing changes after the results.",
+       "KANO is not in place in Policy Administration or Claims Handling and is rarely used in Client Servicing (1.33)."
+      ]
+     },
+     {
+      "label": "Performance and capacity measures",
+      "icon": "perf",
+      "bullets": [
+       "KPIs are the strongest criterion at 2.34/3.",
+       "The KPI dashboard is digital in Client Servicing (3.00) but in place and not used in Claims Handling (1.33).",
+       "Capacity management scores 1.89: mismatches are seen, then absorbed with overtime rather than re-planned."
+      ]
+     },
+     {
+      "label": "Process efficiency management",
+      "icon": "proc",
+      "bullets": [
+       "Process maps score 1.67, from 2.67 in Policy Administration to 0.33 in Claims Handling.",
+       "The OTE waterfall (0.33) and KANO (0.44) are not in place, and WILO/DILO (0.56) and MIFA (0.78) are in place but not used.",
+       "Where maps exist, respondents say the exceptions are not documented."
+      ]
+     },
+     {
+      "label": "Continuous improvement",
+      "icon": "ci",
+      "bullets": [
+       "Problem-solving sessions score 1.56/3, and respondents in every team say the Check and Act steps are skipped.",
+       "Improvement tracking runs from 2.67 in Client Servicing, where the backlog is reviewed weekly, to 1.00 in Claims Handling.",
+       "The PSS template is not in place in Claims Handling (0.33)."
+      ]
+     },
+     {
+      "label": "Standards, knowledge and skills",
+      "icon": "sop",
+      "bullets": [
+       "Standards score 1.67/3: SOPs exist but are used mechanically or not read.",
+       "Skills matrices exist (2.00) but are used at evaluation time rather than to plan development.",
+       "Capability building is the second-lowest criterion at 1.22/3."
+      ]
+     },
+     {
+      "label": "Leadership and communication",
+      "icon": "lead",
+      "bullets": [
+       "Senior management presence is the lowest criterion in the department at 1.11/3.",
+       "Feedback from senior management scores 1.33 and feedback within the teams 1.45.",
+       "Objectives are cascaded (1.78), but Claims Handling respondents call them a copy of last year's."
+      ]
+     }
+    ]
+   },
+   "tools": {
+    "keyMessage": "Reporting tools are in place but mostly manual, while the tools that find and size waste are missing or unused in every team"
+   }
+  },
+  "source": "LMA survey · 9 respondents across 3 teams · each team counts once in the department figures"
+ },
+ "teams": [
+  {
+   "lens": "LEAN MATURITY · TEAM DEEPDIVE",
+   "teamId": "falcon",
+   "teamName": "Team Falcon - Policy Administration",
+   "deptId": "northwind-insurance-ops",
+   "department": "Insurance Operations",
+   "keyMessage": "Policy Administration holds **Silver** on strong KPIs and process maps, while feedback and senior-management presence fall to **Bronze**",
+   "model": "lma/2026.10",
+   "response": {
+    "respondents": 3,
+    "teamSize": null,
+    "rate": null,
+    "floor": 3
+   },
+   "overall": {
+    "avg": 1.88,
+    "band": "Silver"
+   },
+   "dimensions": [
+    {
+     "name": "Deliver",
+     "avg": 2.22,
+     "band": "Silver"
+    },
+    {
+     "name": "Discover",
+     "avg": 2.0,
+     "band": "Silver"
+    },
+    {
+     "name": "Enable",
+     "avg": 1.61,
+     "band": "Silver"
+    },
+    {
+     "name": "Connect",
+     "avg": 1.67,
+     "band": "Silver"
+    }
+   ],
+   "behaviours": [
+    {
+     "id": "b1",
+     "avg": 1.67,
+     "band": "Silver",
+     "spread": 1.0
+    },
+    {
+     "id": "b2",
+     "avg": 2.67,
+     "band": "Gold",
+     "spread": 1.0
+    },
+    {
+     "id": "b3",
+     "avg": 2.33,
+     "band": "Silver",
+     "spread": 1.0
+    },
+    {
+     "id": "b4",
+     "avg": 2.33,
+     "band": "Silver",
+     "spread": 1.0
+    },
+    {
+     "id": "b5",
+     "avg": 1.67,
+     "band": "Silver",
+     "spread": 1.0
+    },
+    {
+     "id": "b6",
+     "avg": 2.0,
+     "band": "Silver",
+     "spread": 0.0
+    },
+    {
+     "id": "b7",
+     "avg": 1.5,
+     "band": "Silver",
+     "spread": 0.0
+    },
+    {
+     "id": "b8",
+     "avg": 1.33,
+     "band": "Bronze",
+     "spread": 1.0
+    },
+    {
+     "id": "b9",
+     "avg": 1.67,
+     "band": "Silver",
+     "spread": 1.0
+    },
+    {
+     "id": "b10",
+     "avg": 1.67,
+     "band": "Silver",
+     "spread": 1.0
+    }
+   ],
+   "criteria": [
+    {
+     "id": "1",
+     "avg": 1.67,
+     "band": "Silver",
+     "min": 1.0,
+     "max": 2.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "Yearly satisfaction survey is run properly; the follow-up actions are where we lose it. Same story across my sub-team.",
+      "Yearly satisfaction survey is run properly; the follow-up actions are where we lose it. That is my read of it, at least.",
+      "A survey went out once, results were shared, and nothing happened after that. This has not changed in the last year."
+     ]
+    },
+    {
+     "id": "2",
+     "avg": 2.33,
+     "band": "Silver",
+     "min": 2.0,
+     "max": 3.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "Real renewals volume is tracked against plan weekly and the parameters get adjusted. That is my read of it, at least.",
+      "Short-term planning works; the longer-term view is not used to steer anything. This has not changed in the last year.",
+      "Short-term planning works; the longer-term view is not used to steer anything. Others in the team may score this differently."
+     ]
+    },
+    {
+     "id": "3",
+     "avg": 2.0,
+     "band": "Silver",
+     "min": 2.0,
+     "max": 2.0,
+     "spread": 0.0,
+     "n": 3,
+     "verbatims": [
+      "The TIP board is used, but updates are irregular and ownership is vague. This has not changed in the last year.",
+      "The TIP board is used, but updates are irregular and ownership is vague. Others in the team may score this differently.",
+      "The TIP board is used, but updates are irregular and ownership is vague. I have discussed this with my colleagues and we do not fully agree."
+     ]
+    },
+    {
+     "id": "4",
+     "avg": 2.67,
+     "band": "Gold",
+     "min": 2.0,
+     "max": 3.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "Process and control maps are recertified yearly and we use them in daily work. Others in the team may score this differently.",
+      "Process and control maps are recertified yearly and we use them in daily work. I have discussed this with my colleagues and we do not fully agree.",
+      "The maps are accurate for the main flow but the exceptions are undocumented."
+     ]
+    },
+    {
+     "id": "5",
+     "avg": 1.67,
+     "band": "Silver",
+     "min": 1.0,
+     "max": 2.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "Sessions are organised and actions implemented, but the Check and Act never happen. I have discussed this with my colleagues and we do not fully agree.",
+      "We use the template but stop at the action list. Nobody checks if it worked.",
+      "Root cause analysis is done, sometimes well, sometimes we jump to the solution. Same story across my sub-team."
+     ]
+    },
+    {
+     "id": "6",
+     "avg": 2.0,
+     "band": "Silver",
+     "min": 2.0,
+     "max": 2.0,
+     "spread": 0.0,
+     "n": 3,
+     "verbatims": [
+      "Sharing best practice is not yet a reflex; it happens when someone asks.",
+      "Sharing best practice is not yet a reflex; it happens when someone asks. Same story across my sub-team.",
+      "Sharing best practice is not yet a reflex; it happens when someone asks. That is my read of it, at least."
+     ]
+    },
+    {
+     "id": "7",
+     "avg": 2.67,
+     "band": "Gold",
+     "min": 2.0,
+     "max": 3.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "Numbers determine our focus every week - they are not decoration. Same story across my sub-team.",
+      "Numbers determine our focus every week - they are not decoration. That is my read of it, at least.",
+      "Quality and efficiency are covered; productivity per renewals type is still missing. This has not changed in the last year."
+     ]
+    },
+    {
+     "id": "8",
+     "avg": 2.0,
+     "band": "Silver",
+     "min": 2.0,
+     "max": 2.0,
+     "spread": 0.0,
+     "n": 3,
+     "verbatims": [
+      "We see the gaps; we do not have an action plan behind them. That is my read of it, at least.",
+      "We see the gaps; we do not have an action plan behind them. This has not changed in the last year.",
+      "We see the gaps; we do not have an action plan behind them. Others in the team may score this differently."
+     ]
+    },
+    {
+     "id": "9",
+     "avg": 1.0,
+     "band": "Bronze",
+     "min": 1.0,
+     "max": 1.0,
+     "spread": 0.0,
+     "n": 3,
+     "verbatims": [
+      "Support for change is reactive - we get help after things go wrong. This has not changed in the last year.",
+      "Support for change is reactive - we get help after things go wrong. Others in the team may score this differently.",
+      "Support for change is reactive - we get help after things go wrong. I have discussed this with my colleagues and we do not fully agree."
+     ]
+    },
+    {
+     "id": "10",
+     "avg": 2.33,
+     "band": "Silver",
+     "min": 2.0,
+     "max": 3.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "Our whiteboard is the best routine we have - inclusive and to the point. Others in the team may score this differently.",
+      "People show up and participate, yet it rarely produces a corrective action. I have discussed this with my colleagues and we do not fully agree.",
+      "Decent dynamic but the meeting is mechanical; the board lacks an owner."
+     ]
+    },
+    {
+     "id": "11",
+     "avg": 2.0,
+     "band": "Silver",
+     "min": 2.0,
+     "max": 2.0,
+     "spread": 0.0,
+     "n": 3,
+     "verbatims": [
+      "The cascade works downwards. Escalating something upwards is much harder. I have discussed this with my colleagues and we do not fully agree.",
+      "Well prepared and structured, but mostly top-down with little engagement.",
+      "Well prepared and structured, but mostly top-down with little engagement. Same story across my sub-team."
+     ]
+    },
+    {
+     "id": "12",
+     "avg": 1.67,
+     "band": "Silver",
+     "min": 1.0,
+     "max": 2.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "They initiate the connection moments but are not always able to be there.",
+      "Line management drops in when there is an escalation on a renewals. Same story across my sub-team.",
+      "They initiate the connection moments but are not always able to be there. That is my read of it, at least."
+     ]
+    },
+    {
+     "id": "13",
+     "avg": 0.67,
+     "band": "Bronze",
+     "min": 0.0,
+     "max": 1.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "They visit when there is a problem, which sends exactly the wrong signal. Same story across my sub-team.",
+      "They visit when there is a problem, which sends exactly the wrong signal. That is my read of it, at least.",
+      "Senior management has never attended one of our whiteboards. This has not changed in the last year."
+     ]
+    },
+    {
+     "id": "14",
+     "avg": 1.67,
+     "band": "Silver",
+     "min": 1.0,
+     "max": 2.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "Feedback is constructive but only when asked for - it is not a reflex yet. That is my read of it, at least.",
+      "Feedback is given when something goes wrong, rarely when something goes well. This has not changed in the last year.",
+      "Feedback is constructive but only when asked for - it is not a reflex yet. Others in the team may score this differently."
+     ]
+    },
+    {
+     "id": "15",
+     "avg": 1.0,
+     "band": "Bronze",
+     "min": 1.0,
+     "max": 1.0,
+     "spread": 0.0,
+     "n": 3,
+     "verbatims": [
+      "Feedback from above is ad hoc and usually triggered by an incident. This has not changed in the last year.",
+      "Feedback from above is ad hoc and usually triggered by an incident. Others in the team may score this differently.",
+      "Feedback from above is ad hoc and usually triggered by an incident. I have discussed this with my colleagues and we do not fully agree."
+     ]
+    },
+    {
+     "id": "16",
+     "avg": 1.67,
+     "band": "Silver",
+     "min": 1.0,
+     "max": 2.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "Decent understanding of the strategy; the link to daily work needs explaining. Others in the team may score this differently.",
+      "Decent understanding of the strategy; the link to daily work needs explaining. I have discussed this with my colleagues and we do not fully agree.",
+      "Strategy is shared once a year and forgotten by February."
+     ]
+    },
+    {
+     "id": "17",
+     "avg": 1.67,
+     "band": "Silver",
+     "min": 1.0,
+     "max": 2.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "Objectives are cascaded in January and never mentioned again until the review. I have discussed this with my colleagues and we do not fully agree.",
+      "The mechanism is in place; the follow-up during the year is not consistent.",
+      "The mechanism is in place; the follow-up during the year is not consistent. Same story across my sub-team."
+     ]
+    }
+   ],
+   "tools": [
+    {
+     "name": "KANO",
+     "avg": 0.0,
+     "status": "Not in place",
+     "n": 3
+    },
+    {
+     "name": "Feedback Monitoring",
+     "avg": 2.0,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "Complaints monitoring",
+     "avg": 2.0,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "Capacity Management",
+     "avg": 1.67,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "KPI Tree",
+     "avg": 2.0,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "KPI Dashboard",
+     "avg": 2.33,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "Performance Dialogue",
+     "avg": 2.0,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "OTE Waterfall",
+     "avg": 0.33,
+     "status": "Not in place",
+     "n": 3
+    },
+    {
+     "name": "Control Maps",
+     "avg": 1.67,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "MIFA",
+     "avg": 1.0,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "PSS Template",
+     "avg": 1.67,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "TIP Management (CI Log)",
+     "avg": 2.0,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "WILO / DILO",
+     "avg": 0.67,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "SOPs / Process maps",
+     "avg": 2.0,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "Sit-ins / process confirmations",
+     "avg": 1.33,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "Skills Matrix",
+     "avg": 1.67,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "Training Plan",
+     "avg": 1.33,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "Best Practice Sharing",
+     "avg": 1.33,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "1-on-1 coaching",
+     "avg": 1.67,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "Personal Development Plan",
+     "avg": 2.0,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "Daily Whiteboard",
+     "avg": 1.67,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "Meeting Cascade",
+     "avg": 1.0,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "Team Charter",
+     "avg": 1.33,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "Team Goals / Objectives",
+     "avg": 2.33,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "OKRs",
+     "avg": 0.67,
+     "status": "In place, not used",
+     "n": 3
+    }
+   ],
+   "contested": [],
+   "lensAxes": [
+    {
+     "lens": "proc",
+     "name": "Process clarity & standardisation",
+     "score": 4.1,
+     "lma": 2.33,
+     "criteria": [
+      4,
+      6
+     ]
+    },
+    {
+     "lens": "cust",
+     "name": "Understanding of customer (segments) & expectations",
+     "score": 3.2,
+     "lma": 1.67,
+     "criteria": [
+      1
+     ]
+    },
+    {
+     "lens": "mgmt",
+     "name": "KPI relevance & alignment",
+     "score": 3.7,
+     "lma": 2.0,
+     "criteria": [
+      7,
+      16,
+      17
+     ]
+    },
+    {
+     "lens": "mgmt",
+     "name": "Performance management routines",
+     "score": 3.9,
+     "lma": 2.17,
+     "criteria": [
+      10,
+      11
+     ]
+    },
+    {
+     "lens": "mgmt",
+     "name": "Capacity & workload management",
+     "score": 4.1,
+     "lma": 2.33,
+     "criteria": [
+      2
+     ]
+    },
+    {
+     "lens": "mgmt",
+     "name": "Continuous improvement structure",
+     "score": 3.4,
+     "lma": 1.83,
+     "criteria": [
+      3,
+      5
+     ]
+    },
+    {
+     "lens": "mind",
+     "name": "Leadership modeling",
+     "score": 2.5,
+     "lma": 1.11,
+     "criteria": [
+      12,
+      13,
+      15
+     ]
+    },
+    {
+     "lens": "mind",
+     "name": "Learning culture",
+     "score": 2.8,
+     "lma": 1.33,
+     "criteria": [
+      9,
+      14
+     ]
+    },
+    {
+     "lens": "org",
+     "name": "Capacity & skills mix",
+     "score": 3.7,
+     "lma": 2.0,
+     "criteria": [
+      8
+     ]
+    }
+   ],
+   "notAssessed": [
+    {
+     "lens": "proc",
+     "name": "Value-adding ratio"
+    },
+    {
+     "lens": "proc",
+     "name": "E2E handoff quality"
+    },
+    {
+     "lens": "proc",
+     "name": "Volume & demand variability"
+    },
+    {
+     "lens": "proc",
+     "name": "Exception & error rate"
+    },
+    {
+     "lens": "cust",
+     "name": "Client satisfaction & quality of customer touchpoints"
+    },
+    {
+     "lens": "cust",
+     "name": "Demand understanding"
+    },
+    {
+     "lens": "cust",
+     "name": "Customer centricity in decisions"
+    },
+    {
+     "lens": "mgmt",
+     "name": "Decision rights & accountability"
+    },
+    {
+     "lens": "data",
+     "name": "Data availability & completeness"
+    },
+    {
+     "lens": "data",
+     "name": "Data quality & consistency"
+    },
+    {
+     "lens": "data",
+     "name": "System integration maturity"
+    },
+    {
+     "lens": "data",
+     "name": "Tooling fit"
+    },
+    {
+     "lens": "data",
+     "name": "Analytics & reporting maturity"
+    },
+    {
+     "lens": "mind",
+     "name": "Change openness"
+    },
+    {
+     "lens": "mind",
+     "name": "AI & digital appetite"
+    },
+    {
+     "lens": "mind",
+     "name": "Empowerment & initiative"
+    },
+    {
+     "lens": "org",
+     "name": "Structural fit"
+    },
+    {
+     "lens": "org",
+     "name": "E2E ownership"
+    },
+    {
+     "lens": "org",
+     "name": "Spans & layers"
+    },
+    {
+     "lens": "org",
+     "name": "Role clarity & specialisation"
+    }
+   ],
+   "flags": [],
+   "narrative": {
+    "insights": [
+     {
+      "dim": "Deliver",
+      "bullets": [
+       "**KPIs are the team's strongest criterion (2.67/3)**: respondents say the numbers set the focus every week.",
+       "Customer expectations score 1.67: the yearly survey runs, but the follow-up actions are lost."
+      ]
+     },
+     {
+      "dim": "Discover",
+      "bullets": [
+       "Process and control maps are recertified yearly and used daily (2.67), though exceptions are not documented.",
+       "Problem-solving sessions score 1.67: actions are implemented, but nobody checks whether they worked."
+      ]
+     },
+     {
+      "dim": "Enable",
+      "bullets": [
+       "**Feedback is the weakest behaviour (1.33/3)**: feedback from senior management is ad hoc and triggered by incidents (1.00).",
+       "Capability building scores 1.00: support for change comes after things go wrong.",
+       "The skills matrix shows the gaps (2.00), but no action plan sits behind it."
+      ]
+     },
+     {
+      "dim": "Connect",
+      "bullets": [
+       "Whiteboards score 2.33, though two respondents call the meeting mechanical or say it rarely leads to action.",
+       "Senior management presence scores 0.67/3: they visit when there is a problem.",
+       "Objectives are cascaded in January and followed up unevenly during the year (1.67)."
+      ]
+     }
+    ],
+    "tooling": {
+     "keyMessage": "Fifteen of 25 tools are active but manual, while KANO and the OTE waterfall are not in place at all"
+    }
+   },
+   "source": "LMA survey · 3 respondents · criteria and tools scored 0 to 3 by team members",
+   "gaps": [
+    "proc: Value-adding ratio, E2E handoff quality, Volume & demand variability, Exception & error rate",
+    "cust: Client satisfaction & quality of customer touchpoints, Demand understanding, Customer centricity in decisions",
+    "mgmt: Decision rights & accountability",
+    "data: Data availability & completeness, Data quality & consistency, System integration maturity, Tooling fit, Analytics & reporting maturity",
+    "mind: Change openness, AI & digital appetite, Empowerment & initiative",
+    "org: Structural fit, E2E ownership, Spans & layers, Role clarity & specialisation"
+   ],
+   "adjustments": []
+  },
+  {
+   "lens": "LEAN MATURITY · TEAM DEEPDIVE",
+   "teamId": "heron",
+   "teamName": "Team Heron - Claims Handling",
+   "deptId": "northwind-insurance-ops",
+   "department": "Insurance Operations",
+   "keyMessage": "Claims Handling is **Bronze** on 9 of 10 behaviours, with process maps and improvement tracking no longer working",
+   "model": "lma/2026.10",
+   "response": {
+    "respondents": 3,
+    "teamSize": null,
+    "rate": null,
+    "floor": 3
+   },
+   "overall": {
+    "avg": 1.13,
+    "band": "Bronze"
+   },
+   "dimensions": [
+    {
+     "name": "Deliver",
+     "avg": 1.33,
+     "band": "Bronze"
+    },
+    {
+     "name": "Discover",
+     "avg": 0.83,
+     "band": "Bronze"
+    },
+    {
+     "name": "Enable",
+     "avg": 1.11,
+     "band": "Bronze"
+    },
+    {
+     "name": "Connect",
+     "avg": 1.25,
+     "band": "Bronze"
+    }
+   ],
+   "behaviours": [
+    {
+     "id": "b1",
+     "avg": 1.0,
+     "band": "Bronze",
+     "spread": 2.0
+    },
+    {
+     "id": "b2",
+     "avg": 1.67,
+     "band": "Silver",
+     "spread": 1.0
+    },
+    {
+     "id": "b3",
+     "avg": 1.33,
+     "band": "Bronze",
+     "spread": 1.0
+    },
+    {
+     "id": "b4",
+     "avg": 0.67,
+     "band": "Bronze",
+     "spread": 1.0
+    },
+    {
+     "id": "b5",
+     "avg": 1.0,
+     "band": "Bronze",
+     "spread": 0.0
+    },
+    {
+     "id": "b6",
+     "avg": 1.33,
+     "band": "Bronze",
+     "spread": 1.0
+    },
+    {
+     "id": "b7",
+     "avg": 1.17,
+     "band": "Bronze",
+     "spread": 1.0
+    },
+    {
+     "id": "b8",
+     "avg": 0.83,
+     "band": "Bronze",
+     "spread": 1.0
+    },
+    {
+     "id": "b9",
+     "avg": 1.33,
+     "band": "Bronze",
+     "spread": 2.0
+    },
+    {
+     "id": "b10",
+     "avg": 1.17,
+     "band": "Bronze",
+     "spread": 1.0
+    }
+   ],
+   "criteria": [
+    {
+     "id": "1",
+     "avg": 1.0,
+     "band": "Bronze",
+     "min": 0.0,
+     "max": 2.0,
+     "spread": 2.0,
+     "n": 3,
+     "verbatims": [
+      "Yearly satisfaction survey is run properly; the follow-up actions are where we lose it. Others in the team may score this differently.",
+      "A survey went out once, results were shared, and nothing happened after that. I have discussed this with my colleagues and we do not fully agree.",
+      "There is no moment in the year where we ask the client anything."
+     ]
+    },
+    {
+     "id": "2",
+     "avg": 1.33,
+     "band": "Bronze",
+     "min": 1.0,
+     "max": 2.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "A capacity file exists but it is one person's spreadsheet and it is three months old. I have discussed this with my colleagues and we do not fully agree.",
+      "Mismatches are visible but we absorb them with overtime instead of re-planning.",
+      "We plan headcount, not capacity. Absences and non-production time are not in it. Same story across my sub-team."
+     ]
+    },
+    {
+     "id": "3",
+     "avg": 1.0,
+     "band": "Bronze",
+     "min": 1.0,
+     "max": 1.0,
+     "spread": 0.0,
+     "n": 3,
+     "verbatims": [
+      "The CI log exists; deadlines on it have been pushed three times already.",
+      "The CI log exists; deadlines on it have been pushed three times already. Same story across my sub-team.",
+      "The CI log exists; deadlines on it have been pushed three times already. That is my read of it, at least."
+     ]
+    },
+    {
+     "id": "4",
+     "avg": 0.33,
+     "band": "Bronze",
+     "min": 0.0,
+     "max": 1.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "We drew the process once for a project and never touched it again. Same story across my sub-team.",
+      "Whatever maps exist date from the last system migration and nobody trusts them. That is my read of it, at least.",
+      "Whatever maps exist date from the last system migration and nobody trusts them. This has not changed in the last year."
+     ]
+    },
+    {
+     "id": "5",
+     "avg": 1.0,
+     "band": "Bronze",
+     "min": 1.0,
+     "max": 1.0,
+     "spread": 0.0,
+     "n": 3,
+     "verbatims": [
+      "We use the template but stop at the action list. Nobody checks if it worked. That is my read of it, at least.",
+      "We use the template but stop at the action list. Nobody checks if it worked. This has not changed in the last year.",
+      "We use the template but stop at the action list. Nobody checks if it worked. Others in the team may score this differently."
+     ]
+    },
+    {
+     "id": "6",
+     "avg": 1.33,
+     "band": "Bronze",
+     "min": 1.0,
+     "max": 2.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "Sharing best practice is not yet a reflex; it happens when someone asks. This has not changed in the last year.",
+      "Documentation is there but unusable - too long, wrong format, no search. Others in the team may score this differently.",
+      "Documentation is there but unusable - too long, wrong format, no search. I have discussed this with my colleagues and we do not fully agree."
+     ]
+    },
+    {
+     "id": "7",
+     "avg": 1.67,
+     "band": "Silver",
+     "min": 1.0,
+     "max": 2.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "Quality and efficiency are covered; productivity per claims files type is still missing. Others in the team may score this differently.",
+      "Quality and efficiency are covered; productivity per claims files type is still missing. I have discussed this with my colleagues and we do not fully agree.",
+      "Dashboard exists but it is late and half the team does not know it is there."
+     ]
+    },
+    {
+     "id": "8",
+     "avg": 1.67,
+     "band": "Silver",
+     "min": 1.0,
+     "max": 2.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "We see the gaps; we do not have an action plan behind them. I have discussed this with my colleagues and we do not fully agree.",
+      "The matrix is maintained but used mechanically at evaluation time only.",
+      "A matrix was built once. It has not survived two reorganisations. Same story across my sub-team."
+     ]
+    },
+    {
+     "id": "9",
+     "avg": 0.67,
+     "band": "Bronze",
+     "min": 0.0,
+     "max": 1.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "There is a role on paper but the person is absorbed by day-to-day work.",
+      "Nobody has the mandate to coach or support change in this team. Same story across my sub-team.",
+      "There is a role on paper but the person is absorbed by day-to-day work. That is my read of it, at least."
+     ]
+    },
+    {
+     "id": "10",
+     "avg": 2.0,
+     "band": "Silver",
+     "min": 1.0,
+     "max": 3.0,
+     "spread": 2.0,
+     "n": 3,
+     "verbatims": [
+      "The whole team contributes, actions come out of it, and CI genuinely lives there. Same story across my sub-team.",
+      "Decent dynamic but the meeting is mechanical; the board lacks an owner. That is my read of it, at least.",
+      "It happens weekly but it is a status update, not a conversation. This has not changed in the last year."
+     ]
+    },
+    {
+     "id": "11",
+     "avg": 1.0,
+     "band": "Bronze",
+     "min": 1.0,
+     "max": 1.0,
+     "spread": 0.0,
+     "n": 3,
+     "verbatims": [
+      "Meetings happen but are not prepared, so we improvise for an hour. That is my read of it, at least.",
+      "Meetings happen but are not prepared, so we improvise for an hour. This has not changed in the last year.",
+      "Meetings happen but are not prepared, so we improvise for an hour. Others in the team may score this differently."
+     ]
+    },
+    {
+     "id": "12",
+     "avg": 1.67,
+     "band": "Silver",
+     "min": 1.0,
+     "max": 2.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "They initiate the connection moments but are not always able to be there. This has not changed in the last year.",
+      "They initiate the connection moments but are not always able to be there. Others in the team may score this differently.",
+      "Line management drops in when there is an escalation on a claims files. I have discussed this with my colleagues and we do not fully agree."
+     ]
+    },
+    {
+     "id": "13",
+     "avg": 0.67,
+     "band": "Bronze",
+     "min": 0.0,
+     "max": 1.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "They visit when there is a problem, which sends exactly the wrong signal. Others in the team may score this differently.",
+      "They visit when there is a problem, which sends exactly the wrong signal. I have discussed this with my colleagues and we do not fully agree.",
+      "We see senior management once a year at the kick-off."
+     ]
+    },
+    {
+     "id": "14",
+     "avg": 0.67,
+     "band": "Bronze",
+     "min": 0.0,
+     "max": 1.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "Feedback is given when something goes wrong, rarely when something goes well. I have discussed this with my colleagues and we do not fully agree.",
+      "We have a retro slot; it is skipped whenever claims files volume is high.",
+      "There is no space where the team can give collective feedback. Same story across my sub-team."
+     ]
+    },
+    {
+     "id": "15",
+     "avg": 1.0,
+     "band": "Bronze",
+     "min": 1.0,
+     "max": 1.0,
+     "spread": 0.0,
+     "n": 3,
+     "verbatims": [
+      "It happens, but so inconsistently that nobody counts on it.",
+      "It happens, but so inconsistently that nobody counts on it. Same story across my sub-team.",
+      "It happens, but so inconsistently that nobody counts on it. That is my read of it, at least."
+     ]
+    },
+    {
+     "id": "16",
+     "avg": 1.33,
+     "band": "Bronze",
+     "min": 1.0,
+     "max": 2.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "Information is shared regularly but the why behind it is often missing. Same story across my sub-team.",
+      "Strategy is shared once a year and forgotten by February. That is my read of it, at least.",
+      "Strategy is shared once a year and forgotten by February. This has not changed in the last year."
+     ]
+    },
+    {
+     "id": "17",
+     "avg": 1.0,
+     "band": "Bronze",
+     "min": 1.0,
+     "max": 1.0,
+     "spread": 0.0,
+     "n": 3,
+     "verbatims": [
+      "They are copy-pasted from last year and not relevant to what we actually do. That is my read of it, at least.",
+      "They are copy-pasted from last year and not relevant to what we actually do. This has not changed in the last year.",
+      "They are copy-pasted from last year and not relevant to what we actually do. Others in the team may score this differently."
+     ]
+    }
+   ],
+   "tools": [
+    {
+     "name": "KANO",
+     "avg": 0.0,
+     "status": "Not in place",
+     "n": 3
+    },
+    {
+     "name": "Feedback Monitoring",
+     "avg": 0.67,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "Complaints monitoring",
+     "avg": 1.67,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "Capacity Management",
+     "avg": 0.67,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "KPI Tree",
+     "avg": 0.67,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "KPI Dashboard",
+     "avg": 1.33,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "Performance Dialogue",
+     "avg": 0.67,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "OTE Waterfall",
+     "avg": 0.0,
+     "status": "Not in place",
+     "n": 3
+    },
+    {
+     "name": "Control Maps",
+     "avg": 0.67,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "MIFA",
+     "avg": 0.33,
+     "status": "Not in place",
+     "n": 3
+    },
+    {
+     "name": "PSS Template",
+     "avg": 0.33,
+     "status": "Not in place",
+     "n": 3
+    },
+    {
+     "name": "TIP Management (CI Log)",
+     "avg": 0.33,
+     "status": "Not in place",
+     "n": 3
+    },
+    {
+     "name": "WILO / DILO",
+     "avg": 0.0,
+     "status": "Not in place",
+     "n": 3
+    },
+    {
+     "name": "SOPs / Process maps",
+     "avg": 1.0,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "Sit-ins / process confirmations",
+     "avg": 0.0,
+     "status": "Not in place",
+     "n": 3
+    },
+    {
+     "name": "Skills Matrix",
+     "avg": 1.0,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "Training Plan",
+     "avg": 1.0,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "Best Practice Sharing",
+     "avg": 0.33,
+     "status": "Not in place",
+     "n": 3
+    },
+    {
+     "name": "1-on-1 coaching",
+     "avg": 1.0,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "Personal Development Plan",
+     "avg": 1.33,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "Daily Whiteboard",
+     "avg": 2.0,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "Meeting Cascade",
+     "avg": 1.0,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "Team Charter",
+     "avg": 0.67,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "Team Goals / Objectives",
+     "avg": 1.33,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "OKRs",
+     "avg": 0.0,
+     "status": "Not in place",
+     "n": 3
+    }
+   ],
+   "contested": [
+    "1",
+    "10"
+   ],
+   "lensAxes": [
+    {
+     "lens": "proc",
+     "name": "Process clarity & standardisation",
+     "score": 2.1,
+     "lma": 0.83,
+     "criteria": [
+      4,
+      6
+     ]
+    },
+    {
+     "lens": "cust",
+     "name": "Understanding of customer (segments) & expectations",
+     "score": 2.3,
+     "lma": 1.0,
+     "criteria": [
+      1
+     ]
+    },
+    {
+     "lens": "mgmt",
+     "name": "KPI relevance & alignment",
+     "score": 2.8,
+     "lma": 1.33,
+     "criteria": [
+      7,
+      16,
+      17
+     ]
+    },
+    {
+     "lens": "mgmt",
+     "name": "Performance management routines",
+     "score": 3.0,
+     "lma": 1.5,
+     "criteria": [
+      10,
+      11
+     ]
+    },
+    {
+     "lens": "mgmt",
+     "name": "Capacity & workload management",
+     "score": 2.8,
+     "lma": 1.33,
+     "criteria": [
+      2
+     ]
+    },
+    {
+     "lens": "mgmt",
+     "name": "Continuous improvement structure",
+     "score": 2.3,
+     "lma": 1.0,
+     "criteria": [
+      3,
+      5
+     ]
+    },
+    {
+     "lens": "mind",
+     "name": "Leadership modeling",
+     "score": 2.5,
+     "lma": 1.11,
+     "criteria": [
+      12,
+      13,
+      15
+     ]
+    },
+    {
+     "lens": "mind",
+     "name": "Learning culture",
+     "score": 1.9,
+     "lma": 0.67,
+     "criteria": [
+      9,
+      14
+     ]
+    },
+    {
+     "lens": "org",
+     "name": "Capacity & skills mix",
+     "score": 3.2,
+     "lma": 1.67,
+     "criteria": [
+      8
+     ]
+    }
+   ],
+   "notAssessed": [
+    {
+     "lens": "proc",
+     "name": "Value-adding ratio"
+    },
+    {
+     "lens": "proc",
+     "name": "E2E handoff quality"
+    },
+    {
+     "lens": "proc",
+     "name": "Volume & demand variability"
+    },
+    {
+     "lens": "proc",
+     "name": "Exception & error rate"
+    },
+    {
+     "lens": "cust",
+     "name": "Client satisfaction & quality of customer touchpoints"
+    },
+    {
+     "lens": "cust",
+     "name": "Demand understanding"
+    },
+    {
+     "lens": "cust",
+     "name": "Customer centricity in decisions"
+    },
+    {
+     "lens": "mgmt",
+     "name": "Decision rights & accountability"
+    },
+    {
+     "lens": "data",
+     "name": "Data availability & completeness"
+    },
+    {
+     "lens": "data",
+     "name": "Data quality & consistency"
+    },
+    {
+     "lens": "data",
+     "name": "System integration maturity"
+    },
+    {
+     "lens": "data",
+     "name": "Tooling fit"
+    },
+    {
+     "lens": "data",
+     "name": "Analytics & reporting maturity"
+    },
+    {
+     "lens": "mind",
+     "name": "Change openness"
+    },
+    {
+     "lens": "mind",
+     "name": "AI & digital appetite"
+    },
+    {
+     "lens": "mind",
+     "name": "Empowerment & initiative"
+    },
+    {
+     "lens": "org",
+     "name": "Structural fit"
+    },
+    {
+     "lens": "org",
+     "name": "E2E ownership"
+    },
+    {
+     "lens": "org",
+     "name": "Spans & layers"
+    },
+    {
+     "lens": "org",
+     "name": "Role clarity & specialisation"
+    }
+   ],
+   "flags": [],
+   "narrative": {
+    "insights": [
+     {
+      "dim": "Deliver",
+      "bullets": [
+       "Monitor performance is the only Silver behaviour (1.67/3), but one respondent says the dashboard is late and half the team does not know it exists.",
+       "**Respondents disagree on customer expectations** (answers from 0 to 2): one says the client is never asked anything.",
+       "Capacity is planned in headcount, and mismatches are absorbed with overtime (1.33)."
+      ]
+     },
+     {
+      "dim": "Discover",
+      "bullets": [
+       "**Process maps have lapsed (0.33/3)**: they date from the last system migration and nobody trusts them.",
+       "Improvement tracking scores 1.00: CI log deadlines have been pushed three times, and problem solving stops at the action list."
+      ]
+     },
+     {
+      "dim": "Enable",
+      "bullets": [
+       "Feedback within the team scores 0.67: the retro slot is skipped when volume is high.",
+       "Capability building scores 0.67: the coaching role exists on paper only.",
+       "SOPs are seen as unusable, too long and hard to search (1.33)."
+      ]
+     },
+     {
+      "dim": "Connect",
+      "bullets": [
+       "**Whiteboards are contested** (answers from 1 to 3): one respondent says improvement lives there, another calls it a status update.",
+       "Meetings in the cascade are not prepared (1.00), and senior management visits only when there is a problem (0.67)."
+      ]
+     }
+    ],
+    "tooling": {
+     "keyMessage": "Nine of 25 tools are not in place and only the whiteboard and complaints monitoring are active, so most routines have no tool behind them"
+    }
+   },
+   "source": "LMA survey · 3 respondents · criteria and tools scored 0 to 3 by team members",
+   "gaps": [
+    "proc: Value-adding ratio, E2E handoff quality, Volume & demand variability, Exception & error rate",
+    "cust: Client satisfaction & quality of customer touchpoints, Demand understanding, Customer centricity in decisions",
+    "mgmt: Decision rights & accountability",
+    "data: Data availability & completeness, Data quality & consistency, System integration maturity, Tooling fit, Analytics & reporting maturity",
+    "mind: Change openness, AI & digital appetite, Empowerment & initiative",
+    "org: Structural fit, E2E ownership, Spans & layers, Role clarity & specialisation"
+   ],
+   "adjustments": []
+  },
+  {
+   "lens": "LEAN MATURITY · TEAM DEEPDIVE",
+   "teamId": "ibis",
+   "teamName": "Team Ibis - Client Servicing",
+   "deptId": "northwind-insurance-ops",
+   "department": "Insurance Operations",
+   "keyMessage": "Client Servicing is the department's reference at **2.31**, Gold on communication and vision, with standards the one area holding it back",
+   "model": "lma/2026.10",
+   "response": {
+    "respondents": 3,
+    "teamSize": null,
+    "rate": null,
+    "floor": 3
+   },
+   "overall": {
+    "avg": 2.31,
+    "band": "Silver"
+   },
+   "dimensions": [
+    {
+     "name": "Deliver",
+     "avg": 2.45,
+     "band": "Silver"
+    },
+    {
+     "name": "Discover",
+     "avg": 2.17,
+     "band": "Silver"
+    },
+    {
+     "name": "Enable",
+     "avg": 1.95,
+     "band": "Silver"
+    },
+    {
+     "name": "Connect",
+     "avg": 2.67,
+     "band": "Gold"
+    }
+   ],
+   "behaviours": [
+    {
+     "id": "b1",
+     "avg": 2.67,
+     "band": "Gold",
+     "spread": 1.0
+    },
+    {
+     "id": "b2",
+     "avg": 2.67,
+     "band": "Gold",
+     "spread": 1.0
+    },
+    {
+     "id": "b3",
+     "avg": 2.0,
+     "band": "Silver",
+     "spread": 0.0
+    },
+    {
+     "id": "b4",
+     "avg": 2.33,
+     "band": "Silver",
+     "spread": 1.0
+    },
+    {
+     "id": "b5",
+     "avg": 2.0,
+     "band": "Silver",
+     "spread": 0.0
+    },
+    {
+     "id": "b6",
+     "avg": 1.67,
+     "band": "Silver",
+     "spread": 1.0
+    },
+    {
+     "id": "b7",
+     "avg": 2.17,
+     "band": "Silver",
+     "spread": 2.0
+    },
+    {
+     "id": "b8",
+     "avg": 2.0,
+     "band": "Silver",
+     "spread": 0.0
+    },
+    {
+     "id": "b9",
+     "avg": 2.67,
+     "band": "Gold",
+     "spread": 1.0
+    },
+    {
+     "id": "b10",
+     "avg": 2.67,
+     "band": "Gold",
+     "spread": 1.0
+    }
+   ],
+   "criteria": [
+    {
+     "id": "1",
+     "avg": 2.67,
+     "band": "Gold",
+     "min": 2.0,
+     "max": 3.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "Client expectations are explicit and we visualise where we deviate from them. Same story across my sub-team.",
+      "Client expectations are explicit and we visualise where we deviate from them. That is my read of it, at least.",
+      "We know what clients think, we just do not translate it into changes to the client requests process. This has not changed in the last year."
+     ]
+    },
+    {
+     "id": "2",
+     "avg": 2.0,
+     "band": "Silver",
+     "min": 2.0,
+     "max": 2.0,
+     "spread": 0.0,
+     "n": 3,
+     "verbatims": [
+      "Mismatches are visible but we absorb them with overtime instead of re-planning. That is my read of it, at least.",
+      "Mismatches are visible but we absorb them with overtime instead of re-planning. This has not changed in the last year.",
+      "Mismatches are visible but we absorb them with overtime instead of re-planning. Others in the team may score this differently."
+     ]
+    },
+    {
+     "id": "3",
+     "avg": 2.67,
+     "band": "Gold",
+     "min": 2.0,
+     "max": 3.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "The improvement backlog is reviewed weekly and delivers visible value. This has not changed in the last year.",
+      "The improvement backlog is reviewed weekly and delivers visible value. Others in the team may score this differently.",
+      "Ideas get captured. Closing them is the part that stalls. I have discussed this with my colleagues and we do not fully agree."
+     ]
+    },
+    {
+     "id": "4",
+     "avg": 2.0,
+     "band": "Silver",
+     "min": 2.0,
+     "max": 2.0,
+     "spread": 0.0,
+     "n": 3,
+     "verbatims": [
+      "The maps are accurate for the main flow but the exceptions are undocumented. Others in the team may score this differently.",
+      "The maps are accurate for the main flow but the exceptions are undocumented. I have discussed this with my colleagues and we do not fully agree.",
+      "Good maps, no owner. Nobody is responsible for keeping them true."
+     ]
+    },
+    {
+     "id": "5",
+     "avg": 2.0,
+     "band": "Silver",
+     "min": 2.0,
+     "max": 2.0,
+     "spread": 0.0,
+     "n": 3,
+     "verbatims": [
+      "Root cause analysis is done, sometimes well, sometimes we jump to the solution. I have discussed this with my colleagues and we do not fully agree.",
+      "Sessions are organised and actions implemented, but the Check and Act never happen.",
+      "Sessions are organised and actions implemented, but the Check and Act never happen. Same story across my sub-team."
+     ]
+    },
+    {
+     "id": "6",
+     "avg": 1.67,
+     "band": "Silver",
+     "min": 1.0,
+     "max": 2.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "We use the SOP library mechanically; improving it is nobody's priority.",
+      "We use the SOP library mechanically; improving it is nobody's priority. Same story across my sub-team.",
+      "SOPs exist because they had to exist. Nobody reads them. That is my read of it, at least."
+     ]
+    },
+    {
+     "id": "7",
+     "avg": 2.67,
+     "band": "Gold",
+     "min": 2.0,
+     "max": 3.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "The KPI set covers all four dimensions and deviations trigger real actions. Same story across my sub-team.",
+      "The KPI set covers all four dimensions and deviations trigger real actions. That is my read of it, at least.",
+      "KPIs are updated on time but deviations are discussed and then left alone. This has not changed in the last year."
+     ]
+    },
+    {
+     "id": "8",
+     "avg": 2.33,
+     "band": "Silver",
+     "min": 2.0,
+     "max": 3.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "The matrix is maintained but used mechanically at evaluation time only. That is my read of it, at least.",
+      "Skills are managed actively with targets per person and a plan to close gaps. This has not changed in the last year.",
+      "The matrix is maintained but used mechanically at evaluation time only. Others in the team may score this differently."
+     ]
+    },
+    {
+     "id": "9",
+     "avg": 2.0,
+     "band": "Silver",
+     "min": 1.0,
+     "max": 3.0,
+     "spread": 2.0,
+     "n": 3,
+     "verbatims": [
+      "We have a dedicated capability role that coaches managers and follows changes through. This has not changed in the last year.",
+      "We do get coaching support, but it is limited and not consistent over time. Others in the team may score this differently.",
+      "There is a role on paper but the person is absorbed by day-to-day work. I have discussed this with my colleagues and we do not fully agree."
+     ]
+    },
+    {
+     "id": "10",
+     "avg": 3.0,
+     "band": "Gold",
+     "min": 3.0,
+     "max": 3.0,
+     "spread": 0.0,
+     "n": 3,
+     "verbatims": [
+      "The whole team contributes, actions come out of it, and CI genuinely lives there. Others in the team may score this differently.",
+      "The whole team contributes, actions come out of it, and CI genuinely lives there. I have discussed this with my colleagues and we do not fully agree.",
+      "Our whiteboard is the best routine we have - inclusive and to the point."
+     ]
+    },
+    {
+     "id": "11",
+     "avg": 3.0,
+     "band": "Gold",
+     "min": 3.0,
+     "max": 3.0,
+     "spread": 0.0,
+     "n": 3,
+     "verbatims": [
+      "Team members co-own the agenda and the cascade genuinely ensures transparency. I have discussed this with my colleagues and we do not fully agree.",
+      "Each meeting in the cascade has a clear purpose and adds something.",
+      "Each meeting in the cascade has a clear purpose and adds something. Same story across my sub-team."
+     ]
+    },
+    {
+     "id": "12",
+     "avg": 2.67,
+     "band": "Gold",
+     "min": 2.0,
+     "max": 3.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "Proximity is lived, not scheduled - they know what is going on in the servicing platform.",
+      "Proximity is lived, not scheduled - they know what is going on in the servicing platform. Same story across my sub-team.",
+      "Presence is real but irregular - it depends on how busy the month is. That is my read of it, at least."
+     ]
+    },
+    {
+     "id": "13",
+     "avg": 2.0,
+     "band": "Silver",
+     "min": 2.0,
+     "max": 2.0,
+     "spread": 0.0,
+     "n": 3,
+     "verbatims": [
+      "Occasional presence, usually announced weeks in advance and often moved. Same story across my sub-team.",
+      "Occasional presence, usually announced weeks in advance and often moved. That is my read of it, at least.",
+      "Occasional presence, usually announced weeks in advance and often moved. This has not changed in the last year."
+     ]
+    },
+    {
+     "id": "14",
+     "avg": 2.0,
+     "band": "Silver",
+     "min": 2.0,
+     "max": 2.0,
+     "spread": 0.0,
+     "n": 3,
+     "verbatims": [
+      "The forum exists but is unstructured and the actions are not followed up. That is my read of it, at least.",
+      "The forum exists but is unstructured and the actions are not followed up. This has not changed in the last year.",
+      "The forum exists but is unstructured and the actions are not followed up. Others in the team may score this differently."
+     ]
+    },
+    {
+     "id": "15",
+     "avg": 2.0,
+     "band": "Silver",
+     "min": 2.0,
+     "max": 2.0,
+     "spread": 0.0,
+     "n": 3,
+     "verbatims": [
+      "Good intentions, uneven practice - it depends entirely on the individual. This has not changed in the last year.",
+      "Good intentions, uneven practice - it depends entirely on the individual. Others in the team may score this differently.",
+      "Good intentions, uneven practice - it depends entirely on the individual. I have discussed this with my colleagues and we do not fully agree."
+     ]
+    },
+    {
+     "id": "16",
+     "avg": 2.67,
+     "band": "Gold",
+     "min": 2.0,
+     "max": 3.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "The link between our objectives and the corporate strategy is explicit. Others in the team may score this differently.",
+      "The link between our objectives and the corporate strategy is explicit. I have discussed this with my colleagues and we do not fully agree.",
+      "Decent understanding of the strategy; the link to daily work needs explaining."
+     ]
+    },
+    {
+     "id": "17",
+     "avg": 2.67,
+     "band": "Gold",
+     "min": 2.0,
+     "max": 3.0,
+     "spread": 1.0,
+     "n": 3,
+     "verbatims": [
+      "Clear line from divisional goals to what this team is asked to deliver. I have discussed this with my colleagues and we do not fully agree.",
+      "Objectives are co-created with the team and reviewed formally during the year.",
+      "Objectives are cascaded and monitored, but they lack business relevance. Same story across my sub-team."
+     ]
+    }
+   ],
+   "tools": [
+    {
+     "name": "KANO",
+     "avg": 1.33,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "Feedback Monitoring",
+     "avg": 2.67,
+     "status": "Active and digital",
+     "n": 3
+    },
+    {
+     "name": "Complaints monitoring",
+     "avg": 3.0,
+     "status": "Active and digital",
+     "n": 3
+    },
+    {
+     "name": "Capacity Management",
+     "avg": 1.33,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "KPI Tree",
+     "avg": 2.33,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "KPI Dashboard",
+     "avg": 3.0,
+     "status": "Active and digital",
+     "n": 3
+    },
+    {
+     "name": "Performance Dialogue",
+     "avg": 2.33,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "OTE Waterfall",
+     "avg": 0.67,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "Control Maps",
+     "avg": 2.0,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "MIFA",
+     "avg": 1.0,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "PSS Template",
+     "avg": 2.0,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "TIP Management (CI Log)",
+     "avg": 2.33,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "WILO / DILO",
+     "avg": 1.0,
+     "status": "In place, not used",
+     "n": 3
+    },
+    {
+     "name": "SOPs / Process maps",
+     "avg": 2.0,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "Sit-ins / process confirmations",
+     "avg": 1.67,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "Skills Matrix",
+     "avg": 2.33,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "Training Plan",
+     "avg": 2.0,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "Best Practice Sharing",
+     "avg": 2.0,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "1-on-1 coaching",
+     "avg": 2.67,
+     "status": "Active and digital",
+     "n": 3
+    },
+    {
+     "name": "Personal Development Plan",
+     "avg": 2.67,
+     "status": "Active and digital",
+     "n": 3
+    },
+    {
+     "name": "Daily Whiteboard",
+     "avg": 3.0,
+     "status": "Active and digital",
+     "n": 3
+    },
+    {
+     "name": "Meeting Cascade",
+     "avg": 2.0,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "Team Charter",
+     "avg": 2.0,
+     "status": "Active but manual",
+     "n": 3
+    },
+    {
+     "name": "Team Goals / Objectives",
+     "avg": 3.0,
+     "status": "Active and digital",
+     "n": 3
+    },
+    {
+     "name": "OKRs",
+     "avg": 1.33,
+     "status": "In place, not used",
+     "n": 3
+    }
+   ],
+   "contested": [
+    "9"
+   ],
+   "lensAxes": [
+    {
+     "lens": "proc",
+     "name": "Process clarity & standardisation",
+     "score": 3.4,
+     "lma": 1.83,
+     "criteria": [
+      4,
+      6
+     ]
+    },
+    {
+     "lens": "cust",
+     "name": "Understanding of customer (segments) & expectations",
+     "score": 4.6,
+     "lma": 2.67,
+     "criteria": [
+      1
+     ]
+    },
+    {
+     "lens": "mgmt",
+     "name": "KPI relevance & alignment",
+     "score": 4.6,
+     "lma": 2.67,
+     "criteria": [
+      7,
+      16,
+      17
+     ]
+    },
+    {
+     "lens": "mgmt",
+     "name": "Performance management routines",
+     "score": 5.0,
+     "lma": 3.0,
+     "criteria": [
+      10,
+      11
+     ]
+    },
+    {
+     "lens": "mgmt",
+     "name": "Capacity & workload management",
+     "score": 3.7,
+     "lma": 2.0,
+     "criteria": [
+      2
+     ]
+    },
+    {
+     "lens": "mgmt",
+     "name": "Continuous improvement structure",
+     "score": 4.1,
+     "lma": 2.33,
+     "criteria": [
+      3,
+      5
+     ]
+    },
+    {
+     "lens": "mind",
+     "name": "Leadership modeling",
+     "score": 4.0,
+     "lma": 2.22,
+     "criteria": [
+      12,
+      13,
+      15
+     ]
+    },
+    {
+     "lens": "mind",
+     "name": "Learning culture",
+     "score": 3.7,
+     "lma": 2.0,
+     "criteria": [
+      9,
+      14
+     ]
+    },
+    {
+     "lens": "org",
+     "name": "Capacity & skills mix",
+     "score": 4.1,
+     "lma": 2.33,
+     "criteria": [
+      8
+     ]
+    }
+   ],
+   "notAssessed": [
+    {
+     "lens": "proc",
+     "name": "Value-adding ratio"
+    },
+    {
+     "lens": "proc",
+     "name": "E2E handoff quality"
+    },
+    {
+     "lens": "proc",
+     "name": "Volume & demand variability"
+    },
+    {
+     "lens": "proc",
+     "name": "Exception & error rate"
+    },
+    {
+     "lens": "cust",
+     "name": "Client satisfaction & quality of customer touchpoints"
+    },
+    {
+     "lens": "cust",
+     "name": "Demand understanding"
+    },
+    {
+     "lens": "cust",
+     "name": "Customer centricity in decisions"
+    },
+    {
+     "lens": "mgmt",
+     "name": "Decision rights & accountability"
+    },
+    {
+     "lens": "data",
+     "name": "Data availability & completeness"
+    },
+    {
+     "lens": "data",
+     "name": "Data quality & consistency"
+    },
+    {
+     "lens": "data",
+     "name": "System integration maturity"
+    },
+    {
+     "lens": "data",
+     "name": "Tooling fit"
+    },
+    {
+     "lens": "data",
+     "name": "Analytics & reporting maturity"
+    },
+    {
+     "lens": "mind",
+     "name": "Change openness"
+    },
+    {
+     "lens": "mind",
+     "name": "AI & digital appetite"
+    },
+    {
+     "lens": "mind",
+     "name": "Empowerment & initiative"
+    },
+    {
+     "lens": "org",
+     "name": "Structural fit"
+    },
+    {
+     "lens": "org",
+     "name": "E2E ownership"
+    },
+    {
+     "lens": "org",
+     "name": "Spans & layers"
+    },
+    {
+     "lens": "org",
+     "name": "Role clarity & specialisation"
+    }
+   ],
+   "flags": [],
+   "narrative": {
+    "insights": [
+     {
+      "dim": "Deliver",
+      "bullets": [
+       "Customer expectations are explicit and deviations are made visible (2.67/3).",
+       "Capacity management scores 2.00: mismatches are visible but absorbed with overtime."
+      ]
+     },
+     {
+      "dim": "Discover",
+      "bullets": [
+       "The improvement backlog is reviewed weekly (2.67), but problem-solving sessions skip Check and Act (2.00).",
+       "Maps are accurate for the main flow, but exceptions are undocumented and the maps have no owner."
+      ]
+     },
+     {
+      "dim": "Enable",
+      "bullets": [
+       "**Standards are the weakest behaviour (1.67/3)**: the SOP library is used mechanically and improving it is nobody's priority.",
+       "**Respondents disagree on capability building** (answers from 1 to 3): a dedicated coaching role for one, a role absorbed by daily work for another.",
+       "Feedback forums exist but are unstructured, and their actions are not followed up (2.00)."
+      ]
+     },
+     {
+      "dim": "Connect",
+      "bullets": [
+       "Whiteboards and the meeting cascade both score 3.00/3.",
+       "Senior management presence (2.00) is occasional and often rescheduled."
+      ]
+     }
+    ],
+    "tooling": {
+     "keyMessage": "Seven tools are active and digital, the best equipment in the department, but the tools that size waste are in place and not used"
+    }
+   },
+   "source": "LMA survey · 3 respondents · criteria and tools scored 0 to 3 by team members",
+   "gaps": [
+    "proc: Value-adding ratio, E2E handoff quality, Volume & demand variability, Exception & error rate",
+    "cust: Client satisfaction & quality of customer touchpoints, Demand understanding, Customer centricity in decisions",
+    "mgmt: Decision rights & accountability",
+    "data: Data availability & completeness, Data quality & consistency, System integration maturity, Tooling fit, Analytics & reporting maturity",
+    "mind: Change openness, AI & digital appetite, Empowerment & initiative",
+    "org: Structural fit, E2E ownership, Spans & layers, Role clarity & specialisation"
+   ],
+   "adjustments": []
+  }
+ ]
+};
+/* ===================================================================================== */
+(function(){
+  var M=DATA.model, DIMS=M.dimensions, BEH=M.behaviours;
+  var RAG={Gold:'green',Silver:'amber',Bronze:'red'};
+  var TRAG={'Not in place':'na','In place, not used':'red','Active but manual':'amber','Active and digital':'green'};
+  var TLEV={'Not in place':0,'In place, not used':1,'Active but manual':2,'Active and digital':3};
+  var ICONS={
+   client:'<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.2 20c0-3.3 2.6-5.6 5.8-5.6s5.8 2.3 5.8 5.6"/><path d="M17 5.5a4 4 0 0 1 0 7"/><path d="M19.5 20c0-2.4-.9-4.2-2.3-5.2"/></svg>',
+   perf:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 12l4.2-3.1"/><path d="M12 3.4v2M20.6 12h-2M12 20.6v-2M3.4 12h2"/></svg>',
+   proc:'<svg viewBox="0 0 24 24"><path d="M3.5 17.5l5-5 3.4 3.4 8.1-8.4"/><path d="M15.5 7.5h4.5V12"/><path d="M3.5 21h17"/></svg>',
+   ci:'<svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20.4 3.6V8h-4.4"/><path d="M8.8 12.4l2.4 2.4 4.2-4.8"/></svg>',
+   sop:'<svg viewBox="0 0 24 24"><path d="M4.5 4.5h9l6 6v9a1 1 0 0 1-1 1h-14a1 1 0 0 1-1-1v-14a1 1 0 0 1 1-1z"/><path d="M13.5 4.5V11h6"/><path d="M8 14.5h7M8 17.5h5"/></svg>',
+   lead:'<svg viewBox="0 0 24 24"><circle cx="8" cy="6.5" r="2.8"/><path d="M3 19.5c0-2.9 2.2-5 5-5s5 2.1 5 5"/><path d="M15.5 6.5l5.5 2.4-5.5 2.4z"/><path d="M15.5 6.5v11"/></svg>'};
+  var ISEQ=['client','perf','proc','ci','sop','lead'];
+  function esc(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function hl(t){return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1</span>');}
+  /* bullets: **words** render bold, nothing else is interpreted */
+  function rich(t){return esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');}
+  function f2(v){return v==null?'–':Number(v).toFixed(2);}
+  function rg(b){return RAG[b]||'na';}
+  /* captures hold lists of records; the views look them up by key */
+  function mp(list,k){var o={};(list||[]).forEach(function(x){o[x[k]]=x;});return o;}
+  function U(u){return {B:mp(u.behaviours,'id'),D:mp(u.dimensions,'name'),C:mp(u.criteria,'id'),T:mp(u.tools,'name')};}
+  function insOf(u,dim){var l=(u.narrative&&u.narrative.insights)||[];for(var i=0;i<l.length;i++)if(l[i].dim===dim)return l[i].bullets;return [];}
+  function behName(id){for(var i=0;i<BEH.length;i++)if(BEH[i].id===id)return BEH[i].name;return id;}
+  function teamAt(i){return DATA.teams[i]||null;}
+  function teamById(id){for(var i=0;i<DATA.teams.length;i++)if(DATA.teams[i].teamId===id)return DATA.teams[i];return null;}
+  function bl(list){return (list&&list.length)?'<ul>'+list.map(function(x){return '<li>'+rich(x)+'</li>';}).join('')+'</ul>':'<ul><li class="empty">To be written</li></ul>';}
+  function dimNo(d){return DIMS.indexOf(d)+1;}
+  function crit(id){return (M.criteria||{})[String(id)]||{short:'Criterion '+id};}
+  var LVL=['Not in place','Bronze','Silver','Gold'];
+
+  /* ---- hover cards: built per render, keyed, so no markup lives in an attribute ---- */
+  var TIPS={}, tipN=0;
+  function tip(html){var k='t'+(tipN++);TIPS[k]=html;return ' data-tip="'+k+'"';}
+  /* what each level means for one criterion, with the level this score sits at marked */
+  function ladderTip(id,avg){var c=crit(id),a=c.anchors||[],on=avg==null?-1:Math.round(avg);
+    return '<div class="lv">'+[0,1,2,3].map(function(l){var cls=l===on?' on':'';
+      return '<span class="n'+cls+'">'+l+'</span><span class="'+cls.trim()+'">'+esc(a[l]||LVL[l])+'</span>';}).join('')+'</div>';}
+  /* why a unit scored what it did on one behaviour. The hover is short (the criteria and their scores);
+     a click opens the "Why this score" panel with the four levels and what the team said */
+  var WHY={}, whyN=0;
+  function why(unit,b,isDept){var k='w'+(whyN++);WHY[k]={u:unit,b:b,d:!!isDept};return ' data-why="'+k+'"';}
+  function uName(u,isDept){if(isDept) return 'Department';var p=String(u.teamName||'').split(' - ');return p.length>1?p.slice(1).join(' - '):p[0];}
+  function whyTip(unit,b,isDept){var CU=U(unit).C, v=U(unit).B[b.id]||{};
+    return '<div class="tk2">'+esc(uName(unit,isDept))+'</div><div class="th2"><span>'+esc(b.name)+'</span><span class="'+rg(v.band)+'"><b class="bt">'+f2(v.avg)+' &middot; '+esc(v.band||'')+'</b></span></div>'+
+      '<div class="tcl">'+b.crit.map(function(id){var x=CU[String(id)];
+        return '<div class="cn2"><span>'+esc(crit(id).short)+'</span><span class="'+(x?rg(x.band):'na')+'"><b class="bt">'+(x?f2(x.avg):'–')+'</b></span></div>';}).join('')+'</div>'+
+      '<div class="tft">'+(isDept?'Click for the levels and each team\'s score':'Click for the levels and what the team said')+'</div>';}
+  function firstSentence(q){return String(q).split(/(?<=[.!?])\s/)[0].trim().toLowerCase();}
+  function whyPanel(k){var W=WHY[k]; if(!W) return; var u=W.u,b=W.b,CU=U(u).C,v=U(u).B[b.id]||{};
+    var body=b.crit.map(function(id){var x=CU[String(id)], c=crit(id), A=c.anchors||[], on=x?Math.round(x.avg):-1;
+      var h='<div class="wsec"><div class="wch"><span>'+esc(c.short)+'</span><span class="'+(x?rg(x.band):'na')+'"><b class="bt">'+(x?f2(x.avg)+' / 3':'not scored')+'</b></span></div>';
+      if(W.d) h+='<div class="wsm">'+DATA.teams.map(function(t){var y=U(t).C[String(id)];return esc(uName(t))+' <b class="'+(y?rg(y.band):'na')+'"><span class="bt">'+(y?f2(y.avg):'–')+'</span></b>';}).join(' &middot; ')+'</div>';
+      else if(x&&x.n) h+='<div class="wsm">'+x.n+' answer'+(x.n>1?'s':'')+(x.min!=null&&x.n>1?', from '+x.min+' to '+x.max:'')+'</div>';
+      if(x&&x.survey!=null) h+='<div class="wsm">Survey average '+f2(x.survey)+', set to '+f2(x.avg)+' when the team reviewed it</div>';
+      h+='<div class="wstp">'+[0,1,2,3].map(function(l){return '<div class="'+(l===on?'on '+rg(x.band):'')+'"><b>'+l+'</b>'+esc(A[l]||LVL[l])+'</div>';}).join('')+'</div>';
+      if(!W.d&&x&&x.verbatims&&x.verbatims.length){var seen={};
+        var qs=x.verbatims.filter(function(q){var f=firstSentence(q);if(seen[f])return false;seen[f]=1;return true;});
+        h+='<div class="wlab">What the team said</div>'+qs.map(function(q){return '<div class="wq">"'+esc(q)+'"</div>';}).join('');}
+      return h+'</div>';}).join('');
+    whyEl.innerHTML='<div class="wh"><button class="wx" aria-label="Close">&times;</button><div class="wk">Why this score &middot; '+esc(uName(u,W.d))+'</div>'+
+      '<h4><span>'+esc(b.name)+'</span><span class="'+rg(v.band)+'"><b class="bt">'+f2(v.avg)+' &middot; '+esc(v.band||'')+'</b></span></h4>'+
+      '<div class="wsm">'+(W.d?'Mean of the '+DATA.teams.length+' teams, each counted once':(b.crit.length>1?'Mean of '+b.crit.length+' criteria, each the average of the team\'s answers':'The average of the team\'s answers on its one criterion'))+'</div></div>'+
+      '<div class="wb">'+body+'</div>';
+    whyEl.classList.add('on'); tipEl.classList.remove('on');
+    whyEl.querySelector('.wx').onclick=function(){whyEl.classList.remove('on');};}
+  function toolTip(name,u,isDept){var T=U(u).T[name]||{};
+    var h='<div class="th">'+esc(name)+': '+f2(T.avg)+' / 3 &middot; '+esc(T.status||'')+'</div>';
+    if(T.survey!=null) h+='<div class="ans">Survey average '+f2(T.survey)+', set to '+f2(T.avg)+' when the team reviewed it</div>';
+    if(isDept) h+='<div class="tc">'+DATA.teams.map(function(tm){var x=U(tm).T[name];return x?'<div class="cn"><span>'+esc(tm.teamName)+'</span><span>'+f2(x.avg)+'</span></div>':'';}).join('')+'</div>';
+    h+='<div class="tc"><div class="lv">'+[['0','Not in place'],['1','In place, not used'],['2','Active but manual'],['3','Active, digital and easy to maintain']].map(function(p){
+      var on=Math.round(T.avg||0)===+p[0]?' on':'';return '<span class="n'+on+'">'+p[0]+'</span><span class="'+on.trim()+'">'+p[1]+'</span>';}).join('')+'</div></div>';
+    return h;}
+
+  var st={scope:'dept',dv:'overview',team:0,tv:'deepdive'};
+  if(DATA.focus&&DATA.focus.scope==='team'){st.scope='team';DATA.teams.forEach(function(t,i){if(t.teamId===DATA.focus.team)st.team=i;});}
+
+  function insights(scope,u){
+    var DU=U(u).D;
+    return DIMS.map(function(d){var dv=DU[d]||{};
+      return '<div class="ins edz" data-ed="'+esc(scope)+'|insights.'+d+'"><div class="inh"><span class="inum">'+dimNo(d)+'</span>'+
+        '<b>'+esc(d)+': <span class="bt '+rg(dv.band)+'">'+f2(dv.avg)+' &middot; '+esc(dv.band||'')+'</span></b></div>'+bl(insOf(u,d))+'</div>';}).join('');}
+
+  /* ---- department · overview: team x behaviour matrix left, insights right ---- */
+  /* ---- department · overview: behaviours as rows, teams as columns, the department as a column of pills.
+     From 7 teams the matrix takes more of the width and the team names drop a size. ---- */
+  function vOverview(){
+    var D=DATA.dept, DU=U(D), T=DATA.teams, nT=T.length, many=nT>=7, h='', r=2, dc=nT+3;
+    h+='<div class="tx-th" style="grid-row:1;grid-column:1"></div>';
+    T.forEach(function(t,i){h+='<div class="tx-th" style="grid-row:1;grid-column:'+(i+2)+'">'+esc(uName(t))+'</div>';});
+    h+='<div class="tx-th dep" style="grid-row:1;grid-column:'+dc+'">Department</div>';
+    DIMS.forEach(function(d,di){
+      h+='<div class="tx-dh" style="grid-row:'+(r++)+'"><span class="inum">'+(di+1)+'</span>'+esc(d)+'</div>';
+      BEH.filter(function(b){return b.dim===d;}).forEach(function(b){
+        h+='<div class="tx-bl" style="grid-row:'+r+'">'+esc(b.name)+'</div>';
+        T.forEach(function(t,i){var v=U(t).B[b.id];
+          h+='<div class="cell '+(v?rg(v.band):'na')+'" style="grid-row:'+r+';grid-column:'+(i+2)+'" data-calc="'+i+'|'+d+'"'+tip(whyTip(t,b,false))+why(t,b,false)+'>'+(v?f2(v.avg):'–')+'</div>';});
+        var v=DU.B[b.id];
+        h+='<div class="cell dep '+(v?rg(v.band):'na')+'" style="grid-row:'+r+';grid-column:'+dc+'"'+tip(whyTip(D,b,true))+why(D,b,true)+'>'+(v?f2(v.avg):'–')+'</div>';
+        r++;});});
+    h+='<div class="tx-rule" style="grid-row:'+(r++)+'"></div>';
+    h+='<div class="tx-bl tx-ov" style="grid-row:'+r+'">Overall</div>';
+    T.forEach(function(t,i){h+='<div class="cell ov '+rg(t.overall.band)+'" style="grid-row:'+r+';grid-column:'+(i+2)+'">'+f2(t.overall.avg)+'</div>';});
+    h+='<div class="cell dep ov '+rg(D.overall.band)+'" style="grid-row:'+r+';grid-column:'+dc+'">'+f2(D.overall.avg)+'</div>';
+    var gt='grid-template-columns:minmax(14em,'+(many?1.8:2.2)+'fr) repeat('+nT+',minmax(0,1fr)) .8em minmax(0,1fr)';
+    return {chip:'LEAN MATURITY · DEPARTMENT', sub:D.department, path:['dept','keyMessage'], src:D.source, legend:'bsg',
+      html:'<div class="slide wide'+(many?' many':'')+'"><section class="colx"><h3 class="sech">Maturity by behaviour and team, 0 to 3</h3>'+
+        '<div class="mxg" style="'+gt+'">'+h+'</div></section>'+
+        '<section class="colins"><h3 class="sech">Insights by dimension</h3><div class="inswrap">'+insights('dept',D)+'</div></section></div>'};
+  }
+  /* ---- department · key takeaways: six open blocks ---- */
+  function vTakeaways(){
+    var D=DATA.dept, T=D.narrative.takeaways||{}, cards=(T.cards||[]).slice(0,6);
+    var html=cards.map(function(c,i){var ico=ICONS[c.icon]||ICONS[ISEQ[i%6]];
+      return '<div class="tk edz" data-ed="dept|takeaways.cards.'+i+'"><div class="tkh"><span class="tkico">'+ico+'</span><span class="tkt">'+esc(c.label)+'</span></div>'+bl(c.bullets)+'</div>';}).join('');
+    return {chip:'LEAN MATURITY · KEY TAKEAWAYS', sub:D.department, path:['dept','takeaways.keyMessage'],
+      src:D.source, legend:'', html:'<div class="slide full"><section class="colx"><div class="tkg">'+(html||'<div class="empty">To be written</div>')+'</div></section></div>'};
+  }
+  function groups(tools){var out=[],seen={};
+    DIMS.forEach(function(d){var got=(M.tools[d]||[]).filter(function(t){return tools[t];});got.forEach(function(t){seen[t]=1;});out.push([d,got]);});
+    var rest=Object.keys(tools).filter(function(t){return !seen[t];}); if(rest.length) out.push(['Other',rest]); return out;}
+  function thr(){return [0.5,1.5,2.5].map(function(x){return '<i class="thr" style="left:'+(x/3*100).toFixed(2)+'%"></i>';}).join('');}
+  /* ---- department · tool deployment: range across teams, department mean, full width ---- */
+  /* a tool column header: the dimension's number and name, and how many of its tools are in place */
+  function toolHead(name,list,tools){var n=DIMS.indexOf(name)+1, inp=list.filter(function(x){return tools[x].status!=='Not in place';}).length;
+    return '<div class="tgph">'+(n?'<span class="inum">'+n+'</span>':'')+'<span class="d">'+esc(name)+'</span><span class="hcnt"><b>'+inp+'</b> of '+list.length+' in place</span></div>';}
+  function toolRows(gs){return Math.max.apply(null,gs.map(function(g){return g[1].length;}).concat([1]));}
+  function vToolsDept(){
+    var D=DATA.dept, tools=U(D).T, gs=groups(tools).filter(function(g){return g[1].length;}), nr=toolRows(gs);
+    var panels=gs.map(function(g){
+      var rows=g[1].slice().sort(function(a,b){return tools[b].avg-tools[a].avg;}).map(function(t){var v=tools[t],c=TRAG[v.status];
+        var lo=v.min==null?v.avg:v.min, hi=v.max==null?v.avg:v.max;
+        var rng=hi>lo?'<i class="rng" style="left:'+(lo/3*100).toFixed(1)+'%;width:'+Math.max((hi-lo)/3*100,0.8).toFixed(1)+'%"></i>':'';
+        return '<div class="trow'+(v.status==='Not in place'?' gone':'')+'"'+tip(toolTip(t,D,true))+'><span class="tl">'+esc(t)+'</span>'+
+          '<span class="dt '+c+'">'+thr()+rng+'<i class="mk" style="left:'+(v.avg/3*100).toFixed(1)+'%"></i></span><span class="tsc '+c+'">'+f2(v.avg)+'</span></div>';}).join('');
+      return '<div class="tgp">'+toolHead(g[0],g[1],tools)+'<div class="tgpb" style="grid-template-rows:repeat('+nr+',minmax(0,1fr))">'+rows+'</div></div>';}).join('');
+    return {chip:'LEAN MATURITY · TOOL DEPLOYMENT', sub:D.department, path:['dept','tools.keyMessage'],
+      src:D.source+' · tools grouped by the dimension they serve · department mean of the team averages, each team once', legend:'rng',
+      html:'<div class="slide full"><section class="colx"><div class="tg4">'+panels+'</div></section></div>'};
+  }
+  /* ---- team · deepdive: the maturity track left, insights right ---- */
+  function vDeepdive(){
+    var t=teamAt(st.team); if(!t) return {chip:'LEAN MATURITY',sub:'',src:'',legend:'',html:'<div class="empty">No team captured</div>'};
+    var TU=U(t), cells=[], r=1;
+    DIMS.forEach(function(d){var bs=BEH.filter(function(b){return b.dim===d&&TU.B[b.id];}); if(!bs.length) return;
+      var n=bs.length, dv=TU.D[d]||{}, top=r>1?' top':'';
+      cells.push('<div class="dimcell'+top+'" style="grid-row:'+r+'/span '+n+'"><div class="dimblk"><span class="dn"><i>'+dimNo(d)+'</i>'+esc(d)+'</span><span class="dsc">'+f2(dv.avg)+'<small>/3</small></span></div></div>');
+      bs.forEach(function(b,i){var v=TU.B[b.id], c=rg(v.band), pct=Math.max(v.avg/3*100,7);
+        var split=b.crit.filter(function(cid){return (t.contested||[]).indexOf(String(cid))>=0;});
+        cells.push('<div class="bnm'+(i?'':top)+'" style="grid-row:'+(r+i)+'">'+(split.length?'<span class="ctd">Answers differ</span>':'')+esc(b.name)+'</div>');
+        cells.push('<div class="bsc'+(i?'':top)+'" style="grid-row:'+(r+i)+'" data-calc="'+st.team+'|'+d+'"'+tip(whyTip(t,b,false))+why(t,b,false)+'><span class="trk"><i class="tick" style="left:50%"></i><i class="tick" style="left:83.33%"></i><b class="fill '+c+'" style="width:'+pct.toFixed(1)+'%">'+f2(v.avg)+'</b></span></div>');});
+      r+=n;});
+    cells.push('<div class="scale" style="grid-row:'+r+';grid-column:3"><span class="trk sc"><u class="z red" style="left:0;width:50%">Bronze</u><u class="z amber" style="left:50%;width:33.33%">Silver</u><u class="z green" style="left:83.33%;width:16.67%">Gold</u></span></div>');
+    var R=t.response||{};
+    return {chip:'LEAN MATURITY · TEAM DEEPDIVE', sub:t.teamName, path:[t.teamId,'keyMessage'], src:t.source, legend:'bsg',
+      html:'<div class="slide"><section class="colx"><h3 class="sech">Maturity by behaviour, 0 to 3</h3>'+
+        '<div class="ddg" style="grid-template-rows:repeat('+(r-1)+',1fr) auto">'+cells.join('')+'</div>'+
+        '<div class="sumrow"><span><span class="k">Overall</span><span class="v '+rg(t.overall.band)+'"><span class="bt">'+f2(t.overall.avg)+'</span><small>/3 &middot; '+esc(t.overall.band||'')+'</small></span></span>'+
+        '<span><span class="k">Respondents</span><span class="v">'+(R.respondents||0)+(R.teamSize?'<small>of '+R.teamSize+'</small>':'')+'</span></span>'+
+        '<span class="note">Overall is the mean of the four dimensions</span></div></section>'+
+        '<section class="colins"><h3 class="sech">Insights by dimension</h3><div class="inswrap">'+insights(t.teamId,t)+'</div></section></div>'};
+  }
+  function ladder(status){var lv=TLEV[status]||0,c=TRAG[status];return '<span class="ladd '+c+'">'+[1,2,3].map(function(i){return '<i'+(i<=lv?' class="on"':'')+'></i>';}).join('')+'</span>';}
+  /* ---- team · tooling: one ladder per tool, full width ---- */
+  function vTooling(){
+    var t=teamAt(st.team); if(!t) return vDeepdive();
+    var tools=U(t).T, gs=groups(tools).filter(function(g){return g[1].length;}), nr=toolRows(gs);
+    var panels=gs.map(function(g){
+      var rows=g[1].slice().sort(function(a,b){return tools[b].avg-tools[a].avg;}).map(function(x){var v=tools[x],c=TRAG[v.status];
+        return '<div class="trow'+(v.status==='Not in place'?' gone':'')+'" data-calc="'+st.team+'|Tools"'+tip(toolTip(x,t,false))+'><span class="tl">'+esc(x)+'</span>'+ladder(v.status)+'<span class="tsc '+c+'">'+f2(v.avg)+'</span></div>';}).join('');
+      return '<div class="tgp lad">'+toolHead(g[0],g[1],tools)+'<div class="tgpb" style="grid-template-rows:repeat('+nr+',minmax(0,1fr))">'+rows+'</div></div>';}).join('');
+    return {chip:'LEAN MATURITY · TEAM TOOLING', sub:t.teamName, path:[t.teamId,'tooling.keyMessage'], src:t.source, legend:'tools',
+      html:'<div class="slide full"><section class="colx"><div class="tg4">'+panels+'</div></section></div>'};
+  }
+  var LEG={
+    bsg:[['red','Bronze below 1.5'],['amber','Silver 1.5 to 2.49'],['green','Gold 2.5 and up']],
+    tools:[['na','Not in place'],['red','In place, not used'],['amber','Active but manual'],['green','Active and digital']]};
+  LEG.rng=LEG.tools;
+
+  /* ---- narrative store: every editable string lives at <scope>|<path> ---- */
+  function unit(scope){return scope==='dept'?DATA.dept:teamById(scope);}
+  function getN(scope,path){var o=unit(scope); if(!o) return null; if(path==='keyMessage') return o.keyMessage||'';
+    if(path.indexOf('insights.')===0) return insOf(o,path.slice(9));
+    var p=path.split('.'), x=o.narrative||{}; for(var i=0;i<p.length;i++){ if(x==null) return null; x=x[p[i]]; } return x;}
+  function setN(scope,path,val){var o=unit(scope); if(!o) return; if(path==='keyMessage'){o.keyMessage=val;return;}
+    if(path.indexOf('insights.')===0){var dim=path.slice(9), n=o.narrative=o.narrative||{}, l=n.insights=n.insights||[];
+      for(var j=0;j<l.length;j++) if(l[j].dim===dim){l[j].bullets=val;return;} l.push({dim:dim,bullets:val});return;}
+    var p=path.split('.'), x=o.narrative=o.narrative||{}; for(var i=0;i<p.length-1;i++){ if(x[p[i]]==null) x[p[i]]=/^\d+$/.test(p[i+1])?[]:{}; x=x[p[i]]; } x[p[p.length-1]]=val;}
+
+  var CUR=null;
+  /* the five views: three on the department scope, two on the team scope */
+  var VIEWS={overview:vOverview,takeaways:vTakeaways,tools:vToolsDept,deepdive:vDeepdive,tooling:vTooling};
+  function keyView(){return VIEWS[st.scope==='dept'?st.dv:st.tv];}
+  /* Fill, don't shrink: the page takes the frame's full height, rows stretch, and type follows the
+     deck size. Only when the content still does not fit is the whole view scaled down. */
+  function fitView(){var v=document.getElementById('view'),vi=document.getElementById('vinner');var ah=v.clientHeight;if(!ah)return;
+    var base=Math.max(13,Math.min(19,(parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nr-ui'))||14)));
+    vi.style.transform='none';vi.style.width='100%';vi.style.height='auto';
+    /* the natural height at a type size, measured with the stretch switched off */
+    function nat(fs){vi.style.setProperty('--lui',fs+'px');return vi.scrollHeight;}
+    var fs=base, cap=base*1.3, room=ah-6;
+    if(nat(fs)<=room){ while(fs+0.5<=cap&&nat(fs+0.5)<=room) fs+=0.5; }
+    else { while(fs>11&&nat(fs)>room) fs-=0.5; }
+    nat(fs); vi.style.height=room+'px';
+    if(vi.scrollHeight>ah-2){var lo=0.4,hi=1,best=0.4;
+      for(var j=0;j<10;j++){var s=(lo+hi)/2;vi.style.width=(100/s)+'%';vi.style.height=(room/s)+'px';if(vi.scrollHeight*s<=ah-2){best=s;lo=s;}else{hi=s;}}
+      vi.style.width=(100/best)+'%';vi.style.height=(room/best)+'px';vi.style.transform='scale('+best+')';}}
+  /* the hover card */
+  var tipEl=document.createElement('div'); tipEl.id='tip'; document.getElementById('art').appendChild(tipEl);
+  var whyEl=document.createElement('div'); whyEl.id='why'; document.getElementById('art').appendChild(whyEl);
+  document.addEventListener('click',function(e){var el=e.target.closest&&e.target.closest('[data-why]');
+    if(el&&!document.getElementById('art').classList.contains('editing')){whyPanel(el.getAttribute('data-why'));return;}
+    if(whyEl.classList.contains('on')&&!whyEl.contains(e.target)) whyEl.classList.remove('on');});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape') whyEl.classList.remove('on');});
+  document.addEventListener('mouseover',function(e){var el=e.target.closest&&e.target.closest('[data-tip]');
+    if(!el||!TIPS[el.getAttribute('data-tip')]){tipEl.classList.remove('on');return;}
+    tipEl.innerHTML=TIPS[el.getAttribute('data-tip')];tipEl.classList.add('on');});
+  document.addEventListener('mousemove',function(e){if(!tipEl.classList.contains('on'))return;
+    var w=tipEl.offsetWidth,h=tipEl.offsetHeight,x=e.clientX+16,y=e.clientY+16;
+    if(x+w>window.innerWidth-8)x=e.clientX-w-16; if(y+h>window.innerHeight-8)y=Math.max(8,window.innerHeight-h-8);
+    tipEl.style.left=x+'px';tipEl.style.top=y+'px';});
+  function render(){
+    TIPS={}; tipN=0; WHY={}; whyN=0;
+    var d=keyView()(); CUR=d;
+    document.getElementById('ctx').textContent=DATA.context||'OPEX QUICKSCAN';
+    document.getElementById('lens').textContent=d.chip;
+    var km=d.path?getN(d.path[0],d.path[1]):'';
+    document.getElementById('title').innerHTML=km?hl(km):'<span style="color:var(--mut);font-style:italic;font-weight:600">Action title to be written</span>';
+    document.getElementById('subt').textContent=d.sub||'';
+    var stamp=[DATA.dept.client,DATA.dept.date].filter(Boolean).join(' · ');
+    document.getElementById('src').innerHTML=d.src?('<b style="color:var(--txt)">Source:</b> '+esc(d.src)+(stamp?' · '+esc(stamp):'')):'';
+    var lg=LEG[d.legend]||[], extra=d.legend==='rng'?'<span class="lx"><i class="rngk"></i> range across teams</span><span class="lx"><i class="mkk"></i> department mean</span>':'';
+    document.getElementById('lg').innerHTML=lg.length?('<b style="color:var(--txt);margin-right:4px">Legend:</b>'+lg.map(function(p){return '<span class="lp '+p[0]+'"><i class="lpd"></i>'+p[1]+'</span>';}).join('')+extra):'';
+    document.getElementById('vinner').innerHTML=d.html;
+    var t=st.scope==='team';
+    document.getElementById('dview').style.display=t?'none':'flex';
+    document.getElementById('teamSel').style.display=t?'inline-block':'none';
+    document.getElementById('tview').style.display=t?'flex':'none';
+    /*<EDIT>*/bindEdit();/*</EDIT>*/
+    requestAnimationFrame(function(){fitView();if(window.fitChrome)window.fitChrome();}); setTimeout(fitView,60);}
+  function seg(id,attr,cb){var box=document.getElementById(id);box.querySelectorAll('button').forEach(function(b){b.onclick=function(){box.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});b.classList.add('on');cb(b.getAttribute(attr));};});}
+  function setOn(id,val){document.querySelectorAll('#'+id+' button').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-v')===val);});}
+  var sel=document.getElementById('teamSel');
+  sel.innerHTML=DATA.teams.map(function(t,i){return '<option value="'+i+'">'+esc(t.teamName)+'</option>';}).join('');
+  sel.value=String(st.team);
+  sel.onchange=function(e){st.team=+e.target.value;render();};
+  seg('scope','data-v',function(v){st.scope=v;render();});
+  seg('dview','data-v',function(v){st.dv=v;render();});
+  seg('tview','data-v',function(v){st.tv=v;render();});
+  seg('theme','data-s',function(v){document.getElementById('art').setAttribute('data-t',v);render();});
+  setOn('scope',st.scope);
+  window.addEventListener('resize',fitView);
+/*<EDIT>*/
+  var ON=false, DELTA=[], edp=document.getElementById('ed');
+  var LOCK_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>', UNLOCK_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>';
+  function bullets(v){return (v||[]).map(function(x){return '• '+x;}).join('\n');}
+  function unbullets(t){return String(t||'').split('\n').map(function(x){return x.replace(/^\s*[•\-\*]\s?/,'').trim();}).filter(Boolean);}
+  function bindBullets(ta){
+    if(ta.value.trim()&&!/^\s*•/.test(ta.value))ta.value=bullets(unbullets(ta.value));
+    ta.addEventListener('focus',function(){if(!ta.value.trim()){ta.value='• ';}});
+    ta.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();
+      var s=ta.selectionStart,ep=ta.selectionEnd,v=ta.value;
+      ta.value=v.slice(0,s)+'\n• '+v.slice(ep);ta.selectionStart=ta.selectionEnd=s+3;
+      ta.dispatchEvent(new Event('input',{bubbles:true}));}});
+    ta.addEventListener('blur',function(){ta.value=bullets(unbullets(ta.value));});}
+  function label(scope,path){var u=unit(scope), who=scope==='dept'?'Department':(u?u.teamName:scope);
+    var m={'keyMessage':'Action title','insights':'Insights','takeaways.keyMessage':'Action title, key takeaways','takeaways.cards':'Key takeaway','tools.keyMessage':'Action title, tool deployment','tooling.keyMessage':'Action title, tooling'};
+    var k=path.replace(/\.\d+$/,'').replace(/^insights\..*/,'insights'), extra=path.indexOf('insights.')===0?' · '+path.split('.')[1]:'';
+    return (m[k]||path)+extra+' · '+who;}
+  function pushOp(op){ DELTA.push(op);
+    var u=unit(op.scope), nm=op.op==='score'?('Score: '+(op.path.indexOf('criteria.')===0?crit(op.path.slice(9)).short:op.path.slice(6))+' '+f2(op.survey)+' to '+f2(op.value)+' · '+(u?u.teamName:op.scope)):('Edited: '+label(op.scope,op.path));
+    nrHistStep(DELTA.length, null, nm); shellBar(); }
+  function shellBar(){ var b=document.getElementById('save'), bu=document.getElementById('undo'), bd=document.getElementById('discard');
+    var n=nrHistCount()||DELTA.length;
+    if(b){ b.className=(ON&&n)?'show':''; b.disabled=!n; b.textContent=nrHandLabel(n); }
+    var sn=document.getElementById('nrstripn'); if(sn) sn.textContent=n?(n+' change'+(n>1?'s':'')+(NR_INBOX?' not sent yet':' not exported yet')):'Edit the text in place, or open Inputs to adjust a score.';
+    if(bu) bu.className=(ON&&n)?'show':'';
+    if(bd&&!bd._armed){ bd.className=(ON&&n)?'show':''; bd.textContent='Discard all'; } }
+  function shellRestore(all){ var t=nrHistBack(all); if(!t) return; DELTA.length=t.n; if(edp) edp.classList.remove('on');
+    render(); shellBar(); nrSay(all?'All unsent changes discarded. The page is back as it was when you opened it.':'Last change undone.'); }
+  /* ── handing the changes over (editable-deliverable.md, "Opened as a claude.ai artifact") ──
+     Opened as a file, the changes download as a delta JSON, as always. Opened as a claude.ai
+     artifact that declares the `db` capability, the same delta is saved in the page's own store
+     under changes/, and Claude applies it from there with the same script and checks. The
+     artifact viewer blocks downloads, so there the button becomes "Send to Claude". Either way
+     the page applies nothing itself. This block is the same in every working copy. */
+  /* NR-HANDOVER:BEGIN — handing the changes over (scripts/patch_handover.py, HANDOVER_JS; editable-deliverable.md,
+     "Opened as a claude.ai artifact"). As a file the delta downloads; as a claude.ai artifact with the db
+     capability it is saved in the store under changes/, status "waiting"; the page applies nothing itself.
+     One block, the same in the edit kit, the editable shell and the process map. Do not edit here: change
+     HANDOVER_JS and run patch_handover.py again. */
+  /* in a window of the findings dashboard the page is a frame of our own page: it sends through that page */
+  var NR_CL=(function(){ var L=[], W=[]; try{ var p=window.parent; if(p!==window&&p.claude&&p.claude.use){ L.push(p.claude); W.push(p); } }catch(e){} if(window.claude&&window.claude.use&&L.indexOf(window.claude)<0){ L.push(window.claude); W.push(window); } if(!L.length) return null; var at=window; return {plain:function(o){ var s=JSON.stringify(o); try{ return at.JSON.parse(s); }catch(e){ return JSON.parse(s); } }, use:function(k){ return new Promise(function(ok,no){ (function t(i){ if(i>=L.length){ try{console.warn('nr: no '+k+' on this page');}catch(e){} return no(new Error('no '+k)); } var over=false, tm=setTimeout(function(){ if(!over){ over=true; t(i+1); } },4000); function next(v){ if(over) return; over=true; clearTimeout(tm); if(v){ at=W[i]; ok(v); } else t(i+1); } try{ L[i].use(k).then(next,function(){ next(null); }); }catch(e){ next(null); } })(0); }); }}; })(),
+      NR_FRAMED=!!(NR_CL&&NR_CL.use), NR_INBOX=NR_FRAMED?null:false;
+  if(NR_FRAMED){ NR_CL.use('db').then(function(db){ NR_INBOX=db||false; nrReady(); },
+                                           function(){ NR_INBOX=false; nrReady(); }); }
+  /* who is looking (the user capability) and who decides on this page (window.NR_RIGHTS, put in by
+     build_artifact.py from rights.py): the change says who sent it, and someone who does not decide
+     here sends it as a proposal. The email (or, when the organisation withholds it, the name) is only compared on the page, never stored. */
+  var NR_ME=null;
+  if(NR_FRAMED){ NR_CL.use('user').then(function(u){ return u?u.me():null; })
+    .then(function(me){ NR_ME=me||null; nrReady(); },function(){}); }
+  function nrRights(){ return window.NR_RIGHTS||null; }
+  function nrMember(){ var R=nrRights(), e=NR_ME&&NR_ME.email, n=NR_ME&&NR_ME.name; if(!R) return null;
+    return (e&&R.team&&R.team[String(e).toLowerCase()])||(n&&R.people&&R.people[String(n).trim().toLowerCase()])||null; }
+  function nrMine(){ var R=nrRights(); if(!R||!NR_ME||!R.team||!Object.keys(R.team).length) return null; var m=nrMember(); return !!(m&&(R.decides||[]).indexOf(m)>=0); }
+  function nrWhoDecides(){ var R=nrRights(); return R&&R.names&&R.names.length?R.names.join(' and '):'the case lead'; }
+  function nrReady(){ if(window.nrInboxReady) window.nrInboxReady(); }   // the page redraws its edit line
+  function nrHandLabel(n){ if(!n) return 'No changes';
+    return NR_INBOX?(nrMine()===false?'Send as a proposal':'Send to Claude'):'Export changes'; }
+  function nrSay(m){ var t=document.getElementById('nr-hand-msg');
+    if(!t){ t=document.createElement('div'); t.id='nr-hand-msg'; t.setAttribute('role','status');
+      t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:99;max-width:520px;padding:11px 18px;border-radius:10px;background:var(--navy-fill,#0B2347);color:#fff;font-size:12.5px;font-weight:600;line-height:1.45;text-align:center;transition:opacity .25s;opacity:0;pointer-events:none';
+      document.body.appendChild(t); }
+    t.textContent=m; t.style.opacity='1'; clearTimeout(t._h); t._h=setTimeout(function(){ t.style.opacity='0'; },5200); }
+  function nrHandOver(d, done){
+    if(NR_INBOX){
+      var id=String(d.deltaId||'D').replace(/[^A-Za-z0-9._-]/g,'-')+'-'+Date.now().toString(36);
+      var R=nrRights(), mine=nrMine();
+      NR_INBOX.doc('changes/'+id).set(NR_CL.plain({status:'waiting', sentAt:new Date().toISOString(),
+          sentBy:{uid:(NR_ME&&NR_ME.id)||null, member:nrMember()}, page:(R&&R.page)||null, delta:d}))
+        .then(function(){ done(true, mine===false
+            ? (nrMember()?'Sent as a proposal: '+nrWhoDecides()+' decides on '+(R.what||'this')+'. Ask Claude in the chat to pass it on.'
+                         :"Sent. We couldn't tell who you are, so it goes to "+nrWhoDecides()+' as a proposal.')
+            : 'Sent. Ask Claude in the chat to apply the changes.'); },
+              function(e){ try{console.warn('nr: not sent', e&&e.message||e);}catch(x){} done(false,"Your changes weren't sent. Try again in a moment."); });
+      return;
+    }
+    if(NR_FRAMED && NR_INBOX===null){ done(false,'The page is still connecting. Try again in a second.'); return; }
+    if(NR_FRAMED){ done(false,"This page can't send changes yet. Ask Claude to republish it with sending switched on."); return; }
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,1)],{type:'application/json'}));
+    a.download=d.deltaId+'.json'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    done(true,'Downloaded '+d.deltaId+'.json. Give it to Claude to apply.');
+  }
+  /* NR-HANDOVER:END */
+  /* ── undo and discard for UNSENT changes (editable-deliverable.md, "Undo and discard") ──
+     The page keeps a snapshot after each edit. "Undo last" puts the page back as it was before the
+     last edit, "Discard all" as it was when it opened, and closing the tab with unsent edits warns.
+     Once changes are sent or exported, undoing them is Claude's job (history.py). The same block
+     is in every working copy; each tool only says what an edit was called and how to redraw. */
+  var NRH={base:null, steps:[], restoring:false};
+  function nrClone(o){ return JSON.parse(JSON.stringify(o)); }
+  function nrHistStart(n,km){ NRH.base={n:n||0, km:km==null?null:km, data:nrClone(DATA)}; NRH.steps=[]; }
+  function nrHistTop(){ return NRH.steps.length?NRH.steps[NRH.steps.length-1]:NRH.base; }
+  function nrHistStep(n, km, label){
+    if(NRH.restoring||!NRH.base) return;
+    var t=nrHistTop(); km=km==null?null:km;
+    if(t && t.n===n && t.km===km) return;          // nothing new since the last snapshot
+    NRH.steps.push({n:n, km:km, label:label||'Edit', data:nrClone(DATA)}); }
+  function nrHistBack(all){
+    if(!NRH.base) return null;
+    if(all) NRH.steps=[]; else NRH.steps.pop();
+    var t=nrHistTop(), d=nrClone(t.data);
+    Object.keys(DATA).forEach(function(k){ delete DATA[k]; }); Object.assign(DATA,d);
+    return t; }
+  function nrHistCount(){ return NRH.steps.length; }
+  function nrHistList(){
+    if(!NRH.steps.length) return '';
+    return '<div class="nr-hist"><b>Your unsent changes</b><ol>'+NRH.steps.map(function(s){
+      return '<li>'+String(s.label).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];})+'</li>'; }).join('')+'</ol></div>'; }
+  /* "Discard all" asks on the page itself: the artifact viewer never shows confirm() */
+  function nrArm(btn, text, go){
+    if(btn._armed){ clearTimeout(btn._armed); btn._armed=null; btn.classList.remove('arm'); btn.textContent=btn._orig; go(); return; }
+    btn._orig=btn.textContent; btn.classList.add('arm'); btn.textContent=text;
+    btn._armed=setTimeout(function(){ btn._armed=null; btn.classList.remove('arm'); btn.textContent=btn._orig; if(window.nrHistBar) window.nrHistBar(); },4000); }
+  window.addEventListener('beforeunload',function(e){ if(NRH.steps.length){ e.preventDefault(); e.returnValue=''; } });
+  window.nrInboxReady=function(){ shellBar(); };
+  /* ── the calculator (working copy only): adjust a team's scores and watch every figure move ──
+     The OTE's Inputs panel, for the LMA. The survey value stays visible next to every slider, an
+     adjusted score is marked as adjusted in the capture, and nothing is written until Apply. */
+  function bandOf(v){return v==null?null:(v<1.5?'Bronze':(v<2.5?'Silver':'Gold'));}
+  function statusOf(v){return v<0.5?'Not in place':(v<1.5?'In place, not used':(v<2.5?'Active but manual':'Active and digital'));}
+  /* rounds exactly as lma_extract.py does (Python round on the float), so opening the calculator moves nothing */
+  function mean(a){a=a.filter(function(x){return x!=null;});return a.length?parseFloat((a.reduce(function(s,x){return s+x;},0)/a.length).toFixed(2)):null;}
+  function recomputeTeam(t){var C=U(t).C;
+    (t.behaviours||[]).forEach(function(b){var m=BEH.filter(function(x){return x.id===b.id;})[0];
+      b.avg=mean(m.crit.map(function(id){return C[String(id)]?C[String(id)].avg:null;}));b.band=bandOf(b.avg);});
+    (t.criteria||[]).forEach(function(c){c.band=bandOf(c.avg);});
+    var B=U(t).B;
+    (t.dimensions||[]).forEach(function(d){d.avg=mean(BEH.filter(function(x){return x.dim===d.name;}).map(function(x){return B[x.id]?B[x.id].avg:null;}));d.band=bandOf(d.avg);});
+    t.overall={avg:mean((t.dimensions||[]).map(function(d){return d.avg;})),band:null};t.overall.band=bandOf(t.overall.avg);
+    (t.tools||[]).forEach(function(x){x.status=statusOf(x.avg);});}
+  function recomputeDept(){var D=DATA.dept, T=DATA.teams;
+    ['criteria','behaviours'].forEach(function(k){var key='id';(D[k]||[]).forEach(function(r){r.avg=mean(T.map(function(t){var x=mp(t[k],key)[r[key]];return x?x.avg:null;}));r.band=bandOf(r.avg);});});
+    (D.dimensions||[]).forEach(function(r){r.avg=mean(T.map(function(t){var x=mp(t.dimensions,'name')[r.name];return x?x.avg:null;}));r.band=bandOf(r.avg);});
+    (D.tools||[]).forEach(function(r){var v=T.map(function(t){var x=mp(t.tools,'name')[r.name];return x?x.avg:null;}).filter(function(x){return x!=null;});
+      r.avg=mean(v);r.status=statusOf(r.avg);r.min=Math.min.apply(null,v);r.max=Math.max.apply(null,v);});
+    D.overall={avg:mean(T.map(function(t){return t.overall.avg;})),band:null};D.overall.band=bandOf(D.overall.avg);}
+  var CALC={team:0,sec:0,snap:null};
+  function calcSecs(){return DIMS.concat(['Tools']);}
+  function calcSummary(t){var DU=U(t).D;
+    return '<div class="csum"><div><b class="bt '+rg(t.overall.band)+'">Overall '+f2(t.overall.avg)+' &middot; '+esc(t.overall.band||'')+'</b></div><div class="cdims">'+
+      DIMS.map(function(d){var v=DU[d]||{};return '<span>'+esc(d)+' <b class="bt '+rg(v.band)+'">'+f2(v.avg)+'</b></span>';}).join('')+'</div>'+
+      '<div class="cdep">Department '+f2(DATA.dept.overall.avg)+' &middot; '+esc(DATA.dept.overall.band||'')+'</div></div>';}
+  function sliderRow(kind,id,label,q,val,survey,anch){var ch=survey!=null&&Math.abs(val-survey)>0.001;
+    return '<div class="crow'+(ch?' chg':'')+'" data-k="'+kind+'" data-id="'+esc(id)+'"><div class="cl"><b>'+esc(label)+'</b><span class="cv">'+f2(val)+'</span></div>'+
+      (q?'<div class="cq">'+esc(q)+'</div>':'')+
+      '<div class="cs"><input type="range" min="0" max="3" step="0.01" value="'+val+'"><i class="cmark" style="left:'+(survey/3*100).toFixed(1)+'%" title="Survey value"></i></div>'+
+      '<div class="cmeta">Survey '+f2(survey)+(ch?' &middot; <a href="#" class="crst">back to the survey value</a>':'')+'</div>'+
+      (anch?'<div class="canch">'+esc(anch[Math.round(val)]||'')+'</div>':'')+'</div>';}
+  function openCalc(){ if(!ON||!edp) return;
+    if(!CALC.snap){CALC.snap=nrClone({teams:DATA.teams,dept:DATA.dept});CALC.team=st.team;}
+    var t=teamAt(CALC.team), secs=calcSecs(), sec=secs[CALC.sec], C=U(t).C, body='';
+    if(sec==='Tools'){ var T=U(t).T; body=groups(T).map(function(g){return '<div class="cgh">'+esc(g[0])+'</div>'+g[1].map(function(n){var x=T[n];
+        return sliderRow('tool',n,n,null,x.avg,x.survey!=null?x.survey:x.avg,['Not in place','In place, not used','Active but manual','Active, digital and easy to maintain']);}).join('');}).join(''); }
+    else body=BEH.filter(function(b){return b.dim===sec;}).map(function(b){return '<div class="cgh">'+esc(b.name)+'</div>'+b.crit.map(function(id){var x=C[String(id)];if(!x)return '';
+        return sliderRow('criterion',String(id),crit(id).short,crit(id).gold,x.avg,x.survey!=null?x.survey:x.avg,crit(id).anchors);}).join('');}).join('');
+    edp.innerHTML='<div class="edh"><button class="x" id="edx">&times;</button><div class="row"><span class="kind">Calculator</span><h3>Inputs &middot; '+esc(t.teamName)+'</h3></div></div>'+
+      '<div class="edb">'+calcSummary(t)+
+      (DATA.teams.length>1?'<div class="cgl">Team</div><div class="cchips ctm">'+DATA.teams.map(function(x,i){return '<button class="cchip'+(i===CALC.team?' on':'')+'" data-t="'+i+'">'+esc(x.teamName)+'</button>';}).join('')+'</div><div class="cgl">Section</div>':'')+
+      '<div class="cchips">'+secs.map(function(s,i){return '<button class="cchip'+(i===CALC.sec?' on':'')+'" data-i="'+i+'">'+esc(s)+'</button>';}).join('')+'</div>'+
+      '<div class="cnote">Each score is the team\'s average answer. Move one only after the team has agreed it in the read-out; the survey value stays recorded beside it.</div>'+
+      body+'</div>'+
+      '<div class="edf"><button class="wbtn" id="cback">Back</button><button class="wbtn" id="cnext">Next section</button><span class="sp"></span><button class="wbtn" id="edc">Cancel</button><button class="wbtn pri" id="edok">Apply</button></div>';
+    edp.classList.add('on');
+    edp.querySelectorAll('.cchip:not([data-t])').forEach(function(b){b.onclick=function(){CALC.sec=+b.getAttribute('data-i');openCalc();};});
+    edp.querySelectorAll('.ctm .cchip').forEach(function(b){b.onclick=function(){CALC.team=+b.getAttribute('data-t');st.team=CALC.team;render();openCalc();};});
+    edp.querySelector('#cback').onclick=function(){CALC.sec=(CALC.sec+secs.length-1)%secs.length;openCalc();};
+    edp.querySelector('#cnext').onclick=function(){CALC.sec=(CALC.sec+1)%secs.length;openCalc();};
+    edp.querySelectorAll('.crow').forEach(function(row){var inp=row.querySelector('input'),k=row.getAttribute('data-k'),id=row.getAttribute('data-id');
+      function setv(v){var rec=k==='tool'?U(t).T[id]:U(t).C[id]; if(rec.survey==null) rec.survey=rec.avg; v=Math.round(v*100)/100; if(Math.abs(v-rec.survey)<0.015) v=rec.survey; rec.avg=v;
+        if(Math.abs(rec.avg-rec.survey)<0.001) delete rec.survey; recomputeTeam(t);recomputeDept();render();
+        row.querySelector('.cv').textContent=f2(rec.avg); edp.querySelector('.csum').outerHTML=calcSummary(t);
+        var an=row.querySelector('.canch'); if(an){var A=k==='tool'?['Not in place','In place, not used','Active but manual','Active, digital and easy to maintain']:crit(id).anchors||[]; an.textContent=A[Math.round(rec.avg)]||'';}
+        row.classList.toggle('chg',rec.survey!=null);}
+      inp.oninput=function(){setv(+inp.value);};
+      var rs=row.querySelector('.crst'); if(rs) rs.onclick=function(e){e.preventDefault();var rec=k==='tool'?U(t).T[id]:U(t).C[id];setv(rec.survey);openCalc();};});
+    edp.querySelector('#edx').onclick=edp.querySelector('#edc').onclick=function(){ var s=CALC.snap; if(s){DATA.teams=s.teams;DATA.dept=s.dept;} CALC.snap=null; edp.classList.remove('on'); render(); };
+    edp.querySelector('#edok').onclick=function(){ var s=CALC.snap; CALC.snap=null;
+      DATA.teams.forEach(function(tm,ti){var o=s.teams[ti];
+        (tm.criteria||[]).forEach(function(c){var p=mp(o.criteria,'id')[c.id];if(p&&Math.abs(p.avg-c.avg)>0.001) pushOp({op:'score',scope:tm.teamId,path:'criteria.'+c.id,value:c.avg,survey:c.survey!=null?c.survey:p.avg});});
+        (tm.tools||[]).forEach(function(c){var p=mp(o.tools,'name')[c.name];if(p&&Math.abs(p.avg-c.avg)>0.001) pushOp({op:'score',scope:tm.teamId,path:'tools.'+c.name,value:c.avg,survey:c.survey!=null?c.survey:p.avg});});});
+      edp.classList.remove('on'); render(); }; }
+  function exportDelta(){ if(!DELTA.length) return;
+    var d={kind:'lma-delta',deltaId:'D-'+new Date().toISOString().slice(0,10)+'-lma',author:'consultant',deptId:DATA.dept.deptId,
+           note:'Narrative edits and score adjustments. Every adjusted score keeps its survey value.',proposals:DELTA};
+    nrHandOver(d,function(ok,msg){ if(ok&&NR_INBOX){ DELTA=[]; nrHistStart(0,null); } shellBar(); nrSay(msg); }); }
+  function setEditing(on){ ON=!!on; document.getElementById('art').classList.toggle('editing',ON);
+    var g=document.getElementById('lock'); g.classList.toggle('unlocked',ON); g.innerHTML=ON?UNLOCK_SVG:LOCK_SVG; g.title=ON?'Editing unlocked, click to lock':'Locked, click to edit';
+    if(!ON&&edp) edp.classList.remove('on');
+    var bi=document.getElementById('btnInputs'); if(bi){ bi.style.display=ON?'':'none'; window.__calcBox.style.display=ON?'flex':'none'; }
+    shellBar(); render(); if(window.fitChrome) requestAnimationFrame(window.fitChrome); }
+  function bindEdit(){ if(!ON) return;
+    document.querySelectorAll('#vinner .edz').forEach(function(el){ el.onclick=function(e){ e.stopPropagation(); var k=el.getAttribute('data-ed').split('|'); openNarr(k[0],k[1]); }; });
+    /* a score opens the calculator on that team and that dimension */
+    document.querySelectorAll('#vinner [data-calc]').forEach(function(el){ el.style.cursor='pointer'; el.onclick=function(e){ e.stopPropagation();
+      var k=el.getAttribute('data-calc').split('|'); CALC.team=+k[0]; st.team=CALC.team; var i=calcSecs().indexOf(k[1]); CALC.sec=i<0?0:i; openCalc(); }; }); }
+  function grow(ta){ta.style.height='auto';ta.style.height=(ta.scrollHeight+2)+'px';}
+  function panel(kind,title,body,onOk){
+    edp.innerHTML='<div class="edh"><button class="x" id="edx">&times;</button><div class="row"><span class="kind">'+esc(kind)+'</span><h3>'+esc(title)+'</h3></div></div>'+
+      '<div class="edb">'+nrHistList()+body+'</div><div class="edf"><span class="sp"></span><button class="wbtn" id="edc">Cancel</button><button class="wbtn pri" id="edok">Apply</button></div>';
+    edp.classList.add('on');
+    edp.querySelectorAll('textarea').forEach(function(ta){ if(ta.getAttribute('data-list')) bindBullets(ta); ta.addEventListener('input',function(){grow(ta);}); setTimeout(function(){grow(ta);},10); });
+    edp.querySelector('#edx').onclick=edp.querySelector('#edc').onclick=function(){edp.classList.remove('on');};
+    edp.querySelector('#edok').onclick=function(){ onOk(); edp.classList.remove('on'); render(); }; }
+  /* the Inputs button sits in the view switcher, as in the OTE waterfall */
+  (function(){ var b=document.createElement('button'); b.id='btnInputs'; b.type='button'; b.textContent='Inputs'; b.style.display='none';
+    b.onclick=function(e){e.stopPropagation(); CALC.sec=0; openCalc();};
+    var ctr=document.querySelector('.ctrls'), th=document.getElementById('theme'); var box=document.createElement('div'); box.className='seg'; box.id='calcseg'; box.appendChild(b); ctr.insertBefore(box,th);
+    box.style.display='none'; window.__calcBox=box; })();
+  function commit(scope,path,val){ var before=JSON.stringify(getN(scope,path)); if(JSON.stringify(val)===before) return;
+    setN(scope,path,val); pushOp({op:'narrative',scope:scope,path:path,value:val}); }
+  /* the narrative editors: a bullet list, a takeaway card, a note */
+  function openNarr(scope,path){ if(!ON||!edp) return;
+    var v=getN(scope,path);
+    if(/^takeaways\.cards\.\d+$/.test(path)){ v=v||{label:'',icon:'',bullets:[]};
+      panel('Narrative',label(scope,path),'<div class="f"><label>Label</label><input id="f_lab" value="'+esc(v.label)+'"></div>'+
+        '<div class="f"><label>Bullets, three per card, each naming its evidence</label><textarea id="f_list" data-list="1">'+esc(bullets(v.bullets))+'</textarea></div>',
+        function(){ commit(scope,path,{label:edp.querySelector('#f_lab').value.trim(),icon:v.icon||'',bullets:unbullets(edp.querySelector('#f_list').value)}); });
+      return; }
+    if(/note$/.test(path)){
+      panel('Narrative',label(scope,path),'<div class="f"><label>Note</label><textarea id="f_note">'+esc(v||'')+'</textarea></div>',
+        function(){ commit(scope,path,edp.querySelector('#f_note').value.trim()); });
+      return; }
+    panel('Narrative',label(scope,path),'<div class="f"><label>Bullets: the finding first, then the score that backs it. **words** turn bold.</label><textarea id="f_list" data-list="1">'+esc(bullets(v||[]))+'</textarea></div>',
+      function(){ commit(scope,path,unbullets(edp.querySelector('#f_list').value)); }); }
+/*</EDIT>*/
+  render();
+/*<EDIT>*/
+  /* the action-title editor, the house standard (editable-deliverable.md): preview, hints, highlight, live count */
+  var KM_MAX=150; function kmCount(){ var ta=document.getElementById('f_km'), c=document.getElementById('km_count'); if(!ta||!c) return; var n=ta.value.replace(/\*\*/g,'').replace(/<[^>]+>/g,'').trim().length, over=n>KM_MAX; c.style.cssText='display:flex;justify-content:space-between;gap:10px;margin:6px 0 2px;font-size:12px;font-weight:600;line-height:1.35;color:'+(over?'var(--rag-red-text,#B3261E)':'var(--mut,#5B6B82)'); c.innerHTML='<span>'+(over?'Runs past two lines on the slide. Keep the verdict, cut the evidence.':'Fits on two lines.')+'</span><span style="white-space:nowrap">'+n+' / '+KM_MAX+'</span>'; }
+  function openTitle(){ if(!ON||!edp||!CUR||!CUR.path) return; var scope=CUR.path[0], path=CUR.path[1];
+    panel('Narrative',label(scope,path),'<div class="f"><label>Action title</label><textarea id="f_km">'+esc(getN(scope,path)||'')+'</textarea><div id="km_count"></div>'+
+      '<button class="kmhl" id="km_hl" title="Wrap the selected words in **…** so they render green"><span class="swch"></span>Highlight selection</button></div>'+
+      '<div class="f"><label>Preview, exactly as it renders</label><div class="kmprev" id="km_prev"></div></div>'+
+      '<div class="kmhints"><b>Formatting</b><span class="kchip">**Bronze**</span> &rarr; <span style="color:var(--green);font-weight:700">Bronze</span>, green for at most three load-bearing words.<br>'+
+      '<b style="margin-top:7px">Good title checklist</b>Cover the slide with your hand: can the reader still tell how good or bad this is? &middot; the conclusion, not the topic &middot; numbers only where they carry the claim &middot; two lines at most.</div>',
+      function(){ commit(scope,path,edp.querySelector('#f_km').value.trim()); });
+    var ta=edp.querySelector('#f_km'), pv=edp.querySelector('#km_prev');
+    function upd(){kmCount();pv.innerHTML=ta.value?hl(ta.value):'<span style="color:var(--mut);font-style:italic;font-weight:600;font-size:.85em">Action title to be written</span>';}
+    ta.addEventListener('input',upd); upd(); ta.focus();
+    edp.querySelector('#km_hl').onclick=function(){ var s=ta.selectionStart,e=ta.selectionEnd,v=ta.value; if(s===e){ta.focus();return;}
+      while(s<e&&/\s/.test(v.charAt(s)))s++; while(e>s&&/\s/.test(v.charAt(e-1)))e--;
+      while(s>0&&/[\p{L}\p{N}]/u.test(v.charAt(s-1))&&/[\p{L}\p{N}]/u.test(v.charAt(s)))s--; while(e<v.length&&/[\p{L}\p{N}]/u.test(v.charAt(e))&&/[\p{L}\p{N}]/u.test(v.charAt(e-1)))e++;
+      var sl=v.slice(s,e);
+      if(/^\*\*[\s\S]*\*\*$/.test(sl)){ta.value=v.slice(0,s)+sl.slice(2,-2)+v.slice(e);ta.setSelectionRange(s,e-4);}
+      else{ta.value=v.slice(0,s)+'**'+sl+'**'+v.slice(e);ta.setSelectionRange(s,e+4);}
+      upd();grow(ta);ta.focus(); }; }
+  (function(){ var g=document.getElementById('lock'), b=document.getElementById('save');
+    if(g) g.onclick=function(e){e.stopPropagation(); setEditing(!ON);};
+    if(b) b.onclick=exportDelta;
+    if(b){ var bu=document.createElement('button'); bu.id='undo'; bu.type='button'; bu.textContent='Undo last'; bu.title='Take back your last unsent change';
+      var bd=document.createElement('button'); bd.id='discard'; bd.type='button'; bd.textContent='Discard all'; bd.title='Throw away every unsent change';
+      b.parentNode.insertBefore(bu,b); b.parentNode.insertBefore(bd,b);
+      bu.onclick=function(e){ e.stopPropagation(); shellRestore(false); };
+      bd.onclick=function(e){ e.stopPropagation(); var k=nrHistCount(); nrArm(bd,'Discard '+k+' change'+(k>1?'s':'')+'?',function(){ shellRestore(true); }); };
+      window.nrHistBar=shellBar; }
+    nrHistStart(0,null);
+    var h=document.getElementById('title'); if(h) h.onclick=function(){ if(ON) openTitle(); };
+    setEditing(false); })();
+/*</EDIT>*/
+})();
+</script>
+<script>
+/* ── fitChrome() — the chrome stacks when it does not fit ────────────────────
+   Measures the one-row layout and adds .stacked to the artifact root when any of
+   six things is true: the two groups are closer than 12px · a control runs past
+   either edge · a label has been squeezed narrower than its own text · the
+   toprow wraps · the toprow comes within 6px of the action title · the viewport
+   is at or below 760px (the floor). Exposed as window.fitChrome() so a render
+   pass can call it after it changes a label. ── */
+(function(){
+  var busy=false,lastW=-1;
+  function root(){return document.querySelector('#art,#pm,#pw');}
+  function skip(e){
+    if(!e) return true;
+    if(e.id==='wpop'||(e.closest&&e.closest('#wpop'))) return true;
+    var cs=getComputedStyle(e);
+    if(cs.visibility==='hidden'||cs.display==='none') return true;
+    return false;
+  }
+  function fitChrome(){
+    if(busy) return; busy=true;
+    try{
+      var R=root(); if(!R) return;
+      var tr=R.querySelector('.toprow'); if(!tr) return;
+      R.classList.remove('stacked');
+      void tr.offsetWidth;                                  /* force the reflow we measure */
+      var need=window.innerWidth<=760, i, r, e;
+      var trb=tr.getBoundingClientRect();
+      /* 1. the two groups are closer than 12px */
+      var tags=R.querySelector('.tags'), ctrls=R.querySelector('.ctrls');
+      if(!need&&tags&&ctrls&&!skip(tags)&&!skip(ctrls)){
+        var a=tags.getBoundingClientRect(), b=ctrls.getBoundingClientRect();
+        if(b.left-a.right<12) need=true;
+      }
+      /* 2. a control runs past either edge */
+      if(!need){
+        var kids=tr.querySelectorAll('.nr-pill,.nr-track,.seg,.wgrp,button,#wnote');
+        for(i=0;i<kids.length;i++){
+          e=kids[i]; if(skip(e)) continue;
+          r=e.getBoundingClientRect(); if(!r.width&&!r.height) continue;
+          if(r.right>trb.right+0.5||r.left<trb.left-0.5){need=true;break;}
+        }
+      }
+      /* 3. a label has been squeezed narrower than its own text */
+      if(!need){
+        var ls=tr.querySelectorAll('.nr-pill b,.nr-track,.seg button,button,#wnote,span');
+        for(i=0;i<ls.length;i++){
+          e=ls[i]; if(skip(e)) continue;
+          if(!e.textContent||!e.textContent.trim()) continue;
+          if(e.scrollWidth>e.clientWidth+1){need=true;break;}
+        }
+      }
+      /* 4. the toprow wraps — a floating row that wraps grows downwards into the
+         title without pushing anything down */
+      if(!need){
+        var tall=0,ch=tr.children;
+        for(i=0;i<ch.length;i++){var h=ch[i].getBoundingClientRect().height;if(h>tall)tall=h;}
+        if(trb.height>tall+2) need=true;
+      }
+      /* 5. the toprow sits on, or within 6px of, the action title */
+      if(!need){
+        var t=R.querySelector('.nr-strip'); if(!t||skip(t)) t=R.querySelector('h1');
+        if(t&&!skip(t)){var tb=t.getBoundingClientRect(); if(tb.top-trb.bottom<6) need=true;}
+      }
+      if(need) R.classList.add('stacked');
+      /* --padl is read AFTER the class lands: the class itself changes the padding */
+      R.style.setProperty('--padl',(parseFloat(getComputedStyle(R).paddingLeft)||0)+'px');
+    } finally { busy=false; }
+  }
+  window.fitChrome=fitChrome;
+  function kick(){requestAnimationFrame(fitChrome);}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',kick); else kick();
+  window.addEventListener('load',kick);
+  window.addEventListener('resize',function(){lastW=-1;kick();});
+  if(window.ResizeObserver){
+    var ro=new ResizeObserver(function(en){
+      var w=en&&en[0]?Math.round(en[0].contentRect.width):-1;
+      if(w===lastW) return;                                 /* stacking must not re-trigger us */
+      lastW=w; kick();
+    });
+    var r0=root(); if(r0) ro.observe(r0);
+  }
+})();
+</script>
+<script id="nr-topbar-js">
+/* patch_topbar.py: one theme switch and the way home, the same in every instrument.
+   Theme: the choice is kept under the cockpit's key, nr_dark, so every page of an
+   engagement opens the same way. Home: a page that carries
+   <meta name="nr-home" content="index.html"> (the engagement artifact adds it) gets
+   "< Cockpit /" in front of its section tag. */
+(function(){
+  var K='nr_dark', box=document.getElementById('theme')||document.getElementById('tseg');
+  if(box){
+    box.querySelectorAll('button').forEach(function(b){ var d=b.getAttribute('data-s')==='dark';
+      b.title=d?'Dark mode':'Light mode'; b.setAttribute('aria-label',b.title);
+      b.addEventListener('click',function(){ try{ localStorage.setItem(K,d?'1':'0'); }catch(e){} }); });
+    var v=null; try{ v=localStorage.getItem(K); }catch(e){}
+    var dk=box.querySelector('button[data-s="dark"]');
+    if(v==='1'&&dk&&!dk.classList.contains('on')) dk.click();
+  }
+  var m=document.querySelector('meta[name="nr-home"]'), lens=document.getElementById('lens')||document.querySelector('.toprow .nr-track');
+  if(m&&lens&&!document.querySelector('.nr-crumb')){
+    var c=document.createElement('div'); c.className='nr-track nr-crumb';
+    var a=document.createElement('a'); a.className='nr-home'; a.href=m.getAttribute('content')||'index.html';
+    a.textContent='\u2039 '+(m.getAttribute('data-label')||'Cockpit'); a.title='Back to the engagement cockpit';
+    /* opened in a window of the findings dashboard (a frame of our own page): go back in that page, not in the frame */
+    try{ if(window.parent!==window&&window.parent.document) a.target='_parent'; }catch(e){}
+    var s=document.createElement('span'); s.className='nr-sep'; s.textContent='/';
+    lens.parentNode.insertBefore(c,lens); c.appendChild(a); c.appendChild(s); c.appendChild(lens);
+    if(window.fitChrome) requestAnimationFrame(window.fitChrome);
+  }
+})();
+</script>
+<style>
+/* ── READ MODE · narrow screens ──────────────────────────────────────────────
+   This artifact normally scales its whole body down so the page fits one screen.
+   On a phone that turns 13px type into 4px. Below 760px the scaling is switched
+   off and the page simply flows and scrolls at its real size. Desktop is
+   untouched — every rule here lives inside the media query. */
+@media (max-width:760px){
+  html,body{height:auto!important;overflow:auto!important}
+  #art,#pw,#pm{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;padding:12px 14px 22px 34px!important}
+  #view{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;flex:none!important;position:static!important}
+  #vinner{position:static!important;transform:none!important;width:100%!important;
+    padding-bottom:14px!important}
+  .nr-rail{width:22px!important}
+  .toprow{position:static!important;top:auto!important;right:auto!important;left:auto!important;
+    margin:0 0 10px!important;flex-wrap:wrap!important;gap:8px 10px!important;justify-content:flex-start!important}
+  .tags{flex-wrap:wrap!important;gap:8px!important;margin-left:-34px!important}
+  .ctrls{flex-wrap:wrap!important;gap:8px!important;flex:1 1 100%!important}
+  #ft{position:static!important;flex-wrap:wrap!important;row-gap:6px!important;margin-top:14px!important}
+  h1{font-size:19px!important;max-width:none!important}
+  .grid,.classic,.cols-grid{grid-template-columns:1fr!important}
+  table{min-width:0!important}
+  .tbl-wrap,.wrap-x{overflow-x:auto!important}
+}
+</style>
+<style>/* READ-MODE TYPE FLOOR — nothing under 11px once the page stops scaling */
+
+@media (max-width:760px){
+  #ft{font-size:11px!important}
+  .conf,.lp,.li,.nr-track,.nr-foot,.lbl,.note{font-size:11px!important}
+  .inum,.chip,.inev,.num,.wf-num,.vnum{font-size:11px!important}
+  #ft b,.legend b,.l b{font-size:11px!important}
+  /* a row label truncated to '…' is worse than a wrapped one once the page flows */
+  [style*="ellipsis"]{white-space:normal!important;text-overflow:clip!important;overflow:visible!important}
+}
+</style>
+</body></html>
