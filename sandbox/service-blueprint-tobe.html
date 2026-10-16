@@ -90,7 +90,7 @@
   .lbl .ic svg{width:15px;height:15px;display:block}
   .lbl em{display:block;font-style:normal;font-weight:400;font-size:var(--fs-95);color:var(--mut);
           margin-top:2px;letter-spacing:.1px;line-height:1.35}
-  .lbl.acc{box-shadow:inset 3px 0 0 var(--l-col)}
+  .lbl.acc{--nr-tc:var(--l-col);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
 
   .cell{padding:9px 11px;font-size:12px;color:var(--txt);line-height:1.4}
   .cell.none{background:var(--soft)}
@@ -240,9 +240,8 @@
   /* ── cards: every step is one, and every card opens its detail ── */
   #art{--agent:#0A84B8}
   #art[data-t="dark"]{--agent:#5BB8E0}
-  .bpc{display:block;position:relative;background:var(--card);border:1px solid var(--line);
-        border-left:3px solid var(--l-col,var(--line));border-radius:8px;padding:5px 22px 5px 8px;
-        cursor:pointer;transition:transform .12s,box-shadow .12s}
+  .bpc{display:block;position:relative;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:5px 22px 5px 8px;
+        cursor:pointer;transition:transform .12s,box-shadow .12s;--nr-tc:var(--l-col,var(--line));background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
   .bpc:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(11,35,71,.13)}
   .bpc+.bpc{margin-top:5px}
   #art .bpc{border-radius:8px}
@@ -286,8 +285,7 @@
   #dlg.on{display:flex}
   .dbox{width:min(560px,86%);max-height:84%;overflow:auto;background:var(--card);border-radius:12px;
         box-shadow:0 22px 60px rgba(0,0,0,.28)}
-  .dh{display:flex;justify-content:space-between;gap:12px;padding:16px 20px 12px;
-      border-top:5px solid var(--l-col,var(--navy));border-bottom:1px solid var(--line);border-radius:12px 12px 0 0}
+  .dh{display:flex;justify-content:space-between;gap:12px;padding:16px 20px 12px;border-bottom:1px solid var(--line);border-radius:12px 12px 0 0;--nr-tc:var(--l-col,var(--navy));background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
   .dk{font-size:var(--fs-10);font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--mut)}
   .dh h2{margin:5px 0 0;font-size:18px;line-height:1.25;color:var(--ink)}
   .dx{border:0;background:none;font-size:22px;line-height:1;color:var(--mut);cursor:pointer;align-self:flex-start}
@@ -325,10 +323,10 @@
   .jcell.off{background:rgba(180,150,70,.05);padding-left:6px;padding-right:6px}
   /* the customer's card: what they do on top, how it leaves them at the bottom */
   .jcu{border-top:0;padding:10px 0 12px;align-items:stretch}
-  .jcc{position:relative;flex:1;background:var(--card);border:1px solid var(--line);border-top:3px solid var(--line);
+  .jcc{position:relative;flex:1;background:var(--card);border:1px solid var(--line);
        border-radius:10px;padding:8px 10px 7px;display:flex;flex-direction:column;gap:5px;
-       box-shadow:0 1px 2px rgba(11,35,71,.05)}
-  .jcc.pos{border-top-color:var(--rag-green)} .jcc.neu{border-top-color:var(--rag-na)} .jcc.neg{border-top-color:var(--rag-red)}
+       box-shadow:0 1px 2px rgba(11,35,71,.05);--nr-tc:var(--line);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
+  .jcc.pos{--nr-tc:var(--rag-green)} .jcc.neu{--nr-tc:var(--rag-na)} .jcc.neg{--nr-tc:var(--rag-red)}
   .jcc .jp{background:none;padding:0;border-radius:0;font-size:12.5px;font-weight:700;color:var(--navy);box-shadow:none}
   #art[data-t="dark"] .jcc .jp{color:var(--ink)}
   .jcc .jp:hover{transform:none;box-shadow:none;text-decoration:underline;text-decoration-color:var(--line)}
@@ -459,1167 +457,1373 @@ html [data-t="dark"] .ic{fill:#93A9C4}
     <span class="conf">Sample data · Northwind Assurance is fictional</span>
   </div>
 </div>
+<!-- NRSRC:BEGIN - the sources panel (operating-baseline/assets/source-panel.html, filled by
+     scripts/source_panel.py). The same block in every instrument and slide: a small (i) next to a
+     score or figure opens what it rests on. Do not edit a copy in a page: change this file and render
+     again. -->
+<style>
+  .nrsrc-i{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;flex:none;border-radius:50%;border:1px solid var(--mut,#7A838F);background:none;color:var(--mut,#7A838F);font:italic 700 10px/1 Georgia,"Times New Roman",serif;padding:0;margin:0 0 0 5px;cursor:pointer;vertical-align:1px}
+  /* the (i) is faint at rest and full where you point; it always keeps its place, so nothing moves */
+  .nrsrc-i{opacity:.38;transition:opacity .18s ease,background-color .15s,color .15s}
+  .nrsrc-row:hover .nrsrc-i,.nrsrc-i:hover,.nrsrc-i:focus-visible,.nrsrc-i[aria-expanded="true"],.nrsrc-i.miss{opacity:1}
+  @media (hover:none){.nrsrc-i{opacity:.75}}
+  .nrsrc-i:hover,.nrsrc-i[aria-expanded="true"]{background:var(--navy,#0B2347);border-color:var(--navy,#0B2347);color:#fff}
+  .nrsrc-i.miss{border:1px dashed var(--rag-red-text,#C2483D);color:var(--rag-red-text,#C2483D);font-style:normal}
+  .nrsrc-i:focus-visible{outline:2px solid var(--accent,#6EB1D1);outline-offset:2px}
+  .nrsrc-pop{position:fixed;z-index:1200;width:360px;max-width:calc(100vw - 24px);max-height:calc(100vh - 24px);overflow:auto;background:var(--card,#fff);color:var(--txt,#46505C);border:1px solid var(--line,#E1E6EE);border-radius:16px;box-shadow:0 12px 34px rgba(11,35,71,.20);font:400 13px/1.45 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;text-align:left;display:none}
+  .nrsrc-pop.on{display:block;animation:nrsrcOpen .26s cubic-bezier(.2,.9,.25,1.15)}
+  @keyframes nrsrcOpen{from{opacity:0;transform:scale(.95) translateY(-4px)}to{opacity:1;transform:none}}
+  .nrsrc-hx{position:relative;padding:12px 40px 10px 16px;border-bottom:1px solid rgba(120,135,155,.25)}
+  .nrsrc-ey{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13.5px;font-weight:700;color:var(--ink,#15243A)}
+  .nrsrc-sc{font-size:12px;font-weight:700;letter-spacing:0;text-transform:none;border-radius:8px;padding:0 8px;white-space:nowrap}
+  .nrsrc-x{position:absolute;top:8px;right:10px;width:24px;height:24px;border:0;background:none;color:var(--mut,#7A838F);font-size:17px;line-height:1;cursor:pointer;border-radius:6px}
+  .nrsrc-bd{padding:12px 16px 14px}
+  .nrsrc-sum{margin:0 0 12px}
+  .nrsrc-qt{background:rgba(255,255,255,.45);box-shadow:inset 0 0 0 .5px rgba(120,135,155,.25);border-radius:10px;padding:10px 12px;margin:0 0 12px}
+  [data-t="dark"] .nrsrc-qt,[data-t="dark"] .nrsrc-how{background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.1)}
+  .nrsrc-qt p{margin:0;color:var(--ink,#15243A);font-size:14px;line-height:1.45}
+  .nrsrc-by{margin-top:4px;font-size:12px;color:var(--mut,#7A838F)}
+  .nrsrc-how{background:rgba(255,255,255,.45);box-shadow:inset 0 0 0 .5px rgba(120,135,155,.25);border-radius:10px;padding:9px 12px;margin:0 0 12px;color:var(--ink,#15243A)}
+  .nrsrc-how b,.nrsrc-gh{display:block;font-size:var(--fs-11);font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mut,#7A838F);margin-bottom:3px}
+  .nrsrc-g{margin:0 0 10px}.nrsrc-g:last-child{margin-bottom:0}
+  .nrsrc-it{padding:2px 0 2px 12px;color:var(--ink,#15243A)}
+  .nrsrc-d{color:var(--mut,#7A838F);font-size:12px}
+  .nrsrc-id{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:var(--fs-11);color:var(--mut,#7A838F)}
+  .nrsrc-it a,.nrsrc-how a{color:var(--accent-text,#1F5FA8);font-size:12px;text-decoration:none}
+  .nrsrc-o{display:inline-block;font-size:var(--fs-105);font-weight:650;border-radius:10px;padding:0 7px;margin-left:4px;vertical-align:1px}
+  .nrsrc-o.thirdparty{color:#0E6B66;background:#DFF2F0}.nrsrc-o.internet{color:#8A5A00;background:#FBF0DA}
+  [data-t="dark"] .nrsrc-o.thirdparty{color:#7FD4CB;background:#163330}[data-t="dark"] .nrsrc-o.internet{color:#F0C56E;background:#3A2E15}
+  [data-t="dark"] .nrsrc-it a,[data-t="dark"] .nrsrc-how a{color:#9CC4F2}
+  .nrsrc-ft{border-top:1px solid var(--line,#E1E6EE);margin-top:10px;padding-top:8px;font-size:12px;color:var(--mut,#7A838F)}
+  .nrsrc-warn{color:var(--rag-red-text,#C2483D);font-size:12.5px}
+  .nrsrc-pick .chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+  .nrsrc-pick .chip{display:inline-flex;align-items:center;gap:5px;font-size:var(--fs-115);background:var(--slate-10,rgba(54,65,86,.08));color:var(--ink,#15243A);border-radius:8px;padding:2px 4px 2px 8px}
+  .nrsrc-pick .chip button{border:0;background:none;color:var(--mut,#7A838F);cursor:pointer;font-size:14px;line-height:1;padding:0 3px}
+  .nrsrc-hint{position:fixed;z-index:1201;display:flex;align-items:center;gap:10px;max-width:min(420px,calc(100vw - 24px));padding:9px 10px 9px 14px;border-radius:14px;
+    font:500 13px/1.4 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;color:var(--ink,#15243A);background:var(--card,#fff);box-shadow:0 14px 34px -10px rgba(11,35,71,.28);
+    opacity:0;transform:translateY(6px) scale(.97);transition:opacity .28s ease,transform .32s cubic-bezier(.2,.9,.25,1.15);pointer-events:none}
+  .nrsrc-hint.on{opacity:1;transform:none;pointer-events:auto}
+  .nrsrc-hint .nrsrc-ic{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;margin:0 1px;vertical-align:-2px;border-radius:50%;border:1px solid currentColor;font:italic 700 10px/1 Georgia,serif}
+  .nrsrc-hint button{border:0;background:none;color:var(--mut,#7A838F);font-size:16px;line-height:1;cursor:pointer;padding:2px 4px;border-radius:6px}
+  @media (prefers-reduced-motion:reduce){.nrsrc-pop.on{animation:none}.nrsrc-hint{transition:opacity .2s}}
+  .nrsrc-print{display:none}
+  @media print{
+    .nrsrc-i,.nrsrc-pop,.nrsrc-hint{display:none!important}
+    .nrsrc-print{display:block;break-before:page;page-break-before:always;padding:24px 32px;font:12px/1.5 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;color:#15243A}
+    .nrsrc-print h2{font-size:16px;margin:0 0 10px}.nrsrc-print h3{font-size:var(--fs-11);text-transform:uppercase;letter-spacing:.05em;color:#7A838F;margin:12px 0 4px}
+    .nrsrc-print ol{margin:0;padding-left:22px}
+  }
+</style>
+<script>
+(function(){
+  var GROUPS=[['interviews','Interviews'],['observations','Observations'],['documents','Documents'],['data','Data'],['external','External sources'],['internal','Internal discussions']];
+  var NOUN={interviews:['interview','interviews'],observations:['observation','observations'],documents:['document','documents'],data:['data extract','data extracts'],external:['external source','external sources']};
+  var SPECS={}, pop=null, cur=null;
+  function P(){ try{ return (typeof DATA!=='undefined'&&DATA&&DATA.sourcePanel)||null; }catch(e){ return null; } }
+  function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function low(t){ t=String(t||''); return /^[A-Z][a-z]*(?=[\s,.;:-]|$)/.test(t)?t.charAt(0).toLowerCase()+t.slice(1):t; }   /* EventHub stays EventHub */
+  function plain(t){ return String(t||'').replace(/\*\*/g,'').replace(/<[^>]+>/g,''); }
+  function working(){ var p=P(); return !!(p&&p.build==='working'); }
+  function root(){ return document.querySelector('#art,#pm,#pw')||document.body; }
+  function href(e){ var p=P(); if(e.url) return e.url; if(e.file&&p&&p.rootRel!=null) return (p.rootRel?p.rootRel+'/':'')+e.file.split('/').map(encodeURIComponent).join('/'); return ''; }
+  function badge(s){ if(s.badge==null&&s.score==null) return '';
+    var r=s.rag||'na', txt=s.badge!=null?s.badge:(s.score+' out of 5');
+    return '<span class="nrsrc-sc" style="color:var(--rag-'+r+'-text);background:var(--tint-'+r+')">'+esc(txt)+'</span>'; }
+  /* every source an item rests on: an analysis gives its method and what it was built from */
+  function expand(ids){ var p=P(), S=p.src, pool=[], how=[], seen={};
+    (function walk(list,top){ (list||[]).forEach(function(k){ var e=S[k]; if(!e||seen[k]) return; seen[k]=1;
+      if(e.group==='analysis'){ how.push({k:k,e:e}); walk(e.builtFrom,false); } else pool.push({k:k,e:e}); }); })(ids,true);
+    return {pool:pool,how:how}; }
+  function summary(pool){ var n={}, one={}; pool.forEach(function(x){ var g=x.e.group; if(g==='internal') return; n[g]=(n[g]||0)+1; one[g]=x.e; });
+    var parts=[]; ['interviews','observations','documents','data','external'].forEach(function(g){ if(!n[g]) return;
+      if(n[g]===1&&(g==='documents'||g==='data')) parts.push('the '+low(one[g].label)); else parts.push(n[g]+' '+NOUN[g][n[g]===1?0:1]); });
+    if(!parts.length) return '';
+    return 'Based on '+(parts.length>1?parts.slice(0,-1).join(', ')+' and '+parts[parts.length-1]:parts[0])+'.'; }
+  function who(e){ var w=working(); if(w&&e.people&&e.label.indexOf(e.people.split(/[;,]/)[0].trim())<0) return e.people; return ''; }
+  function item(x){ var e=x.e, w=working(), h=w?href(e):(e.url||'');
+    return '<div class="nrsrc-it">'+esc(e.label)+(who(e)?' <span class="nrsrc-d">· '+esc(who(e))+'</span>':'')+(e.date?' <span class="nrsrc-d">· '+esc(e.date)+'</span>':'')+
+      (w&&e.group==='external'&&e.origins&&e.origins.length?e.origins.map(function(o){return o==='thirdparty'||o==='internet'?'<span class="nrsrc-o '+o+'">'+(o==='thirdparty'?'Third party':'Internet')+'</span>':'';}).join(''):'')+
+      (w?' <span class="nrsrc-id">'+esc(x.k)+'</span>':'')+(h?' <a href="'+esc(h)+'" target="_blank" rel="noopener">open</a>':'')+'</div>'; }
+  function body(s){ var p=P(), w=working(), ids=s.ids||[], h='';
+    h+='<div class="nrsrc-hx"><div class="nrsrc-ey"><span>'+esc(s.eyebrow||'')+'</span>'+badge(s)+'</div>'+
+       '<button type="button" class="nrsrc-x" aria-label="Close">&times;</button></div><div class="nrsrc-bd">';
+    if(!ids.length){ return h+'<div class="nrsrc-warn">No source yet. Unlock the page and pick one where you score it. Without a source this score cannot go into the client build.</div></div>'; }
+    var x=expand(ids), sm=summary(x.pool);
+    if(sm) h+='<p class="nrsrc-sum">'+esc(sm)+'</p>';
+    x.how.forEach(function(a){ var e=a.e; h+='<div class="nrsrc-how"><b>Method</b>'+esc(e.method||e.label)+(w?' <span class="nrsrc-id">'+esc(a.k)+'</span>'+(href(e)?' <a href="'+esc(href(e))+'" target="_blank" rel="noopener">open</a>':''):'')+'</div>'; });
+    var q=s.quote; if(q&&q.text&&(!q.sourceId||p.src[q.sourceId])){ var qe=p.src[q.sourceId]||{};
+      var by=w?[qe.label||'',who(qe)].filter(Boolean).join(' · '):(qe.label||'');
+      h+='<div class="nrsrc-qt"><p>“'+esc(String(q.text).replace(/^[“"]|[”"]$/g,''))+'”</p>'+(by||qe.date?'<div class="nrsrc-by">'+esc([by,qe.date].filter(Boolean).join(' · '))+'</div>':'')+'</div>'; }
+    GROUPS.forEach(function(g){ if(g[0]==='internal'&&!w) return; var its=x.pool.filter(function(y){return y.e.group===g[0];}); if(!its.length) return;
+      h+='<div class="nrsrc-g"><span class="nrsrc-gh">'+g[1]+'</span>'+its.map(item).join('')+'</div>'; });
+    if(!w&&(s.scoredBy||p.scoredBy)) h+='<div class="nrsrc-ft">'+esc(s.scoredBy||p.scoredBy)+'</div>';
+    return h+'</div>'; }
+  function spec(k){ var f=SPECS[k]; return typeof f==='function'?f():f; }
+  function close(){ if(pop) pop.classList.remove('on'); if(cur) cur.setAttribute('aria-expanded','false'); cur=null; }
+  function open(btn){ var s=spec(btn.getAttribute('data-nrsrc')); if(!s) return;
+    if(!pop||!pop.isConnected){ pop=document.createElement('div'); pop.className='nrsrc-pop'; pop.setAttribute('role','dialog'); pop.setAttribute('aria-label','Sources'); root().appendChild(pop); }
+    close(); cur=btn; btn.setAttribute('aria-expanded','true'); pop.innerHTML=body(s); pop.classList.add('on');
+    var r=btn.getBoundingClientRect(), W=window.innerWidth, H=window.innerHeight, pw=pop.offsetWidth, ph=pop.offsetHeight;
+    var x=Math.min(Math.max(12,r.left+r.width/2-pw/2),W-pw-12), y=r.bottom+8;
+    if(y+ph>H-12){ y=r.top-ph-8; if(y<12) y=Math.max(12,H-ph-12); }
+    pop.style.left=x+'px'; pop.style.top=y+'px'; var c=pop.querySelector('.nrsrc-x'); if(c) c.focus({preventScroll:true}); }
+  document.addEventListener('click',function(ev){ var b=ev.target.closest&&ev.target.closest('.nrsrc-i');
+    if(b){ ev.preventDefault(); ev.stopPropagation(); if(cur===b){ close(); return; } open(b); return; }
+    if(pop&&pop.classList.contains('on')&&(ev.target.closest('.nrsrc-x')||!ev.target.closest('.nrsrc-pop'))){ var back=cur; close(); if(back&&ev.target.closest('.nrsrc-x')) back.focus(); } },true);
+  document.addEventListener('keydown',function(ev){ if(ev.key==='Escape'&&cur){ var back=cur; close(); back.focus(); } });
+  window.addEventListener('resize',close);
+  function printList(){ var p=P(); if(!p||p.build!=='client'||document.querySelector('.nrsrc-print')) return;
+    var keys=Object.keys(p.src); if(!keys.length) return; var h='<h2>Sources</h2>';
+    GROUPS.concat([['analysis','Analyses']]).forEach(function(g){ var ks=keys.filter(function(k){return p.src[k].group===g[0];}); if(!ks.length) return;
+      h+='<h3>'+g[1]+'</h3><ol>'+ks.map(function(k){var e=p.src[k];return '<li>'+esc(e.label)+(e.date?', '+esc(e.date):'')+(e.method?'. '+esc(e.method):'')+'</li>';}).join('')+'</ol>'; });
+    if(p.scoredBy) h+='<p>'+esc(p.scoredBy)+'</p>';
+    var d=document.createElement('section'); d.className='nrsrc-print'; d.innerHTML=h; document.body.appendChild(d); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',printList); else setTimeout(printList,0);
+  /* every page: an (i) on its Source line for everything the page cites, when the page draws none itself */
+  function allIds(){ var p=P(), o=[], seen=[]; if(!p) return o; (function w(x,d){ if(!x||typeof x!=='object'||d>40||seen.indexOf(x)>=0) return; seen.push(x);
+      if(Array.isArray(x)){ x.forEach(function(y){ w(y,d+1); }); return; }
+      for(var k in x){ if(k==='sourcePanel'||k.slice(0,2)==='__'||!Object.prototype.hasOwnProperty.call(x,k)) continue; var v=x[k];
+        if(k==='sourceIds'||k==='sourceId'||k==='source_ids'||k==='source_id'){ (Array.isArray(v)?v:[v]).forEach(function(i){ if(typeof i==='string'&&p.src[i]&&o.indexOf(i)<0) o.push(i); }); }
+        else w(v,d+1); } })(typeof DATA!=='undefined'?DATA:null,0); return o; }
+  function autoSrc(){ var p=P(), el=document.getElementById('src'); if(!p||!el||document.querySelector('.nrsrc-i[data-nrsrc="slide"]:not([data-nrsrc-auto])')) return;
+    if(!allIds().length||el.querySelector('[data-nrsrc-auto]')) return;
+    if(el.parentNode&&el.parentNode.classList) el.parentNode.classList.add('nrsrc-row');
+    el.insertAdjacentHTML('beforeend', NRSRC.icon('slide', function(){ return {eyebrow:'All sources on this page', ids:allIds()}; }).replace('<button ','<button data-nrsrc-auto ')); }
+  function watchSrc(){ autoSrc(); var el=document.getElementById('src'); if(el&&window.MutationObserver) new MutationObserver(function(){ if(!el.querySelector('.nrsrc-i')) autoSrc(); }).observe(el,{childList:true}); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',watchSrc); else setTimeout(watchSrc,0);
+  /* the hint, once per viewer: a client does not go looking for an (i) by pointing around */
+  var HINT='nr-src-hint-seen';
+  /* the first one on screen (a deck shows one slide at a time) */
+  function vis(sel){ var l=document.querySelectorAll(sel); for(var i=0;i<l.length;i++){ var r=l[i].getBoundingClientRect(); if(r.width&&r.height) return l[i]; } return null; }
+  function hint(){ var p=P(); if(!p||document.querySelector('.nrsrc-hint')) return; var seen=false; try{ seen=localStorage.getItem(HINT)==='1'; }catch(e){}
+    if(seen) return; var anchor=vis('.nrsrc-i[data-nrsrc^="slide"]')||vis('.nrsrc-i');
+    if(!anchor){ if(document.querySelector('.nrsrc-i')&&(hint.n=(hint.n||0)+1)<240) setTimeout(hint,1500); return; }   /* a deck: wait for a slide that has one */
+    var h=document.createElement('div'); h.className='nrsrc-hint nr-glass'; h.setAttribute('role','status');
+    var perItem=document.querySelectorAll('.nrsrc-i:not([data-nrsrc^="slide"])').length;
+    h.innerHTML='<span>'+(perItem?(document.querySelector('.nrsrc-i[data-nrsrc^="seg:"]')?'Every score shows where it comes from.':'Every finding shows where it comes from.')+' Click the <span class="nrsrc-ic">i</span> next to it.':'See what this page rests on: click the <span class="nrsrc-ic">i</span> next to the source.')+'</span><button type="button" aria-label="Got it">&times;</button>';
+    root().appendChild(h);
+    function place(){ var a=(vis('.nrsrc-i[data-nrsrc^="slide"]')||vis('.nrsrc-i')||anchor).getBoundingClientRect(), w=h.offsetWidth, hh=h.offsetHeight;
+      h.style.left=Math.max(12,Math.min(a.left-24,window.innerWidth-w-12))+'px'; h.style.top=Math.max(12,a.top-hh-12)+'px'; }
+    function done(){ h.classList.remove('on'); try{ localStorage.setItem(HINT,'1'); }catch(e){} }
+    h.querySelector('button').onclick=done;
+    document.addEventListener('click',function(e){ if(e.target.closest&&e.target.closest('.nrsrc-i')) done(); },true);
+    window.addEventListener('resize',function(){ if(h.classList.contains('on')) place(); });
+    setTimeout(function(){ place(); h.classList.add('on'); },700); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){ setTimeout(hint,30); }); else setTimeout(hint,30);
+  window.NRSRC={
+    on:function(){ return !!P(); },
+    /* the (i) for one item; spec is an object or a function returning
+       {eyebrow, score|badge, rag, headline, ids:[...], quote:{text,sourceId}, scoredBy} */
+    icon:function(key,s){ if(!P()) return ''; SPECS[key]=s; var v=spec(key)||{}, miss=!(v.ids&&v.ids.length);
+      if(miss&&!working()) return '';
+      return '<button type="button" class="nrsrc-i'+(miss?' miss':'')+'" data-nrsrc="'+esc(key)+'" aria-expanded="false" aria-label="'+(miss?'No source yet':'Where this comes from')+'" title="'+(miss?'No source yet':'Where this comes from')+'">'+(miss?'!':'i')+'</button>'; },
+    close:close,
+    /* the (i) for any record that carries sourceIds (or one sourceId) and, optionally, a quote:
+       NRSRC.item(record, 'Its title', {k:'unique key', score:3, badge:'2.4 FTE', rag:'red', optional:true})
+       optional: no (i) at all for a record without a sourceIds or sourceId field (an insight block that
+       does not cite); with the field but nothing in it, the working copy shows a red ! */
+    item:function(o,eyebrow,opt){ var p=P(); if(!p||!o) return ''; opt=opt||{};
+      if(opt.optional&&!('sourceIds' in o)&&!('sourceId' in o)) return '';      /* a record that does not cite (yet) */
+      var ids=[]; (Array.isArray(o.sourceIds)?o.sourceIds:[]).concat(o.sourceId?[o.sourceId]:[]).forEach(function(i){ if(typeof i==='string'&&p.src[i]&&ids.indexOf(i)<0) ids.push(i); });
+      var q=o.quote&&o.quote.text&&(!o.quote.sourceId||p.src[o.quote.sourceId])?o.quote:null;
+      return this.icon('it:'+(opt.k||eyebrow), {eyebrow:eyebrow, score:opt.score, badge:opt.badge, rag:opt.rag, ids:ids, quote:q}); },
+    /* the source picker where a score is set: chips for what is cited, a list to add one */
+    picker:function(ids){ var p=P(); if(!p) return ''; ids=ids||[];
+      var opts=Object.keys(p.src).filter(function(k){return ids.indexOf(k)<0;}).map(function(k){var e=p.src[k];return '<option value="'+esc(k)+'">'+esc(k+' · '+e.label+(e.date?' · '+e.date:''))+'</option>';}).join('');
+      return '<div class="nrsrc-pick" data-ids="'+esc(ids.join(','))+'"><div class="chips">'+ids.map(function(k){var e=p.src[k]||{label:'not in the register'};return '<span class="chip" title="'+esc(e.label)+'">'+esc(k)+' · '+esc(String(e.label).slice(0,34))+'<button type="button" data-rm="'+esc(k)+'" aria-label="Remove">&times;</button></span>';}).join('')+'</div>'+
+        '<select><option value="">Add a source…</option>'+opts+'</select></div>'; },
+    bindPicker:function(el,onChange){ if(!el) return; var self=this;
+      function ids(){ return (el.getAttribute('data-ids')||'').split(',').filter(Boolean); }
+      function redraw(list){ var tmp=document.createElement('div'); tmp.innerHTML=self.picker(list); var nw=tmp.firstChild; el.innerHTML=nw.innerHTML; el.setAttribute('data-ids',list.join(',')); wire(); if(onChange) onChange(list); }
+      function wire(){ el.querySelectorAll('[data-rm]').forEach(function(b){ b.onclick=function(){ redraw(ids().filter(function(k){return k!==b.getAttribute('data-rm');})); }; });
+        var sel=el.querySelector('select'); if(sel) sel.onchange=function(){ if(sel.value){ var l=ids(); l.push(sel.value); redraw(l); } }; }
+      wire(); },
+    readPicker:function(el){ return el?(el.getAttribute('data-ids')||'').split(',').filter(Boolean):[]; },
+    label:function(k){ var p=P(), e=p&&p.src[k]; return e?e.label:k; }
+  };
+})();
+</script>
+<!-- NRSRC:END -->
+
 <script>
 /* ============ ONLY THIS BLOCK CHANGES PER TEAM ============ */
 const DATA = /* DATA */ {
+ "context": "OPEX QUICKSCAN",
+ "lens": "CLIENTS · SERVICE BLUEPRINT",
+ "teamName": "Claims Handling",
+ "teamId": "claims-handling",
+ "teamActorId": "claims-handling",
+ "engagement": "Northwind Assurance",
+ "mappingUnit": "key process",
+ "moment": "to-be",
+ "keyMessage": "Agents tell the customer **what happens before they ask**, and the handlers **keep every decision**",
+ "source": "Target service designed from the as-is blueprint and the opportunities agreed on the baseline (o-01 to o-07). Sample data, fictional client.",
+ "stages": [
+  {
+   "id": "s1",
+   "name": "I report the damage",
+   "order": 1,
+   "want": "I want to report it once and know it is in hand",
+   "sentiment": "positive",
+   "sentimentNote": "Reported in minutes, day or night"
+  },
+  {
+   "id": "s2",
+   "name": "I find out where I stand",
+   "order": 2,
+   "want": "I want to know if I am covered",
+   "sentiment": "positive",
+   "sentimentNote": "Told what is covered and what comes next"
+  },
+  {
+   "id": "s3",
+   "name": "Someone assesses the damage",
+   "order": 3,
+   "want": "I want someone to look at the damage soon",
+   "sentiment": "neutral",
+   "sentimentNote": "Still waits for the adjuster, but knows when"
+  },
+  {
+   "id": "s4",
+   "name": "My car gets repaired",
+   "order": 4,
+   "want": "I want my car back",
+   "sentiment": "positive",
+   "sentimentNote": "The garage takes over"
+  },
+  {
+   "id": "s5",
+   "name": "I get paid",
+   "order": 5,
+   "want": "I want to be paid, and to understand the amount",
+   "sentiment": "positive",
+   "sentimentNote": "Paid, and knows why that amount"
+  },
+  {
+   "id": "s6",
+   "name": "It is over",
+   "order": 6,
+   "want": "I want it to be finished",
+   "sentiment": "positive",
+   "sentimentNote": "Told the claim is closed"
+  }
+ ],
+ "actors": {
+  "claims-handling": {
+   "name": "Claims Handling",
+   "kind": "team"
+  },
+  "customer": {
+   "name": "The customer",
+   "kind": "customer"
+  },
+  "customer-service": {
+   "name": "Customer Service",
+   "kind": "team"
+  },
+  "finance-control": {
+   "name": "Finance Control",
+   "kind": "team"
+  },
+  "intake-agent": {
+   "name": "Intake agent",
+   "kind": "agent"
+  },
+  "status-agent": {
+   "name": "Status agent",
+   "kind": "agent"
+  },
+  "document-agent": {
+   "name": "Document agent",
+   "kind": "agent"
+  },
+  "followup-agent": {
+   "name": "Follow-up agent",
+   "kind": "agent"
+  }
+ },
+ "steps": [
+  {
+   "id": "c-01",
+   "stageId": "s1",
+   "visibility": "customer-action",
+   "actorId": "customer",
+   "name": "Reports the damage in the app, by chat or by phone",
+   "system": null,
+   "channel": "chat",
+   "unitName": null,
+   "blockId": null,
+   "processId": null
+  },
+  {
+   "id": "n-01",
+   "stageId": "s1",
+   "visibility": "frontstage",
+   "actorId": "intake-agent",
+   "name": "Takes the notification, day and night",
+   "system": "ClaimsCore",
+   "channel": "chat",
+   "unitName": "Notification and registration",
+   "sees": "Tells what happened in their own words, at any hour, and gets a claim number and the next step straight away.",
+   "does": "Asks only what the claim needs and writes it straight into ClaimsCore. A call with injuries or a dispute goes to a person."
+  },
+  {
+   "id": "t-01",
+   "stageId": "s1",
+   "visibility": "frontstage",
+   "actorId": "customer-service",
+   "name": "Takes the calls with injuries or a dispute",
+   "system": "Contact Centre",
+   "channel": "phone",
+   "unitName": "Notification and registration",
+   "blockId": "act-01",
+   "processId": "intake",
+   "does": "Customer Service keeps the calls that need a person. The agent hands them over with the notes."
+  },
+  {
+   "id": "n-02",
+   "stageId": "s1",
+   "visibility": "backstage",
+   "actorId": "intake-agent",
+   "name": "Registers the claim in ClaimsCore",
+   "system": "ClaimsCore",
+   "channel": null,
+   "unitName": "Notification and registration",
+   "fixes": [
+    "p-01"
+   ],
+   "does": "One entry, at the source. Nobody types the notification a second time."
+  },
+  {
+   "id": "c-02",
+   "stageId": "s2",
+   "visibility": "customer-action",
+   "actorId": "customer",
+   "name": "Uploads photos and papers in the app",
+   "system": null,
+   "channel": "app",
+   "unitName": null,
+   "blockId": null,
+   "processId": null
+  },
+  {
+   "id": "n-03",
+   "stageId": "s2",
+   "visibility": "backstage",
+   "actorId": "document-agent",
+   "name": "Reads and files documents as they arrive",
+   "system": "ClaimsCore",
+   "channel": null,
+   "unitName": "Notification and registration",
+   "fixes": [
+    "p-08"
+   ],
+   "does": "Attaches every document to the claim the day it arrives and flags what is missing or unreadable."
+  },
+  {
+   "id": "t-03",
+   "stageId": "s2",
+   "visibility": "backstage",
+   "actorId": "claims-handling",
+   "name": "Checks the claim record the agent opened",
+   "system": "ClaimsCore",
+   "channel": null,
+   "unitName": "Notification and registration",
+   "blockId": "act-01",
+   "processId": "intake",
+   "does": "The handler reviews what the agent registered and corrects it where needed."
+  },
+  {
+   "id": "t-05",
+   "stageId": "s2",
+   "visibility": "backstage",
+   "actorId": "claims-handling",
+   "name": "Reads the cover on the claim record",
+   "system": "ClaimsCore",
+   "channel": null,
+   "unitName": "Notification and registration",
+   "blockId": "act-01",
+   "processId": "intake",
+   "fixes": [
+    "p-02"
+   ],
+   "does": "Cover shows on the claim itself (a read-only view of PolicyHub). The second system stays closed."
+  },
+  {
+   "id": "t-06",
+   "stageId": "s2",
+   "visibility": "backstage",
+   "actorId": "claims-handling",
+   "name": "Record the cover decision on the file",
+   "system": "ClaimsCore",
+   "channel": null,
+   "unitName": "Notification and registration",
+   "blockId": "act-01",
+   "processId": "intake"
+  },
+  {
+   "id": "t-07",
+   "stageId": "s2",
+   "visibility": "backstage",
+   "actorId": "claims-handling",
+   "name": "Score the claim against the triage rules",
+   "system": "ClaimsCore",
+   "channel": null,
+   "unitName": "Notification and registration",
+   "blockId": "act-01",
+   "processId": "intake"
+  },
+  {
+   "id": "n-04",
+   "stageId": "s2",
+   "visibility": "frontstage",
+   "actorId": "status-agent",
+   "name": "Confirms cover and the next step",
+   "system": null,
+   "channel": "app",
+   "unitName": "Notification and registration",
+   "sees": "A message saying what is covered, what happens next and roughly when."
+  },
+  {
+   "id": "c-03",
+   "stageId": "s3",
+   "visibility": "customer-action",
+   "actorId": "customer",
+   "name": "Meet the adjuster",
+   "system": null,
+   "channel": "in person",
+   "unitName": null,
+   "blockId": null,
+   "processId": null
+  },
+  {
+   "id": "t-08",
+   "stageId": "s3",
+   "visibility": "backstage",
+   "actorId": "claims-handling",
+   "name": "Select and instruct a loss adjuster",
+   "system": "Email",
+   "channel": null,
+   "unitName": "Assessment",
+   "blockId": "act-02",
+   "processId": "assessment",
+   "does": "The handler still chooses the adjuster, and the instruction now carries a due date."
+  },
+  {
+   "id": "n-05",
+   "stageId": "s3",
+   "visibility": "backstage",
+   "actorId": "followup-agent",
+   "name": "Tracks adjuster due dates and chases",
+   "system": "Email",
+   "channel": null,
+   "unitName": "Assessment",
+   "fixes": [
+    "p-03"
+   ],
+   "does": "Chases the adjuster before the due date and tells the handler only when a report is really late."
+  },
+  {
+   "id": "t-10",
+   "stageId": "s3",
+   "visibility": "backstage",
+   "actorId": "claims-handling",
+   "name": "Read the report and update the reserve",
+   "system": "ClaimsCore",
+   "channel": null,
+   "unitName": "Assessment",
+   "blockId": "act-02",
+   "processId": "assessment"
+  },
+  {
+   "id": "t-11",
+   "stageId": "s3",
+   "visibility": "support",
+   "actorId": "claims-handling",
+   "name": "Run the fraud indicator checklist",
+   "system": "ClaimsCore",
+   "channel": null,
+   "unitName": "Assessment",
+   "blockId": "act-02",
+   "processId": "assessment"
+  },
+  {
+   "id": "t-12",
+   "stageId": "s3",
+   "visibility": "support",
+   "actorId": "claims-handling",
+   "name": "Refer a flagged file to investigation",
+   "system": "Email",
+   "channel": null,
+   "unitName": "Assessment",
+   "blockId": "act-02",
+   "processId": "assessment"
+  },
+  {
+   "id": "n-06",
+   "stageId": "s3",
+   "visibility": "frontstage",
+   "actorId": "status-agent",
+   "name": "Sends an update at each milestone",
+   "system": null,
+   "channel": "app",
+   "unitName": "Assessment",
+   "fixes": [
+    "p-05"
+   ],
+   "sees": "A message when the adjuster is booked, when the report is in and when a decision is near.",
+   "does": "Watches the claim status and writes the update. It never gives a decision."
+  },
+  {
+   "id": "t-19",
+   "stageId": "s3",
+   "visibility": "frontstage",
+   "actorId": "customer-service",
+   "name": "Answers the status calls that still come in",
+   "system": "Contact Centre",
+   "channel": "phone",
+   "unitName": "Assessment",
+   "blockId": "act-04",
+   "processId": "assessment",
+   "does": "Fewer calls, same team: the measure of whether the updates work."
+  },
+  {
+   "id": "c-04",
+   "stageId": "s4",
+   "visibility": "customer-action",
+   "actorId": "customer",
+   "name": "Drop the car at the network garage",
+   "system": null,
+   "channel": "in person",
+   "unitName": null,
+   "blockId": null,
+   "processId": null
+  },
+  {
+   "id": "t-13",
+   "stageId": "s4",
+   "visibility": "frontstage",
+   "actorId": "claims-handling",
+   "name": "Book the vehicle into a network garage",
+   "system": "RepairPortal",
+   "channel": null,
+   "unitName": "Assessment",
+   "blockId": "act-02",
+   "processId": "assessment"
+  },
+  {
+   "id": "t-14",
+   "stageId": "s4",
+   "visibility": "backstage",
+   "actorId": "claims-handling",
+   "name": "Approve the repair estimate",
+   "system": "RepairPortal",
+   "channel": null,
+   "unitName": "Assessment",
+   "blockId": "act-02",
+   "processId": "assessment"
+  },
+  {
+   "id": "t-15",
+   "stageId": "s5",
+   "visibility": "backstage",
+   "actorId": "claims-handling",
+   "name": "Calculates the settlement in the claim",
+   "system": "ClaimsCore",
+   "channel": null,
+   "unitName": "Settlement",
+   "blockId": "act-03",
+   "processId": "settlement",
+   "fixes": [
+    "p-04"
+   ],
+   "does": "The calculation lives in ClaimsCore, not in a personal spreadsheet, so it can be checked."
+  },
+  {
+   "id": "t-16",
+   "stageId": "s5",
+   "visibility": "support",
+   "actorId": "claims-handling",
+   "name": "Obtain the second signature above the limit",
+   "system": "Email",
+   "channel": null,
+   "unitName": "Settlement",
+   "blockId": "act-03",
+   "processId": "settlement"
+  },
+  {
+   "id": "t-17",
+   "stageId": "s5",
+   "visibility": "backstage",
+   "actorId": "claims-handling",
+   "name": "Record the settlement decision",
+   "system": "ClaimsCore",
+   "channel": null,
+   "unitName": "Settlement",
+   "blockId": "act-03",
+   "processId": "settlement"
+  },
+  {
+   "id": "t-18",
+   "stageId": "s5",
+   "visibility": "support",
+   "actorId": "finance-control",
+   "name": "Prepare and release the payment run",
+   "system": "Ledger",
+   "channel": null,
+   "unitName": "Settlement",
+   "blockId": "act-03",
+   "processId": "settlement"
+  },
+  {
+   "id": "n-07",
+   "stageId": "s5",
+   "visibility": "frontstage",
+   "actorId": "status-agent",
+   "name": "Explains the amount and the payment date",
+   "system": null,
+   "channel": "app",
+   "unitName": "Settlement",
+   "sees": "The amount, how it was worked out, the date it will be paid and who to ask."
+  },
+  {
+   "id": "c-06",
+   "stageId": "s5",
+   "visibility": "customer-action",
+   "actorId": "customer",
+   "name": "Receive the payment",
+   "system": null,
+   "channel": null,
+   "unitName": null,
+   "blockId": null,
+   "processId": null
+  },
+  {
+   "id": "n-08",
+   "stageId": "s6",
+   "visibility": "backstage",
+   "actorId": "document-agent",
+   "name": "Drafts the recovery file from the claim",
+   "system": "ClaimsCore",
+   "channel": null,
+   "unitName": "Closure",
+   "fixes": [
+    "p-07"
+   ],
+   "does": "Builds the recovery file from what the claim already holds. The handler checks it and sends it."
+  },
+  {
+   "id": "t-20",
+   "stageId": "s6",
+   "visibility": "backstage",
+   "actorId": "claims-handling",
+   "name": "Checks and sends the recovery file",
+   "system": "Excel",
+   "channel": null,
+   "unitName": "Closure",
+   "blockId": "act-05",
+   "processId": "closure"
+  },
+  {
+   "id": "t-21",
+   "stageId": "s6",
+   "visibility": "backstage",
+   "actorId": "claims-handling",
+   "name": "Check the file is complete and close it",
+   "system": "ClaimsCore",
+   "channel": null,
+   "unitName": "Closure",
+   "blockId": "act-05",
+   "processId": "closure"
+  },
+  {
+   "id": "n-09",
+   "stageId": "s6",
+   "visibility": "frontstage",
+   "actorId": "status-agent",
+   "name": "Tells the customer the claim is closed",
+   "system": null,
+   "channel": "app",
+   "unitName": "Closure",
+   "sees": "A last message that the claim is closed, and where to go if something comes back."
+  }
+ ],
+ "asis": {
   "context": "OPEX QUICKSCAN",
   "lens": "CLIENTS · SERVICE BLUEPRINT",
   "teamName": "Claims Handling",
   "teamId": "claims-handling",
   "teamActorId": "claims-handling",
   "engagement": "Northwind Assurance",
+  "source": "Team lead, two coordinators and four handlers, 3-4 Sep 2026; Customer Service team lead, 4 Sep 2026; claims system and contact-centre report packs",
+  "baselineVersion": "baseline/2026.6",
+  "baselineStamp": "21bf379a6c203e79",
+  "baselinePath": "baseline.json",
+  "generatedAt": "2026-09-08",
+  "keyMessage": "The customer sees a claim that never reports back, and it costs **6,5 FTE**: a notification typed twice and updates they have to ring for.",
   "mappingUnit": "key process",
-  "moment": "to-be",
-  "keyMessage": "Agents tell the customer **what happens before they ask**, and the handlers **keep every decision**",
-  "source": "Target service designed from the as-is blueprint and the opportunities agreed on the baseline (o-01 to o-07). Sample data, fictional client.",
+  "coverage": {},
   "stages": [
-    {
-      "id": "s1",
-      "name": "I report the damage",
-      "order": 1,
-      "want": "I want to report it once and know it is in hand",
-      "sentiment": "positive",
-      "sentimentNote": "Reported in minutes, day or night"
-    },
-    {
-      "id": "s2",
-      "name": "I find out where I stand",
-      "order": 2,
-      "want": "I want to know if I am covered",
-      "sentiment": "positive",
-      "sentimentNote": "Told what is covered and what comes next"
-    },
-    {
-      "id": "s3",
-      "name": "Someone assesses the damage",
-      "order": 3,
-      "want": "I want someone to look at the damage soon",
-      "sentiment": "neutral",
-      "sentimentNote": "Still waits for the adjuster, but knows when"
-    },
-    {
-      "id": "s4",
-      "name": "My car gets repaired",
-      "order": 4,
-      "want": "I want my car back",
-      "sentiment": "positive",
-      "sentimentNote": "The garage takes over"
-    },
-    {
-      "id": "s5",
-      "name": "I get paid",
-      "order": 5,
-      "want": "I want to be paid, and to understand the amount",
-      "sentiment": "positive",
-      "sentimentNote": "Paid, and knows why that amount"
-    },
-    {
-      "id": "s6",
-      "name": "It is over",
-      "order": 6,
-      "want": "I want it to be finished",
-      "sentiment": "positive",
-      "sentimentNote": "Told the claim is closed"
-    }
+   {
+    "id": "s1",
+    "name": "I report the damage",
+    "order": 1,
+    "want": "I want to report it once and know it is in hand",
+    "sentiment": "negative",
+    "sentimentNote": "Tells the story, then tells it again"
+   },
+   {
+    "id": "s2",
+    "name": "I find out where I stand",
+    "order": 2,
+    "want": "I want to know if I am covered",
+    "sentiment": "negative",
+    "sentimentNote": "Sends the papers into silence"
+   },
+   {
+    "id": "s3",
+    "name": "Someone assesses the damage",
+    "order": 3,
+    "want": "I want someone to look at the damage soon",
+    "sentiment": "negative",
+    "sentimentNote": "Rings to ask where it stands"
+   },
+   {
+    "id": "s4",
+    "name": "My car gets repaired",
+    "order": 4,
+    "want": "I want my car back",
+    "sentiment": "positive",
+    "sentimentNote": "The garage takes over"
+   },
+   {
+    "id": "s5",
+    "name": "I get paid",
+    "order": 5,
+    "want": "I want to be paid, and to understand the amount",
+    "sentiment": "neutral",
+    "sentimentNote": "Paid, never told why that amount"
+   },
+   {
+    "id": "s6",
+    "name": "It is over",
+    "order": 6,
+    "want": "I want it to be finished",
+    "sentiment": "neutral",
+    "sentimentNote": "Hears nothing, assumes it is over"
+   }
   ],
   "actors": {
-    "claims-handling": {
-      "name": "Claims Handling",
-      "kind": "team"
-    },
-    "customer": {
-      "name": "The customer",
-      "kind": "customer"
-    },
-    "customer-service": {
-      "name": "Customer Service",
-      "kind": "team"
-    },
-    "finance-control": {
-      "name": "Finance Control",
-      "kind": "team"
-    },
-    "intake-agent": {
-      "name": "Intake agent",
-      "kind": "agent"
-    },
-    "status-agent": {
-      "name": "Status agent",
-      "kind": "agent"
-    },
-    "document-agent": {
-      "name": "Document agent",
-      "kind": "agent"
-    },
-    "followup-agent": {
-      "name": "Follow-up agent",
-      "kind": "agent"
-    }
+   "claims-handling": {
+    "name": "Claims Handling",
+    "kind": "team"
+   },
+   "customer": {
+    "name": "The customer",
+    "kind": "customer"
+   },
+   "customer-service": {
+    "name": "Customer Service",
+    "kind": "team"
+   },
+   "finance-control": {
+    "name": "Finance Control",
+    "kind": "team"
+   }
   },
-  "steps": [
-    {
-      "id": "c-01",
-      "stageId": "s1",
-      "visibility": "customer-action",
-      "actorId": "customer",
-      "name": "Reports the damage in the app, by chat or by phone",
-      "system": null,
-      "channel": "chat",
-      "unitName": null,
-      "blockId": null,
-      "processId": null
-    },
-    {
-      "id": "n-01",
-      "stageId": "s1",
-      "visibility": "frontstage",
-      "actorId": "intake-agent",
-      "name": "Takes the notification, day and night",
-      "system": "ClaimsCore",
-      "channel": "chat",
-      "unitName": "Notification and registration",
-      "sees": "Tells what happened in their own words, at any hour, and gets a claim number and the next step straight away.",
-      "does": "Asks only what the claim needs and writes it straight into ClaimsCore. A call with injuries or a dispute goes to a person."
-    },
-    {
-      "id": "t-01",
-      "stageId": "s1",
-      "visibility": "frontstage",
-      "actorId": "customer-service",
-      "name": "Takes the calls with injuries or a dispute",
-      "system": "Contact Centre",
-      "channel": "phone",
-      "unitName": "Notification and registration",
-      "blockId": "act-01",
-      "processId": "intake",
-      "does": "Customer Service keeps the calls that need a person. The agent hands them over with the notes."
-    },
-    {
-      "id": "n-02",
-      "stageId": "s1",
-      "visibility": "backstage",
-      "actorId": "intake-agent",
-      "name": "Registers the claim in ClaimsCore",
-      "system": "ClaimsCore",
-      "channel": null,
-      "unitName": "Notification and registration",
-      "fixes": [
-        "p-01"
-      ],
-      "does": "One entry, at the source. Nobody types the notification a second time."
-    },
-    {
-      "id": "c-02",
-      "stageId": "s2",
-      "visibility": "customer-action",
-      "actorId": "customer",
-      "name": "Uploads photos and papers in the app",
-      "system": null,
-      "channel": "app",
-      "unitName": null,
-      "blockId": null,
-      "processId": null
-    },
-    {
-      "id": "n-03",
-      "stageId": "s2",
-      "visibility": "backstage",
-      "actorId": "document-agent",
-      "name": "Reads and files documents as they arrive",
-      "system": "ClaimsCore",
-      "channel": null,
-      "unitName": "Notification and registration",
-      "fixes": [
-        "p-08"
-      ],
-      "does": "Attaches every document to the claim the day it arrives and flags what is missing or unreadable."
-    },
-    {
-      "id": "t-03",
-      "stageId": "s2",
-      "visibility": "backstage",
-      "actorId": "claims-handling",
-      "name": "Checks the claim record the agent opened",
-      "system": "ClaimsCore",
-      "channel": null,
-      "unitName": "Notification and registration",
-      "blockId": "act-01",
-      "processId": "intake",
-      "does": "The handler reviews what the agent registered and corrects it where needed."
-    },
-    {
-      "id": "t-05",
-      "stageId": "s2",
-      "visibility": "backstage",
-      "actorId": "claims-handling",
-      "name": "Reads the cover on the claim record",
-      "system": "ClaimsCore",
-      "channel": null,
-      "unitName": "Notification and registration",
-      "blockId": "act-01",
-      "processId": "intake",
-      "fixes": [
-        "p-02"
-      ],
-      "does": "Cover shows on the claim itself (a read-only view of PolicyHub). The second system stays closed."
-    },
-    {
-      "id": "t-06",
-      "stageId": "s2",
-      "visibility": "backstage",
-      "actorId": "claims-handling",
-      "name": "Record the cover decision on the file",
-      "system": "ClaimsCore",
-      "channel": null,
-      "unitName": "Notification and registration",
-      "blockId": "act-01",
-      "processId": "intake"
-    },
-    {
-      "id": "t-07",
-      "stageId": "s2",
-      "visibility": "backstage",
-      "actorId": "claims-handling",
-      "name": "Score the claim against the triage rules",
-      "system": "ClaimsCore",
-      "channel": null,
-      "unitName": "Notification and registration",
-      "blockId": "act-01",
-      "processId": "intake"
-    },
-    {
-      "id": "n-04",
-      "stageId": "s2",
-      "visibility": "frontstage",
-      "actorId": "status-agent",
-      "name": "Confirms cover and the next step",
-      "system": null,
-      "channel": "app",
-      "unitName": "Notification and registration",
-      "sees": "A message saying what is covered, what happens next and roughly when."
-    },
-    {
-      "id": "c-03",
-      "stageId": "s3",
-      "visibility": "customer-action",
-      "actorId": "customer",
-      "name": "Meet the adjuster",
-      "system": null,
-      "channel": "in person",
-      "unitName": null,
-      "blockId": null,
-      "processId": null
-    },
-    {
-      "id": "t-08",
-      "stageId": "s3",
-      "visibility": "backstage",
-      "actorId": "claims-handling",
-      "name": "Select and instruct a loss adjuster",
-      "system": "Email",
-      "channel": null,
-      "unitName": "Assessment",
-      "blockId": "act-02",
-      "processId": "assessment",
-      "does": "The handler still chooses the adjuster, and the instruction now carries a due date."
-    },
-    {
-      "id": "n-05",
-      "stageId": "s3",
-      "visibility": "backstage",
-      "actorId": "followup-agent",
-      "name": "Tracks adjuster due dates and chases",
-      "system": "Email",
-      "channel": null,
-      "unitName": "Assessment",
-      "fixes": [
-        "p-03"
-      ],
-      "does": "Chases the adjuster before the due date and tells the handler only when a report is really late."
-    },
-    {
-      "id": "t-10",
-      "stageId": "s3",
-      "visibility": "backstage",
-      "actorId": "claims-handling",
-      "name": "Read the report and update the reserve",
-      "system": "ClaimsCore",
-      "channel": null,
-      "unitName": "Assessment",
-      "blockId": "act-02",
-      "processId": "assessment"
-    },
-    {
-      "id": "t-11",
-      "stageId": "s3",
-      "visibility": "support",
-      "actorId": "claims-handling",
-      "name": "Run the fraud indicator checklist",
-      "system": "ClaimsCore",
-      "channel": null,
-      "unitName": "Assessment",
-      "blockId": "act-02",
-      "processId": "assessment"
-    },
-    {
-      "id": "t-12",
-      "stageId": "s3",
-      "visibility": "support",
-      "actorId": "claims-handling",
-      "name": "Refer a flagged file to investigation",
-      "system": "Email",
-      "channel": null,
-      "unitName": "Assessment",
-      "blockId": "act-02",
-      "processId": "assessment"
-    },
-    {
-      "id": "n-06",
-      "stageId": "s3",
-      "visibility": "frontstage",
-      "actorId": "status-agent",
-      "name": "Sends an update at each milestone",
-      "system": null,
-      "channel": "app",
-      "unitName": "Assessment",
-      "fixes": [
-        "p-05"
-      ],
-      "sees": "A message when the adjuster is booked, when the report is in and when a decision is near.",
-      "does": "Watches the claim status and writes the update. It never gives a decision."
-    },
-    {
-      "id": "t-19",
-      "stageId": "s3",
-      "visibility": "frontstage",
-      "actorId": "customer-service",
-      "name": "Answers the status calls that still come in",
-      "system": "Contact Centre",
-      "channel": "phone",
-      "unitName": "Assessment",
-      "blockId": "act-04",
-      "processId": "assessment",
-      "does": "Fewer calls, same team: the measure of whether the updates work."
-    },
-    {
-      "id": "c-04",
-      "stageId": "s4",
-      "visibility": "customer-action",
-      "actorId": "customer",
-      "name": "Drop the car at the network garage",
-      "system": null,
-      "channel": "in person",
-      "unitName": null,
-      "blockId": null,
-      "processId": null
-    },
-    {
-      "id": "t-13",
-      "stageId": "s4",
-      "visibility": "frontstage",
-      "actorId": "claims-handling",
-      "name": "Book the vehicle into a network garage",
-      "system": "RepairPortal",
-      "channel": null,
-      "unitName": "Assessment",
-      "blockId": "act-02",
-      "processId": "assessment"
-    },
-    {
-      "id": "t-14",
-      "stageId": "s4",
-      "visibility": "backstage",
-      "actorId": "claims-handling",
-      "name": "Approve the repair estimate",
-      "system": "RepairPortal",
-      "channel": null,
-      "unitName": "Assessment",
-      "blockId": "act-02",
-      "processId": "assessment"
-    },
-    {
-      "id": "t-15",
-      "stageId": "s5",
-      "visibility": "backstage",
-      "actorId": "claims-handling",
-      "name": "Calculates the settlement in the claim",
-      "system": "ClaimsCore",
-      "channel": null,
-      "unitName": "Settlement",
-      "blockId": "act-03",
-      "processId": "settlement",
-      "fixes": [
-        "p-04"
-      ],
-      "does": "The calculation lives in ClaimsCore, not in a personal spreadsheet, so it can be checked."
-    },
-    {
-      "id": "t-16",
-      "stageId": "s5",
-      "visibility": "support",
-      "actorId": "claims-handling",
-      "name": "Obtain the second signature above the limit",
-      "system": "Email",
-      "channel": null,
-      "unitName": "Settlement",
-      "blockId": "act-03",
-      "processId": "settlement"
-    },
-    {
-      "id": "t-17",
-      "stageId": "s5",
-      "visibility": "backstage",
-      "actorId": "claims-handling",
-      "name": "Record the settlement decision",
-      "system": "ClaimsCore",
-      "channel": null,
-      "unitName": "Settlement",
-      "blockId": "act-03",
-      "processId": "settlement"
-    },
-    {
-      "id": "t-18",
-      "stageId": "s5",
-      "visibility": "support",
-      "actorId": "finance-control",
-      "name": "Prepare and release the payment run",
-      "system": "Ledger",
-      "channel": null,
-      "unitName": "Settlement",
-      "blockId": "act-03",
-      "processId": "settlement"
-    },
-    {
-      "id": "n-07",
-      "stageId": "s5",
-      "visibility": "frontstage",
-      "actorId": "status-agent",
-      "name": "Explains the amount and the payment date",
-      "system": null,
-      "channel": "app",
-      "unitName": "Settlement",
-      "sees": "The amount, how it was worked out, the date it will be paid and who to ask."
-    },
-    {
-      "id": "c-06",
-      "stageId": "s5",
-      "visibility": "customer-action",
-      "actorId": "customer",
-      "name": "Receive the payment",
-      "system": null,
-      "channel": null,
-      "unitName": null,
-      "blockId": null,
-      "processId": null
-    },
-    {
-      "id": "n-08",
-      "stageId": "s6",
-      "visibility": "backstage",
-      "actorId": "document-agent",
-      "name": "Drafts the recovery file from the claim",
-      "system": "ClaimsCore",
-      "channel": null,
-      "unitName": "Closure",
-      "fixes": [
-        "p-07"
-      ],
-      "does": "Builds the recovery file from what the claim already holds. The handler checks it and sends it."
-    },
-    {
-      "id": "t-20",
-      "stageId": "s6",
-      "visibility": "backstage",
-      "actorId": "claims-handling",
-      "name": "Checks and sends the recovery file",
-      "system": "Excel",
-      "channel": null,
-      "unitName": "Closure",
-      "blockId": "act-05",
-      "processId": "closure"
-    },
-    {
-      "id": "t-21",
-      "stageId": "s6",
-      "visibility": "backstage",
-      "actorId": "claims-handling",
-      "name": "Check the file is complete and close it",
-      "system": "ClaimsCore",
-      "channel": null,
-      "unitName": "Closure",
-      "blockId": "act-05",
-      "processId": "closure"
-    },
-    {
-      "id": "n-09",
-      "stageId": "s6",
-      "visibility": "frontstage",
-      "actorId": "status-agent",
-      "name": "Tells the customer the claim is closed",
-      "system": null,
-      "channel": "app",
-      "unitName": "Closure",
-      "sees": "A last message that the claim is closed, and where to go if something comes back."
-    }
+  "sources": [
+   {
+    "id": "s4",
+    "label": "Team lead, Claims Handling"
+   },
+   {
+    "id": "s2",
+    "label": "Coordinators, Claims Handling"
+   },
+   {
+    "id": "s3",
+    "label": "Claims handlers, four across tenure"
+   },
+   {
+    "id": "s1",
+    "label": "Team lead, Customer Service"
+   }
   ],
-  "asis": {
-    "context": "OPEX QUICKSCAN",
-    "lens": "CLIENTS · SERVICE BLUEPRINT",
-    "teamName": "Claims Handling",
-    "teamId": "claims-handling",
-    "teamActorId": "claims-handling",
-    "engagement": "Northwind Assurance",
-    "source": "Team lead, two coordinators and four handlers, 3-4 Sep 2026; Customer Service team lead, 4 Sep 2026; claims system and contact-centre report packs",
-    "baselineVersion": "baseline/2026.6",
-    "baselineStamp": "21bf379a6c203e79",
-    "baselinePath": "baseline.json",
-    "generatedAt": "2026-09-08",
-    "keyMessage": "The customer sees a claim that never reports back, and it costs **6,5 FTE**: a notification typed twice and updates they have to ring for.",
-    "mappingUnit": "key process",
-    "coverage": {},
-    "stages": [
-      {
-        "id": "s1",
-        "name": "I report the damage",
-        "order": 1,
-        "want": "I want to report it once and know it is in hand",
-        "sentiment": "negative",
-        "sentimentNote": "Tells the story, then tells it again"
+  "steps": [
+   {
+    "id": "c-01",
+    "stageId": "s1",
+    "visibility": "customer-action",
+    "actorId": "customer",
+    "name": "Report the damage by phone",
+    "system": null,
+    "channel": "phone",
+    "unitName": null,
+    "pains": [],
+    "blockId": null,
+    "processId": null
+   },
+   {
+    "id": "t-01",
+    "stageId": "s1",
+    "visibility": "frontstage",
+    "actorId": "customer-service",
+    "name": "Take the call and capture the circumstances",
+    "system": "Contact Centre",
+    "channel": "phone",
+    "unitName": "Notification and registration",
+    "pains": [],
+    "blockId": "act-01",
+    "processId": "intake"
+   },
+   {
+    "id": "t-02",
+    "stageId": "s1",
+    "visibility": "backstage",
+    "actorId": "customer-service",
+    "name": "Re-key the notification into the claims system",
+    "system": "ClaimsCore",
+    "channel": null,
+    "unitName": "Notification and registration",
+    "pains": [
+     {
+      "id": "p-01",
+      "theme": "The same notification is typed twice, once by the contact centre and once into the claims system",
+      "magnitude": {
+       "value": 2.5,
+       "unit": "fte"
       },
-      {
-        "id": "s2",
-        "name": "I find out where I stand",
-        "order": 2,
-        "want": "I want to know if I am covered",
-        "sentiment": "negative",
-        "sentimentNote": "Sends the papers into silence"
-      },
-      {
-        "id": "s3",
-        "name": "Someone assesses the damage",
-        "order": 3,
-        "want": "I want someone to look at the damage soon",
-        "sentiment": "negative",
-        "sentimentNote": "Rings to ask where it stands"
-      },
-      {
-        "id": "s4",
-        "name": "My car gets repaired",
-        "order": 4,
-        "want": "I want my car back",
-        "sentiment": "positive",
-        "sentimentNote": "The garage takes over"
-      },
-      {
-        "id": "s5",
-        "name": "I get paid",
-        "order": 5,
-        "want": "I want to be paid, and to understand the amount",
-        "sentiment": "neutral",
-        "sentimentNote": "Paid, never told why that amount"
-      },
-      {
-        "id": "s6",
-        "name": "It is over",
-        "order": 6,
-        "want": "I want it to be finished",
-        "sentiment": "neutral",
-        "sentimentNote": "Hears nothing, assumes it is over"
-      }
+      "magnitudeNote": "Estimated with the Customer Service team lead",
+      "dimension": "proc",
+      "sourceId": "s1"
+     }
     ],
-    "actors": {
-      "claims-handling": {
-        "name": "Claims Handling",
-        "kind": "team"
+    "blockId": "act-01",
+    "processId": "intake"
+   },
+   {
+    "id": "c-02",
+    "stageId": "s2",
+    "visibility": "customer-action",
+    "actorId": "customer",
+    "name": "Send in the photos and the paperwork",
+    "system": null,
+    "channel": "email",
+    "unitName": null,
+    "pains": [],
+    "blockId": null,
+    "processId": null
+   },
+   {
+    "id": "t-03",
+    "stageId": "s2",
+    "visibility": "backstage",
+    "actorId": "claims-handling",
+    "name": "Create the claim record",
+    "system": "ClaimsCore",
+    "channel": null,
+    "unitName": "Notification and registration",
+    "pains": [
+     {
+      "id": "p-08",
+      "theme": "Documents arriving by mail are attached by hand, often days after the claim is opened",
+      "magnitude": {
+       "value": 1.5,
+       "unit": "fte"
       },
-      "customer": {
-        "name": "The customer",
-        "kind": "customer"
-      },
-      "customer-service": {
-        "name": "Customer Service",
-        "kind": "team"
-      },
-      "finance-control": {
-        "name": "Finance Control",
-        "kind": "team"
-      }
-    },
-    "sources": [
-      {
-        "id": "src-01",
-        "label": "Team lead interview, Claims Handling",
-        "role": "Claims Handling"
-      },
-      {
-        "id": "src-02",
-        "label": "Coordinator interviews",
-        "role": "Claims Handling"
-      },
-      {
-        "id": "src-03",
-        "label": "Handler interviews across tenure",
-        "role": "Claims Handling"
-      },
-      {
-        "id": "src-04",
-        "label": "Claims system report pack, Jan-Aug 2026",
-        "role": ""
-      },
-      {
-        "id": "src-05",
-        "label": "Customer Service team lead interview",
-        "role": "Customer Service"
-      }
+      "magnitudeNote": "Estimated with the coordinators",
+      "dimension": "proc",
+      "sourceId": "s2"
+     }
     ],
-    "steps": [
-      {
-        "id": "c-01",
-        "stageId": "s1",
-        "visibility": "customer-action",
-        "actorId": "customer",
-        "name": "Report the damage by phone",
-        "system": null,
-        "channel": "phone",
-        "unitName": null,
-        "pains": [],
-        "blockId": null,
-        "processId": null
+    "blockId": "act-01",
+    "processId": "intake"
+   },
+   {
+    "id": "t-04",
+    "stageId": "s2",
+    "visibility": "backstage",
+    "actorId": "claims-handling",
+    "name": "Attach the documents received by mail",
+    "system": "ClaimsCore",
+    "channel": null,
+    "unitName": "Notification and registration",
+    "pains": [],
+    "blockId": "act-01",
+    "processId": "intake"
+   },
+   {
+    "id": "t-05",
+    "stageId": "s2",
+    "visibility": "backstage",
+    "actorId": "claims-handling",
+    "name": "Look up the policy and read the cover",
+    "system": "PolicyHub",
+    "channel": null,
+    "unitName": "Notification and registration",
+    "pains": [
+     {
+      "id": "p-02",
+      "theme": "Cover cannot be read from the claim, so every file needs a second system open",
+      "magnitude": {
+       "value": 1.8,
+       "unit": "fte"
       },
-      {
-        "id": "t-01",
-        "stageId": "s1",
-        "visibility": "frontstage",
-        "actorId": "customer-service",
-        "name": "Take the call and capture the circumstances",
-        "system": "Contact Centre",
-        "channel": "phone",
-        "unitName": "Notification and registration",
-        "pains": [],
-        "blockId": "act-01",
-        "processId": "intake"
-      },
-      {
-        "id": "t-02",
-        "stageId": "s1",
-        "visibility": "backstage",
-        "actorId": "customer-service",
-        "name": "Re-key the notification into the claims system",
-        "system": "ClaimsCore",
-        "channel": null,
-        "unitName": "Notification and registration",
-        "pains": [
-          {
-            "id": "p-01",
-            "theme": "The same notification is typed twice, once by the contact centre and once into the claims system",
-            "magnitude": {
-              "value": 2.5,
-              "unit": "fte"
-            },
-            "magnitudeNote": "Estimated with the Customer Service team lead",
-            "dimension": "proc",
-            "sourceId": "src-05"
-          }
-        ],
-        "blockId": "act-01",
-        "processId": "intake"
-      },
-      {
-        "id": "c-02",
-        "stageId": "s2",
-        "visibility": "customer-action",
-        "actorId": "customer",
-        "name": "Send in the photos and the paperwork",
-        "system": null,
-        "channel": "email",
-        "unitName": null,
-        "pains": [],
-        "blockId": null,
-        "processId": null
-      },
-      {
-        "id": "t-03",
-        "stageId": "s2",
-        "visibility": "backstage",
-        "actorId": "claims-handling",
-        "name": "Create the claim record",
-        "system": "ClaimsCore",
-        "channel": null,
-        "unitName": "Notification and registration",
-        "pains": [
-          {
-            "id": "p-08",
-            "theme": "Documents arriving by mail are attached by hand, often days after the claim is opened",
-            "magnitude": {
-              "value": 1.5,
-              "unit": "fte"
-            },
-            "magnitudeNote": "Estimated with the coordinators",
-            "dimension": "proc",
-            "sourceId": "src-02"
-          }
-        ],
-        "blockId": "act-01",
-        "processId": "intake"
-      },
-      {
-        "id": "t-04",
-        "stageId": "s2",
-        "visibility": "backstage",
-        "actorId": "claims-handling",
-        "name": "Attach the documents received by mail",
-        "system": "ClaimsCore",
-        "channel": null,
-        "unitName": "Notification and registration",
-        "pains": [],
-        "blockId": "act-01",
-        "processId": "intake"
-      },
-      {
-        "id": "t-05",
-        "stageId": "s2",
-        "visibility": "backstage",
-        "actorId": "claims-handling",
-        "name": "Look up the policy and read the cover",
-        "system": "PolicyHub",
-        "channel": null,
-        "unitName": "Notification and registration",
-        "pains": [
-          {
-            "id": "p-02",
-            "theme": "Cover cannot be read from the claim, so every file needs a second system open",
-            "magnitude": {
-              "value": 1.8,
-              "unit": "fte"
-            },
-            "magnitudeNote": "Estimated with the coordinators from observed handling time",
-            "dimension": "data",
-            "sourceId": "src-02"
-          }
-        ],
-        "blockId": "act-01",
-        "processId": "intake"
-      },
-      {
-        "id": "t-06",
-        "stageId": "s2",
-        "visibility": "backstage",
-        "actorId": "claims-handling",
-        "name": "Record the cover decision on the file",
-        "system": "ClaimsCore",
-        "channel": null,
-        "unitName": "Notification and registration",
-        "pains": [],
-        "blockId": "act-01",
-        "processId": "intake"
-      },
-      {
-        "id": "t-07",
-        "stageId": "s2",
-        "visibility": "backstage",
-        "actorId": "claims-handling",
-        "name": "Score the claim against the triage rules",
-        "system": "ClaimsCore",
-        "channel": null,
-        "unitName": "Notification and registration",
-        "pains": [
-          {
-            "id": "p-06",
-            "theme": "Triage sends complex files to whoever is free rather than to who can handle them",
-            "magnitude": null,
-            "magnitudeNote": "Not quantified this round",
-            "dimension": "org",
-            "sourceId": "src-02"
-          }
-        ],
-        "blockId": "act-01",
-        "processId": "intake"
-      },
-      {
-        "id": "c-03",
-        "stageId": "s3",
-        "visibility": "customer-action",
-        "actorId": "customer",
-        "name": "Meet the adjuster",
-        "system": null,
-        "channel": "in person",
-        "unitName": null,
-        "pains": [],
-        "blockId": null,
-        "processId": null
-      },
-      {
-        "id": "t-08",
-        "stageId": "s3",
-        "visibility": "backstage",
-        "actorId": "claims-handling",
-        "name": "Select and instruct a loss adjuster",
-        "system": "Email",
-        "channel": null,
-        "unitName": "Assessment",
-        "pains": [
-          {
-            "id": "p-03",
-            "theme": "Adjuster reports arrive late and are chased by hand",
-            "magnitude": {
-              "value": 3.0,
-              "unit": "fte"
-            },
-            "magnitudeNote": "Estimated from the chase volume the coordinators walked through",
-            "dimension": "proc",
-            "sourceId": "src-02"
-          }
-        ],
-        "blockId": "act-02",
-        "processId": "assessment"
-      },
-      {
-        "id": "t-09",
-        "stageId": "s3",
-        "visibility": "backstage",
-        "actorId": "claims-handling",
-        "name": "Chase the adjuster report",
-        "system": "Email",
-        "channel": null,
-        "unitName": "Assessment",
-        "pains": [],
-        "blockId": "act-02",
-        "processId": "assessment"
-      },
-      {
-        "id": "t-10",
-        "stageId": "s3",
-        "visibility": "backstage",
-        "actorId": "claims-handling",
-        "name": "Read the report and update the reserve",
-        "system": "ClaimsCore",
-        "channel": null,
-        "unitName": "Assessment",
-        "pains": [],
-        "blockId": "act-02",
-        "processId": "assessment"
-      },
-      {
-        "id": "t-11",
-        "stageId": "s3",
-        "visibility": "support",
-        "actorId": "claims-handling",
-        "name": "Run the fraud indicator checklist",
-        "system": "ClaimsCore",
-        "channel": null,
-        "unitName": "Assessment",
-        "pains": [],
-        "blockId": "act-02",
-        "processId": "assessment"
-      },
-      {
-        "id": "t-12",
-        "stageId": "s3",
-        "visibility": "support",
-        "actorId": "claims-handling",
-        "name": "Refer a flagged file to investigation",
-        "system": "Email",
-        "channel": null,
-        "unitName": "Assessment",
-        "pains": [],
-        "blockId": "act-02",
-        "processId": "assessment"
-      },
-      {
-        "id": "c-05",
-        "stageId": "s3",
-        "visibility": "customer-action",
-        "actorId": "customer",
-        "name": "Call again to ask where the claim stands",
-        "system": null,
-        "channel": "phone",
-        "unitName": null,
-        "pains": [],
-        "blockId": null,
-        "processId": null
-      },
-      {
-        "id": "t-19",
-        "stageId": "s3",
-        "visibility": "frontstage",
-        "actorId": "customer-service",
-        "name": "Answer status calls on open claims",
-        "system": "Contact Centre",
-        "channel": "phone",
-        "unitName": "Assessment",
-        "pains": [
-          {
-            "id": "p-05",
-            "theme": "Customers call to ask where their claim is",
-            "magnitude": {
-              "value": 4.0,
-              "unit": "fte"
-            },
-            "magnitudeNote": "Call volume from the contact-centre report pack",
-            "dimension": "cust",
-            "sourceId": "src-05"
-          }
-        ],
-        "blockId": "act-04",
-        "processId": "assessment"
-      },
-      {
-        "id": "c-04",
-        "stageId": "s4",
-        "visibility": "customer-action",
-        "actorId": "customer",
-        "name": "Drop the car at the network garage",
-        "system": null,
-        "channel": "in person",
-        "unitName": null,
-        "pains": [],
-        "blockId": null,
-        "processId": null
-      },
-      {
-        "id": "t-13",
-        "stageId": "s4",
-        "visibility": "frontstage",
-        "actorId": "claims-handling",
-        "name": "Book the vehicle into a network garage",
-        "system": "RepairPortal",
-        "channel": null,
-        "unitName": "Assessment",
-        "pains": [],
-        "blockId": "act-02",
-        "processId": "assessment"
-      },
-      {
-        "id": "t-14",
-        "stageId": "s4",
-        "visibility": "backstage",
-        "actorId": "claims-handling",
-        "name": "Approve the repair estimate",
-        "system": "RepairPortal",
-        "channel": null,
-        "unitName": "Assessment",
-        "pains": [],
-        "blockId": "act-02",
-        "processId": "assessment"
-      },
-      {
-        "id": "t-15",
-        "stageId": "s5",
-        "visibility": "backstage",
-        "actorId": "claims-handling",
-        "name": "Calculate the settlement",
-        "system": "Excel",
-        "channel": null,
-        "unitName": "Settlement",
-        "pains": [
-          {
-            "id": "p-04",
-            "theme": "The settlement is calculated in a spreadsheet outside the claims system",
-            "magnitude": null,
-            "magnitudeNote": "Not quantified this round",
-            "dimension": "data",
-            "sourceId": "src-03"
-          }
-        ],
-        "blockId": "act-03",
-        "processId": "settlement"
-      },
-      {
-        "id": "t-16",
-        "stageId": "s5",
-        "visibility": "support",
-        "actorId": "claims-handling",
-        "name": "Obtain the second signature above the limit",
-        "system": "Email",
-        "channel": null,
-        "unitName": "Settlement",
-        "pains": [],
-        "blockId": "act-03",
-        "processId": "settlement"
-      },
-      {
-        "id": "t-17",
-        "stageId": "s5",
-        "visibility": "backstage",
-        "actorId": "claims-handling",
-        "name": "Record the settlement decision",
-        "system": "ClaimsCore",
-        "channel": null,
-        "unitName": "Settlement",
-        "pains": [],
-        "blockId": "act-03",
-        "processId": "settlement"
-      },
-      {
-        "id": "t-18",
-        "stageId": "s5",
-        "visibility": "support",
-        "actorId": "finance-control",
-        "name": "Prepare and release the payment run",
-        "system": "Ledger",
-        "channel": null,
-        "unitName": "Settlement",
-        "pains": [],
-        "blockId": "act-03",
-        "processId": "settlement"
-      },
-      {
-        "id": "c-06",
-        "stageId": "s5",
-        "visibility": "customer-action",
-        "actorId": "customer",
-        "name": "Receive the payment",
-        "system": null,
-        "channel": null,
-        "unitName": null,
-        "pains": [],
-        "blockId": null,
-        "processId": null
-      },
-      {
-        "id": "t-20",
-        "stageId": "s6",
-        "visibility": "support",
-        "actorId": "claims-handling",
-        "name": "Build and send the recovery file",
-        "system": "Excel",
-        "channel": null,
-        "unitName": "Closure",
-        "pains": [
-          {
-            "id": "p-07",
-            "theme": "Recovery files are built from scratch each time",
-            "magnitude": {
-              "value": 1.2,
-              "unit": "fte"
-            },
-            "magnitudeNote": "Estimated with the team lead",
-            "dimension": "proc",
-            "sourceId": "src-01"
-          }
-        ],
-        "blockId": "act-05",
-        "processId": "closure"
-      },
-      {
-        "id": "t-21",
-        "stageId": "s6",
-        "visibility": "backstage",
-        "actorId": "claims-handling",
-        "name": "Check the file is complete and close it",
-        "system": "ClaimsCore",
-        "channel": null,
-        "unitName": "Closure",
-        "pains": [],
-        "blockId": "act-05",
-        "processId": "closure"
-      }
+      "magnitudeNote": "Estimated with the coordinators from observed handling time",
+      "dimension": "data",
+      "sourceId": "s2"
+     }
     ],
-    "moment": "as-is"
-  },
-  "vocab": {
-    "magnitudeUnits": [
-      {
-        "key": "fte",
-        "label": "FTE"
-      },
-      {
-        "key": "pct-time",
-        "label": "% of team time"
-      },
-      {
-        "key": "hours-week",
-        "label": "hours / week"
-      },
-      {
-        "key": "days-month",
-        "label": "days / month"
-      },
-      {
-        "key": "minutes-case",
-        "label": "minutes / case"
-      },
-      {
-        "key": "days-lead",
-        "label": "days of lead time"
-      },
-      {
-        "key": "pct-rework",
-        "label": "% rework / error rate"
-      },
-      {
-        "key": "pct-volume",
-        "label": "% of volume"
-      },
-      {
-        "key": "count-month",
-        "label": "cases / month"
-      },
-      {
-        "key": "eur-year",
-        "label": "€ / year"
-      }
+    "blockId": "act-01",
+    "processId": "intake"
+   },
+   {
+    "id": "t-06",
+    "stageId": "s2",
+    "visibility": "backstage",
+    "actorId": "claims-handling",
+    "name": "Record the cover decision on the file",
+    "system": "ClaimsCore",
+    "channel": null,
+    "unitName": "Notification and registration",
+    "pains": [],
+    "blockId": "act-01",
+    "processId": "intake"
+   },
+   {
+    "id": "t-07",
+    "stageId": "s2",
+    "visibility": "backstage",
+    "actorId": "claims-handling",
+    "name": "Score the claim against the triage rules",
+    "system": "ClaimsCore",
+    "channel": null,
+    "unitName": "Notification and registration",
+    "pains": [
+     {
+      "id": "p-06",
+      "theme": "Triage sends complex files to whoever is free rather than to who can handle them",
+      "magnitude": null,
+      "magnitudeNote": "Not quantified this round",
+      "dimension": "org",
+      "sourceId": "s2"
+     }
     ],
-    "channels": [
-      {
-        "key": "phone",
-        "label": "Phone"
+    "blockId": "act-01",
+    "processId": "intake"
+   },
+   {
+    "id": "c-03",
+    "stageId": "s3",
+    "visibility": "customer-action",
+    "actorId": "customer",
+    "name": "Meet the adjuster",
+    "system": null,
+    "channel": "in person",
+    "unitName": null,
+    "pains": [],
+    "blockId": null,
+    "processId": null
+   },
+   {
+    "id": "t-08",
+    "stageId": "s3",
+    "visibility": "backstage",
+    "actorId": "claims-handling",
+    "name": "Select and instruct a loss adjuster",
+    "system": "Email",
+    "channel": null,
+    "unitName": "Assessment",
+    "pains": [
+     {
+      "id": "p-03",
+      "theme": "Adjuster reports arrive late and are chased by hand",
+      "magnitude": {
+       "value": 3.0,
+       "unit": "fte"
       },
-      {
-        "key": "email",
-        "label": "Email"
-      },
-      {
-        "key": "letter",
-        "label": "Letter"
-      },
-      {
-        "key": "portal",
-        "label": "Portal"
-      },
-      {
-        "key": "app",
-        "label": "App"
-      },
-      {
-        "key": "sms",
-        "label": "SMS"
-      },
-      {
-        "key": "chat",
-        "label": "Chat"
-      },
-      {
-        "key": "in-person",
-        "label": "In person"
-      }
+      "magnitudeNote": "Estimated from the chase volume the coordinators walked through",
+      "dimension": "proc",
+      "sourceId": "s2"
+     }
     ],
-    "sentiments": [
-      {
-        "key": "positive",
-        "label": "It goes well for them"
+    "blockId": "act-02",
+    "processId": "assessment"
+   },
+   {
+    "id": "t-09",
+    "stageId": "s3",
+    "visibility": "backstage",
+    "actorId": "claims-handling",
+    "name": "Chase the adjuster report",
+    "system": "Email",
+    "channel": null,
+    "unitName": "Assessment",
+    "pains": [],
+    "blockId": "act-02",
+    "processId": "assessment"
+   },
+   {
+    "id": "t-10",
+    "stageId": "s3",
+    "visibility": "backstage",
+    "actorId": "claims-handling",
+    "name": "Read the report and update the reserve",
+    "system": "ClaimsCore",
+    "channel": null,
+    "unitName": "Assessment",
+    "pains": [],
+    "blockId": "act-02",
+    "processId": "assessment"
+   },
+   {
+    "id": "t-11",
+    "stageId": "s3",
+    "visibility": "support",
+    "actorId": "claims-handling",
+    "name": "Run the fraud indicator checklist",
+    "system": "ClaimsCore",
+    "channel": null,
+    "unitName": "Assessment",
+    "pains": [],
+    "blockId": "act-02",
+    "processId": "assessment"
+   },
+   {
+    "id": "t-12",
+    "stageId": "s3",
+    "visibility": "support",
+    "actorId": "claims-handling",
+    "name": "Refer a flagged file to investigation",
+    "system": "Email",
+    "channel": null,
+    "unitName": "Assessment",
+    "pains": [],
+    "blockId": "act-02",
+    "processId": "assessment"
+   },
+   {
+    "id": "c-05",
+    "stageId": "s3",
+    "visibility": "customer-action",
+    "actorId": "customer",
+    "name": "Call again to ask where the claim stands",
+    "system": null,
+    "channel": "phone",
+    "unitName": null,
+    "pains": [],
+    "blockId": null,
+    "processId": null
+   },
+   {
+    "id": "t-19",
+    "stageId": "s3",
+    "visibility": "frontstage",
+    "actorId": "customer-service",
+    "name": "Answer status calls on open claims",
+    "system": "Contact Centre",
+    "channel": "phone",
+    "unitName": "Assessment",
+    "pains": [
+     {
+      "id": "p-05",
+      "theme": "Customers call to ask where their claim is",
+      "magnitude": {
+       "value": 4.0,
+       "unit": "fte"
       },
-      {
-        "key": "neutral",
-        "label": "Neither here nor there"
-      },
-      {
-        "key": "negative",
-        "label": "It goes badly for them"
-      }
+      "magnitudeNote": "Call volume from the contact-centre report pack",
+      "dimension": "cust",
+      "sourceId": "s1"
+     }
     ],
-    "dimensions": [
-      {
-        "key": "cust",
-        "label": "The customer"
+    "blockId": "act-04",
+    "processId": "assessment"
+   },
+   {
+    "id": "c-04",
+    "stageId": "s4",
+    "visibility": "customer-action",
+    "actorId": "customer",
+    "name": "Drop the car at the network garage",
+    "system": null,
+    "channel": "in person",
+    "unitName": null,
+    "pains": [],
+    "blockId": null,
+    "processId": null
+   },
+   {
+    "id": "t-13",
+    "stageId": "s4",
+    "visibility": "frontstage",
+    "actorId": "claims-handling",
+    "name": "Book the vehicle into a network garage",
+    "system": "RepairPortal",
+    "channel": null,
+    "unitName": "Assessment",
+    "pains": [],
+    "blockId": "act-02",
+    "processId": "assessment"
+   },
+   {
+    "id": "t-14",
+    "stageId": "s4",
+    "visibility": "backstage",
+    "actorId": "claims-handling",
+    "name": "Approve the repair estimate",
+    "system": "RepairPortal",
+    "channel": null,
+    "unitName": "Assessment",
+    "pains": [],
+    "blockId": "act-02",
+    "processId": "assessment"
+   },
+   {
+    "id": "t-15",
+    "stageId": "s5",
+    "visibility": "backstage",
+    "actorId": "claims-handling",
+    "name": "Calculate the settlement",
+    "system": "Excel",
+    "channel": null,
+    "unitName": "Settlement",
+    "pains": [
+     {
+      "id": "p-04",
+      "theme": "The settlement is calculated in a spreadsheet outside the claims system",
+      "magnitude": null,
+      "magnitudeNote": "Not quantified this round",
+      "dimension": "data",
+      "sourceId": "s3"
+     }
+    ],
+    "blockId": "act-03",
+    "processId": "settlement"
+   },
+   {
+    "id": "t-16",
+    "stageId": "s5",
+    "visibility": "support",
+    "actorId": "claims-handling",
+    "name": "Obtain the second signature above the limit",
+    "system": "Email",
+    "channel": null,
+    "unitName": "Settlement",
+    "pains": [],
+    "blockId": "act-03",
+    "processId": "settlement"
+   },
+   {
+    "id": "t-17",
+    "stageId": "s5",
+    "visibility": "backstage",
+    "actorId": "claims-handling",
+    "name": "Record the settlement decision",
+    "system": "ClaimsCore",
+    "channel": null,
+    "unitName": "Settlement",
+    "pains": [],
+    "blockId": "act-03",
+    "processId": "settlement"
+   },
+   {
+    "id": "t-18",
+    "stageId": "s5",
+    "visibility": "support",
+    "actorId": "finance-control",
+    "name": "Prepare and release the payment run",
+    "system": "Ledger",
+    "channel": null,
+    "unitName": "Settlement",
+    "pains": [],
+    "blockId": "act-03",
+    "processId": "settlement"
+   },
+   {
+    "id": "c-06",
+    "stageId": "s5",
+    "visibility": "customer-action",
+    "actorId": "customer",
+    "name": "Receive the payment",
+    "system": null,
+    "channel": null,
+    "unitName": null,
+    "pains": [],
+    "blockId": null,
+    "processId": null
+   },
+   {
+    "id": "t-20",
+    "stageId": "s6",
+    "visibility": "support",
+    "actorId": "claims-handling",
+    "name": "Build and send the recovery file",
+    "system": "Excel",
+    "channel": null,
+    "unitName": "Closure",
+    "pains": [
+     {
+      "id": "p-07",
+      "theme": "Recovery files are built from scratch each time",
+      "magnitude": {
+       "value": 1.2,
+       "unit": "fte"
       },
-      {
-        "key": "proc",
-        "label": "Only the operation"
-      }
-    ]
-  },
-  "editable": false
+      "magnitudeNote": "Estimated with the team lead",
+      "dimension": "proc",
+      "sourceId": "s4"
+     }
+    ],
+    "blockId": "act-05",
+    "processId": "closure"
+   },
+   {
+    "id": "t-21",
+    "stageId": "s6",
+    "visibility": "backstage",
+    "actorId": "claims-handling",
+    "name": "Check the file is complete and close it",
+    "system": "ClaimsCore",
+    "channel": null,
+    "unitName": "Closure",
+    "pains": [],
+    "blockId": "act-05",
+    "processId": "closure"
+   }
+  ],
+  "moment": "as-is"
+ },
+ "vocab": {
+  "magnitudeUnits": [
+   {
+    "key": "fte",
+    "label": "FTE"
+   },
+   {
+    "key": "pct-time",
+    "label": "% of team time"
+   },
+   {
+    "key": "hours-week",
+    "label": "hours / week"
+   },
+   {
+    "key": "days-month",
+    "label": "days / month"
+   },
+   {
+    "key": "minutes-case",
+    "label": "minutes / case"
+   },
+   {
+    "key": "days-lead",
+    "label": "days of lead time"
+   },
+   {
+    "key": "pct-rework",
+    "label": "% rework / error rate"
+   },
+   {
+    "key": "pct-volume",
+    "label": "% of volume"
+   },
+   {
+    "key": "count-month",
+    "label": "cases / month"
+   },
+   {
+    "key": "eur-year",
+    "label": "€ / year"
+   }
+  ],
+  "channels": [
+   {
+    "key": "phone",
+    "label": "Phone"
+   },
+   {
+    "key": "email",
+    "label": "Email"
+   },
+   {
+    "key": "letter",
+    "label": "Letter"
+   },
+   {
+    "key": "portal",
+    "label": "Portal"
+   },
+   {
+    "key": "app",
+    "label": "App"
+   },
+   {
+    "key": "sms",
+    "label": "SMS"
+   },
+   {
+    "key": "chat",
+    "label": "Chat"
+   },
+   {
+    "key": "in-person",
+    "label": "In person"
+   }
+  ],
+  "sentiments": [
+   {
+    "key": "positive",
+    "label": "It goes well for them"
+   },
+   {
+    "key": "neutral",
+    "label": "Neither here nor there"
+   },
+   {
+    "key": "negative",
+    "label": "It goes badly for them"
+   }
+  ],
+  "dimensions": [
+   {
+    "key": "cust",
+    "label": "The customer"
+   },
+   {
+    "key": "proc",
+    "label": "Only the operation"
+   }
+  ]
+ },
+ "editable": false,
+ "sourceIds": [],
+ "sourcePanel": {
+  "build": "client",
+  "scoredBy": "Prepared by Nova Reperta, Oct 2026.",
+  "src": {
+   "s1": {
+    "label": "Team lead, Customer Service",
+    "group": "interviews",
+    "date": "Sep 2026"
+   },
+   "s2": {
+    "label": "Coordinators, Claims Handling",
+    "group": "interviews",
+    "date": "Sep 2026"
+   },
+   "s3": {
+    "label": "Claims handlers, four across tenure",
+    "group": "interviews",
+    "date": "Sep 2026"
+   },
+   "s4": {
+    "label": "Team lead, Claims Handling",
+    "group": "interviews",
+    "date": "Sep 2026"
+   }
+  }
+ }
 };
 /* ========================================================= */
 (function(){
@@ -2077,7 +2281,7 @@ const DATA = /* DATA */ {
         return '<tr data-pain="'+esc(r.p.id)+'"><td><span class="stagetag">'+esc(r.stage)+'</span></td>'+
           '<td><b>'+esc(r.step)+'</b>'+(r.actor?'<br><span style="color:var(--mut);font-size:var(--fs-11)">'+esc(r.actor)+'</span>':'')+'</td>'+
           (cmp?'':'<td>'+esc(r.lane)+'</td>')+
-          '<td>'+esc(r.p.theme)+(r.p.rootCause?'<br><b style="font-size:var(--fs-115)">'+esc(r.p.rootCause)+'</b>':'')+'</td>'+
+          '<td class="nrsrc-row">'+esc(r.p.theme)+(window.NRSRC?NRSRC.item(r.p,r.p.theme||'Pain point',{k:'pain:'+r.p.id}):'')+(r.p.rootCause?'<br><b style="font-size:var(--fs-115)">'+esc(r.p.rootCause)+'</b>':'')+'</td>'+
           '<td>'+(q?'<b>'+esc(magText(r.p.magnitude))+'</b>':'<span style="color:var(--mut);font-style:italic">not quantified</span>')+'</td>'+
           (cmp?'<td>'+(r.after==='new in the to-be'?'<span class="st open">new in the to-be</span>'
                        : r.after?'<span class="st ok">&#10003; '+esc(r.after)+'</span>':'<span class="st open">not fixed yet</span>')+'</td>':'')+
@@ -2454,6 +2658,88 @@ const DATA = /* DATA */ {
   }
 })();
 </script>
+<!-- NR-GLASS:BEGIN — the glass layer (diagnostic-skill-builder/templates/glass-layer.html, put in by
+     scripts/patch_glass.py). Everything that floats above the page is glass; the page itself stays solid
+     (cards, tables, charts, slides). Small things get liquid glass: a lens at the edges, a light rim and a
+     highlight that follows the pointer. Large things (the edit sidebar, big pop-ups) get calmer frosted glass.
+     Hooks: .nr-glass (small), .nr-glass-lg (large), .nr-glass-tint (a dark tinted message), .nr-glass-night (with
+     .nr-glass: small glass that always sits on a dark surface, like the canvas twin), plus the shared
+     pieces every instrument has. Do not edit a copy in a page: change this file and run patch_glass.py. -->
+<style id="nr-glass">
+  :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu){
+    background-color:rgba(255,255,255,.55)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.34),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(14px) saturate(185%) brightness(1.06);backdrop-filter:blur(14px) var(--nr-lens,) saturate(185%) brightness(1.06);
+    border-color:transparent!important;
+    box-shadow:0 22px 50px -12px rgba(11,35,71,.28),0 2px 6px rgba(11,35,71,.08),inset 0 0 0 .5px rgba(255,255,255,.6),inset 1.5px 1.5px 0 -.5px rgba(255,255,255,.95),inset -1px -1px 0 -.5px rgba(255,255,255,.5)!important}
+  :is(#ed,.nr-glass-lg){
+    background-color:rgba(255,255,255,.74)!important;-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);
+    box-shadow:-24px 0 60px -28px rgba(11,35,71,.38),inset 1px 0 0 rgba(255,255,255,.85)!important;border-color:rgba(255,255,255,.6)!important}
+  :is(.nr-toast,#nr-ask-msg,.nr-glass-tint){
+    background:rgba(11,35,71,.72)!important;-webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);
+    box-shadow:0 16px 36px -12px rgba(11,35,71,.45),inset 0 0 0 .5px rgba(255,255,255,.18),inset 1px 1px 0 -.5px rgba(255,255,255,.45)!important}
+  /* what sits on glass: light fills, never glass on glass */
+  :is(#ed,.nr-glass-lg) :is(.edh,.edf){background:rgba(255,255,255,.35)!important}
+  /* dark */
+  :is([data-t="dark"],html.dark) :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu){
+    background-color:rgba(20,30,44,.56)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.08),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(14px) saturate(170%) brightness(.9);backdrop-filter:blur(14px) var(--nr-lens,) saturate(170%) brightness(.9);
+    box-shadow:0 22px 50px -12px rgba(0,0,0,.6),inset 0 0 0 .5px rgba(255,255,255,.16),inset 1.5px 1.5px 0 -.5px rgba(255,255,255,.35),inset -1px -1px 0 -.5px rgba(255,255,255,.12)!important}
+  :is([data-t="dark"],html.dark) :is(#ed,.nr-glass-lg){background-color:rgba(22,32,44,.78)!important;box-shadow:-24px 0 60px -28px rgba(0,0,0,.7),inset 1px 0 0 rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.1)!important}
+  :is([data-t="dark"],html.dark) :is(#ed,.nr-glass-lg) :is(.edh,.edf){background:rgba(255,255,255,.05)!important}
+  /* glass that always sits on a dark surface (the canvas twin): the dark values in both themes */
+  .nr-glass.nr-glass-night{background-color:rgba(12,21,38,.58)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.07),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(12px) saturate(160%) brightness(.9);backdrop-filter:blur(12px) var(--nr-lens,) saturate(160%) brightness(.9);
+    box-shadow:0 18px 44px -14px rgba(0,0,0,.65),inset 0 0 0 .5px rgba(143,168,206,.22),inset 1.5px 1.5px 0 -.5px rgba(175,198,246,.35),inset -1px -1px 0 -.5px rgba(175,198,246,.12)!important}
+  /* when glass cannot be glass: solid, as before */
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg){background-color:var(--card,#fff)!important;background-image:none!important}}
+  @media (prefers-reduced-transparency:reduce){
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg){background-color:var(--card,#fff)!important;background-image:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+    :is(.nr-toast,#nr-ask-msg,.nr-glass-tint){background:var(--navy-fill,#0B2347)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}}
+  @media print{
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg,.nr-toast,#nr-ask-msg,.nr-glass-tint){-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:#fff!important;box-shadow:none!important}}
+</style>
+<svg id="nr-glass-defs" width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false"></svg>
+<script id="nr-glass-js">
+(function(){
+  /* the lens: only where a browser can put an SVG filter inside backdrop-filter (Chrome, Edge, the Claude desktop
+     app). Safari and Firefox would draw nothing at all, so they keep the plain frosted glass. */
+  var ua=navigator.userAgent, lens=/Chrome\/|Chromium\/|Edg\//.test(ua)&&!/Firefox\//.test(ua);
+  var calm=window.matchMedia&&(matchMedia('(prefers-reduced-transparency: reduce)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var SMALL='.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu', R=16, BEZEL=22, MAXA=700*800, n=0;
+  var defs=document.getElementById('nr-glass-defs'), NS='http://www.w3.org/2000/svg';
+  function lensMap(w,h,r){ var c=document.createElement('canvas'); c.width=w; c.height=h; var x=c.getContext('2d'), im=x.createImageData(w,h), d=im.data;
+    for(var j=0;j<h;j++) for(var i=0;i<w;i++){
+      var cx=Math.min(Math.max(i,r),w-r), cy=Math.min(Math.max(j,r),h-r), dx=i-cx, dy=j-cy, nx=0, ny=0, dist;
+      if((i<r||i>w-r)&&(j<r||j>h-r)){ var l=Math.sqrt(dx*dx+dy*dy)||1; dist=r-l; nx=dx/l; ny=dy/l; }
+      else { var a=i, b=w-1-i, t=j, u=h-1-j, m=Math.min(a,b,t,u); dist=m; if(m===a)nx=-1; else if(m===b)nx=1; else if(m===t)ny=-1; else ny=1; }
+      var k=Math.pow(Math.max(0,1-dist/BEZEL),3), o=(j*w+i)*4; d[o]=128+nx*k*127; d[o+1]=128+ny*k*127; d[o+2]=128; d[o+3]=255; }
+    x.putImageData(im,0,0); return c.toDataURL(); }
+  function filterFor(el){ if(!el.__nrg){ var id='nr-lens-'+(++n), f=document.createElementNS(NS,'filter');
+      f.setAttribute('id',id); f.setAttribute('filterUnits','userSpaceOnUse'); f.setAttribute('primitiveUnits','userSpaceOnUse'); f.setAttribute('x','0'); f.setAttribute('y','0'); f.setAttribute('color-interpolation-filters','sRGB');
+      var im=document.createElementNS(NS,'feImage'); im.setAttribute('x','0'); im.setAttribute('y','0'); im.setAttribute('preserveAspectRatio','none'); im.setAttribute('result','map');
+      var dm=document.createElementNS(NS,'feDisplacementMap'); dm.setAttribute('in','SourceGraphic'); dm.setAttribute('in2','map'); dm.setAttribute('scale','0'); dm.setAttribute('xChannelSelector','R'); dm.setAttribute('yChannelSelector','G');
+      f.appendChild(im); f.appendChild(dm); defs.appendChild(f); el.__nrg={id:id,f:f,im:im,dm:dm,key:''}; }
+    return el.__nrg; }
+  function grow(g){ if(calm){ g.dm.setAttribute('scale','40'); return; } var t0=performance.now();   /* the glass materialises by bending more */
+    (function step(t){ var p=Math.min(1,(t-t0)/260); g.dm.setAttribute('scale',(40*(1-Math.pow(1-p,3))).toFixed(1)); if(p<1) requestAnimationFrame(step); })(t0); }
+  function scan(){ q=0; if(!lens||calm&&matchMedia('(prefers-reduced-transparency: reduce)').matches) return;
+    document.querySelectorAll(SMALL).forEach(function(el){
+      var w=Math.round(el.offsetWidth), h=Math.round(el.offsetHeight), shown=w>0&&h>0&&getComputedStyle(el).visibility!=='hidden';
+      var g=el.__nrg; if(!shown){ if(g) g.key=''; return; } if(w*h>MAXA) return;
+      g=filterFor(el); var key=w+'x'+h; if(g.key===key) return; var fresh=!g.key; g.key=key;
+      var r=parseFloat(getComputedStyle(el).borderTopLeftRadius)||R;
+      g.f.setAttribute('width',w); g.f.setAttribute('height',h); g.im.setAttribute('width',w); g.im.setAttribute('height',h); g.im.setAttribute('href',lensMap(w,h,Math.min(r,w/2,h/2)));
+      el.style.setProperty('--nr-lens','url(#'+g.id+')'); if(fresh) grow(g); }); }
+  var q=0; function soon(){ if(!q) q=requestAnimationFrame(scan); }
+  function start(){ scan(); new MutationObserver(soon).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style','hidden','open']}); window.addEventListener('resize',soon); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
+  /* the highlight follows the pointer across a small piece of glass */
+  document.addEventListener('pointermove',function(e){ var el=e.target.closest&&e.target.closest(SMALL); if(!el) return; var r=el.getBoundingClientRect();
+    el.style.setProperty('--lx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%'); el.style.setProperty('--ly',((e.clientY-r.top)/r.height*100).toFixed(1)+'%'); },{passive:true});
+})();
+</script>
+<!-- NR-GLASS:END -->
 <style>
 /* ── READ MODE · narrow screens ──────────────────────────────────────────────
    This artifact normally scales its whole body down so the page fits one screen.

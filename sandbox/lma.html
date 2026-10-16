@@ -3672,6 +3672,88 @@ const DATA = /* DATA */ {
   }
 })();
 </script>
+<!-- NR-GLASS:BEGIN — the glass layer (diagnostic-skill-builder/templates/glass-layer.html, put in by
+     scripts/patch_glass.py). Everything that floats above the page is glass; the page itself stays solid
+     (cards, tables, charts, slides). Small things get liquid glass: a lens at the edges, a light rim and a
+     highlight that follows the pointer. Large things (the edit sidebar, big pop-ups) get calmer frosted glass.
+     Hooks: .nr-glass (small), .nr-glass-lg (large), .nr-glass-tint (a dark tinted message), .nr-glass-night (with
+     .nr-glass: small glass that always sits on a dark surface, like the canvas twin), plus the shared
+     pieces every instrument has. Do not edit a copy in a page: change this file and run patch_glass.py. -->
+<style id="nr-glass">
+  :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu){
+    background-color:rgba(255,255,255,.55)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.34),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(14px) saturate(185%) brightness(1.06);backdrop-filter:blur(14px) var(--nr-lens,) saturate(185%) brightness(1.06);
+    border-color:transparent!important;
+    box-shadow:0 22px 50px -12px rgba(11,35,71,.28),0 2px 6px rgba(11,35,71,.08),inset 0 0 0 .5px rgba(255,255,255,.6),inset 1.5px 1.5px 0 -.5px rgba(255,255,255,.95),inset -1px -1px 0 -.5px rgba(255,255,255,.5)!important}
+  :is(#ed,.nr-glass-lg){
+    background-color:rgba(255,255,255,.74)!important;-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);
+    box-shadow:-24px 0 60px -28px rgba(11,35,71,.38),inset 1px 0 0 rgba(255,255,255,.85)!important;border-color:rgba(255,255,255,.6)!important}
+  :is(.nr-toast,#nr-ask-msg,.nr-glass-tint){
+    background:rgba(11,35,71,.72)!important;-webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);
+    box-shadow:0 16px 36px -12px rgba(11,35,71,.45),inset 0 0 0 .5px rgba(255,255,255,.18),inset 1px 1px 0 -.5px rgba(255,255,255,.45)!important}
+  /* what sits on glass: light fills, never glass on glass */
+  :is(#ed,.nr-glass-lg) :is(.edh,.edf){background:rgba(255,255,255,.35)!important}
+  /* dark */
+  :is([data-t="dark"],html.dark) :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu){
+    background-color:rgba(20,30,44,.56)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.08),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(14px) saturate(170%) brightness(.9);backdrop-filter:blur(14px) var(--nr-lens,) saturate(170%) brightness(.9);
+    box-shadow:0 22px 50px -12px rgba(0,0,0,.6),inset 0 0 0 .5px rgba(255,255,255,.16),inset 1.5px 1.5px 0 -.5px rgba(255,255,255,.35),inset -1px -1px 0 -.5px rgba(255,255,255,.12)!important}
+  :is([data-t="dark"],html.dark) :is(#ed,.nr-glass-lg){background-color:rgba(22,32,44,.78)!important;box-shadow:-24px 0 60px -28px rgba(0,0,0,.7),inset 1px 0 0 rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.1)!important}
+  :is([data-t="dark"],html.dark) :is(#ed,.nr-glass-lg) :is(.edh,.edf){background:rgba(255,255,255,.05)!important}
+  /* glass that always sits on a dark surface (the canvas twin): the dark values in both themes */
+  .nr-glass.nr-glass-night{background-color:rgba(12,21,38,.58)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.07),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(12px) saturate(160%) brightness(.9);backdrop-filter:blur(12px) var(--nr-lens,) saturate(160%) brightness(.9);
+    box-shadow:0 18px 44px -14px rgba(0,0,0,.65),inset 0 0 0 .5px rgba(143,168,206,.22),inset 1.5px 1.5px 0 -.5px rgba(175,198,246,.35),inset -1px -1px 0 -.5px rgba(175,198,246,.12)!important}
+  /* when glass cannot be glass: solid, as before */
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg){background-color:var(--card,#fff)!important;background-image:none!important}}
+  @media (prefers-reduced-transparency:reduce){
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg){background-color:var(--card,#fff)!important;background-image:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+    :is(.nr-toast,#nr-ask-msg,.nr-glass-tint){background:var(--navy-fill,#0B2347)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}}
+  @media print{
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg,.nr-toast,#nr-ask-msg,.nr-glass-tint){-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:#fff!important;box-shadow:none!important}}
+</style>
+<svg id="nr-glass-defs" width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false"></svg>
+<script id="nr-glass-js">
+(function(){
+  /* the lens: only where a browser can put an SVG filter inside backdrop-filter (Chrome, Edge, the Claude desktop
+     app). Safari and Firefox would draw nothing at all, so they keep the plain frosted glass. */
+  var ua=navigator.userAgent, lens=/Chrome\/|Chromium\/|Edg\//.test(ua)&&!/Firefox\//.test(ua);
+  var calm=window.matchMedia&&(matchMedia('(prefers-reduced-transparency: reduce)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var SMALL='.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu', R=16, BEZEL=22, MAXA=700*800, n=0;
+  var defs=document.getElementById('nr-glass-defs'), NS='http://www.w3.org/2000/svg';
+  function lensMap(w,h,r){ var c=document.createElement('canvas'); c.width=w; c.height=h; var x=c.getContext('2d'), im=x.createImageData(w,h), d=im.data;
+    for(var j=0;j<h;j++) for(var i=0;i<w;i++){
+      var cx=Math.min(Math.max(i,r),w-r), cy=Math.min(Math.max(j,r),h-r), dx=i-cx, dy=j-cy, nx=0, ny=0, dist;
+      if((i<r||i>w-r)&&(j<r||j>h-r)){ var l=Math.sqrt(dx*dx+dy*dy)||1; dist=r-l; nx=dx/l; ny=dy/l; }
+      else { var a=i, b=w-1-i, t=j, u=h-1-j, m=Math.min(a,b,t,u); dist=m; if(m===a)nx=-1; else if(m===b)nx=1; else if(m===t)ny=-1; else ny=1; }
+      var k=Math.pow(Math.max(0,1-dist/BEZEL),3), o=(j*w+i)*4; d[o]=128+nx*k*127; d[o+1]=128+ny*k*127; d[o+2]=128; d[o+3]=255; }
+    x.putImageData(im,0,0); return c.toDataURL(); }
+  function filterFor(el){ if(!el.__nrg){ var id='nr-lens-'+(++n), f=document.createElementNS(NS,'filter');
+      f.setAttribute('id',id); f.setAttribute('filterUnits','userSpaceOnUse'); f.setAttribute('primitiveUnits','userSpaceOnUse'); f.setAttribute('x','0'); f.setAttribute('y','0'); f.setAttribute('color-interpolation-filters','sRGB');
+      var im=document.createElementNS(NS,'feImage'); im.setAttribute('x','0'); im.setAttribute('y','0'); im.setAttribute('preserveAspectRatio','none'); im.setAttribute('result','map');
+      var dm=document.createElementNS(NS,'feDisplacementMap'); dm.setAttribute('in','SourceGraphic'); dm.setAttribute('in2','map'); dm.setAttribute('scale','0'); dm.setAttribute('xChannelSelector','R'); dm.setAttribute('yChannelSelector','G');
+      f.appendChild(im); f.appendChild(dm); defs.appendChild(f); el.__nrg={id:id,f:f,im:im,dm:dm,key:''}; }
+    return el.__nrg; }
+  function grow(g){ if(calm){ g.dm.setAttribute('scale','40'); return; } var t0=performance.now();   /* the glass materialises by bending more */
+    (function step(t){ var p=Math.min(1,(t-t0)/260); g.dm.setAttribute('scale',(40*(1-Math.pow(1-p,3))).toFixed(1)); if(p<1) requestAnimationFrame(step); })(t0); }
+  function scan(){ q=0; if(!lens||calm&&matchMedia('(prefers-reduced-transparency: reduce)').matches) return;
+    document.querySelectorAll(SMALL).forEach(function(el){
+      var w=Math.round(el.offsetWidth), h=Math.round(el.offsetHeight), shown=w>0&&h>0&&getComputedStyle(el).visibility!=='hidden';
+      var g=el.__nrg; if(!shown){ if(g) g.key=''; return; } if(w*h>MAXA) return;
+      g=filterFor(el); var key=w+'x'+h; if(g.key===key) return; var fresh=!g.key; g.key=key;
+      var r=parseFloat(getComputedStyle(el).borderTopLeftRadius)||R;
+      g.f.setAttribute('width',w); g.f.setAttribute('height',h); g.im.setAttribute('width',w); g.im.setAttribute('height',h); g.im.setAttribute('href',lensMap(w,h,Math.min(r,w/2,h/2)));
+      el.style.setProperty('--nr-lens','url(#'+g.id+')'); if(fresh) grow(g); }); }
+  var q=0; function soon(){ if(!q) q=requestAnimationFrame(scan); }
+  function start(){ scan(); new MutationObserver(soon).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style','hidden','open']}); window.addEventListener('resize',soon); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
+  /* the highlight follows the pointer across a small piece of glass */
+  document.addEventListener('pointermove',function(e){ var el=e.target.closest&&e.target.closest(SMALL); if(!el) return; var r=el.getBoundingClientRect();
+    el.style.setProperty('--lx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%'); el.style.setProperty('--ly',((e.clientY-r.top)/r.height*100).toFixed(1)+'%'); },{passive:true});
+})();
+</script>
+<!-- NR-GLASS:END -->
 <style>
 /* ── READ MODE · narrow screens ──────────────────────────────────────────────
    This artifact normally scales its whole body down so the page fits one screen.

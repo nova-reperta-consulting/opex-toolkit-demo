@@ -85,7 +85,7 @@
   /* ── the tree: levels left to right, one row per lowest-level hypothesis ── */
   .twrap{position:relative;width:100%}
   .tgrid{display:grid;position:relative;z-index:1;width:100%}
-  .node.l0{background:var(--navy);border-left:4px solid var(--sky)}
+  .node.l0{background:var(--navy);--nr-tc:var(--sky);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
   .node.l0 .txt{font-size:14px;line-height:1.35}
   .node.l0 .dec{margin-top:7px;font-size:var(--fs-115);font-weight:600;color:var(--sky);line-height:1.4}
   svg.wires{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:visible}
@@ -104,9 +104,9 @@
   .node.l3 .nops button:hover,.node.l4 .nops button:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
   .node.l3 .nops button.rm:hover,.node.l4 .nops button.rm:hover{background:var(--rag-red);border-color:var(--rag-red)}
   .node{align-self:center;position:relative;z-index:2;margin:5px 0;background:var(--navy-fill);color:#fff;
-    border-radius:10px;padding:9px 12px;border-left:4px solid var(--accent)}
-  .node.l2{background:var(--navy2);border-left-color:var(--green)}
-  .node.l3,.node.l4{background:var(--card);color:var(--ink);border:1px solid var(--line);border-left:4px solid var(--dv-2)}
+    border-radius:10px;padding:9px 12px;--nr-tc:var(--accent);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
+  .node.l2{background:var(--navy2);--nr-tc:var(--green)}
+  .node.l3,.node.l4{background:var(--card);color:var(--ink);border:1px solid var(--line);--nr-tc:var(--dv-2);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
   .node .lv{font-size:var(--fs-95);letter-spacing:.6px;text-transform:uppercase;opacity:.62;margin-bottom:3px;
     display:flex;align-items:center;gap:6px}
   .node .txt{font-size:13px;line-height:1.35;font-weight:600}
@@ -161,8 +161,7 @@
   .fine{font-size:var(--fs-11);color:var(--mut);margin:16px 0 0;line-height:1.5}
   .unassigned{border-color:var(--rag-amber)}
   .unassigned>header{background:var(--tint-amber)}
-  .note{display:flex;gap:12px;align-items:flex-start;background:var(--slate-10);border:1px solid var(--line);
-    border-left:4px solid var(--accent);border-radius:0 12px 12px 0;padding:12px 16px;margin:0 0 16px;font-size:13px;line-height:1.5}
+  .note{display:flex;gap:12px;align-items:flex-start;background:var(--slate-10);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:0 0 16px;font-size:13px;line-height:1.5;--nr-tc:var(--accent);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
   .note.warn{background:var(--tint-amber);border-color:var(--rag-amber)}
   .note b{display:block;margin-bottom:2px;color:var(--ink)}
 
@@ -181,10 +180,9 @@
   .cov .t{flex:1;height:5px;border-radius:3px;background:var(--line);overflow:hidden;max-width:120px}
   .cov .t i{display:block;height:100%;background:var(--green)}
   /*<EDIT>*/
-       padding-left:9px;border-left:2px solid var(--accent)}
-  #art.editing .node,#art.editing .subt{cursor:pointer;transition:.13s}
+  #art.editing .node,#art.editing .subt{cursor:pointer;transition:opacity .13s,filter .13s,box-shadow .13s,background-color .13s,border-color .13s,outline-color .13s}
   #art.editing .node:hover,#art.editing .subt:hover{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
-  #art.editing .nr-locked{opacity:.5;filter:saturate(.7);cursor:help;transition:.15s}
+  #art.editing .nr-locked{opacity:.5;filter:saturate(.7);cursor:help;transition:opacity .15s,filter .15s,box-shadow .15s,background-color .15s,border-color .15s,outline-color .15s}
   #lock{width:34px;height:34px;border:1px solid var(--line);background:var(--card);border-radius:9px;color:var(--mut);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
   #lock svg{width:17px;height:17px;display:block}
   #lock.unlocked{background:var(--rag-amber);border-color:var(--rag-amber);color:#fff}
@@ -380,261 +378,828 @@ html [data-t="dark"] .ic{fill:#93A9C4}
   </div>
   <!--<EDIT>--><div id="ed"></div><!--</EDIT>-->
 </div>
+<!-- NRSRC:BEGIN - the sources panel (operating-baseline/assets/source-panel.html, filled by
+     scripts/source_panel.py). The same block in every instrument and slide: a small (i) next to a
+     score or figure opens what it rests on. Do not edit a copy in a page: change this file and render
+     again. -->
+<style>
+  .nrsrc-i{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;flex:none;border-radius:50%;border:1px solid var(--mut,#7A838F);background:none;color:var(--mut,#7A838F);font:italic 700 10px/1 Georgia,"Times New Roman",serif;padding:0;margin:0 0 0 5px;cursor:pointer;vertical-align:1px}
+  /* the (i) is faint at rest and full where you point; it always keeps its place, so nothing moves */
+  .nrsrc-i{opacity:.38;transition:opacity .18s ease,background-color .15s,color .15s}
+  .nrsrc-row:hover .nrsrc-i,.nrsrc-i:hover,.nrsrc-i:focus-visible,.nrsrc-i[aria-expanded="true"],.nrsrc-i.miss{opacity:1}
+  @media (hover:none){.nrsrc-i{opacity:.75}}
+  .nrsrc-i:hover,.nrsrc-i[aria-expanded="true"]{background:var(--navy,#0B2347);border-color:var(--navy,#0B2347);color:#fff}
+  .nrsrc-i.miss{border:1px dashed var(--rag-red-text,#C2483D);color:var(--rag-red-text,#C2483D);font-style:normal}
+  .nrsrc-i:focus-visible{outline:2px solid var(--accent,#6EB1D1);outline-offset:2px}
+  .nrsrc-pop{position:fixed;z-index:1200;width:360px;max-width:calc(100vw - 24px);max-height:calc(100vh - 24px);overflow:auto;background:var(--card,#fff);color:var(--txt,#46505C);border:1px solid var(--line,#E1E6EE);border-radius:16px;box-shadow:0 12px 34px rgba(11,35,71,.20);font:400 13px/1.45 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;text-align:left;display:none}
+  .nrsrc-pop.on{display:block;animation:nrsrcOpen .26s cubic-bezier(.2,.9,.25,1.15)}
+  @keyframes nrsrcOpen{from{opacity:0;transform:scale(.95) translateY(-4px)}to{opacity:1;transform:none}}
+  .nrsrc-hx{position:relative;padding:12px 40px 10px 16px;border-bottom:1px solid rgba(120,135,155,.25)}
+  .nrsrc-ey{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13.5px;font-weight:700;color:var(--ink,#15243A)}
+  .nrsrc-sc{font-size:12px;font-weight:700;letter-spacing:0;text-transform:none;border-radius:8px;padding:0 8px;white-space:nowrap}
+  .nrsrc-x{position:absolute;top:8px;right:10px;width:24px;height:24px;border:0;background:none;color:var(--mut,#7A838F);font-size:17px;line-height:1;cursor:pointer;border-radius:6px}
+  .nrsrc-bd{padding:12px 16px 14px}
+  .nrsrc-sum{margin:0 0 12px}
+  .nrsrc-qt{background:rgba(255,255,255,.45);box-shadow:inset 0 0 0 .5px rgba(120,135,155,.25);border-radius:10px;padding:10px 12px;margin:0 0 12px}
+  [data-t="dark"] .nrsrc-qt,[data-t="dark"] .nrsrc-how{background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.1)}
+  .nrsrc-qt p{margin:0;color:var(--ink,#15243A);font-size:14px;line-height:1.45}
+  .nrsrc-by{margin-top:4px;font-size:12px;color:var(--mut,#7A838F)}
+  .nrsrc-how{background:rgba(255,255,255,.45);box-shadow:inset 0 0 0 .5px rgba(120,135,155,.25);border-radius:10px;padding:9px 12px;margin:0 0 12px;color:var(--ink,#15243A)}
+  .nrsrc-how b,.nrsrc-gh{display:block;font-size:var(--fs-11);font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mut,#7A838F);margin-bottom:3px}
+  .nrsrc-g{margin:0 0 10px}.nrsrc-g:last-child{margin-bottom:0}
+  .nrsrc-it{padding:2px 0 2px 12px;color:var(--ink,#15243A)}
+  .nrsrc-d{color:var(--mut,#7A838F);font-size:12px}
+  .nrsrc-id{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:var(--fs-11);color:var(--mut,#7A838F)}
+  .nrsrc-it a,.nrsrc-how a{color:var(--accent-text,#1F5FA8);font-size:12px;text-decoration:none}
+  .nrsrc-o{display:inline-block;font-size:var(--fs-105);font-weight:650;border-radius:10px;padding:0 7px;margin-left:4px;vertical-align:1px}
+  .nrsrc-o.thirdparty{color:#0E6B66;background:#DFF2F0}.nrsrc-o.internet{color:#8A5A00;background:#FBF0DA}
+  [data-t="dark"] .nrsrc-o.thirdparty{color:#7FD4CB;background:#163330}[data-t="dark"] .nrsrc-o.internet{color:#F0C56E;background:#3A2E15}
+  [data-t="dark"] .nrsrc-it a,[data-t="dark"] .nrsrc-how a{color:#9CC4F2}
+  .nrsrc-ft{border-top:1px solid var(--line,#E1E6EE);margin-top:10px;padding-top:8px;font-size:12px;color:var(--mut,#7A838F)}
+  .nrsrc-warn{color:var(--rag-red-text,#C2483D);font-size:12.5px}
+  .nrsrc-pick .chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+  .nrsrc-pick .chip{display:inline-flex;align-items:center;gap:5px;font-size:var(--fs-115);background:var(--slate-10,rgba(54,65,86,.08));color:var(--ink,#15243A);border-radius:8px;padding:2px 4px 2px 8px}
+  .nrsrc-pick .chip button{border:0;background:none;color:var(--mut,#7A838F);cursor:pointer;font-size:14px;line-height:1;padding:0 3px}
+  .nrsrc-hint{position:fixed;z-index:1201;display:flex;align-items:center;gap:10px;max-width:min(420px,calc(100vw - 24px));padding:9px 10px 9px 14px;border-radius:14px;
+    font:500 13px/1.4 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;color:var(--ink,#15243A);background:var(--card,#fff);box-shadow:0 14px 34px -10px rgba(11,35,71,.28);
+    opacity:0;transform:translateY(6px) scale(.97);transition:opacity .28s ease,transform .32s cubic-bezier(.2,.9,.25,1.15);pointer-events:none}
+  .nrsrc-hint.on{opacity:1;transform:none;pointer-events:auto}
+  .nrsrc-hint .nrsrc-ic{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;margin:0 1px;vertical-align:-2px;border-radius:50%;border:1px solid currentColor;font:italic 700 10px/1 Georgia,serif}
+  .nrsrc-hint button{border:0;background:none;color:var(--mut,#7A838F);font-size:16px;line-height:1;cursor:pointer;padding:2px 4px;border-radius:6px}
+  @media (prefers-reduced-motion:reduce){.nrsrc-pop.on{animation:none}.nrsrc-hint{transition:opacity .2s}}
+  .nrsrc-print{display:none}
+  @media print{
+    .nrsrc-i,.nrsrc-pop,.nrsrc-hint{display:none!important}
+    .nrsrc-print{display:block;break-before:page;page-break-before:always;padding:24px 32px;font:12px/1.5 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;color:#15243A}
+    .nrsrc-print h2{font-size:16px;margin:0 0 10px}.nrsrc-print h3{font-size:var(--fs-11);text-transform:uppercase;letter-spacing:.05em;color:#7A838F;margin:12px 0 4px}
+    .nrsrc-print ol{margin:0;padding-left:22px}
+  }
+</style>
+<script>
+(function(){
+  var GROUPS=[['interviews','Interviews'],['observations','Observations'],['documents','Documents'],['data','Data'],['external','External sources'],['internal','Internal discussions']];
+  var NOUN={interviews:['interview','interviews'],observations:['observation','observations'],documents:['document','documents'],data:['data extract','data extracts'],external:['external source','external sources']};
+  var SPECS={}, pop=null, cur=null;
+  function P(){ try{ return (typeof DATA!=='undefined'&&DATA&&DATA.sourcePanel)||null; }catch(e){ return null; } }
+  function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function low(t){ t=String(t||''); return /^[A-Z][a-z]*(?=[\s,.;:-]|$)/.test(t)?t.charAt(0).toLowerCase()+t.slice(1):t; }   /* EventHub stays EventHub */
+  function plain(t){ return String(t||'').replace(/\*\*/g,'').replace(/<[^>]+>/g,''); }
+  function working(){ var p=P(); return !!(p&&p.build==='working'); }
+  function root(){ return document.querySelector('#art,#pm,#pw')||document.body; }
+  function href(e){ var p=P(); if(e.url) return e.url; if(e.file&&p&&p.rootRel!=null) return (p.rootRel?p.rootRel+'/':'')+e.file.split('/').map(encodeURIComponent).join('/'); return ''; }
+  function badge(s){ if(s.badge==null&&s.score==null) return '';
+    var r=s.rag||'na', txt=s.badge!=null?s.badge:(s.score+' out of 5');
+    return '<span class="nrsrc-sc" style="color:var(--rag-'+r+'-text);background:var(--tint-'+r+')">'+esc(txt)+'</span>'; }
+  /* every source an item rests on: an analysis gives its method and what it was built from */
+  function expand(ids){ var p=P(), S=p.src, pool=[], how=[], seen={};
+    (function walk(list,top){ (list||[]).forEach(function(k){ var e=S[k]; if(!e||seen[k]) return; seen[k]=1;
+      if(e.group==='analysis'){ how.push({k:k,e:e}); walk(e.builtFrom,false); } else pool.push({k:k,e:e}); }); })(ids,true);
+    return {pool:pool,how:how}; }
+  function summary(pool){ var n={}, one={}; pool.forEach(function(x){ var g=x.e.group; if(g==='internal') return; n[g]=(n[g]||0)+1; one[g]=x.e; });
+    var parts=[]; ['interviews','observations','documents','data','external'].forEach(function(g){ if(!n[g]) return;
+      if(n[g]===1&&(g==='documents'||g==='data')) parts.push('the '+low(one[g].label)); else parts.push(n[g]+' '+NOUN[g][n[g]===1?0:1]); });
+    if(!parts.length) return '';
+    return 'Based on '+(parts.length>1?parts.slice(0,-1).join(', ')+' and '+parts[parts.length-1]:parts[0])+'.'; }
+  function who(e){ var w=working(); if(w&&e.people&&e.label.indexOf(e.people.split(/[;,]/)[0].trim())<0) return e.people; return ''; }
+  function item(x){ var e=x.e, w=working(), h=w?href(e):(e.url||'');
+    return '<div class="nrsrc-it">'+esc(e.label)+(who(e)?' <span class="nrsrc-d">· '+esc(who(e))+'</span>':'')+(e.date?' <span class="nrsrc-d">· '+esc(e.date)+'</span>':'')+
+      (w&&e.group==='external'&&e.origins&&e.origins.length?e.origins.map(function(o){return o==='thirdparty'||o==='internet'?'<span class="nrsrc-o '+o+'">'+(o==='thirdparty'?'Third party':'Internet')+'</span>':'';}).join(''):'')+
+      (w?' <span class="nrsrc-id">'+esc(x.k)+'</span>':'')+(h?' <a href="'+esc(h)+'" target="_blank" rel="noopener">open</a>':'')+'</div>'; }
+  function body(s){ var p=P(), w=working(), ids=s.ids||[], h='';
+    h+='<div class="nrsrc-hx"><div class="nrsrc-ey"><span>'+esc(s.eyebrow||'')+'</span>'+badge(s)+'</div>'+
+       '<button type="button" class="nrsrc-x" aria-label="Close">&times;</button></div><div class="nrsrc-bd">';
+    if(!ids.length){ return h+'<div class="nrsrc-warn">No source yet. Unlock the page and pick one where you score it. Without a source this score cannot go into the client build.</div></div>'; }
+    var x=expand(ids), sm=summary(x.pool);
+    if(sm) h+='<p class="nrsrc-sum">'+esc(sm)+'</p>';
+    x.how.forEach(function(a){ var e=a.e; h+='<div class="nrsrc-how"><b>Method</b>'+esc(e.method||e.label)+(w?' <span class="nrsrc-id">'+esc(a.k)+'</span>'+(href(e)?' <a href="'+esc(href(e))+'" target="_blank" rel="noopener">open</a>':''):'')+'</div>'; });
+    var q=s.quote; if(q&&q.text&&(!q.sourceId||p.src[q.sourceId])){ var qe=p.src[q.sourceId]||{};
+      var by=w?[qe.label||'',who(qe)].filter(Boolean).join(' · '):(qe.label||'');
+      h+='<div class="nrsrc-qt"><p>“'+esc(String(q.text).replace(/^[“"]|[”"]$/g,''))+'”</p>'+(by||qe.date?'<div class="nrsrc-by">'+esc([by,qe.date].filter(Boolean).join(' · '))+'</div>':'')+'</div>'; }
+    GROUPS.forEach(function(g){ if(g[0]==='internal'&&!w) return; var its=x.pool.filter(function(y){return y.e.group===g[0];}); if(!its.length) return;
+      h+='<div class="nrsrc-g"><span class="nrsrc-gh">'+g[1]+'</span>'+its.map(item).join('')+'</div>'; });
+    if(!w&&(s.scoredBy||p.scoredBy)) h+='<div class="nrsrc-ft">'+esc(s.scoredBy||p.scoredBy)+'</div>';
+    return h+'</div>'; }
+  function spec(k){ var f=SPECS[k]; return typeof f==='function'?f():f; }
+  function close(){ if(pop) pop.classList.remove('on'); if(cur) cur.setAttribute('aria-expanded','false'); cur=null; }
+  function open(btn){ var s=spec(btn.getAttribute('data-nrsrc')); if(!s) return;
+    if(!pop||!pop.isConnected){ pop=document.createElement('div'); pop.className='nrsrc-pop'; pop.setAttribute('role','dialog'); pop.setAttribute('aria-label','Sources'); root().appendChild(pop); }
+    close(); cur=btn; btn.setAttribute('aria-expanded','true'); pop.innerHTML=body(s); pop.classList.add('on');
+    var r=btn.getBoundingClientRect(), W=window.innerWidth, H=window.innerHeight, pw=pop.offsetWidth, ph=pop.offsetHeight;
+    var x=Math.min(Math.max(12,r.left+r.width/2-pw/2),W-pw-12), y=r.bottom+8;
+    if(y+ph>H-12){ y=r.top-ph-8; if(y<12) y=Math.max(12,H-ph-12); }
+    pop.style.left=x+'px'; pop.style.top=y+'px'; var c=pop.querySelector('.nrsrc-x'); if(c) c.focus({preventScroll:true}); }
+  document.addEventListener('click',function(ev){ var b=ev.target.closest&&ev.target.closest('.nrsrc-i');
+    if(b){ ev.preventDefault(); ev.stopPropagation(); if(cur===b){ close(); return; } open(b); return; }
+    if(pop&&pop.classList.contains('on')&&(ev.target.closest('.nrsrc-x')||!ev.target.closest('.nrsrc-pop'))){ var back=cur; close(); if(back&&ev.target.closest('.nrsrc-x')) back.focus(); } },true);
+  document.addEventListener('keydown',function(ev){ if(ev.key==='Escape'&&cur){ var back=cur; close(); back.focus(); } });
+  window.addEventListener('resize',close);
+  function printList(){ var p=P(); if(!p||p.build!=='client'||document.querySelector('.nrsrc-print')) return;
+    var keys=Object.keys(p.src); if(!keys.length) return; var h='<h2>Sources</h2>';
+    GROUPS.concat([['analysis','Analyses']]).forEach(function(g){ var ks=keys.filter(function(k){return p.src[k].group===g[0];}); if(!ks.length) return;
+      h+='<h3>'+g[1]+'</h3><ol>'+ks.map(function(k){var e=p.src[k];return '<li>'+esc(e.label)+(e.date?', '+esc(e.date):'')+(e.method?'. '+esc(e.method):'')+'</li>';}).join('')+'</ol>'; });
+    if(p.scoredBy) h+='<p>'+esc(p.scoredBy)+'</p>';
+    var d=document.createElement('section'); d.className='nrsrc-print'; d.innerHTML=h; document.body.appendChild(d); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',printList); else setTimeout(printList,0);
+  /* every page: an (i) on its Source line for everything the page cites, when the page draws none itself */
+  function allIds(){ var p=P(), o=[], seen=[]; if(!p) return o; (function w(x,d){ if(!x||typeof x!=='object'||d>40||seen.indexOf(x)>=0) return; seen.push(x);
+      if(Array.isArray(x)){ x.forEach(function(y){ w(y,d+1); }); return; }
+      for(var k in x){ if(k==='sourcePanel'||k.slice(0,2)==='__'||!Object.prototype.hasOwnProperty.call(x,k)) continue; var v=x[k];
+        if(k==='sourceIds'||k==='sourceId'||k==='source_ids'||k==='source_id'){ (Array.isArray(v)?v:[v]).forEach(function(i){ if(typeof i==='string'&&p.src[i]&&o.indexOf(i)<0) o.push(i); }); }
+        else w(v,d+1); } })(typeof DATA!=='undefined'?DATA:null,0); return o; }
+  function autoSrc(){ var p=P(), el=document.getElementById('src'); if(!p||!el||document.querySelector('.nrsrc-i[data-nrsrc="slide"]:not([data-nrsrc-auto])')) return;
+    if(!allIds().length||el.querySelector('[data-nrsrc-auto]')) return;
+    if(el.parentNode&&el.parentNode.classList) el.parentNode.classList.add('nrsrc-row');
+    el.insertAdjacentHTML('beforeend', NRSRC.icon('slide', function(){ return {eyebrow:'All sources on this page', ids:allIds()}; }).replace('<button ','<button data-nrsrc-auto ')); }
+  function watchSrc(){ autoSrc(); var el=document.getElementById('src'); if(el&&window.MutationObserver) new MutationObserver(function(){ if(!el.querySelector('.nrsrc-i')) autoSrc(); }).observe(el,{childList:true}); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',watchSrc); else setTimeout(watchSrc,0);
+  /* the hint, once per viewer: a client does not go looking for an (i) by pointing around */
+  var HINT='nr-src-hint-seen';
+  /* the first one on screen (a deck shows one slide at a time) */
+  function vis(sel){ var l=document.querySelectorAll(sel); for(var i=0;i<l.length;i++){ var r=l[i].getBoundingClientRect(); if(r.width&&r.height) return l[i]; } return null; }
+  function hint(){ var p=P(); if(!p||document.querySelector('.nrsrc-hint')) return; var seen=false; try{ seen=localStorage.getItem(HINT)==='1'; }catch(e){}
+    if(seen) return; var anchor=vis('.nrsrc-i[data-nrsrc^="slide"]')||vis('.nrsrc-i');
+    if(!anchor){ if(document.querySelector('.nrsrc-i')&&(hint.n=(hint.n||0)+1)<240) setTimeout(hint,1500); return; }   /* a deck: wait for a slide that has one */
+    var h=document.createElement('div'); h.className='nrsrc-hint nr-glass'; h.setAttribute('role','status');
+    var perItem=document.querySelectorAll('.nrsrc-i:not([data-nrsrc^="slide"])').length;
+    h.innerHTML='<span>'+(perItem?(document.querySelector('.nrsrc-i[data-nrsrc^="seg:"]')?'Every score shows where it comes from.':'Every finding shows where it comes from.')+' Click the <span class="nrsrc-ic">i</span> next to it.':'See what this page rests on: click the <span class="nrsrc-ic">i</span> next to the source.')+'</span><button type="button" aria-label="Got it">&times;</button>';
+    root().appendChild(h);
+    function place(){ var a=(vis('.nrsrc-i[data-nrsrc^="slide"]')||vis('.nrsrc-i')||anchor).getBoundingClientRect(), w=h.offsetWidth, hh=h.offsetHeight;
+      h.style.left=Math.max(12,Math.min(a.left-24,window.innerWidth-w-12))+'px'; h.style.top=Math.max(12,a.top-hh-12)+'px'; }
+    function done(){ h.classList.remove('on'); try{ localStorage.setItem(HINT,'1'); }catch(e){} }
+    h.querySelector('button').onclick=done;
+    document.addEventListener('click',function(e){ if(e.target.closest&&e.target.closest('.nrsrc-i')) done(); },true);
+    window.addEventListener('resize',function(){ if(h.classList.contains('on')) place(); });
+    setTimeout(function(){ place(); h.classList.add('on'); },700); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){ setTimeout(hint,30); }); else setTimeout(hint,30);
+  window.NRSRC={
+    on:function(){ return !!P(); },
+    /* the (i) for one item; spec is an object or a function returning
+       {eyebrow, score|badge, rag, headline, ids:[...], quote:{text,sourceId}, scoredBy} */
+    icon:function(key,s){ if(!P()) return ''; SPECS[key]=s; var v=spec(key)||{}, miss=!(v.ids&&v.ids.length);
+      if(miss&&!working()) return '';
+      return '<button type="button" class="nrsrc-i'+(miss?' miss':'')+'" data-nrsrc="'+esc(key)+'" aria-expanded="false" aria-label="'+(miss?'No source yet':'Where this comes from')+'" title="'+(miss?'No source yet':'Where this comes from')+'">'+(miss?'!':'i')+'</button>'; },
+    close:close,
+    /* the (i) for any record that carries sourceIds (or one sourceId) and, optionally, a quote:
+       NRSRC.item(record, 'Its title', {k:'unique key', score:3, badge:'2.4 FTE', rag:'red', optional:true})
+       optional: no (i) at all for a record without a sourceIds or sourceId field (an insight block that
+       does not cite); with the field but nothing in it, the working copy shows a red ! */
+    item:function(o,eyebrow,opt){ var p=P(); if(!p||!o) return ''; opt=opt||{};
+      if(opt.optional&&!('sourceIds' in o)&&!('sourceId' in o)) return '';      /* a record that does not cite (yet) */
+      var ids=[]; (Array.isArray(o.sourceIds)?o.sourceIds:[]).concat(o.sourceId?[o.sourceId]:[]).forEach(function(i){ if(typeof i==='string'&&p.src[i]&&ids.indexOf(i)<0) ids.push(i); });
+      var q=o.quote&&o.quote.text&&(!o.quote.sourceId||p.src[o.quote.sourceId])?o.quote:null;
+      return this.icon('it:'+(opt.k||eyebrow), {eyebrow:eyebrow, score:opt.score, badge:opt.badge, rag:opt.rag, ids:ids, quote:q}); },
+    /* the source picker where a score is set: chips for what is cited, a list to add one */
+    picker:function(ids){ var p=P(); if(!p) return ''; ids=ids||[];
+      var opts=Object.keys(p.src).filter(function(k){return ids.indexOf(k)<0;}).map(function(k){var e=p.src[k];return '<option value="'+esc(k)+'">'+esc(k+' · '+e.label+(e.date?' · '+e.date:''))+'</option>';}).join('');
+      return '<div class="nrsrc-pick" data-ids="'+esc(ids.join(','))+'"><div class="chips">'+ids.map(function(k){var e=p.src[k]||{label:'not in the register'};return '<span class="chip" title="'+esc(e.label)+'">'+esc(k)+' · '+esc(String(e.label).slice(0,34))+'<button type="button" data-rm="'+esc(k)+'" aria-label="Remove">&times;</button></span>';}).join('')+'</div>'+
+        '<select><option value="">Add a source…</option>'+opts+'</select></div>'; },
+    bindPicker:function(el,onChange){ if(!el) return; var self=this;
+      function ids(){ return (el.getAttribute('data-ids')||'').split(',').filter(Boolean); }
+      function redraw(list){ var tmp=document.createElement('div'); tmp.innerHTML=self.picker(list); var nw=tmp.firstChild; el.innerHTML=nw.innerHTML; el.setAttribute('data-ids',list.join(',')); wire(); if(onChange) onChange(list); }
+      function wire(){ el.querySelectorAll('[data-rm]').forEach(function(b){ b.onclick=function(){ redraw(ids().filter(function(k){return k!==b.getAttribute('data-rm');})); }; });
+        var sel=el.querySelector('select'); if(sel) sel.onchange=function(){ if(sel.value){ var l=ids(); l.push(sel.value); redraw(l); } }; }
+      wire(); },
+    readPicker:function(el){ return el?(el.getAttribute('data-ids')||'').split(',').filter(Boolean):[]; },
+    label:function(k){ var p=P(), e=p&&p.src[k]; return e?e.label:k; }
+  };
+})();
+</script>
+<!-- NRSRC:END -->
+
 <script>
 /* ============ ONLY THIS BLOCK CHANGES PER ENGAGEMENT ============ */
 const DATA = /* DATA */ {
-  "context": "OPEX QUICKSCAN",
-  "lens": "CROSS-CUTTING · HYPOTHESIS TREE",
-  "engagement": "Northwind Assurance · Claims Handling",
-  "source": "Kick-off brief, four framing interviews, the claims system report pack and the six analyses run on Claims Handling",
-  "keyMessage": "Eleven hypotheses: **nine confirmed, one partly and one rejected**. The losses are in moving information around the claim, not in deciding it, and the claim status is not yet fit for an assistant.",
-  "problem": {
-    "statement": "Claims Handling absorbs 42 FTE and is the journey customers rate lowest, and we cannot say how much of that effort is avoidable or which parts an AI could take over.",
-    "subline": "Decision at the October steering: which three improvements to commit to for 2027, and what saving to put against them.",
-    "mece": {
+ "context": "OPEX QUICKSCAN",
+ "lens": "CROSS-CUTTING · HYPOTHESIS TREE",
+ "engagement": "Northwind Assurance · Claims Handling",
+ "source": "Kick-off brief, four framing interviews, the claims system report pack and the six analyses run on Claims Handling",
+ "keyMessage": "Eleven hypotheses: **nine confirmed, one partly and one rejected**. The losses are in moving information around the claim, not in deciding it, and the claim status is not yet fit for an assistant.",
+ "problem": {
+  "statement": "Claims Handling absorbs 42 FTE and is the journey customers rate lowest, and we cannot say how much of that effort is avoidable or which parts an AI could take over.",
+  "subline": "Decision at the October steering: which three improvements to commit to for 2027, and what saving to put against them.",
+  "mece": {
+   "me": "yes",
+   "ce": "no",
+   "note": "Nothing here covers pricing or reserving policy. Those sit with Underwriting and are deliberately outside this scope."
+  }
+ },
+ "children": [
+  {
+   "id": "n1",
+   "text": "The effort goes on moving information, not on deciding claims",
+   "mece": {
+    "me": "yes",
+    "ce": "yes",
+    "note": ""
+   },
+   "children": [
+    {
+     "id": "n2",
+     "text": "The same information is captured more than once",
+     "mece": {
       "me": "yes",
-      "ce": "no",
-      "note": "Nothing here covers pricing or reserving policy. Those sit with Underwriting and are deliberately outside this scope."
+      "ce": "yes",
+      "note": ""
+     },
+     "children": [
+      {
+       "id": "n3",
+       "text": "The notification is re-typed between the contact centre and the claims system",
+       "status": "Confirmed",
+       "priority": "High",
+       "rationale": "Both teams described it unprompted in the first interview",
+       "dataNeeded": "Handling time per notification, in both systems",
+       "findings": "2,5 FTE. The contact-centre tool was never connected to the claims system, so every notification is typed twice.",
+       "test": {
+        "instrument": "process-map",
+        "scope": "Claims Handling",
+        "settles": "where the same input is entered twice"
+       },
+       "children": []
+      },
+      {
+       "id": "n4",
+       "text": "Cover has to be read in a second system on every file",
+       "status": "Confirmed",
+       "priority": "High",
+       "rationale": "Observed in the walkthrough on every file opened",
+       "dataNeeded": "Number of files needing a PolicyHub lookup, and the time it takes",
+       "findings": "1,8 FTE. Cover cannot be read from the claim, so PolicyHub is opened on every single file.",
+       "test": {
+        "instrument": "mae",
+        "scope": "Claims Handling",
+        "settles": "who spends how much time on which activity"
+       },
+       "children": []
+      }
+     ]
+    },
+    {
+     "id": "n5",
+     "text": "Waiting on third parties is absorbed by chasing rather than managed",
+     "mece": {
+      "me": "yes",
+      "ce": "yes",
+      "note": ""
+     },
+     "children": [
+      {
+       "id": "n6",
+       "text": "Adjuster reports arrive late and are chased by hand",
+       "status": "Confirmed",
+       "priority": "Medium",
+       "rationale": "Named by the coordinators as the biggest daily irritation",
+       "dataNeeded": "Days between instruction and report, and the number of chase mails",
+       "findings": "3,0 FTE goes on chasing. There is no service level with the adjusters and no automatic reminder.",
+       "test": {
+        "instrument": "process-map",
+        "scope": "Claims Handling",
+        "settles": "where the flow waits"
+       },
+       "children": []
+      },
+      {
+       "id": "n7",
+       "text": "Recovery files are rebuilt from scratch every time",
+       "status": "Confirmed",
+       "priority": "Low",
+       "rationale": "Seen in the workshop; no template exists",
+       "dataNeeded": "Time per recovery file and the number of files per month",
+       "findings": "1,2 FTE. Nobody is accountable for recovery, so both teams build their own file.",
+       "test": {
+        "instrument": "raci-diagnostic",
+        "scope": "Claims Handling",
+        "settles": "who owns what, and where accountability is absent"
+       },
+       "children": []
+      }
+     ]
+    },
+    {
+     "id": "n8",
+     "text": "Too little of the paid time reaches the customer at all",
+     "mece": {
+      "me": "yes",
+      "ce": "yes",
+      "note": ""
+     },
+     "children": [
+      {
+       "id": "n9",
+       "text": "Value-adding time is below the band we would expect for a claims team",
+       "status": "Confirmed",
+       "priority": "High",
+       "rationale": "Top-down decomposition of paid time with the team lead",
+       "dataNeeded": "Contracted days, absence, the day-type matrix and the ten waste questions",
+       "findings": "OTE is 32%. Just under a third of the time Northwind pays for reaches a customer or the business.",
+       "test": {
+        "instrument": "ote-waterfall",
+        "scope": "Claims Handling",
+        "settles": "how much available time reaches value-adding work"
+       },
+       "children": []
+      },
+      {
+       "id": "n10",
+       "text": "The peaks the team cannot staff for are a bigger loss than absence",
+       "status": "Partially confirmed",
+       "priority": "Medium",
+       "rationale": "Motor claims arrive with the weather; the peak is real",
+       "dataNeeded": "Day-type matrix and the seniority profile",
+       "findings": "Rigidity costs 27% of available time: as much as absence (27%), not more, and more than waste (18%). The peak is real and cannot be staffed away, and there is no route to escalate it.",
+       "test": {
+        "instrument": "ote-waterfall",
+        "scope": "Claims Handling",
+        "settles": "how much available time reaches value-adding work"
+       },
+       "children": [],
+       "statusAt": "2026-09-30"
+      }
+     ]
     }
+   ]
   },
-  "children": [
+  {
+   "id": "n11",
+   "text": "The team is measured but not steered",
+   "mece": {
+    "me": "yes",
+    "ce": "yes",
+    "note": ""
+   },
+   "children": [
     {
-      "id": "n1",
-      "text": "The effort goes on moving information, not on deciding claims",
-      "mece": {
-        "me": "yes",
-        "ce": "yes",
-        "note": ""
-      },
-      "children": [
-        {
-          "id": "n2",
-          "text": "The same information is captured more than once",
-          "mece": {
-            "me": "yes",
-            "ce": "yes",
-            "note": ""
-          },
-          "children": [
-            {
-              "id": "n3",
-              "text": "The notification is re-typed between the contact centre and the claims system",
-              "status": "Confirmed",
-              "priority": "High",
-              "rationale": "Both teams described it unprompted in the first interview",
-              "dataNeeded": "Handling time per notification, in both systems",
-              "findings": "2,5 FTE. The contact-centre tool was never connected to the claims system, so every notification is typed twice.",
-              "test": {
-                "instrument": "process-map",
-                "scope": "Claims Handling",
-                "settles": "where the same input is entered twice"
-              },
-              "children": []
-            },
-            {
-              "id": "n4",
-              "text": "Cover has to be read in a second system on every file",
-              "status": "Confirmed",
-              "priority": "High",
-              "rationale": "Observed in the walkthrough on every file opened",
-              "dataNeeded": "Number of files needing a PolicyHub lookup, and the time it takes",
-              "findings": "1,8 FTE. Cover cannot be read from the claim, so PolicyHub is opened on every single file.",
-              "test": {
-                "instrument": "mae",
-                "scope": "Claims Handling",
-                "settles": "who spends how much time on which activity"
-              },
-              "children": []
-            }
-          ]
-        },
-        {
-          "id": "n5",
-          "text": "Waiting on third parties is absorbed by chasing rather than managed",
-          "mece": {
-            "me": "yes",
-            "ce": "yes",
-            "note": ""
-          },
-          "children": [
-            {
-              "id": "n6",
-              "text": "Adjuster reports arrive late and are chased by hand",
-              "status": "Confirmed",
-              "priority": "Medium",
-              "rationale": "Named by the coordinators as the biggest daily irritation",
-              "dataNeeded": "Days between instruction and report, and the number of chase mails",
-              "findings": "3,0 FTE goes on chasing. There is no service level with the adjusters and no automatic reminder.",
-              "test": {
-                "instrument": "process-map",
-                "scope": "Claims Handling",
-                "settles": "where the flow waits"
-              },
-              "children": []
-            },
-            {
-              "id": "n7",
-              "text": "Recovery files are rebuilt from scratch every time",
-              "status": "Confirmed",
-              "priority": "Low",
-              "rationale": "Seen in the workshop; no template exists",
-              "dataNeeded": "Time per recovery file and the number of files per month",
-              "findings": "1,2 FTE. Nobody is accountable for recovery, so both teams build their own file.",
-              "test": {
-                "instrument": "raci-diagnostic",
-                "scope": "Claims Handling",
-                "settles": "who owns what, and where accountability is absent"
-              },
-              "children": []
-            }
-          ]
-        },
-        {
-          "id": "n8",
-          "text": "Too little of the paid time reaches the customer at all",
-          "mece": {
-            "me": "yes",
-            "ce": "yes",
-            "note": ""
-          },
-          "children": [
-            {
-              "id": "n9",
-              "text": "Value-adding time is below the band we would expect for a claims team",
-              "status": "Confirmed",
-              "priority": "High",
-              "rationale": "Top-down decomposition of paid time with the team lead",
-              "dataNeeded": "Contracted days, absence, the day-type matrix and the ten waste questions",
-              "findings": "OTE is 32%. Just under a third of the time Northwind pays for reaches a customer or the business.",
-              "test": {
-                "instrument": "ote-waterfall",
-                "scope": "Claims Handling",
-                "settles": "how much available time reaches value-adding work"
-              },
-              "children": []
-            },
-            {
-              "id": "n10",
-              "text": "The peaks the team cannot staff for are a bigger loss than absence",
-              "status": "Partially confirmed",
-              "priority": "Medium",
-              "rationale": "Motor claims arrive with the weather; the peak is real",
-              "dataNeeded": "Day-type matrix and the seniority profile",
-              "findings": "Rigidity costs 27% of available time: as much as absence (27%), not more, and more than waste (18%). The peak is real and cannot be staffed away, and there is no route to escalate it.",
-              "test": {
-                "instrument": "ote-waterfall",
-                "scope": "Claims Handling",
-                "settles": "how much available time reaches value-adding work"
-              },
-              "children": [],
-              "statusAt": "2026-09-30"
-            }
-          ]
-        }
-      ]
+     "id": "n12",
+     "text": "The numbers are read after the fact rather than used to decide the day",
+     "status": "Confirmed",
+     "priority": "High",
+     "rationale": "Scored with the manager and two team members",
+     "dataNeeded": "The report pack, the meeting cadence and what is decided in them",
+     "findings": "The claims system refreshes overnight and nobody keeps a private spreadsheet, which is rare - but the numbers steer nothing.",
+     "test": {
+      "instrument": "performance-wheel",
+      "scope": "Claims Handling",
+      "settles": "how the team is steered and held to account"
+     },
+     "children": []
     },
     {
-      "id": "n11",
-      "text": "The team is measured but not steered",
-      "mece": {
-        "me": "yes",
-        "ce": "yes",
-        "note": ""
-      },
-      "children": [
-        {
-          "id": "n12",
-          "text": "The numbers are read after the fact rather than used to decide the day",
-          "status": "Confirmed",
-          "priority": "High",
-          "rationale": "Scored with the manager and two team members",
-          "dataNeeded": "The report pack, the meeting cadence and what is decided in them",
-          "findings": "The claims system refreshes overnight and nobody keeps a private spreadsheet, which is rare - but the numbers steer nothing.",
-          "test": {
-            "instrument": "performance-wheel",
-            "scope": "Claims Handling",
-            "settles": "how the team is steered and held to account"
-          },
-          "children": []
-        },
-        {
-          "id": "n13",
-          "text": "Nothing records who can handle which claim type",
-          "status": "Confirmed",
-          "priority": "Medium",
-          "rationale": "Raised by the newest two handlers",
-          "dataNeeded": "Any skills matrix, training plan or competence record",
-          "findings": "Real technical skill, generously shared, and nothing written down - so it travels only where people happen to sit.",
-          "test": {
-            "instrument": "skills-wheel",
-            "scope": "Claims Handling",
-            "settles": "how competence is planned, built and kept"
-          },
-          "children": []
-        },
-        {
-          "id": "n14",
-          "text": "The team experiences the problem as workload rather than as process",
-          "status": "Confirmed",
-          "priority": "Medium",
-          "rationale": "Anonymous survey, 34 of 42 answering",
-          "dataNeeded": "Per-statement distribution, not an average",
-          "findings": "Team spirit 94% favourable, workload 32%, the lowest statement. Neither is about the people.",
-          "test": {
-            "instrument": "team-barometer",
-            "scope": "Claims Handling",
-            "settles": "what the team reports about the way of working"
-          },
-          "children": []
-        }
-      ]
+     "id": "n13",
+     "text": "Nothing records who can handle which claim type",
+     "status": "Confirmed",
+     "priority": "Medium",
+     "rationale": "Raised by the newest two handlers",
+     "dataNeeded": "Any skills matrix, training plan or competence record",
+     "findings": "Real technical skill, generously shared, and nothing written down - so it travels only where people happen to sit.",
+     "test": {
+      "instrument": "skills-wheel",
+      "scope": "Claims Handling",
+      "settles": "how competence is planned, built and kept"
+     },
+     "children": []
     },
     {
-      "id": "n15",
-      "text": "The customer is left in the dark, and pays for it in phone calls",
-      "mece": {
-        "me": "yes",
-        "ce": "no",
-        "note": "Nothing here covers the broker channel, which handles about a fifth of notifications. Deliberately out of scope for this round."
-      },
-      "children": [
-        {
-          "id": "n16",
-          "text": "Status calls are the cost of having no self-service",
-          "status": "Confirmed",
-          "priority": "High",
-          "rationale": "Call reasons from the contact-centre report pack",
-          "dataNeeded": "Volume and reason code of status calls on open claims",
-          "findings": "4,0 FTE. Customers ring because nothing on their side tells them where the claim stands.",
-          "test": {
-            "instrument": "service-blueprint",
-            "scope": "Claims Handling",
-            "settles": "what the client experiences, front and back stage"
-          },
-          "children": []
-        },
-        {
-          "id": "n17",
-          "text": "The claims data is fit for an assistant to answer a status question",
-          "status": "Rejected",
-          "priority": "High",
-          "rationale": "Needed before any AI answer can be promised",
-          "dataNeeded": "Accessibility, structure, completeness and ownership of the claim status object",
-          "findings": "Not fit today. The claim status is accurate (4 of 5) and current (5 of 5), but its twelve internal workflow codes are not structured for a customer (2 of 5) and nobody owns it. It becomes fit once the codes map onto four states a customer would recognise and an owner is named.",
-          "test": {
-            "instrument": "data-maturity",
-            "scope": "Claims Handling",
-            "settles": "whether the data an activity needs is fit to use"
-          },
-          "children": [],
-          "statusAt": "2026-09-12"
-        }
-      ]
+     "id": "n14",
+     "text": "The team experiences the problem as workload rather than as process",
+     "status": "Confirmed",
+     "priority": "Medium",
+     "rationale": "Anonymous survey, 34 of 42 answering",
+     "dataNeeded": "Per-statement distribution, not an average",
+     "findings": "Team spirit 94% favourable, workload 32%, the lowest statement. Neither is about the people.",
+     "test": {
+      "instrument": "team-barometer",
+      "scope": "Claims Handling",
+      "settles": "what the team reports about the way of working"
+     },
+     "children": []
     }
-  ],
-  "gaps": [
-    "The broker channel, about a fifth of notifications, was not looked at."
-  ]
+   ]
+  },
+  {
+   "id": "n15",
+   "text": "The customer is left in the dark, and pays for it in phone calls",
+   "mece": {
+    "me": "yes",
+    "ce": "no",
+    "note": "Nothing here covers the broker channel, which handles about a fifth of notifications. Deliberately out of scope for this round."
+   },
+   "children": [
+    {
+     "id": "n16",
+     "text": "Status calls are the cost of having no self-service",
+     "status": "Confirmed",
+     "priority": "High",
+     "rationale": "Call reasons from the contact-centre report pack",
+     "dataNeeded": "Volume and reason code of status calls on open claims",
+     "findings": "4,0 FTE. Customers ring because nothing on their side tells them where the claim stands.",
+     "test": {
+      "instrument": "service-blueprint",
+      "scope": "Claims Handling",
+      "settles": "what the client experiences, front and back stage"
+     },
+     "children": []
+    },
+    {
+     "id": "n17",
+     "text": "The claims data is fit for an assistant to answer a status question",
+     "status": "Rejected",
+     "priority": "High",
+     "rationale": "Needed before any AI answer can be promised",
+     "dataNeeded": "Accessibility, structure, completeness and ownership of the claim status object",
+     "findings": "Not fit today. The claim status is accurate (4 of 5) and current (5 of 5), but its twelve internal workflow codes are not structured for a customer (2 of 5) and nobody owns it. It becomes fit once the codes map onto four states a customer would recognise and an owner is named.",
+     "test": {
+      "instrument": "data-maturity",
+      "scope": "Claims Handling",
+      "settles": "whether the data an activity needs is fit to use"
+     },
+     "children": [],
+     "statusAt": "2026-09-12"
+    }
+   ]
+  }
+ ],
+ "gaps": [
+  "The broker channel, about a fifth of notifications, was not looked at."
+ ],
+ "sourceIds": [],
+ "sourcePanel": {
+  "build": "working",
+  "scoredBy": "Prepared by Nova Reperta, Oct 2026.",
+  "src": {
+   "src-01": {
+    "id": "src-01",
+    "label": "Team lead interview, Claims Handling",
+    "group": "interviews",
+    "kind": "conversation",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "Team lead",
+    "file": "",
+    "url": "",
+    "clientLabel": "Team lead, Claims Handling",
+    "method": "",
+    "builtFrom": []
+   },
+   "src-02": {
+    "id": "src-02",
+    "label": "Coordinator interviews",
+    "group": "interviews",
+    "kind": "conversation",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "Two coordinators",
+    "file": "",
+    "url": "",
+    "clientLabel": "Coordinators, Claims Handling",
+    "method": "",
+    "builtFrom": []
+   },
+   "src-03": {
+    "id": "src-03",
+    "label": "Handler interviews across tenure",
+    "group": "interviews",
+    "kind": "conversation",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "Four handlers",
+    "file": "",
+    "url": "",
+    "clientLabel": "Claims handlers, four across tenure",
+    "method": "",
+    "builtFrom": []
+   },
+   "src-04": {
+    "id": "src-04",
+    "label": "Claims system report pack, Jan-Aug 2026",
+    "group": "data",
+    "kind": "data",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "",
+    "file": "",
+    "url": "",
+    "clientLabel": "",
+    "method": "",
+    "builtFrom": []
+   },
+   "src-05": {
+    "id": "src-05",
+    "label": "Customer Service team lead interview",
+    "group": "interviews",
+    "kind": "conversation",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "Team lead",
+    "file": "",
+    "url": "",
+    "clientLabel": "Team lead, Customer Service",
+    "method": "",
+    "builtFrom": []
+   },
+   "SRC-001": {
+    "id": "SRC-001",
+    "label": "OTE target session with the Claims Handling team lead",
+    "group": "interviews",
+    "kind": "conversation",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "Team lead",
+    "file": "",
+    "url": "",
+    "clientLabel": "OTE target session, Claims Handling",
+    "method": "",
+    "builtFrom": []
+   },
+   "SRC-002": {
+    "id": "SRC-002",
+    "label": "Observation in the team area",
+    "group": "observations",
+    "kind": "conversation",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "",
+    "file": "",
+    "url": "",
+    "clientLabel": "Observation in the team area",
+    "method": "",
+    "builtFrom": []
+   },
+   "SRC-003": {
+    "id": "SRC-003",
+    "label": "Team meeting notes, Apr-Aug 2026",
+    "group": "documents",
+    "kind": "document",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "",
+    "file": "",
+    "url": "",
+    "clientLabel": "",
+    "method": "",
+    "builtFrom": []
+   },
+   "SRC-004": {
+    "id": "SRC-004",
+    "label": "Technical referent interview",
+    "group": "interviews",
+    "kind": "conversation",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "Technical referent",
+    "file": "",
+    "url": "",
+    "clientLabel": "Technical referent, Claims Handling",
+    "method": "",
+    "builtFrom": []
+   },
+   "SRC-005": {
+    "id": "SRC-005",
+    "label": "Newcomer interviews (under 12 months)",
+    "group": "interviews",
+    "kind": "conversation",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "Two newcomers",
+    "file": "",
+    "url": "",
+    "clientLabel": "Newcomers, Claims Handling",
+    "method": "",
+    "builtFrom": []
+   },
+   "SRC-006": {
+    "id": "SRC-006",
+    "label": "HR role library",
+    "group": "documents",
+    "kind": "document",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "",
+    "file": "",
+    "url": "",
+    "clientLabel": "",
+    "method": "",
+    "builtFrom": []
+   },
+   "SRC-007": {
+    "id": "SRC-007",
+    "label": "Two appraisal forms, reviewed with consent",
+    "group": "documents",
+    "kind": "document",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "",
+    "file": "",
+    "url": "",
+    "clientLabel": "",
+    "method": "",
+    "builtFrom": []
+   },
+   "SRC-008": {
+    "id": "SRC-008",
+    "label": "Learning catalogue",
+    "group": "documents",
+    "kind": "document",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "",
+    "file": "",
+    "url": "",
+    "clientLabel": "",
+    "method": "",
+    "builtFrom": []
+   },
+   "SRC-009": {
+    "id": "SRC-009",
+    "label": "ClaimsCore SOP library export, with version history",
+    "group": "data",
+    "kind": "data",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "",
+    "file": "",
+    "url": "",
+    "clientLabel": "",
+    "method": "",
+    "builtFrom": []
+   },
+   "SRC-010": {
+    "id": "SRC-010",
+    "label": "QA huddle minutes, Q3 2026",
+    "group": "documents",
+    "kind": "document",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "",
+    "file": "",
+    "url": "",
+    "clientLabel": "",
+    "method": "",
+    "builtFrom": []
+   },
+   "SRC-011": {
+    "id": "SRC-011",
+    "label": "SOP interviews, five handlers across two tenure levels",
+    "group": "interviews",
+    "kind": "conversation",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "Five handlers",
+    "file": "",
+    "url": "",
+    "clientLabel": "Claims handlers, five across tenure",
+    "method": "",
+    "builtFrom": []
+   },
+   "SRC-012": {
+    "id": "SRC-012",
+    "label": "Observation, three files walked end to end",
+    "group": "observations",
+    "kind": "conversation",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "",
+    "file": "",
+    "url": "",
+    "clientLabel": "Observation, three files walked end to end",
+    "method": "",
+    "builtFrom": []
+   },
+   "SRC-013": {
+    "id": "SRC-013",
+    "label": "Academy lead interview",
+    "group": "interviews",
+    "kind": "conversation",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "Academy lead",
+    "file": "",
+    "url": "",
+    "clientLabel": "Academy lead",
+    "method": "",
+    "builtFrom": []
+   },
+   "SRC-014": {
+    "id": "SRC-014",
+    "label": "QA lead interview",
+    "group": "interviews",
+    "kind": "conversation",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "QA lead",
+    "file": "",
+    "url": "",
+    "clientLabel": "Quality assurance lead",
+    "method": "",
+    "builtFrom": []
+   },
+   "SRC-015": {
+    "id": "SRC-015",
+    "label": "Onboarding sign-off records",
+    "group": "documents",
+    "kind": "document",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "",
+    "file": "",
+    "url": "",
+    "clientLabel": "",
+    "method": "",
+    "builtFrom": []
+   },
+   "SRC-016": {
+    "id": "SRC-016",
+    "label": "SOP changes matched to the deviations in the huddle minutes",
+    "group": "analysis",
+    "kind": "analysis",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "",
+    "file": "",
+    "url": "",
+    "clientLabel": "",
+    "method": "We matched every deviation in the Q3 huddle minutes to the SOP step it breaks, then checked the version history for a change afterwards.",
+    "builtFrom": [
+     "SRC-009",
+     "SRC-010"
+    ]
+   },
+   "SRC-017": {
+    "id": "SRC-017",
+    "label": "Case team debrief after the first interviews",
+    "group": "internal",
+    "kind": "conversation",
+    "origins": [
+     "internal"
+    ],
+    "date": "Sep 2026",
+    "people": "Case team",
+    "file": "",
+    "url": "",
+    "clientLabel": "",
+    "method": "",
+    "builtFrom": []
+   },
+   "SRC-018": {
+    "id": "SRC-018",
+    "label": "Observation, four claims followed from notification to triage",
+    "group": "observations",
+    "kind": "conversation",
+    "origins": [
+     "client"
+    ],
+    "date": "Sep 2026",
+    "people": "",
+    "file": "",
+    "url": "",
+    "clientLabel": "Observation, four claims followed from notification to triage",
+    "method": "",
+    "builtFrom": []
+   }
+  },
+  "rootRel": ".."
+ }
 };
 /* ============================================================== */
 (function(){
@@ -888,7 +1453,9 @@ const DATA = /* DATA */ {
         else if(c.key==="priority") v=n.priority?'<span class="prio '+n.priority+'">'+n.priority+'</span>':'';
         else if(c.key==="test") v=testCell(n);
         else v=n[c.key]?esc(n[c.key]):'';
-        h+='<div class="mcell" style="grid-column:'+(metaStart+i)+';grid-row:'+p.start+'">'+v+'</div>';
+        /* a finding that cites shows its sources (an empty list: a red ! in the working copy) */
+        if(c.key==="findings"&&window.NRSRC) v+=NRSRC.item(n,n.text||'Finding',{k:'hyp:'+n.id,optional:true});
+        h+='<div class="mcell'+(c.key==="findings"?' nrsrc-row':'')+'" style="grid-column:'+(metaStart+i)+';grid-row:'+p.start+'">'+v+'</div>';
       });
     });
     return '<div class="twrap"><svg class="wires" id="wires"></svg><div class="tgrid" id="tgrid" style="grid-template-columns:'+tpl.join(" ")+'">'+h+'</div></div>';
@@ -1385,9 +1952,20 @@ const DATA = /* DATA */ {
       NR_FRAMED=!!(NR_CL&&NR_CL.use), NR_INBOX=NR_FRAMED?null:false;
   if(NR_FRAMED){ NR_CL.use('db').then(function(db){ NR_INBOX=db||false; nrReady(); },
                                            function(){ NR_INBOX=false; nrReady(); }); }
+  /* who is looking (the user capability) and who decides on this page (window.NR_RIGHTS, put in by
+     build_artifact.py from rights.py): the change says who sent it, and someone who does not decide
+     here sends it as a proposal. The email (or, when the organisation withholds it, the name) is only compared on the page, never stored. */
+  var NR_ME=null;
+  if(NR_FRAMED){ NR_CL.use('user').then(function(u){ return u?u.me():null; })
+    .then(function(me){ NR_ME=me||null; nrReady(); },function(){}); }
+  function nrRights(){ return window.NR_RIGHTS||null; }
+  function nrMember(){ var R=nrRights(), e=NR_ME&&NR_ME.email, n=NR_ME&&NR_ME.name; if(!R) return null;
+    return (e&&R.team&&R.team[String(e).toLowerCase()])||(n&&R.people&&R.people[String(n).trim().toLowerCase()])||null; }
+  function nrMine(){ var R=nrRights(); if(!R||!NR_ME||!R.team||!Object.keys(R.team).length) return null; var m=nrMember(); return !!(m&&(R.decides||[]).indexOf(m)>=0); }
+  function nrWhoDecides(){ var R=nrRights(); return R&&R.names&&R.names.length?R.names.join(' and '):'the case lead'; }
   function nrReady(){ if(window.nrInboxReady) window.nrInboxReady(); }   // the page redraws its edit line
   function nrHandLabel(n){ if(!n) return 'No changes';
-    return NR_INBOX?'Send to Claude':'Export changes'; }
+    return NR_INBOX?(nrMine()===false?'Send as a proposal':'Send to Claude'):'Export changes'; }
   function nrSay(m){ var t=document.getElementById('nr-hand-msg');
     if(!t){ t=document.createElement('div'); t.id='nr-hand-msg'; t.setAttribute('role','status');
       t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:99;max-width:520px;padding:11px 18px;border-radius:10px;background:var(--navy-fill,#0B2347);color:#fff;font-size:12.5px;font-weight:600;line-height:1.45;text-align:center;transition:opacity .25s;opacity:0;pointer-events:none';
@@ -1396,8 +1974,13 @@ const DATA = /* DATA */ {
   function nrHandOver(d, done){
     if(NR_INBOX){
       var id=String(d.deltaId||'D').replace(/[^A-Za-z0-9._-]/g,'-')+'-'+Date.now().toString(36);
-      NR_INBOX.doc('changes/'+id).set(NR_CL.plain({status:'waiting', sentAt:new Date().toISOString(), delta:d}))
-        .then(function(){ done(true,'Sent. Ask Claude in the chat to apply the changes.'); },
+      var R=nrRights(), mine=nrMine();
+      NR_INBOX.doc('changes/'+id).set(NR_CL.plain({status:'waiting', sentAt:new Date().toISOString(),
+          sentBy:{uid:(NR_ME&&NR_ME.id)||null, member:nrMember()}, page:(R&&R.page)||null, delta:d}))
+        .then(function(){ done(true, mine===false
+            ? (nrMember()?'Sent as a proposal: '+nrWhoDecides()+' decides on '+(R.what||'this')+'. Ask Claude in the chat to pass it on.'
+                         :"Sent. We couldn't tell who you are, so it goes to "+nrWhoDecides()+' as a proposal.')
+            : 'Sent. Ask Claude in the chat to apply the changes.'); },
               function(e){ try{console.warn('nr: not sent', e&&e.message||e);}catch(x){} done(false,"Your changes weren't sent. Try again in a moment."); });
       return;
     }
@@ -1661,6 +2244,88 @@ const DATA = /* DATA */ {
   }
 })();
 </script>
+<!-- NR-GLASS:BEGIN — the glass layer (diagnostic-skill-builder/templates/glass-layer.html, put in by
+     scripts/patch_glass.py). Everything that floats above the page is glass; the page itself stays solid
+     (cards, tables, charts, slides). Small things get liquid glass: a lens at the edges, a light rim and a
+     highlight that follows the pointer. Large things (the edit sidebar, big pop-ups) get calmer frosted glass.
+     Hooks: .nr-glass (small), .nr-glass-lg (large), .nr-glass-tint (a dark tinted message), .nr-glass-night (with
+     .nr-glass: small glass that always sits on a dark surface, like the canvas twin), plus the shared
+     pieces every instrument has. Do not edit a copy in a page: change this file and run patch_glass.py. -->
+<style id="nr-glass">
+  :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu){
+    background-color:rgba(255,255,255,.55)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.34),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(14px) saturate(185%) brightness(1.06);backdrop-filter:blur(14px) var(--nr-lens,) saturate(185%) brightness(1.06);
+    border-color:transparent!important;
+    box-shadow:0 22px 50px -12px rgba(11,35,71,.28),0 2px 6px rgba(11,35,71,.08),inset 0 0 0 .5px rgba(255,255,255,.6),inset 1.5px 1.5px 0 -.5px rgba(255,255,255,.95),inset -1px -1px 0 -.5px rgba(255,255,255,.5)!important}
+  :is(#ed,.nr-glass-lg){
+    background-color:rgba(255,255,255,.74)!important;-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);
+    box-shadow:-24px 0 60px -28px rgba(11,35,71,.38),inset 1px 0 0 rgba(255,255,255,.85)!important;border-color:rgba(255,255,255,.6)!important}
+  :is(.nr-toast,#nr-ask-msg,.nr-glass-tint){
+    background:rgba(11,35,71,.72)!important;-webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);
+    box-shadow:0 16px 36px -12px rgba(11,35,71,.45),inset 0 0 0 .5px rgba(255,255,255,.18),inset 1px 1px 0 -.5px rgba(255,255,255,.45)!important}
+  /* what sits on glass: light fills, never glass on glass */
+  :is(#ed,.nr-glass-lg) :is(.edh,.edf){background:rgba(255,255,255,.35)!important}
+  /* dark */
+  :is([data-t="dark"],html.dark) :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu){
+    background-color:rgba(20,30,44,.56)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.08),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(14px) saturate(170%) brightness(.9);backdrop-filter:blur(14px) var(--nr-lens,) saturate(170%) brightness(.9);
+    box-shadow:0 22px 50px -12px rgba(0,0,0,.6),inset 0 0 0 .5px rgba(255,255,255,.16),inset 1.5px 1.5px 0 -.5px rgba(255,255,255,.35),inset -1px -1px 0 -.5px rgba(255,255,255,.12)!important}
+  :is([data-t="dark"],html.dark) :is(#ed,.nr-glass-lg){background-color:rgba(22,32,44,.78)!important;box-shadow:-24px 0 60px -28px rgba(0,0,0,.7),inset 1px 0 0 rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.1)!important}
+  :is([data-t="dark"],html.dark) :is(#ed,.nr-glass-lg) :is(.edh,.edf){background:rgba(255,255,255,.05)!important}
+  /* glass that always sits on a dark surface (the canvas twin): the dark values in both themes */
+  .nr-glass.nr-glass-night{background-color:rgba(12,21,38,.58)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.07),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(12px) saturate(160%) brightness(.9);backdrop-filter:blur(12px) var(--nr-lens,) saturate(160%) brightness(.9);
+    box-shadow:0 18px 44px -14px rgba(0,0,0,.65),inset 0 0 0 .5px rgba(143,168,206,.22),inset 1.5px 1.5px 0 -.5px rgba(175,198,246,.35),inset -1px -1px 0 -.5px rgba(175,198,246,.12)!important}
+  /* when glass cannot be glass: solid, as before */
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg){background-color:var(--card,#fff)!important;background-image:none!important}}
+  @media (prefers-reduced-transparency:reduce){
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg){background-color:var(--card,#fff)!important;background-image:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+    :is(.nr-toast,#nr-ask-msg,.nr-glass-tint){background:var(--navy-fill,#0B2347)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}}
+  @media print{
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg,.nr-toast,#nr-ask-msg,.nr-glass-tint){-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:#fff!important;box-shadow:none!important}}
+</style>
+<svg id="nr-glass-defs" width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false"></svg>
+<script id="nr-glass-js">
+(function(){
+  /* the lens: only where a browser can put an SVG filter inside backdrop-filter (Chrome, Edge, the Claude desktop
+     app). Safari and Firefox would draw nothing at all, so they keep the plain frosted glass. */
+  var ua=navigator.userAgent, lens=/Chrome\/|Chromium\/|Edg\//.test(ua)&&!/Firefox\//.test(ua);
+  var calm=window.matchMedia&&(matchMedia('(prefers-reduced-transparency: reduce)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var SMALL='.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu', R=16, BEZEL=22, MAXA=700*800, n=0;
+  var defs=document.getElementById('nr-glass-defs'), NS='http://www.w3.org/2000/svg';
+  function lensMap(w,h,r){ var c=document.createElement('canvas'); c.width=w; c.height=h; var x=c.getContext('2d'), im=x.createImageData(w,h), d=im.data;
+    for(var j=0;j<h;j++) for(var i=0;i<w;i++){
+      var cx=Math.min(Math.max(i,r),w-r), cy=Math.min(Math.max(j,r),h-r), dx=i-cx, dy=j-cy, nx=0, ny=0, dist;
+      if((i<r||i>w-r)&&(j<r||j>h-r)){ var l=Math.sqrt(dx*dx+dy*dy)||1; dist=r-l; nx=dx/l; ny=dy/l; }
+      else { var a=i, b=w-1-i, t=j, u=h-1-j, m=Math.min(a,b,t,u); dist=m; if(m===a)nx=-1; else if(m===b)nx=1; else if(m===t)ny=-1; else ny=1; }
+      var k=Math.pow(Math.max(0,1-dist/BEZEL),3), o=(j*w+i)*4; d[o]=128+nx*k*127; d[o+1]=128+ny*k*127; d[o+2]=128; d[o+3]=255; }
+    x.putImageData(im,0,0); return c.toDataURL(); }
+  function filterFor(el){ if(!el.__nrg){ var id='nr-lens-'+(++n), f=document.createElementNS(NS,'filter');
+      f.setAttribute('id',id); f.setAttribute('filterUnits','userSpaceOnUse'); f.setAttribute('primitiveUnits','userSpaceOnUse'); f.setAttribute('x','0'); f.setAttribute('y','0'); f.setAttribute('color-interpolation-filters','sRGB');
+      var im=document.createElementNS(NS,'feImage'); im.setAttribute('x','0'); im.setAttribute('y','0'); im.setAttribute('preserveAspectRatio','none'); im.setAttribute('result','map');
+      var dm=document.createElementNS(NS,'feDisplacementMap'); dm.setAttribute('in','SourceGraphic'); dm.setAttribute('in2','map'); dm.setAttribute('scale','0'); dm.setAttribute('xChannelSelector','R'); dm.setAttribute('yChannelSelector','G');
+      f.appendChild(im); f.appendChild(dm); defs.appendChild(f); el.__nrg={id:id,f:f,im:im,dm:dm,key:''}; }
+    return el.__nrg; }
+  function grow(g){ if(calm){ g.dm.setAttribute('scale','40'); return; } var t0=performance.now();   /* the glass materialises by bending more */
+    (function step(t){ var p=Math.min(1,(t-t0)/260); g.dm.setAttribute('scale',(40*(1-Math.pow(1-p,3))).toFixed(1)); if(p<1) requestAnimationFrame(step); })(t0); }
+  function scan(){ q=0; if(!lens||calm&&matchMedia('(prefers-reduced-transparency: reduce)').matches) return;
+    document.querySelectorAll(SMALL).forEach(function(el){
+      var w=Math.round(el.offsetWidth), h=Math.round(el.offsetHeight), shown=w>0&&h>0&&getComputedStyle(el).visibility!=='hidden';
+      var g=el.__nrg; if(!shown){ if(g) g.key=''; return; } if(w*h>MAXA) return;
+      g=filterFor(el); var key=w+'x'+h; if(g.key===key) return; var fresh=!g.key; g.key=key;
+      var r=parseFloat(getComputedStyle(el).borderTopLeftRadius)||R;
+      g.f.setAttribute('width',w); g.f.setAttribute('height',h); g.im.setAttribute('width',w); g.im.setAttribute('height',h); g.im.setAttribute('href',lensMap(w,h,Math.min(r,w/2,h/2)));
+      el.style.setProperty('--nr-lens','url(#'+g.id+')'); if(fresh) grow(g); }); }
+  var q=0; function soon(){ if(!q) q=requestAnimationFrame(scan); }
+  function start(){ scan(); new MutationObserver(soon).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style','hidden','open']}); window.addEventListener('resize',soon); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
+  /* the highlight follows the pointer across a small piece of glass */
+  document.addEventListener('pointermove',function(e){ var el=e.target.closest&&e.target.closest(SMALL); if(!el) return; var r=el.getBoundingClientRect();
+    el.style.setProperty('--lx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%'); el.style.setProperty('--ly',((e.clientY-r.top)/r.height*100).toFixed(1)+'%'); },{passive:true});
+})();
+</script>
+<!-- NR-GLASS:END -->
 <style>
 /* ── READ MODE · narrow screens ──────────────────────────────────────────────
    This artifact normally scales its whole body down so the page fits one screen.

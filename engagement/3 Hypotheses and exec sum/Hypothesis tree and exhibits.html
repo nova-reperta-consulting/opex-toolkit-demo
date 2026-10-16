@@ -203,13 +203,13 @@ html.dark .grph{border-bottom-color:var(--line)}
 .plan .past .pdn b{color:var(--ink-3)}
 .plan .tdy{box-shadow:inset 0 3px 0 var(--navy);background:rgba(15,43,82,.03)}
 .plan .tdy .pdn b{color:var(--navy)}
-.pit{font-size:var(--fs-11);line-height:1.3;padding:2px 0 2px 7px;border-left:2px solid var(--navy);margin-bottom:6px;cursor:pointer}
+.pit{font-size:var(--fs-11);line-height:1.3;padding:2px 0 2px 7px;margin-bottom:6px;cursor:pointer;--nr-tc:var(--navy);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent));border-radius:7px}
 .pit:hover{background:rgba(15,43,82,.05)}
 .pit b{font:700 10.5px/1.2 var(--fh);color:var(--navy);display:block}
 .pit .x{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--ink)}
 .pit.done{opacity:.55} .pit.done .x{text-decoration:line-through;text-decoration-color:rgba(0,0,0,.3)}
-.pit.r{border-left-style:dashed;border-left-color:var(--ink-3);cursor:default} .pit.r .x{color:var(--ink-2)} .pit.r:hover{background:none}
-.pit.d{border-left-color:var(--green);cursor:default} .pit.d b{color:var(--green)}
+.pit.r{border-left-style:dashed;--nr-tc:var(--ink-3);cursor:default} .pit.r .x{color:var(--ink-2)} .pit.r:hover{background:none}
+.pit.d{--nr-tc:var(--green);cursor:default} .pit.d b{color:var(--green)}
 .pit .agi em{font-style:normal;font-size:10px;color:var(--ink-3);align-self:center}
 .pplus{display:block;font-size:var(--fs-11);font-weight:600;margin:-2px 0 6px 9px;cursor:pointer}
 html.dark .pit b,html.dark .plan .tdy .pdn b{color:#b8c8e8}
@@ -224,11 +224,11 @@ html.dark .pit b,html.dark .plan .tdy .pdn b{color:#b8c8e8}
 .wc.today .dh{border-bottom:2px solid var(--navy)}
 .wc.today .dh b{color:var(--navy)}
 .tpill{font:700 9.5px/1 var(--fh);letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--navy);border-radius:3px;padding:2px 4px}
-.wc .it{border-left:2px solid var(--navy);padding:1px 0 1px 8px;margin-bottom:10px;font-size:var(--fs-12);line-height:1.3;cursor:pointer;border-radius:0 4px 4px 0}
+.wc .it{padding:1px 0 1px 8px;margin-bottom:10px;font-size:var(--fs-12);line-height:1.3;cursor:pointer;border-radius:4px;--nr-tc:var(--navy);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
 .wc .it:hover{background:rgba(15,43,82,.05)}
 .wc .it.r{border-left:2px dashed var(--ink-3);color:var(--ink-2);cursor:default}
 .wc .it.r:hover{background:none}
-.wc .it.d{border-left-color:var(--green);cursor:default}
+.wc .it.d{--nr-tc:var(--green);cursor:default}
 .wc .it .t{font:700 var(--fs-11)/1.2 var(--fh);color:var(--navy);display:block;margin-bottom:1px}
 .wc .it.d .t{color:var(--green)}
 .wc .it .x{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;color:var(--ink)}
@@ -274,7 +274,7 @@ html.dark .agt,html.dark .agc.today .agh b{color:#b8c8e8}
 @media (max-width:1100px){ .tctx{grid-template-columns:minmax(0,1fr)} }
 @media (max-width:760px){ .wgrid{grid-template-columns:minmax(0,1fr)!important} .wbrk{display:none} .wc.empty{display:none}
   .wc{display:grid;grid-template-columns:64px minmax(0,1fr);column-gap:8px;border-top:1px solid var(--line);padding-top:8px} .wc>*:not(.dh){grid-column:2} .wc .dh{grid-row:1/span 6;border:0;display:block;padding:0}
-  .wc.today{border-top:2px solid var(--navy)} .wc.today .dh{border:0} .wc .dh .tpill{display:block;width:max-content;margin-top:4px}
+  .wc.today{--nr-tc:var(--navy);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent));border-radius:7px} .wc.today .dh{border:0} .wc .dh .tpill{display:block;width:max-content;margin-top:4px}
   .agrid{grid-template-columns:minmax(0,1fr)} .agc{display:grid;grid-template-columns:62px minmax(0,1fr);column-gap:6px;border-top-width:1px} .agc>*:not(.agh){grid-column:2} .agh{grid-row:1/span 6} .agc .age{display:none} .agc:has(.age){display:none} }
 .hgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:0 0 14px}
 .hc{cursor:pointer}
@@ -346,7 +346,7 @@ html.dark .g-prog{background:#6F8FC4} html.dark .gtl{color:#b8c8e8}
 @media (max-width:760px){ .gh,.gr{grid-template-columns:120px minmax(0,1fr)} .gr .gl .av{display:none} .gtools{margin-left:0} .gph{font-size:9px;padding:0 4px} }
 .eng{display:flex;flex-direction:column;gap:12px}
 .eng .card{margin:0}
-.ehd{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:28px;align-items:center;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--late);border-radius:var(--r);padding:14px 18px}
+.ehd{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:28px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 18px;--nr-tc:var(--late);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
 .ehd .say{margin-top:4px}
 .ehs{display:flex;gap:28px}
 .ehs>div{min-width:0;max-width:190px}
@@ -468,8 +468,8 @@ table.rg{width:100%;border-collapse:collapse;table-layout:fixed}
 .ini{border-radius:50%;display:grid;place-items:center;font-family:var(--fh);font-weight:700;flex:none}
 .cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .cols.n4{grid-template-columns:repeat(4,minmax(0,1fr))}
-.col{border-top:3px solid var(--line)}
-.col.deliver{border-top-color:var(--info)} .col.support{border-top-color:var(--watch)} .col.know,.col.none{border-top-color:var(--none)}
+.col{--nr-tc:var(--line);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
+.col.deliver{--nr-tc:var(--info)} .col.support{--nr-tc:var(--watch)} .col.know,.col.none{--nr-tc:var(--none)}
 .col h3{font:700 var(--fs-14)/1.2 var(--fh);display:flex;align-items:baseline;gap:8px}
 .col h3 small{font:500 var(--fs-12) var(--fb);color:var(--ink-3)}
 .col .rule{font-size:var(--fs-12);color:var(--ink-2);margin:4px 0 10px}
@@ -505,7 +505,7 @@ table.rg{width:100%;border-collapse:collapse;table-layout:fixed}
 .gc .hd{display:flex;gap:10px;align-items:center}
 .gc .ini{width:36px;height:36px;font-size:12px}
 .gc .gr{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.scrim{display:none;position:fixed;inset:0;background:rgba(10,14,22,.5);z-index:80;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+.scrim{display:none;position:fixed;inset:0;background:rgba(10,14,22,.5);z-index:110;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
 .scrim.open{display:flex}
 .modal{background:var(--surface);border-radius:14px;max-width:820px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,.35)}
 .mh{display:flex;gap:14px;align-items:flex-start;padding:20px 22px 14px;border-bottom:1px solid var(--line)}
@@ -530,8 +530,8 @@ table.rg{width:100%;border-collapse:collapse;table-layout:fixed}
 
 
 /* ---- your day ---- */
-.day{margin-bottom:12px;border-top:3px solid var(--navy)}
-html.dark .day{border-top-color:#9DB7E0}
+.day{margin-bottom:12px;--nr-tc:var(--navy);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
+html.dark .day{--nr-tc:#9DB7E0}
 .drow{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)}
 .day .sec+.drow,.dask+.drow{border-top:0}
 .dn{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:800 13px/1 var(--fh);background:var(--navy);color:#fff}
@@ -655,7 +655,7 @@ html.dark .day{border-top-color:#9DB7E0}
 
 /* style */
 
-.qtip{position:fixed;z-index:90;max-width:280px;background:#1B2230;color:#fff;border-radius:8px;padding:9px 11px;font-size:12px;line-height:1.4;box-shadow:0 8px 24px rgba(0,0,0,.25);pointer-events:none;display:none}
+.qtip{position:fixed;z-index:200;max-width:280px;background:#1B2230;color:#fff;border-radius:8px;padding:9px 11px;font-size:12px;line-height:1.4;box-shadow:0 8px 24px rgba(0,0,0,.25);pointer-events:none;display:none}
 .qtip b{display:block;font-weight:700;margin-bottom:3px}
 .qtip .m{color:#B9C3D3}
 [data-tip]{cursor:help}
@@ -673,7 +673,8 @@ html.dark .day{border-top-color:#9DB7E0}
 .nm .mb .lr{cursor:pointer;border-radius:6px;margin:0 -6px;padding-left:6px;padding-right:6px}
 .nm .mb .lr:hover{background:var(--surface-2)}
 .nm .mb .txt{font-size:13px;color:var(--ink);line-height:1.5}
-.nm .callout{background:#FBEDEC;border-left:4px solid var(--late);border-radius:6px;padding:10px 12px;font-size:13px;color:var(--ink);margin-top:14px}
+.nm .callout{background:#FBEDEC;border-radius:6px;padding:10px 12px;font-size:13px;color:var(--ink);margin-top:14px;--nr-tc:var(--late);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
+  .nm .callout{position:relative;padding-left:42px!important;border-radius:12px}.nm .callout::before{content:"!";position:absolute;left:12px;top:10px;width:20px;height:20px;border-radius:50%;background:var(--late);color:#fff;font:700 12px/20px system-ui,-apple-system,sans-serif;text-align:center}
 .nm .callout a{color:var(--late);font-weight:700;cursor:pointer}
 .ico{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:800 12px/1 var(--fh);flex:none}
 
@@ -713,7 +714,7 @@ html.dark .day{border-top-color:#9DB7E0}
 
 /* style */
 
-.slim{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--late);border-radius:var(--r);padding:10px 16px;font-size:var(--fs-13);color:var(--ink-2);min-width:0}
+.slim{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 16px;font-size:var(--fs-13);color:var(--ink-2);min-width:0;--nr-tc:var(--late);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
 .slim .itag{flex:none;font:700 var(--fs-11)/1 var(--fh);letter-spacing:.08em;text-transform:uppercase;color:var(--late)}
 .slim b{color:var(--ink)} .slim .t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .slim a{flex:none;color:var(--green);font-weight:600;cursor:pointer;font-size:var(--fs-12)}
@@ -795,7 +796,7 @@ html.dark .day{border-top-color:#9DB7E0}
 .nmm .whorow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}
 .nmm .whorow .ci.ab{opacity:.35}
 .nmm .whorow .gl{font-size:11px;color:var(--ink-3);margin-right:2px}
-.nmm .nstep{font-size:13px;color:var(--ink);border-left:3px solid var(--navy);padding:6px 10px;background:var(--surface-2);border-radius:0 6px 6px 0}
+.nmm .nstep{font-size:13px;color:var(--ink);padding:6px 10px;background:var(--surface-2);border-radius:6px;--nr-tc:var(--navy);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
 .nmm .lr .s.g{color:var(--green)}
 .nmm .empty2{font-size:12.5px;color:var(--ink-3)}
 html.dark .nmm .spill.sp-plan{background:#22324d;color:#b8c8e8} html.dark .nmm .spill.sp-held{background:#1f3a2c}
@@ -831,8 +832,8 @@ html.dark .nmm .spill.sp-plan{background:#22324d;color:#b8c8e8} html.dark .nmm .
 .f-c-conf{background:#006843;color:#fff}.f-c-rej{background:#D9776E;color:#fff}.f-c-part{background:#E8B34A;color:#1B2230}
 .f-c-prog{background:#9DB7E0;color:#0F2B52}.f-c-inv{background:#E4E0D7;color:var(--ink-2)}
 html.dark .f-c-inv{background:#2A3342;color:var(--ink-2)}
-.f-prob{display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--navy);border-radius:var(--r);padding:10px 16px;font-size:var(--fs-13);color:var(--ink-2)}
-html.dark .f-prob{border-left-color:#9DB7E0}
+.f-prob{display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 16px;font-size:var(--fs-13);color:var(--ink-2);--nr-tc:var(--navy);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
+html.dark .f-prob{--nr-tc:#9DB7E0}
 .f-prob .itag{flex:none;font:700 var(--fs-11)/1 var(--fh);letter-spacing:.08em;text-transform:uppercase;color:var(--navy)}
 html.dark .f-prob .itag{color:#9DB7E0}
 .f-prob .t{flex:1;min-width:0;color:var(--ink);font-weight:600}
@@ -840,7 +841,7 @@ html.dark .f-prob .itag{color:#9DB7E0}
 .f-ans{font:700 clamp(18px,1.45vw,22px)/1.35 var(--fh);color:var(--ink);margin:10px 0 14px;letter-spacing:-.005em}
 .f-ans em{font-style:normal;color:var(--green)}
 html.dark .f-ans em{color:#6FCB9C}
-.f-chg{font-size:var(--fs-13);color:var(--ink);border-left:3px solid var(--watch);padding:8px 12px;background:var(--surface-2);border-radius:0 6px 6px 0;line-height:1.5}
+.f-chg{font-size:var(--fs-13);color:var(--ink);padding:8px 12px;background:var(--surface-2);border-radius:6px;line-height:1.5;--nr-tc:var(--watch);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
 .f-chg b{display:block;font:700 var(--fs-11)/1 var(--fh);letter-spacing:.08em;text-transform:uppercase;color:var(--watch);margin-bottom:6px}
 .f-card{display:flex;flex-direction:column}
 .f-card .foot{margin-top:auto}
@@ -876,6 +877,10 @@ html.dark .f-root{background:#1F2B40}
 @media (max-width:1100px){.f-br{grid-template-columns:repeat(2,minmax(0,1fr))}.f-br::before,.f-br>.tc::before,.f-stem{display:none}.f-br{padding-top:12px}}
 @media (max-width:640px){.f-br{grid-template-columns:1fr}}
 .f-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:var(--fs-11);color:var(--ink-3);margin-top:12px}
+/* where an insight came from: the client, only us, the internet, or not traced yet (sources.py) */
+.f-o{display:inline-block;font-size:var(--fs-11);font-weight:600;border-radius:10px;padding:1px 7px;white-space:nowrap;line-height:1.5}
+.f-o-client{color:var(--info);background:var(--info-bg)}.f-o-internal{color:var(--none);background:var(--none-bg)}
+.f-o-internet{color:var(--watch);background:var(--watch-bg)}.f-o-thirdparty{color:#0E6B66;background:#DFF2F0}html.dark .f-o-thirdparty{color:#7FD4CB;background:#163330}.f-o-nosource{color:var(--ink-3);border:1px dashed var(--line);padding:0 6px}
 .f-legend span{display:inline-flex;align-items:center;gap:6px}
 .f-legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
 .f-legend i.f-mk{border-radius:50%}
@@ -994,7 +999,7 @@ html.dark .foot a{color:var(--link)}
 .x-sheet .x-bdg{align-self:flex-start;font-size:10.5px;padding:3px 6px;margin-bottom:6%}
 .x-kind{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:var(--fs-11);color:var(--ink-3)}
 </style>
-<script>window.__NR_SHELL__={"screen": "findings", "client": "Northwind Assurance", "name": "OpEx diagnostic (one frame)", "where": "Diagnose · week 7 of 9", "built": "13 Oct 09:21", "switch": true};</script>
+<script>window.__NR_SHELL__={"screen": "findings", "client": "Northwind Assurance", "name": "OpEx diagnostic (one frame)", "where": "Diagnose · week 7 of 9", "built": "16 Oct 08:34", "switch": true};</script>
 </head>
 <body>
 <!-- @@NR-SHELL:BEGIN  The shared frame of the Cockpit, the Findings dashboard and Engagement setup.
@@ -1091,6 +1096,28 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
   .nrs-hd-r:empty{display:none}
   .nrs-chips{justify-content:flex-start}
 }
+/* the menu as a strip of icons (wide screens only): the arrow at the bottom folds it and opens it again, kept per viewer (nr_rail) */
+.nrs-sw-b svg{display:none;width:16px;height:16px}
+.nrs-rl svg{transition:transform .2s}
+.nrs-tip{position:fixed;z-index:130;display:none;pointer-events:none;background:#0B1A31;color:#fff;font:500 var(--nrs-fs-s)/1.3 var(--fb);padding:5px 9px;border-radius:6px;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+@media (min-width:901px){
+  html.nrs-rail{--nrs-w:64px}
+  html.nrs-rail .nrs-sb{padding:16px 10px 12px;overflow-x:hidden}
+  html.nrs-rail .nrs-brand{justify-content:center;padding:0}
+  html.nrs-rail .nrs-bt,html.nrs-rail .nrs-sw-note,html.nrs-rail .nrs-built,html.nrs-rail .nrs-tg{display:none}
+  html.nrs-rail .nrs-sw{flex-direction:column;gap:3px;margin-top:14px}
+  html.nrs-rail .nrs-sw-b{height:30px}
+  html.nrs-rail .nrs-sw-b svg{display:block}
+  html.nrs-rail .nrs-sw-b .nrs-sw-t,html.nrs-rail .nrs-l{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  html.nrs-rail .nrs-g{font-size:0;padding:0;height:1px;background:rgba(255,255,255,.12);margin:2px 8px 8px}
+  html.nrs-rail .nrs-i,html.nrs-rail .nrs-dm{justify-content:center;padding:6px 0;gap:0}
+  html.nrs-rail .nrs-i.on::before{left:-10px}
+  html.nrs-rail .nrs-n{position:absolute;top:4px;right:8px;width:8px;height:8px;padding:0;font-size:0;border-radius:50%;background:rgba(255,255,255,.55)}
+  html.nrs-rail .nrs-n.hot{background:#fff}
+  html.nrs-rail .nrs-n.alert{background:#F07A70}
+  html.nrs-rail .nrs-rl svg{transform:rotate(180deg)}
+}
+@media (max-width:900px){ .nrs-rl{display:none} }
 @media print{ .nrs-sb,.nrs-scrim,.nrs-burger{display:none!important} }
 </style>
 <script id="nrs-js">
@@ -1104,9 +1131,12 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
       if(v==null){ var o=localStorage.getItem('nr_eng_theme'); if(o) v=(o==='dark')?'1':'0'; }
       return v; }catch(e){ return null; } }
   if(read()==='1') root.classList.add('dark');
+  try{ if(localStorage.getItem('nr_rail')==='1') root.classList.add('nrs-rail'); }catch(e){}
   var P={moon:'<path d="M20 13.5A8 8 0 1 1 10.5 4a6.5 6.5 0 0 0 9.5 9.5z"/>', menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
     gear:'<circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.6M12 18.4V21M3 12h2.6M18.4 12H21M5.6 5.6l1.9 1.9M16.5 16.5l1.9 1.9M5.6 18.4l1.9-1.9M16.5 7.5l1.9-1.9"/>',
-    back:'<path d="M15 5l-7 7 7 7"/>', play:'<circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/>'};
+    back:'<path d="M15 5l-7 7 7 7"/>', fold:'<path d="M11 7l-5 5 5 5M18 7l-5 5 5 5"/>',
+    cockpit:'<path d="M4 15a8 8 0 1 1 16 0"/><path d="M12 15l4-5"/><circle cx="12" cy="15" r="1.3"/>',
+    findings:'<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16h5.2v-.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/>', play:'<circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/>'};
   function svg(p){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(p||'')+'</svg>'; }
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
   var SCREENS=[['cockpit','Cockpit','../Cockpit.html'],['findings','Findings','../Findings dashboard.html']];
@@ -1135,25 +1165,39 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
     switcher:function(screen){ var c=S.cfg(); if(!c||!c.switch) return '';
       var only=c.switch==='opex-only';
       return '<div class="nrs-sw" role="group" aria-label="Screen">'+SCREENS.map(function(x){
-        if(x[0]===screen) return '<span class="nrs-sw-b on" aria-current="page">'+x[1]+'</span>';
-        if(only) return '<span class="nrs-sw-b off" aria-disabled="true" title="The findings dashboard is built for OpEx engagements only">'+x[1]+'</span>';
-        return '<a class="nrs-sw-b" href="'+encodeURI(x[2])+'">'+x[1]+'</a>'; }).join('')+'</div>'
+        var in_=svg(P[x[0]])+'<span class="nrs-sw-t">'+x[1]+'</span>';
+        if(x[0]===screen) return '<span class="nrs-sw-b on" aria-current="page" data-nrs-tip="'+x[1]+'">'+in_+'</span>';
+        if(only) return '<span class="nrs-sw-b off" aria-disabled="true" title="The findings dashboard is built for OpEx engagements only" data-nrs-tip="'+x[1]+': OpEx engagements only">'+in_+'</span>';
+        return '<a class="nrs-sw-b" href="'+encodeURI(x[2])+'" data-nrs-tip="'+x[1]+'">'+in_+'</a>'; }).join('')+'</div>'
         +(only?'<p class="nrs-sw-note">Findings is for OpEx engagements only.</p>':''); },
     /* Engagement setup is opened from the menu of the cockpit and the findings dashboard, and leads back
        to the cockpit. Only in a screen built in an engagement folder, or in its artifact. */
     setupLink:function(c){ if(!c||!c.screen) return '';
-      if(c.screen==='setup') return '<a class="nrs-i nrs-set" href="'+encodeURI(SCREENS[0][2])+'">'+svg(P.back)+'<span class="nrs-l">Back to the cockpit</span></a>';
-      return '<a class="nrs-i nrs-set" href="'+encodeURI(SETUP_HREF)+'">'+svg(P.gear)+'<span class="nrs-l">Engagement setup</span></a>'; },
+      if(c.screen==='setup') return '<a class="nrs-i nrs-set" href="'+encodeURI(SCREENS[0][2])+'" data-nrs-tip="Back to the cockpit">'+svg(P.back)+'<span class="nrs-l">Back to the cockpit</span></a>';
+      return '<a class="nrs-i nrs-set" href="'+encodeURI(SETUP_HREF)+'" data-nrs-tip="Engagement setup">'+svg(P.gear)+'<span class="nrs-l">Engagement setup</span></a>'; },
     /* the walkthrough (the @@NR-TOUR block) on the screens that carry it: the cockpit and findings */
-    tourLink:function(){ return window.NRTour?'<button type="button" class="nrs-i nrs-set" data-nrs-tour>'+svg(P.play)+'<span class="nrs-l">Take the tour</span></button>':''; },
+    tourLink:function(){ return window.NRTour?'<button type="button" class="nrs-i nrs-set" data-nrs-tour data-nrs-tip="Take the tour">'+svg(P.play)+'<span class="nrs-l">Take the tour</span></button>':''; },
+    isRail:function(){ return root.classList.contains('nrs-rail'); },
+    rail:function(){ var r=root.classList.toggle('nrs-rail'); S.tip(null);
+      try{ localStorage.setItem('nr_rail',r?'1':'0'); }catch(e){}
+      document.querySelectorAll('[data-nrs-rail]').forEach(function(b){ b.setAttribute('aria-pressed',r?'true':'false'); b.setAttribute('data-nrs-tip',r?'Open the menu':'Fold the menu'); var l=b.querySelector('.nrs-l'); if(l) l.textContent=r?'Open the menu':'Fold the menu'; });
+      try{ window.dispatchEvent(new Event('resize')); document.dispatchEvent(new CustomEvent('nr-rail',{detail:{rail:r}})); }catch(e){} },
+    /* in the strip, a name shows next to the icon on hover */
+    tip:function(el){ var t=document.querySelector('.nrs-tip');
+      if(!el||!S.isRail()||window.innerWidth<=900){ if(t) t.style.display='none'; return; }
+      if(!t){ t=document.createElement('div'); t.className='nrs-tip nr-glass-tint'; t.setAttribute('role','tooltip'); document.body.appendChild(t); }
+      var r=el.getBoundingClientRect(), sb=document.querySelector('.nrs-sb'); t.textContent=el.getAttribute('data-nrs-tip');
+      t.style.display='block'; t.style.left=((sb?sb.getBoundingClientRect().right:r.right)+8)+'px'; t.style.top=(r.top+r.height/2-t.offsetHeight/2)+'px'; },
     foot:function(){ var c=S.cfg(), d=S.isDark();
-      return '<div class="nrs-foot">'+S.tourLink()+S.setupLink(c)+'<button type="button" class="nrs-dm" data-nrs-theme aria-pressed="'+d+'">'+svg(P.moon)+'<span class="nrs-l">Dark mode</span><i class="nrs-tg" aria-hidden="true"></i></button>'+
+      var rl=S.isRail()?'Open the menu':'Fold the menu';
+      return '<div class="nrs-foot">'+S.tourLink()+S.setupLink(c)+'<button type="button" class="nrs-dm" data-nrs-theme aria-pressed="'+d+'" data-nrs-tip="Dark mode">'+svg(P.moon)+'<span class="nrs-l">Dark mode</span><i class="nrs-tg" aria-hidden="true"></i></button>'+
+        '<button type="button" class="nrs-dm nrs-rl" data-nrs-rail aria-pressed="'+S.isRail()+'" data-nrs-tip="'+rl+'">'+svg(P.fold)+'<span class="nrs-l">'+rl+'</span></button>'+
         (c&&c.built?'<p class="nrs-built">Built '+esc(c.built)+' from the engagement folder</p>':'')+'</div>'; },
     /* groups: [{label, items:[{k, label, icon (svg paths) | glyph (html), on, n, nCls, cls, title}]}] */
     nav:function(groups){ return (groups||[]).map(function(g){
       return '<div class="nrs-grp">'+(g.label?'<div class="nrs-g">'+esc(g.label)+'</div>':'')+(g.items||[]).map(function(i){
         var n=(i.n!==''&&i.n!=null&&i.n!==0)?'<em class="nrs-n'+(i.nCls?' '+i.nCls:'')+'"'+(i.title?' title="'+esc(i.title)+'"':'')+'>'+esc(i.n)+'</em>':'';
-        return '<button type="button" class="nrs-i'+(i.on?' on':'')+(i.cls?' '+i.cls:'')+'" data-nrs-k="'+esc(i.k)+'"'+(i.on?' aria-current="page"':'')+'>'+
+        return '<button type="button" class="nrs-i'+(i.on?' on':'')+(i.cls?' '+i.cls:'')+'" data-nrs-k="'+esc(i.k)+'"'+(i.on?' aria-current="page"':'')+' data-nrs-tip="'+esc(i.label)+(n?' · '+esc(i.n):'')+'">'+
           (i.glyph!=null?i.glyph:svg(i.icon))+'<span class="nrs-l">'+esc(i.label)+'</span>'+n+'</button>'; }).join('')+'</div>'; }).join(''); },
     /* draw the whole sidebar into el. o: {screen, brand:{client,name,where}, groups, navClass, go(k)} */
     render:function(el,o){ if(!el) return; o=o||{}; GO=o.go||null;
@@ -1168,12 +1212,15 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
   document.addEventListener('click',function(e){
     var t=e.target&&e.target.closest?e.target:null; if(!t) return;
     if(t.closest('[data-nrs-theme]')){ S.toggle(); return; }
+    if(t.closest('[data-nrs-rail]')){ S.rail(); return; }
     if(t.closest('[data-nrs-tour]')){ S.close(); if(window.NRTour) window.NRTour.open(); return; }
     if(t.closest('[data-nrs-menu]')){ e.stopPropagation(); S.open(); return; }
     if(t.classList&&t.classList.contains('nrs-scrim')){ S.close(); return; }
     var it=t.closest('[data-nrs-k]'); if(it&&GO){ S.close(); GO(it.getAttribute('data-nrs-k')); }
   });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') S.close(); });
+  document.addEventListener('mouseover',function(e){ var el=e.target&&e.target.closest?e.target.closest('.nrs-sb [data-nrs-tip]'):null; S.tip(el); });
+  document.addEventListener('scroll',function(){ S.tip(null); },true);
   window.NRShell=S;
 })();
 </script>
@@ -1184,8 +1231,8 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
   <header class="tb nrs-hd" id="hd"></header>
   <div class="page" id="page"></div>
 </main>
-<div class="scrim" id="scrim"><div class="modal" id="modal" role="dialog" aria-modal="true"></div></div>
-<script>window.__NR_FINDINGS__=/*NR_FINDINGS*/{"client":"Northwind Assurance","name":"OpEx diagnostic (one frame)","problem":"Northwind can free a fifth of its claims and service effort without lowering service levels.","decision":"Which levers go into next year's budget, decided at the SteerCo at the end of October 2026.","decisionDate":null,"answer":"Five levers address about 10 FTE of the potential, and the two biggest need the contact centre and the claims system connected first","moved":[],"couldChange":null,"execsumHref":null,"analyses":[{"k":"mae","n":"Team activity map (MAE)","s":"Evidence in","st":"info"},{"k":"process-map","n":"Process map","s":"Evidence in","st":"info"},{"k":"service-blueprint","n":"Service blueprint","s":"Evidence in","st":"info"},{"k":"client-data","n":"Client data request","s":"Not started","st":"none"},{"k":"interview","n":"Interviews and workshops","s":"Evidence in","st":"info"},{"k":"ote-waterfall","n":"Where the team’s time goes (OTE)","s":"Done","st":"ok"}],"tree":[{"id":"n1","no":"1","t":"The effort is lost moving information between systems, not in claim decisions","nodes":["n1","n2","n3"],"j":"1 confirmed · 1 rejected","children":[{"id":"n2","no":"1.1","t":"Every motor claim is keyed twice, in ClaimsCore and in PolicyHub","parent":null,"status":"Confirmed","at":"18 Sep","by":"Thomas Merckx","rationale":"Heard at the kick-off (sample data)","test":"mae","findings":"MAE, Claims Handling: 6.5 of 42 FTE goes to re-keying (MAE session with Ilse Vermeulen, 17 Sep 2026)","ev":{"mae":[{"scope":"Claims Handling","e":"s","note":"MAE, Claims Handling: 6.5 of 42 FTE goes to re-keying (MAE session with Ilse Vermeulen, 17 Sep 2026)"}]}},{"id":"n3","no":"1.2","t":"Checking cover needs a second system for every claim","parent":null,"status":"Rejected","at":"22 Sep","by":"Thomas Merckx","rationale":"Heard at the kick-off (sample data)","test":"process-map","findings":"Process map, Claims Handling: cover is checked in ClaimsCore for 9 claims in 10 (workshop, 22 Sep 2026)","ev":{"process-map":[{"scope":"Claims Handling","e":"c","note":"Process map, Claims Handling: cover is checked in ClaimsCore for 9 claims in 10 (workshop, 22 Sep 2026)"}]}}]},{"id":"n4","no":"2","t":"Customer Service and Recovery carry work the claims process creates","nodes":["n4","n5","n6","n7","n8"],"j":"1 partially confirmed · 1 in progress · 1 to investigate","children":[{"id":"n6","no":"2.1","t":"Four in ten calls to Customer Service are status requests","parent":"Customers call because nobody tells them where their claim stands","status":"In progress","at":null,"by":null,"rationale":"Heard at the kick-off (sample data)","test":"service-blueprint","findings":"","ev":{"service-blueprint":[{"scope":"Customer Service","e":"i","note":""}]}},{"id":"n7","no":"2.2","t":"Status calls peak in the week after a claim is filed","parent":"Customers call because nobody tells them where their claim stands","status":"To investigate","at":null,"by":null,"rationale":"Heard at the kick-off (sample data)","test":"client-data","findings":"","ev":{"client-data":[{"scope":"Customer Service","e":"o","note":""}]}},{"id":"n8","no":"2.3","t":"Recovery & Legal asks again for documents Claims already holds","parent":null,"status":"Partially confirmed","at":"19 Sep","by":"Thomas Merckx","rationale":"Heard at the kick-off (sample data)","test":"interview","findings":"Holds for property claims, not for motor (interview with Joris Van Acker, 19 Sep 2026)","ev":{"interview":[{"scope":"Recovery & Legal","e":"p","note":"Holds for property claims, not for motor (interview with Joris Van Acker, 19 Sep 2026)"}]}}]}],"insights":[],"outputs":[{"hyp":"n7","a":"client-data","scope":"Customer Service","where":"Planned","t":"Client data request · Customer Service"},{"hyp":null,"a":"ote-waterfall","scope":"Claims Handling","t":"OTE Waterfall (Top-Down)","where":"Working","href":"../../_engine/toolkit/artifacts/ch/ote-waterfall.WORKING.html","path":"../../_engine/toolkit/artifacts/ch/ote-waterfall.WORKING.html","folder":"2. Diagnose","upd":"13 Oct"}],"lenses":{"dims":[{"k":"proc","label":"Processes"},{"k":"cust","label":"Customer"},{"k":"mgmt","label":"Management systems"},{"k":"data","label":"Data, systems & integrations"},{"k":"mind","label":"Mindset & behaviors"},{"k":"org","label":"Organisation"}],"inst":{"process-map":"proc","waste-observations":"proc","sop-wheel":"proc","nps-analysis":"cust","service-blueprint":"cust","kano-analysis":"cust","wilo-analysis":"mgmt","performance-wheel":"mgmt","skills-wheel":"mgmt","kpi-cascade":"mgmt","data-maturity":"data","team-barometer":"mind","raci-diagnostic":"org"},"baseline":["inefficiency-register","opportunity-register","ote-waterfall","mae","org-baseline"]}}/*END_NR_FINDINGS*/;</script>
+<div class="scrim" id="scrim"><div class="modal nr-glass-lg" id="modal" role="dialog" aria-modal="true"></div></div>
+<script>window.__NR_FINDINGS__=/*NR_FINDINGS*/{"client":"Northwind Assurance","name":"OpEx diagnostic (one frame)","problem":"Northwind can free a fifth of its claims and service effort without lowering service levels.","decision":"Which levers go into next year's budget, decided at the SteerCo at the end of October 2026.","decisionDate":null,"answer":"Five levers address about 10 FTE of the potential, and the two biggest need the contact centre and the claims system connected first","moved":[],"couldChange":null,"execsumHref":null,"analyses":[{"k":"mae","n":"Team activity map (MAE)","s":"Evidence in","st":"info"},{"k":"process-map","n":"Process map","s":"Evidence in","st":"info"},{"k":"service-blueprint","n":"Service blueprint","s":"Evidence in","st":"info"},{"k":"client-data","n":"Client data request","s":"Not started","st":"none"},{"k":"interview","n":"Interviews and workshops","s":"Evidence in","st":"info"},{"k":"ote-waterfall","n":"Where the team’s time goes (OTE)","s":"Done","st":"ok"}],"tree":[{"id":"n1","no":"1","t":"The effort is lost moving information between systems, not in claim decisions","nodes":["n1","n2","n3"],"j":"1 confirmed · 1 rejected","children":[{"id":"n2","no":"1.1","t":"Every motor claim is keyed twice, in ClaimsCore and in PolicyHub","parent":null,"status":"Confirmed","at":"18 Sep","by":"Thomas Merckx","rationale":"Heard at the kick-off (sample data)","test":"mae","findings":"MAE, Claims Handling: 6.5 of 42 FTE goes to re-keying (MAE session with Ilse Vermeulen, 17 Sep 2026)","ev":{"mae":[{"scope":"Claims Handling","e":"s","note":"MAE, Claims Handling: 6.5 of 42 FTE goes to re-keying (MAE session with Ilse Vermeulen, 17 Sep 2026)"}]}},{"id":"n3","no":"1.2","t":"Checking cover needs a second system for every claim","parent":null,"status":"Rejected","at":"22 Sep","by":"Thomas Merckx","rationale":"Heard at the kick-off (sample data)","test":"process-map","findings":"Process map, Claims Handling: cover is checked in ClaimsCore for 9 claims in 10 (workshop, 22 Sep 2026)","ev":{"process-map":[{"scope":"Claims Handling","e":"c","note":"Process map, Claims Handling: cover is checked in ClaimsCore for 9 claims in 10 (workshop, 22 Sep 2026)"}]}}]},{"id":"n4","no":"2","t":"Customer Service and Recovery carry work the claims process creates","nodes":["n4","n5","n6","n7","n8"],"j":"1 partially confirmed · 1 in progress · 1 to investigate","children":[{"id":"n6","no":"2.1","t":"Four in ten calls to Customer Service are status requests","parent":"Customers call because nobody tells them where their claim stands","status":"In progress","at":null,"by":null,"rationale":"Heard at the kick-off (sample data)","test":"service-blueprint","findings":"","ev":{"service-blueprint":[{"scope":"Customer Service","e":"i","note":""}]}},{"id":"n7","no":"2.2","t":"Status calls peak in the week after a claim is filed","parent":"Customers call because nobody tells them where their claim stands","status":"To investigate","at":null,"by":null,"rationale":"Heard at the kick-off (sample data)","test":"client-data","findings":"","ev":{"client-data":[{"scope":"Customer Service","e":"o","note":""}]}},{"id":"n8","no":"2.3","t":"Recovery & Legal asks again for documents Claims already holds","parent":null,"status":"Partially confirmed","at":"19 Sep","by":"Thomas Merckx","rationale":"Heard at the kick-off (sample data)","test":"interview","findings":"Holds for property claims, not for motor (interview with Joris Van Acker, 19 Sep 2026)","ev":{"interview":[{"scope":"Recovery & Legal","e":"p","note":"Holds for property claims, not for motor (interview with Joris Van Acker, 19 Sep 2026)"}]}}]}],"insights":[],"outputs":[{"hyp":"n7","a":"client-data","scope":"Customer Service","where":"Planned","t":"Client data request · Customer Service"},{"hyp":null,"a":"ote-waterfall","scope":"Claims Handling","t":"OTE Waterfall (Top-Down)","where":"Working","href":"../../_engine/toolkit/artifacts/ch/ote-waterfall.WORKING.html","path":"../../_engine/toolkit/artifacts/ch/ote-waterfall.WORKING.html","folder":"2. Diagnose","upd":"15 Oct"}],"lenses":{"dims":[{"k":"proc","label":"Processes"},{"k":"cust","label":"Customer"},{"k":"mgmt","label":"Management systems"},{"k":"data","label":"Data, systems & integrations"},{"k":"mind","label":"Mindset & behaviors"},{"k":"org","label":"Organisation"}],"inst":{"process-map":"proc","waste-observations":"proc","sop-wheel":"proc","nps-analysis":"cust","service-blueprint":"cust","kano-analysis":"cust","wilo-analysis":"mgmt","performance-wheel":"mgmt","skills-wheel":"mgmt","kpi-cascade":"mgmt","data-maturity":"data","team-barometer":"mind","raci-diagnostic":"org"},"baseline":["inefficiency-register","opportunity-register","ote-waterfall","mae","org-baseline"]}}/*END_NR_FINDINGS*/;</script>
 <script id="findings-js">
 /* The findings screen for any engagement: the problem statement and our answer, the hypothesis tree
    that carries it, the insights and the exhibits behind every hypothesis.
@@ -1321,6 +1368,8 @@ function pPlan(){
 }
 
 /* ─── page 3: insights, the cockpit's register pattern ─── */
+function oTags(i){if(!i.o) return esc(i.src||'');return i.o.map(function(t){return '<span class="f-o f-o-'+t.toLowerCase().replace(/\s+/g,'')+'">'+esc(t)+'</span>'}).join(' ')}
+function srcA(href,t){return href?'<a class="more" style="margin:0" href="'+esc(href)+'" target="_blank" rel="noopener">'+esc(t)+'</a>':esc(t)}
 function inBranch(i,h){var nd=node(i.hyp);return h==='all'||(nd&&nd.branch.id===h)}
 function pInsights(){
  var all=D.insights;
@@ -1333,8 +1382,8 @@ function pInsights(){
  return '<section class="card">'+sum+'<div class="tool"><input class="search" id="q" placeholder="Search insights" value="'+esc(F.q)+'">'+hsel+'<span class="count">'+rows.length+' of '+all.length+'</span></div>'
   +'<div class="tw"><table class="rg"><colgroup><col><col style="width:26%"><col style="width:130px"><col style="width:90px"></colgroup><thead><tr><th>Insight</th><th>Hypothesis</th><th>Source</th><th>When</th></tr></thead><tbody>'
   +rows.map(function(i){var nd=node(i.hyp),o=OPEN===i;var eff=i.e==='s'?'<span style="color:var(--ok);font-weight:600">Supports</span> ':i.e==='c'?'<span style="color:var(--late);font-weight:600">Contradicts</span> ':'';
-   return '<tr class="r'+(o?' open':'')+'" data-row="'+all.indexOf(i)+'"><td><div class="one">'+(i.chg?'<span class="star">★</span> ':'')+esc(i.t)+'</div></td><td><div class="one">'+(nd?eff+esc(nd.no)+' · <span class="mut">'+esc(nd.t)+'</span>':'<span class="mut">Not linked to a hypothesis</span>')+'</div></td><td class="mut">'+esc(i.src||'')+'</td><td class="mut">'+esc(i.w||'')+'</td></tr>'
-   +(o?'<tr class="det"><td colspan="4"><div class="full">'+esc(i.t)+'</div><dl>'+(nd?'<dt>Hypothesis</dt><dd><a class="more" style="margin:0;cursor:pointer" data-leaf="'+esc(i.hyp)+'">'+esc(nd.no)+' · '+esc(nd.t)+'</a>'+(nd.leaf?' · '+esc(nd.leaf.status||'To investigate'):'')+'</dd>':'')+(i.from?'<dt>From</dt><dd>'+esc(i.from)+'</dd>':'')+(i.src?'<dt>Source</dt><dd>'+esc(i.src)+'</dd>':'')+'</dl></td></tr>':'')}).join('')
+   return '<tr class="r'+(o?' open':'')+'" data-row="'+all.indexOf(i)+'"><td><div class="one">'+(i.chg?'<span class="star">★</span> ':'')+esc(i.t)+'</div></td><td><div class="one">'+(nd?eff+esc(nd.no)+' · <span class="mut">'+esc(nd.t)+'</span>':'<span class="mut">Not linked to a hypothesis</span>')+'</div></td><td class="mut">'+oTags(i)+'</td><td class="mut">'+esc(i.w||'')+'</td></tr>'
+   +(o?'<tr class="det"><td colspan="4"><div class="full">'+esc(i.t)+'</div><dl>'+(nd?'<dt>Hypothesis</dt><dd><a class="more" style="margin:0;cursor:pointer" data-leaf="'+esc(i.hyp)+'">'+esc(nd.no)+' · '+esc(nd.t)+'</a>'+(nd.leaf?' · '+esc(nd.leaf.status||'To investigate'):'')+'</dd>':'')+(i.from?'<dt>From</dt><dd>'+srcA(i.href,i.from)+(i.kind?' · <span class="mut">'+esc(i.kind)+'</span>':'')+(i.sid?' · <span class="mut">'+esc(i.sid)+'</span>':'')+'</dd>':'')+(i.bf&&i.bf.length?'<dt>Built from</dt><dd>'+i.bf.map(function(b){return srcA(b.href,b.t)+' '+oTags(b)}).join('<br>')+'</dd>':'')+(i.o&&i.o[0]==='No source'?'<dt>Source</dt><dd class="mut">Not traced to a file yet: ask Claude to find the note or file it came from.</dd>':'')+(i.o&&i.src?'<dt>Evidence</dt><dd>'+esc(i.src)+'</dd>':(!i.o&&i.src?'<dt>Source</dt><dd>'+esc(i.src)+'</dd>':''))+'</dl></td></tr>':'')}).join('')
   +'</tbody></table></div>'+(rows.length?'':'<p class="empty" style="display:block;padding:12px 0">No insight matches these filters.</p>')+(sets.chg.length?'<p class="f-legend"><span><span class="star">★</span> changed our view</span></p>':'')+'</section>';
 }
 
@@ -1501,5 +1550,87 @@ draw();
 })();
 
 </script>
+<!-- NR-GLASS:BEGIN — the glass layer (diagnostic-skill-builder/templates/glass-layer.html, put in by
+     scripts/patch_glass.py). Everything that floats above the page is glass; the page itself stays solid
+     (cards, tables, charts, slides). Small things get liquid glass: a lens at the edges, a light rim and a
+     highlight that follows the pointer. Large things (the edit sidebar, big pop-ups) get calmer frosted glass.
+     Hooks: .nr-glass (small), .nr-glass-lg (large), .nr-glass-tint (a dark tinted message), .nr-glass-night (with
+     .nr-glass: small glass that always sits on a dark surface, like the canvas twin), plus the shared
+     pieces every instrument has. Do not edit a copy in a page: change this file and run patch_glass.py. -->
+<style id="nr-glass">
+  :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu){
+    background-color:rgba(255,255,255,.55)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.34),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(14px) saturate(185%) brightness(1.06);backdrop-filter:blur(14px) var(--nr-lens,) saturate(185%) brightness(1.06);
+    border-color:transparent!important;
+    box-shadow:0 22px 50px -12px rgba(11,35,71,.28),0 2px 6px rgba(11,35,71,.08),inset 0 0 0 .5px rgba(255,255,255,.6),inset 1.5px 1.5px 0 -.5px rgba(255,255,255,.95),inset -1px -1px 0 -.5px rgba(255,255,255,.5)!important}
+  :is(#ed,.nr-glass-lg){
+    background-color:rgba(255,255,255,.74)!important;-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);
+    box-shadow:-24px 0 60px -28px rgba(11,35,71,.38),inset 1px 0 0 rgba(255,255,255,.85)!important;border-color:rgba(255,255,255,.6)!important}
+  :is(.nr-toast,#nr-ask-msg,.nr-glass-tint){
+    background:rgba(11,35,71,.72)!important;-webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);
+    box-shadow:0 16px 36px -12px rgba(11,35,71,.45),inset 0 0 0 .5px rgba(255,255,255,.18),inset 1px 1px 0 -.5px rgba(255,255,255,.45)!important}
+  /* what sits on glass: light fills, never glass on glass */
+  :is(#ed,.nr-glass-lg) :is(.edh,.edf){background:rgba(255,255,255,.35)!important}
+  /* dark */
+  :is([data-t="dark"],html.dark) :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu){
+    background-color:rgba(20,30,44,.56)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.08),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(14px) saturate(170%) brightness(.9);backdrop-filter:blur(14px) var(--nr-lens,) saturate(170%) brightness(.9);
+    box-shadow:0 22px 50px -12px rgba(0,0,0,.6),inset 0 0 0 .5px rgba(255,255,255,.16),inset 1.5px 1.5px 0 -.5px rgba(255,255,255,.35),inset -1px -1px 0 -.5px rgba(255,255,255,.12)!important}
+  :is([data-t="dark"],html.dark) :is(#ed,.nr-glass-lg){background-color:rgba(22,32,44,.78)!important;box-shadow:-24px 0 60px -28px rgba(0,0,0,.7),inset 1px 0 0 rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.1)!important}
+  :is([data-t="dark"],html.dark) :is(#ed,.nr-glass-lg) :is(.edh,.edf){background:rgba(255,255,255,.05)!important}
+  /* glass that always sits on a dark surface (the canvas twin): the dark values in both themes */
+  .nr-glass.nr-glass-night{background-color:rgba(12,21,38,.58)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.07),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(12px) saturate(160%) brightness(.9);backdrop-filter:blur(12px) var(--nr-lens,) saturate(160%) brightness(.9);
+    box-shadow:0 18px 44px -14px rgba(0,0,0,.65),inset 0 0 0 .5px rgba(143,168,206,.22),inset 1.5px 1.5px 0 -.5px rgba(175,198,246,.35),inset -1px -1px 0 -.5px rgba(175,198,246,.12)!important}
+  /* when glass cannot be glass: solid, as before */
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg){background-color:var(--card,#fff)!important;background-image:none!important}}
+  @media (prefers-reduced-transparency:reduce){
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg){background-color:var(--card,#fff)!important;background-image:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+    :is(.nr-toast,#nr-ask-msg,.nr-glass-tint){background:var(--navy-fill,#0B2347)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}}
+  @media print{
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg,.nr-toast,#nr-ask-msg,.nr-glass-tint){-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:#fff!important;box-shadow:none!important}}
+</style>
+<svg id="nr-glass-defs" width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false"></svg>
+<script id="nr-glass-js">
+(function(){
+  /* the lens: only where a browser can put an SVG filter inside backdrop-filter (Chrome, Edge, the Claude desktop
+     app). Safari and Firefox would draw nothing at all, so they keep the plain frosted glass. */
+  var ua=navigator.userAgent, lens=/Chrome\/|Chromium\/|Edg\//.test(ua)&&!/Firefox\//.test(ua);
+  var calm=window.matchMedia&&(matchMedia('(prefers-reduced-transparency: reduce)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var SMALL='.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu', R=16, BEZEL=22, MAXA=700*800, n=0;
+  var defs=document.getElementById('nr-glass-defs'), NS='http://www.w3.org/2000/svg';
+  function lensMap(w,h,r){ var c=document.createElement('canvas'); c.width=w; c.height=h; var x=c.getContext('2d'), im=x.createImageData(w,h), d=im.data;
+    for(var j=0;j<h;j++) for(var i=0;i<w;i++){
+      var cx=Math.min(Math.max(i,r),w-r), cy=Math.min(Math.max(j,r),h-r), dx=i-cx, dy=j-cy, nx=0, ny=0, dist;
+      if((i<r||i>w-r)&&(j<r||j>h-r)){ var l=Math.sqrt(dx*dx+dy*dy)||1; dist=r-l; nx=dx/l; ny=dy/l; }
+      else { var a=i, b=w-1-i, t=j, u=h-1-j, m=Math.min(a,b,t,u); dist=m; if(m===a)nx=-1; else if(m===b)nx=1; else if(m===t)ny=-1; else ny=1; }
+      var k=Math.pow(Math.max(0,1-dist/BEZEL),3), o=(j*w+i)*4; d[o]=128+nx*k*127; d[o+1]=128+ny*k*127; d[o+2]=128; d[o+3]=255; }
+    x.putImageData(im,0,0); return c.toDataURL(); }
+  function filterFor(el){ if(!el.__nrg){ var id='nr-lens-'+(++n), f=document.createElementNS(NS,'filter');
+      f.setAttribute('id',id); f.setAttribute('filterUnits','userSpaceOnUse'); f.setAttribute('primitiveUnits','userSpaceOnUse'); f.setAttribute('x','0'); f.setAttribute('y','0'); f.setAttribute('color-interpolation-filters','sRGB');
+      var im=document.createElementNS(NS,'feImage'); im.setAttribute('x','0'); im.setAttribute('y','0'); im.setAttribute('preserveAspectRatio','none'); im.setAttribute('result','map');
+      var dm=document.createElementNS(NS,'feDisplacementMap'); dm.setAttribute('in','SourceGraphic'); dm.setAttribute('in2','map'); dm.setAttribute('scale','0'); dm.setAttribute('xChannelSelector','R'); dm.setAttribute('yChannelSelector','G');
+      f.appendChild(im); f.appendChild(dm); defs.appendChild(f); el.__nrg={id:id,f:f,im:im,dm:dm,key:''}; }
+    return el.__nrg; }
+  function grow(g){ if(calm){ g.dm.setAttribute('scale','40'); return; } var t0=performance.now();   /* the glass materialises by bending more */
+    (function step(t){ var p=Math.min(1,(t-t0)/260); g.dm.setAttribute('scale',(40*(1-Math.pow(1-p,3))).toFixed(1)); if(p<1) requestAnimationFrame(step); })(t0); }
+  function scan(){ q=0; if(!lens||calm&&matchMedia('(prefers-reduced-transparency: reduce)').matches) return;
+    document.querySelectorAll(SMALL).forEach(function(el){
+      var w=Math.round(el.offsetWidth), h=Math.round(el.offsetHeight), shown=w>0&&h>0&&getComputedStyle(el).visibility!=='hidden';
+      var g=el.__nrg; if(!shown){ if(g) g.key=''; return; } if(w*h>MAXA) return;
+      g=filterFor(el); var key=w+'x'+h; if(g.key===key) return; var fresh=!g.key; g.key=key;
+      var r=parseFloat(getComputedStyle(el).borderTopLeftRadius)||R;
+      g.f.setAttribute('width',w); g.f.setAttribute('height',h); g.im.setAttribute('width',w); g.im.setAttribute('height',h); g.im.setAttribute('href',lensMap(w,h,Math.min(r,w/2,h/2)));
+      el.style.setProperty('--nr-lens','url(#'+g.id+')'); if(fresh) grow(g); }); }
+  var q=0; function soon(){ if(!q) q=requestAnimationFrame(scan); }
+  function start(){ scan(); new MutationObserver(soon).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style','hidden','open']}); window.addEventListener('resize',soon); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
+  /* the highlight follows the pointer across a small piece of glass */
+  document.addEventListener('pointermove',function(e){ var el=e.target.closest&&e.target.closest(SMALL); if(!el) return; var r=el.getBoundingClientRect();
+    el.style.setProperty('--lx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%'); el.style.setProperty('--ly',((e.clientY-r.top)/r.height*100).toFixed(1)+'%'); },{passive:true});
+})();
+</script>
+<!-- NR-GLASS:END -->
 </body>
 </html>

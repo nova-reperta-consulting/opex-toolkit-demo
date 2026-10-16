@@ -165,7 +165,48 @@
     #art.stacked,#pm.stacked,#pw.stacked{padding:14px 18px 10px 42px}
     #art.stacked .nr-rail,#pm.stacked .nr-rail,#pw.stacked .nr-rail{width:24px}
   }
-</style><style id="nr-topbar">
+</style><style id="nr-finish">
+/* == THE DECK FINISH (patch_finish.py) == one look across the toolkit: the same base size as a deck
+   in the same window, the quiet subtitle, light grey cards for ideas, icons from the house set.
+   Written with an html prefix so it wins over the template's own rules wherever they sit. */
+html{--srf:#F7F9FB;--srf-line:#E4E9EF;--sh-soft:0 1px 2px rgba(16,24,40,.05);--subt:#5E718B}
+html [data-t="dark"]{--srf:#1E2937;--srf-line:#2C3947;--sh-soft:0 1px 2px rgba(0,0,0,.35);--subt:#9FB1C8}
+html .subt{font-size:max(15px,calc(var(--nr-t,14px) * 1.22));font-weight:400;color:var(--subt)}
+/* the title follows the deck where the deck's title is the larger one (a window above about 1615 x 909);
+   below that every instrument keeps its own title, including the ones that shrink it to fit */
+@media (min-width:1615px) and (min-height:909px){html h1{font-size:calc(var(--nr-t,15.14px) * 1.85)}}
+html :is(.card,.kpi,#pw .tcard,.plan,.findings,.acard,.t-dept .nc,.t-team.in .nc,.blk.boxed,.conc-so,.node.l3){background:var(--srf);border-color:var(--srf-line);border-radius:14px;box-shadow:var(--sh-soft)}
+/* the templates paint their dark cards from #art[data-t="dark"] rules; the finish wins over those */
+html [data-t="dark"]:is(#art,#pw,#pm) :is(.card,.kpi,#pw .tcard,.plan,.findings,.acard,.t-dept .nc,.t-team.in .nc,.blk.boxed,.conc-so,.node.l3){background:var(--srf);border-color:var(--srf-line)}
+html :is(.blk.boxed,.conc-so){border:1px solid var(--srf-line)}
+html .ic{width:1.2em;height:1.2em;fill:var(--navy);flex:none;vertical-align:-.24em;margin-right:.4em}
+html [data-t="dark"] .ic{fill:#93A9C4}
+@media print{html{--sh-soft:0 0 0 transparent}}
+</style>
+<script id="nr-finish-js">
+/* == ONE TYPE SIZE PER WINDOW (patch_finish.py) == the deck's base size for this window, published
+   on <html> before any fit runs, and nrZ() for the fit caps. Never below the instrument's own 14px. */
+(function(){
+  function deck(){var W=window.innerWidth||1600,H=window.innerHeight||900;
+    return Math.max(11,Math.min(20,H/60,(W-138)/97.5));}
+  function ui(){return Math.max(14,deck());}
+  function put(){var d=document.documentElement.style;d.setProperty('--nr-t',deck().toFixed(2)+'px');
+    d.setProperty('--nr-ui',ui().toFixed(2)+'px');}
+  window.nrZ=function(){return ui()/14;};
+  put(); window.addEventListener('resize',put);
+  /* icons from the house set on the fixed vocabularies, re-applied whenever a view re-renders */
+  var I={"alt_route":"M450-80v-200q0-48-16-79t-49-64l43-43q13 11 27.5 30t24.5 35q17-26 33.5-45t31.5-32q58-47 83.5-113.5T648-766l-90 90-42-42 162-162 162 162-42 42-90-90q5 126-24.5 198.5T585-432q-44 40-59.5 73T510-280v200h-60ZM258-636q-4-18-6.5-52.5T251-765l-89 89-42-42 162-162 162 162-42 42-90-90q-2 38-1 66.5t5 49.5l-58 14Zm84 171q-17-18-37.5-47.5T273-577l59-15q9 25 24 48t28 37l-42 42Z","badge":"M140-80q-24 0-42-18t-18-42v-480q0-24 18-42t42-18h250v-140q0-24 18-42t42-18h60q24 0 42 18t18 42v140h250q24 0 42 18t18 42v480q0 24-18 42t-42 18H140Zm0-60h680v-480H570v30q0 28-18 44t-42 16h-60q-24 0-42-16t-18-44v-30H140v480Zm92-107h239v-14q0-18-9-32t-23-19q-32-11-50-14.5t-35-3.5q-19 0-40.5 4.5T265-312q-15 5-24 19t-9 32v14Zm336-67h170v-50H568v50Zm-175.5-65.5Q408-395 408-418t-15.5-38.5Q377-472 354-472t-38.5 15.5Q300-441 300-418t15.5 38.5Q331-364 354-364t38.5-15.5ZM568-427h170v-50H568v50ZM450-590h60v-230h-60v230Zm30 210Z","build":"M705-128 447-388q-23 8-46 13t-47 5q-97.08 0-165.04-67.67Q121-505.33 121-602q0-31 8.16-60.39T152-718l145 145 92-86-149-149q25.91-15.16 54.96-23.58Q324-840 354-840q99.17 0 168.58 69.42Q592-701.17 592-602q0 24-5 47t-13 46l259 258q11 10.96 11 26.48T833-198l-76 70q-10.7 11-25.85 11Q716-117 705-128Zm28-57 40-40-273-273q16-21 24-49.5t8-54.5q0-75-55.5-127T350-782l102 104q9 9 8.5 21.5T451-635L318-510q-9.27 8-21.64 8-12.36 0-20.36-8l-98-97q3 77 54.67 127T354-430q25 0 53-8t49-24l277 277ZM476-484Z","checklist":"M222-214 80-356l42-42 100 99 179-179 42 43-221 221Zm0-320L80-676l42-42 100 99 179-179 42 43-221 221Zm298 244v-60h360v60H520Zm0-320v-60h360v60H520Z","description":"M319-250h322v-60H319v60Zm0-170h322v-60H319v60ZM220-80q-24 0-42-18t-18-42v-680q0-24 18-42t42-18h361l219 219v521q0 24-18 42t-42 18H220Zm331-554v-186H220v680h520v-494H551ZM220-820v186-186 680-680Z","flag":"M200-120v-680h343l19 86h238v370H544l-18.93-85H260v309h-60Zm300-452Zm95 168h145v-250H511l-19-86H260v251h316l19 85Z","forum":"M880-81 721-240H300q-24.75 0-42.37-17.63Q240-275.25 240-300v-80h440q24.75 0 42.38-17.63Q740-415.25 740-440v-280h80q24.75 0 42.38 17.62Q880-684.75 880-660v579ZM140-425l75-75h405v-320H140v395ZM80-280v-540q0-24.75 17.63-42.38Q115.25-880 140-880h480q24.75 0 42.38 17.62Q680-844.75 680-820v320q0 24.75-17.62 42.37Q644.75-440 620-440H240L80-280Zm60-220v-320 320Z","groups":"M0-240v-53q0-38.57 41.5-62.78Q83-380 150.38-380q12.16 0 23.39.5t22.23 2.15q-8 17.35-12 35.17-4 17.81-4 37.18v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Zm540 0v-65q0-19.86-3.5-37.43T765-377.27q11-1.73 22.17-2.23 11.17-.5 22.83-.5 67.5 0 108.75 23.77T960-293v53H780Zm-480-60h360v-6q0-37-50.5-60.5T480-390q-79 0-129.5 23.5T300-305v5ZM149.57-410q-28.57 0-49.07-20.56Q80-451.13 80-480q0-29 20.56-49.5Q121.13-550 150-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T149.57-410Zm660 0q-28.57 0-49.07-20.56Q740-451.13 740-480q0-29 20.56-49.5Q781.13-550 810-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T809.57-410ZM480-480q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T600-600q0 50-34.5 85T480-480Zm.35-60Q506-540 523-557.35t17-43Q540-626 522.85-643t-42.5-17q-25.35 0-42.85 17.15t-17.5 42.5q0 25.35 17.35 42.85t43 17.5ZM480-300Zm0-300Z","monitoring":"M120-120v-76l60-60v136h-60Zm165 0v-236l60-60v296h-60Zm165 0v-296l60 61v235h-60Zm165 0v-235l60-60v295h-60Zm165 0v-396l60-60v456h-60ZM120-356v-85l280-278 160 160 280-281v85L560-474 400-634 120-356Z","psychology":"M240-80v-172q-57-52-88.5-121.5T120-520q0-150 105-255t255-105q125 0 221.5 73.5T827-615l55 218q4 14-5 25.5T853-360h-93v140q0 24.75-17.62 42.37Q724.75-160 700-160H600v80h-60v-140h160v-200h114l-45-180q-24-97-105-158.5T480-820q-125 0-212.5 86.5T180-522.46q0 64.42 26.32 122.39Q232.65-342.09 281-297l19 18v199h-60Zm257-370Zm-48 76h60l3-44q12-2 22.47-8.46Q544.94-432.92 553-441l42 14 28-48-30-24q5-14 5-29t-5-29l30-24-28-48-42 14q-8.33-7.69-19.17-13.85Q523-635 512-638l-3-44h-60l-3 44q-11 3-21.83 9.15Q413.33-622.69 405-615l-42-14-28 48 30 24q-5 14-5 29t5 29l-30 24 28 48 42-14q8.06 8.08 18.53 14.54Q434-420 446-418l3 44Zm-19.5-104.38q-20.5-20.38-20.5-49.5t20.38-49.62q20.38-20.5 49.5-20.5t49.62 20.38q20.5 20.38 20.5 49.5t-20.38 49.62q-20.38 20.5-49.5 20.5t-49.62-20.38Z","school":"M479-120 189-279v-240L40-600l439-240 441 240v317h-60v-282l-91 46v240L479-120Zm0-308 315-172-315-169-313 169 313 172Zm0 240 230-127v-168L479-360 249-485v170l230 127Zm1-240Zm-1 74Zm0 0Z","speed":"M473.5-303.5Q517-305 537-336l216-339-335 219q-30 20-32 64t21 67q23 23 66.5 21.5ZM478-799q57 0 119 18.5T716-717l-52 37q-45-30-96.5-44.5T477.98-739q-140.47 0-239.23 100.22Q140-538.57 140-396.02 140-351 152.5-305q12.5 46 35.5 85h579q22-36 35-84t13-94q0-42-12.5-90.5T758-578l39-52q38 56 57 112.5T875-404q2 60-12 113t-41 98q-12 23-25.5 28t-33.5 5H192q-17 0-33.5-8.5T134-193q-26-48-40-97.5T80-396q0-83 31.5-156.5t85.5-128Q251-735 323.68-767T478-799Zm-9 331Z","supervisor_account":"M617.5-408.5Q590-436 590-475t27.5-66.5Q645-569 684-569t66.5 27.5Q778-514 778-475t-27.5 66.5Q723-381 684-381t-66.5-27.5ZM488-160v-51q0-26 11-44.5t31-28.5q37-19 75-28t79-9q41 0 79 8.5t75 28.5q20 9 31 28t11 45v51H488ZM292-523q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42Zm108-108ZM80-160v-94q0-34 17-62.5t51-43.5q67-30 128.5-45T400-420q32 0 57 3t54 9l-25.5 25.5L460-357q-13-2-28-2.5t-32-.5q-57 0-111 11.5T172-306q-14 7-23 22t-9 30v34h288v60H80Zm348-60Zm36.5-346.5Q490-592 490-631t-25.5-64.5Q439-721 400-721t-64.5 25.5Q310-670 310-631t25.5 64.5Q361-541 400-541t64.5-25.5Z","track_changes":"M324-111.5Q251-143 197-197t-85.5-127Q80-397 80-480t31.5-156Q143-709 197-763t127-85.5Q397-880 480-880h30v326q22 9 36 29t14 45q0 33-23.5 56.5T480-400q-33 0-56.5-23.5T400-480q0-25 14-45t36-29v-104q-65 11-107.5 60.5T300-480q0 75 52.5 127.5T480-300q75 0 127.5-52.5T660-480q0-41-16-75t-44-59l43-43q35 33 56 78.5t21 98.5q0 100-70 170t-170 70q-100 0-170-70t-70-170q0-93 60-160.5T450-719v-100q-131 11-220.5 108T140-480q0 142 99 241t241 99q142 0 241-99t99-241q0-74-28.5-137T713-727l43-43q57 55 90.5 129.5T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80q-83 0-156-31.5Z","update":"M483-120q-75 0-141-28.5T226.5-226q-49.5-49-78-115T120-482q0-75 28.5-140t78-113.5Q276-784 342-812t141-28q80 0 151.5 35T758-709v-106h60v208H609v-60h105q-44-51-103.5-82T483-780q-125 0-214 85.5T180-485q0 127 88 216t215 89q125 0 211-88t86-213h60q0 150-104 255.5T483-120Zm122-197L451-469v-214h60v189l137 134-43 43Z","verified":"m346-60-76-130-151-31 17-147-96-112 96-111-17-147 151-31 76-131 134 62 134-62 77 131 150 31-17 147 96 111-96 112 17 147-150 31-77 130-134-62-134 62Zm27-79 107-45 110 45 67-100 117-30-12-119 81-92-81-94 12-119-117-28-69-100-108 45-110-45-67 100-117 28 12 119-81 94 81 92-12 121 117 28 70 100Zm107-341Zm-43 133 227-225-45-41-182 180-95-99-46 45 141 140Z","work":"M140-120q-24 0-42-18t-18-42v-480q0-24 18-42t42-18h180v-100q0-24 18-42t42-18h200q24 0 42 18t18 42v100h180q24 0 42 18t18 42v480q0 24-18 42t-42 18H140Zm0-60h680v-480H140v480Zm240-540h200v-100H380v100ZM140-180v-480 480Z"}, M={"mission & vision":"flag","metrics & objectives":"track_changes","performance tracking":"monitoring","performance dialogues":"forum","consequences & recognition":"verified","mission & target condition":"flag","roles & skills":"badge","objectives & development plans":"school","skill building & review":"psychology","existence & design":"description","adoption & usage":"checklist","deviation management":"alt_route","maintenance & update":"update","work & role":"work","team & atmosphere":"groups","workload":"speed","enablement":"build","leadership":"supervisor_account"}, SEL='.cnm,.dgrp';
+  function dec(){var n=0,els=document.querySelectorAll(SEL);for(var i=0;i<els.length;i++){var e=els[i];
+    if(e.querySelector('svg.ic'))continue;var t='';for(var j=0;j<e.childNodes.length;j++){if(e.childNodes[j].nodeType===3)t+=e.childNodes[j].textContent;}
+    var k=M[t.trim().toLowerCase()];if(!k||!I[k])continue;
+    e.insertAdjacentHTML('afterbegin','<svg class="ic" viewBox="0 -960 960 960" aria-hidden="true"><path d="'+I[k]+'"/></svg>');n++;}
+    /* an icon can move a line: let every fit measure again */
+    if(n)requestAnimationFrame(function(){window.dispatchEvent(new Event('resize'));});}
+  function start(){dec();new MutationObserver(dec).observe(document.body,{childList:true,subtree:true});}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+</script>
+<style id="nr-topbar">
   /* patch_topbar.py: one theme button and the way home. See the script of the same
      name at the end of the body. The doubled id outranks the stacked-chrome rules. */
   :is(#theme,#tseg):is(#theme,#tseg).seg{padding:3px}
@@ -200,164 +241,451 @@
   <div id="view"><div id="vinner"></div></div>
   
   <div id="ft">
-    <div class="l"><span id="src"></span><div class="legend" id="lg"></div></div>
+    <div class="l nrsrc-row"><span id="src"></span><div class="legend" id="lg"></div></div>
     <span class="conf">Sample data · Northwind Assurance is fictional</span>
   </div>
 </div>
 
+
+<!-- NRSRC:BEGIN - the sources panel (operating-baseline/assets/source-panel.html, filled by
+     scripts/source_panel.py). The same block in every instrument and slide: a small (i) next to a
+     score or figure opens what it rests on. Do not edit a copy in a page: change this file and render
+     again. -->
+<style>
+  .nrsrc-i{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;flex:none;border-radius:50%;border:1px solid var(--mut,#7A838F);background:none;color:var(--mut,#7A838F);font:italic 700 10px/1 Georgia,"Times New Roman",serif;padding:0;margin:0 0 0 5px;cursor:pointer;vertical-align:1px}
+  /* the (i) is faint at rest and full where you point; it always keeps its place, so nothing moves */
+  .nrsrc-i{opacity:.38;transition:opacity .18s ease,background-color .15s,color .15s}
+  .nrsrc-row:hover .nrsrc-i,.nrsrc-i:hover,.nrsrc-i:focus-visible,.nrsrc-i[aria-expanded="true"],.nrsrc-i.miss{opacity:1}
+  @media (hover:none){.nrsrc-i{opacity:.75}}
+  .nrsrc-i:hover,.nrsrc-i[aria-expanded="true"]{background:var(--navy,#0B2347);border-color:var(--navy,#0B2347);color:#fff}
+  .nrsrc-i.miss{border:1px dashed var(--rag-red-text,#C2483D);color:var(--rag-red-text,#C2483D);font-style:normal}
+  .nrsrc-i:focus-visible{outline:2px solid var(--accent,#6EB1D1);outline-offset:2px}
+  .nrsrc-pop{position:fixed;z-index:1200;width:360px;max-width:calc(100vw - 24px);max-height:calc(100vh - 24px);overflow:auto;background:var(--card,#fff);color:var(--txt,#46505C);border:1px solid var(--line,#E1E6EE);border-radius:16px;box-shadow:0 12px 34px rgba(11,35,71,.20);font:400 13px/1.45 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;text-align:left;display:none}
+  .nrsrc-pop.on{display:block;animation:nrsrcOpen .26s cubic-bezier(.2,.9,.25,1.15)}
+  @keyframes nrsrcOpen{from{opacity:0;transform:scale(.95) translateY(-4px)}to{opacity:1;transform:none}}
+  .nrsrc-hx{position:relative;padding:12px 40px 10px 16px;border-bottom:1px solid rgba(120,135,155,.25)}
+  .nrsrc-ey{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13.5px;font-weight:700;color:var(--ink,#15243A)}
+  .nrsrc-sc{font-size:12px;font-weight:700;letter-spacing:0;text-transform:none;border-radius:8px;padding:0 8px;white-space:nowrap}
+  .nrsrc-x{position:absolute;top:8px;right:10px;width:24px;height:24px;border:0;background:none;color:var(--mut,#7A838F);font-size:17px;line-height:1;cursor:pointer;border-radius:6px}
+  .nrsrc-bd{padding:12px 16px 14px}
+  .nrsrc-sum{margin:0 0 12px}
+  .nrsrc-qt{background:rgba(255,255,255,.45);box-shadow:inset 0 0 0 .5px rgba(120,135,155,.25);border-radius:10px;padding:10px 12px;margin:0 0 12px}
+  [data-t="dark"] .nrsrc-qt,[data-t="dark"] .nrsrc-how{background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.1)}
+  .nrsrc-qt p{margin:0;color:var(--ink,#15243A);font-size:14px;line-height:1.45}
+  .nrsrc-by{margin-top:4px;font-size:12px;color:var(--mut,#7A838F)}
+  .nrsrc-how{background:rgba(255,255,255,.45);box-shadow:inset 0 0 0 .5px rgba(120,135,155,.25);border-radius:10px;padding:9px 12px;margin:0 0 12px;color:var(--ink,#15243A)}
+  .nrsrc-how b,.nrsrc-gh{display:block;font-size:var(--fs-11);font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mut,#7A838F);margin-bottom:3px}
+  .nrsrc-g{margin:0 0 10px}.nrsrc-g:last-child{margin-bottom:0}
+  .nrsrc-it{padding:2px 0 2px 12px;color:var(--ink,#15243A)}
+  .nrsrc-d{color:var(--mut,#7A838F);font-size:12px}
+  .nrsrc-id{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:var(--fs-11);color:var(--mut,#7A838F)}
+  .nrsrc-it a,.nrsrc-how a{color:var(--accent-text,#1F5FA8);font-size:12px;text-decoration:none}
+  .nrsrc-o{display:inline-block;font-size:var(--fs-105);font-weight:650;border-radius:10px;padding:0 7px;margin-left:4px;vertical-align:1px}
+  .nrsrc-o.thirdparty{color:#0E6B66;background:#DFF2F0}.nrsrc-o.internet{color:#8A5A00;background:#FBF0DA}
+  [data-t="dark"] .nrsrc-o.thirdparty{color:#7FD4CB;background:#163330}[data-t="dark"] .nrsrc-o.internet{color:#F0C56E;background:#3A2E15}
+  [data-t="dark"] .nrsrc-it a,[data-t="dark"] .nrsrc-how a{color:#9CC4F2}
+  .nrsrc-ft{border-top:1px solid var(--line,#E1E6EE);margin-top:10px;padding-top:8px;font-size:12px;color:var(--mut,#7A838F)}
+  .nrsrc-warn{color:var(--rag-red-text,#C2483D);font-size:12.5px}
+  .nrsrc-pick .chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+  .nrsrc-pick .chip{display:inline-flex;align-items:center;gap:5px;font-size:var(--fs-115);background:var(--slate-10,rgba(54,65,86,.08));color:var(--ink,#15243A);border-radius:8px;padding:2px 4px 2px 8px}
+  .nrsrc-pick .chip button{border:0;background:none;color:var(--mut,#7A838F);cursor:pointer;font-size:14px;line-height:1;padding:0 3px}
+  .nrsrc-hint{position:fixed;z-index:1201;display:flex;align-items:center;gap:10px;max-width:min(420px,calc(100vw - 24px));padding:9px 10px 9px 14px;border-radius:14px;
+    font:500 13px/1.4 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;color:var(--ink,#15243A);background:var(--card,#fff);box-shadow:0 14px 34px -10px rgba(11,35,71,.28);
+    opacity:0;transform:translateY(6px) scale(.97);transition:opacity .28s ease,transform .32s cubic-bezier(.2,.9,.25,1.15);pointer-events:none}
+  .nrsrc-hint.on{opacity:1;transform:none;pointer-events:auto}
+  .nrsrc-hint .nrsrc-ic{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;margin:0 1px;vertical-align:-2px;border-radius:50%;border:1px solid currentColor;font:italic 700 10px/1 Georgia,serif}
+  .nrsrc-hint button{border:0;background:none;color:var(--mut,#7A838F);font-size:16px;line-height:1;cursor:pointer;padding:2px 4px;border-radius:6px}
+  @media (prefers-reduced-motion:reduce){.nrsrc-pop.on{animation:none}.nrsrc-hint{transition:opacity .2s}}
+  .nrsrc-print{display:none}
+  @media print{
+    .nrsrc-i,.nrsrc-pop,.nrsrc-hint{display:none!important}
+    .nrsrc-print{display:block;break-before:page;page-break-before:always;padding:24px 32px;font:12px/1.5 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;color:#15243A}
+    .nrsrc-print h2{font-size:16px;margin:0 0 10px}.nrsrc-print h3{font-size:var(--fs-11);text-transform:uppercase;letter-spacing:.05em;color:#7A838F;margin:12px 0 4px}
+    .nrsrc-print ol{margin:0;padding-left:22px}
+  }
+</style>
+<script>
+(function(){
+  var GROUPS=[['interviews','Interviews'],['observations','Observations'],['documents','Documents'],['data','Data'],['external','External sources'],['internal','Internal discussions']];
+  var NOUN={interviews:['interview','interviews'],observations:['observation','observations'],documents:['document','documents'],data:['data extract','data extracts'],external:['external source','external sources']};
+  var SPECS={}, pop=null, cur=null;
+  function P(){ try{ return (typeof DATA!=='undefined'&&DATA&&DATA.sourcePanel)||null; }catch(e){ return null; } }
+  function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function low(t){ t=String(t||''); return /^[A-Z][a-z]*(?=[\s,.;:-]|$)/.test(t)?t.charAt(0).toLowerCase()+t.slice(1):t; }   /* EventHub stays EventHub */
+  function plain(t){ return String(t||'').replace(/\*\*/g,'').replace(/<[^>]+>/g,''); }
+  function working(){ var p=P(); return !!(p&&p.build==='working'); }
+  function root(){ return document.querySelector('#art,#pm,#pw')||document.body; }
+  function href(e){ var p=P(); if(e.url) return e.url; if(e.file&&p&&p.rootRel!=null) return (p.rootRel?p.rootRel+'/':'')+e.file.split('/').map(encodeURIComponent).join('/'); return ''; }
+  function badge(s){ if(s.badge==null&&s.score==null) return '';
+    var r=s.rag||'na', txt=s.badge!=null?s.badge:(s.score+' out of 5');
+    return '<span class="nrsrc-sc" style="color:var(--rag-'+r+'-text);background:var(--tint-'+r+')">'+esc(txt)+'</span>'; }
+  /* every source an item rests on: an analysis gives its method and what it was built from */
+  function expand(ids){ var p=P(), S=p.src, pool=[], how=[], seen={};
+    (function walk(list,top){ (list||[]).forEach(function(k){ var e=S[k]; if(!e||seen[k]) return; seen[k]=1;
+      if(e.group==='analysis'){ how.push({k:k,e:e}); walk(e.builtFrom,false); } else pool.push({k:k,e:e}); }); })(ids,true);
+    return {pool:pool,how:how}; }
+  function summary(pool){ var n={}, one={}; pool.forEach(function(x){ var g=x.e.group; if(g==='internal') return; n[g]=(n[g]||0)+1; one[g]=x.e; });
+    var parts=[]; ['interviews','observations','documents','data','external'].forEach(function(g){ if(!n[g]) return;
+      if(n[g]===1&&(g==='documents'||g==='data')) parts.push('the '+low(one[g].label)); else parts.push(n[g]+' '+NOUN[g][n[g]===1?0:1]); });
+    if(!parts.length) return '';
+    return 'Based on '+(parts.length>1?parts.slice(0,-1).join(', ')+' and '+parts[parts.length-1]:parts[0])+'.'; }
+  function who(e){ var w=working(); if(w&&e.people&&e.label.indexOf(e.people.split(/[;,]/)[0].trim())<0) return e.people; return ''; }
+  function item(x){ var e=x.e, w=working(), h=w?href(e):(e.url||'');
+    return '<div class="nrsrc-it">'+esc(e.label)+(who(e)?' <span class="nrsrc-d">· '+esc(who(e))+'</span>':'')+(e.date?' <span class="nrsrc-d">· '+esc(e.date)+'</span>':'')+
+      (w&&e.group==='external'&&e.origins&&e.origins.length?e.origins.map(function(o){return o==='thirdparty'||o==='internet'?'<span class="nrsrc-o '+o+'">'+(o==='thirdparty'?'Third party':'Internet')+'</span>':'';}).join(''):'')+
+      (w?' <span class="nrsrc-id">'+esc(x.k)+'</span>':'')+(h?' <a href="'+esc(h)+'" target="_blank" rel="noopener">open</a>':'')+'</div>'; }
+  function body(s){ var p=P(), w=working(), ids=s.ids||[], h='';
+    h+='<div class="nrsrc-hx"><div class="nrsrc-ey"><span>'+esc(s.eyebrow||'')+'</span>'+badge(s)+'</div>'+
+       '<button type="button" class="nrsrc-x" aria-label="Close">&times;</button></div><div class="nrsrc-bd">';
+    if(!ids.length){ return h+'<div class="nrsrc-warn">No source yet. Unlock the page and pick one where you score it. Without a source this score cannot go into the client build.</div></div>'; }
+    var x=expand(ids), sm=summary(x.pool);
+    if(sm) h+='<p class="nrsrc-sum">'+esc(sm)+'</p>';
+    x.how.forEach(function(a){ var e=a.e; h+='<div class="nrsrc-how"><b>Method</b>'+esc(e.method||e.label)+(w?' <span class="nrsrc-id">'+esc(a.k)+'</span>'+(href(e)?' <a href="'+esc(href(e))+'" target="_blank" rel="noopener">open</a>':''):'')+'</div>'; });
+    var q=s.quote; if(q&&q.text&&(!q.sourceId||p.src[q.sourceId])){ var qe=p.src[q.sourceId]||{};
+      var by=w?[qe.label||'',who(qe)].filter(Boolean).join(' · '):(qe.label||'');
+      h+='<div class="nrsrc-qt"><p>“'+esc(String(q.text).replace(/^[“"]|[”"]$/g,''))+'”</p>'+(by||qe.date?'<div class="nrsrc-by">'+esc([by,qe.date].filter(Boolean).join(' · '))+'</div>':'')+'</div>'; }
+    GROUPS.forEach(function(g){ if(g[0]==='internal'&&!w) return; var its=x.pool.filter(function(y){return y.e.group===g[0];}); if(!its.length) return;
+      h+='<div class="nrsrc-g"><span class="nrsrc-gh">'+g[1]+'</span>'+its.map(item).join('')+'</div>'; });
+    if(!w&&(s.scoredBy||p.scoredBy)) h+='<div class="nrsrc-ft">'+esc(s.scoredBy||p.scoredBy)+'</div>';
+    return h+'</div>'; }
+  function spec(k){ var f=SPECS[k]; return typeof f==='function'?f():f; }
+  function close(){ if(pop) pop.classList.remove('on'); if(cur) cur.setAttribute('aria-expanded','false'); cur=null; }
+  function open(btn){ var s=spec(btn.getAttribute('data-nrsrc')); if(!s) return;
+    if(!pop||!pop.isConnected){ pop=document.createElement('div'); pop.className='nrsrc-pop'; pop.setAttribute('role','dialog'); pop.setAttribute('aria-label','Sources'); root().appendChild(pop); }
+    close(); cur=btn; btn.setAttribute('aria-expanded','true'); pop.innerHTML=body(s); pop.classList.add('on');
+    var r=btn.getBoundingClientRect(), W=window.innerWidth, H=window.innerHeight, pw=pop.offsetWidth, ph=pop.offsetHeight;
+    var x=Math.min(Math.max(12,r.left+r.width/2-pw/2),W-pw-12), y=r.bottom+8;
+    if(y+ph>H-12){ y=r.top-ph-8; if(y<12) y=Math.max(12,H-ph-12); }
+    pop.style.left=x+'px'; pop.style.top=y+'px'; var c=pop.querySelector('.nrsrc-x'); if(c) c.focus({preventScroll:true}); }
+  document.addEventListener('click',function(ev){ var b=ev.target.closest&&ev.target.closest('.nrsrc-i');
+    if(b){ ev.preventDefault(); ev.stopPropagation(); if(cur===b){ close(); return; } open(b); return; }
+    if(pop&&pop.classList.contains('on')&&(ev.target.closest('.nrsrc-x')||!ev.target.closest('.nrsrc-pop'))){ var back=cur; close(); if(back&&ev.target.closest('.nrsrc-x')) back.focus(); } },true);
+  document.addEventListener('keydown',function(ev){ if(ev.key==='Escape'&&cur){ var back=cur; close(); back.focus(); } });
+  window.addEventListener('resize',close);
+  function printList(){ var p=P(); if(!p||p.build!=='client'||document.querySelector('.nrsrc-print')) return;
+    var keys=Object.keys(p.src); if(!keys.length) return; var h='<h2>Sources</h2>';
+    GROUPS.concat([['analysis','Analyses']]).forEach(function(g){ var ks=keys.filter(function(k){return p.src[k].group===g[0];}); if(!ks.length) return;
+      h+='<h3>'+g[1]+'</h3><ol>'+ks.map(function(k){var e=p.src[k];return '<li>'+esc(e.label)+(e.date?', '+esc(e.date):'')+(e.method?'. '+esc(e.method):'')+'</li>';}).join('')+'</ol>'; });
+    if(p.scoredBy) h+='<p>'+esc(p.scoredBy)+'</p>';
+    var d=document.createElement('section'); d.className='nrsrc-print'; d.innerHTML=h; document.body.appendChild(d); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',printList); else setTimeout(printList,0);
+  /* every page: an (i) on its Source line for everything the page cites, when the page draws none itself */
+  function allIds(){ var p=P(), o=[], seen=[]; if(!p) return o; (function w(x,d){ if(!x||typeof x!=='object'||d>40||seen.indexOf(x)>=0) return; seen.push(x);
+      if(Array.isArray(x)){ x.forEach(function(y){ w(y,d+1); }); return; }
+      for(var k in x){ if(k==='sourcePanel'||k.slice(0,2)==='__'||!Object.prototype.hasOwnProperty.call(x,k)) continue; var v=x[k];
+        if(k==='sourceIds'||k==='sourceId'||k==='source_ids'||k==='source_id'){ (Array.isArray(v)?v:[v]).forEach(function(i){ if(typeof i==='string'&&p.src[i]&&o.indexOf(i)<0) o.push(i); }); }
+        else w(v,d+1); } })(typeof DATA!=='undefined'?DATA:null,0); return o; }
+  function autoSrc(){ var p=P(), el=document.getElementById('src'); if(!p||!el||document.querySelector('.nrsrc-i[data-nrsrc="slide"]:not([data-nrsrc-auto])')) return;
+    if(!allIds().length||el.querySelector('[data-nrsrc-auto]')) return;
+    if(el.parentNode&&el.parentNode.classList) el.parentNode.classList.add('nrsrc-row');
+    el.insertAdjacentHTML('beforeend', NRSRC.icon('slide', function(){ return {eyebrow:'All sources on this page', ids:allIds()}; }).replace('<button ','<button data-nrsrc-auto ')); }
+  function watchSrc(){ autoSrc(); var el=document.getElementById('src'); if(el&&window.MutationObserver) new MutationObserver(function(){ if(!el.querySelector('.nrsrc-i')) autoSrc(); }).observe(el,{childList:true}); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',watchSrc); else setTimeout(watchSrc,0);
+  /* the hint, once per viewer: a client does not go looking for an (i) by pointing around */
+  var HINT='nr-src-hint-seen';
+  /* the first one on screen (a deck shows one slide at a time) */
+  function vis(sel){ var l=document.querySelectorAll(sel); for(var i=0;i<l.length;i++){ var r=l[i].getBoundingClientRect(); if(r.width&&r.height) return l[i]; } return null; }
+  function hint(){ var p=P(); if(!p||document.querySelector('.nrsrc-hint')) return; var seen=false; try{ seen=localStorage.getItem(HINT)==='1'; }catch(e){}
+    if(seen) return; var anchor=vis('.nrsrc-i[data-nrsrc^="slide"]')||vis('.nrsrc-i');
+    if(!anchor){ if(document.querySelector('.nrsrc-i')&&(hint.n=(hint.n||0)+1)<240) setTimeout(hint,1500); return; }   /* a deck: wait for a slide that has one */
+    var h=document.createElement('div'); h.className='nrsrc-hint nr-glass'; h.setAttribute('role','status');
+    var perItem=document.querySelectorAll('.nrsrc-i:not([data-nrsrc^="slide"])').length;
+    h.innerHTML='<span>'+(perItem?(document.querySelector('.nrsrc-i[data-nrsrc^="seg:"]')?'Every score shows where it comes from.':'Every finding shows where it comes from.')+' Click the <span class="nrsrc-ic">i</span> next to it.':'See what this page rests on: click the <span class="nrsrc-ic">i</span> next to the source.')+'</span><button type="button" aria-label="Got it">&times;</button>';
+    root().appendChild(h);
+    function place(){ var a=(vis('.nrsrc-i[data-nrsrc^="slide"]')||vis('.nrsrc-i')||anchor).getBoundingClientRect(), w=h.offsetWidth, hh=h.offsetHeight;
+      h.style.left=Math.max(12,Math.min(a.left-24,window.innerWidth-w-12))+'px'; h.style.top=Math.max(12,a.top-hh-12)+'px'; }
+    function done(){ h.classList.remove('on'); try{ localStorage.setItem(HINT,'1'); }catch(e){} }
+    h.querySelector('button').onclick=done;
+    document.addEventListener('click',function(e){ if(e.target.closest&&e.target.closest('.nrsrc-i')) done(); },true);
+    window.addEventListener('resize',function(){ if(h.classList.contains('on')) place(); });
+    setTimeout(function(){ place(); h.classList.add('on'); },700); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){ setTimeout(hint,30); }); else setTimeout(hint,30);
+  window.NRSRC={
+    on:function(){ return !!P(); },
+    /* the (i) for one item; spec is an object or a function returning
+       {eyebrow, score|badge, rag, headline, ids:[...], quote:{text,sourceId}, scoredBy} */
+    icon:function(key,s){ if(!P()) return ''; SPECS[key]=s; var v=spec(key)||{}, miss=!(v.ids&&v.ids.length);
+      if(miss&&!working()) return '';
+      return '<button type="button" class="nrsrc-i'+(miss?' miss':'')+'" data-nrsrc="'+esc(key)+'" aria-expanded="false" aria-label="'+(miss?'No source yet':'Where this comes from')+'" title="'+(miss?'No source yet':'Where this comes from')+'">'+(miss?'!':'i')+'</button>'; },
+    close:close,
+    /* the (i) for any record that carries sourceIds (or one sourceId) and, optionally, a quote:
+       NRSRC.item(record, 'Its title', {k:'unique key', score:3, badge:'2.4 FTE', rag:'red', optional:true})
+       optional: no (i) at all for a record without a sourceIds or sourceId field (an insight block that
+       does not cite); with the field but nothing in it, the working copy shows a red ! */
+    item:function(o,eyebrow,opt){ var p=P(); if(!p||!o) return ''; opt=opt||{};
+      if(opt.optional&&!('sourceIds' in o)&&!('sourceId' in o)) return '';      /* a record that does not cite (yet) */
+      var ids=[]; (Array.isArray(o.sourceIds)?o.sourceIds:[]).concat(o.sourceId?[o.sourceId]:[]).forEach(function(i){ if(typeof i==='string'&&p.src[i]&&ids.indexOf(i)<0) ids.push(i); });
+      var q=o.quote&&o.quote.text&&(!o.quote.sourceId||p.src[o.quote.sourceId])?o.quote:null;
+      return this.icon('it:'+(opt.k||eyebrow), {eyebrow:eyebrow, score:opt.score, badge:opt.badge, rag:opt.rag, ids:ids, quote:q}); },
+    /* the source picker where a score is set: chips for what is cited, a list to add one */
+    picker:function(ids){ var p=P(); if(!p) return ''; ids=ids||[];
+      var opts=Object.keys(p.src).filter(function(k){return ids.indexOf(k)<0;}).map(function(k){var e=p.src[k];return '<option value="'+esc(k)+'">'+esc(k+' · '+e.label+(e.date?' · '+e.date:''))+'</option>';}).join('');
+      return '<div class="nrsrc-pick" data-ids="'+esc(ids.join(','))+'"><div class="chips">'+ids.map(function(k){var e=p.src[k]||{label:'not in the register'};return '<span class="chip" title="'+esc(e.label)+'">'+esc(k)+' · '+esc(String(e.label).slice(0,34))+'<button type="button" data-rm="'+esc(k)+'" aria-label="Remove">&times;</button></span>';}).join('')+'</div>'+
+        '<select><option value="">Add a source…</option>'+opts+'</select></div>'; },
+    bindPicker:function(el,onChange){ if(!el) return; var self=this;
+      function ids(){ return (el.getAttribute('data-ids')||'').split(',').filter(Boolean); }
+      function redraw(list){ var tmp=document.createElement('div'); tmp.innerHTML=self.picker(list); var nw=tmp.firstChild; el.innerHTML=nw.innerHTML; el.setAttribute('data-ids',list.join(',')); wire(); if(onChange) onChange(list); }
+      function wire(){ el.querySelectorAll('[data-rm]').forEach(function(b){ b.onclick=function(){ redraw(ids().filter(function(k){return k!==b.getAttribute('data-rm');})); }; });
+        var sel=el.querySelector('select'); if(sel) sel.onchange=function(){ if(sel.value){ var l=ids(); l.push(sel.value); redraw(l); } }; }
+      wire(); },
+    readPicker:function(el){ return el?(el.getAttribute('data-ids')||'').split(',').filter(Boolean):[]; },
+    label:function(k){ var p=P(), e=p&&p.src[k]; return e?e.label:k; }
+  };
+})();
+</script>
+<!-- NRSRC:END -->
+
 <script>
 const DATA = /* DATA */ {
-  "context": "OPEX QUICKSCAN",
-  "lens": "PROC · SOP WHEEL",
-  "teamName": "Claims Handling",
-  "source": "ClaimsCore SOP library export, QA huddle minutes Q3 2026, 5 handler interviews across two tenure levels and 3 files walked end to end · 3-8 Sep 2026",
-  "keyMessage": "SOPs are strong inside ClaimsCore and absent at every handover: **15 of 24** steps are documented, **0 of 4** handovers are.",
-  "aspects": [
+ "context": "OPEX QUICKSCAN",
+ "lens": "PROC · SOP WHEEL",
+ "teamName": "Claims Handling",
+ "source": "ClaimsCore SOP library export, QA huddle minutes Q3 2026, 5 handler interviews across two tenure levels and 3 files walked end to end · 3-8 Sep 2026",
+ "keyMessage": "SOPs are strong inside ClaimsCore and absent at every handover: **15 of 24** steps are documented, **0 of 4** handovers are.",
+ "aspects": [
+  {
+   "key": "existence",
+   "label": "Existence & Design",
+   "segments": [
     {
-      "key": "existence",
-      "label": "Existence & Design",
-      "segments": [
-        {
-          "name": "Coverage of critical steps",
-          "score": 2,
-          "rag": "red",
-          "points": [
-            "15 of the 24 tasks in the process map have a current SOP, and all 15 sit inside ClaimsCore.",
-            "None of the four cross-team handovers is documented: contact centre to claims, claims to fraud, claims to the repair network, claims to finance."
-          ],
-          "evidence": "ClaimsCore SOP library export checked against the process map, 4 Sep 2026"
-        },
-        {
-          "name": "Usability at point of use",
-          "score": 4,
-          "rag": "green",
-          "points": [
-            "The SOP opens in the ClaimsCore help panel on the screen the handler is already on.",
-            "All 5 handlers interviewed could bring up the right procedure without leaving the file."
-          ],
-          "evidence": "5 handler interviews and 3 file walkthroughs, 5-8 Sep 2026"
-        },
-        {
-          "name": "Ownership & version control",
-          "score": 4,
-          "rag": "green",
-          "points": [
-            "Every SOP has a named QA owner and a changelog that says what changed and why.",
-            "Versions are tied to the ClaimsCore release they belong to, so a handler can tell which is current."
-          ],
-          "evidence": "ClaimsCore SOP library export, 4 Sep 2026"
-        }
-      ]
+     "name": "Coverage of critical steps",
+     "score": 2,
+     "rag": "red",
+     "points": [
+      "15 of the 24 tasks in the process map have a current SOP, and all 15 sit inside ClaimsCore.",
+      "None of the four cross-team handovers is documented: contact centre to claims, claims to fraud, claims to the repair network, claims to finance."
+     ],
+     "evidence": "ClaimsCore SOP library export checked against the process map, 4 Sep 2026",
+     "sourceIds": [
+      "s1"
+     ]
     },
     {
-      "key": "adoption",
-      "label": "Adoption & Usage",
-      "segments": [
-        {
-          "name": "Awareness",
-          "score": 4,
-          "rag": "green",
-          "points": [
-            "All 5 handlers named the SOP library unprompted and knew where it sits.",
-            "New starters are pointed at it in week one of the academy."
-          ],
-          "evidence": "5 handler interviews, 5-8 Sep 2026"
-        },
-        {
-          "name": "Observed adherence vs claimed",
-          "score": 3,
-          "rag": "amber",
-          "points": [
-            "On all 3 files walked, the documented in-system steps were followed in the documented order.",
-            "At every handover the handler left the system: an email to the adjuster and a personal Excel tracker to remember it."
-          ],
-          "evidence": "3 files walked end to end, 8 Sep 2026"
-        },
-        {
-          "name": "Built into onboarding",
-          "score": 4,
-          "rag": "green",
-          "points": [
-            "The six-week academy teaches against the live document and ends in a signed competency check.",
-            "The check is repeated at six months."
-          ],
-          "evidence": "Academy lead interview and onboarding sign-off records, 5 Sep 2026"
-        }
-      ]
+     "name": "Usability at point of use",
+     "score": 4,
+     "rag": "green",
+     "points": [
+      "The SOP opens in the ClaimsCore help panel on the screen the handler is already on.",
+      "All 5 handlers interviewed could bring up the right procedure without leaving the file."
+     ],
+     "evidence": "5 handler interviews and 3 file walkthroughs, 5-8 Sep 2026",
+     "sourceIds": [
+      "s2",
+      "s3"
+     ]
     },
     {
-      "key": "deviation",
-      "label": "Deviation Management",
-      "segments": [
-        {
-          "name": "Detection mechanism",
-          "score": 1,
-          "rag": "red",
-          "points": [
-            "Nothing records a departure from the procedure. ClaimsCore stores the outcome of a step, never whether the step was followed.",
-            "Every deviation the scan found came from watching or from someone remembering it."
-          ],
-          "evidence": "ClaimsCore export and QA lead interview, 4 Sep 2026"
-        },
-        {
-          "name": "Structured escalation & discussion",
-          "score": 2,
-          "rag": "red",
-          "points": [
-            "A weekly quality huddle exists and handlers do raise problems in it.",
-            "Nothing feeds it: the agenda is whatever someone recalls that week, so the handover failures never reach it."
-          ],
-          "evidence": "QA huddle minutes Q3 2026 and team lead interview, 5 Sep 2026"
-        },
-        {
-          "name": "Root-cause & corrective action",
-          "score": 2,
-          "rag": "red",
-          "points": [
-            "Root cause is run on complaints, which is 1 file in 40, and never on a procedural deviation.",
-            "The re-keying between the contact centre and ClaimsCore has been raised in three separate huddles with no action recorded."
-          ],
-          "evidence": "QA huddle minutes Q3 2026, 5 Sep 2026"
-        }
-      ]
-    },
-    {
-      "key": "maintenance",
-      "label": "Maintenance & Update",
-      "segments": [
-        {
-          "name": "Review cadence",
-          "score": 3,
-          "rag": "amber",
-          "points": [
-            "SOPs are reviewed on the ClaimsCore release cycle, twice a year, and the review does happen.",
-            "It is a QA desk exercise. No handler is asked what the procedure gets wrong."
-          ],
-          "evidence": "ClaimsCore SOP library export with version history, 4 Sep 2026"
-        },
-        {
-          "name": "Update triggered by deviation",
-          "score": 1,
-          "rag": "red",
-          "points": [
-            "The loop cannot close: with no detection there is nothing for an update to be triggered by.",
-            "No SOP in the export cites a deviation as the reason it changed."
-          ],
-          "evidence": "ClaimsCore SOP version history cross-referenced against the huddle minutes, 4 Sep 2026"
-        },
-        {
-          "name": "Change control & retraining",
-          "score": null,
-          "rag": null,
-          "points": [],
-          "evidence": ""
-        }
-      ]
+     "name": "Ownership & version control",
+     "score": 4,
+     "rag": "green",
+     "points": [
+      "Every SOP has a named QA owner and a changelog that says what changed and why.",
+      "Versions are tied to the ClaimsCore release they belong to, so a handler can tell which is current."
+     ],
+     "evidence": "ClaimsCore SOP library export, 4 Sep 2026",
+     "sourceIds": [
+      "s1"
+     ]
     }
-  ],
-  "gaps": [
-    "Maintenance & Update · When an SOP does change with a ClaimsCore release, how is the team told and who confirms they can work the new way? Ask the academy lead and two handlers who worked through the last release."
-  ]
+   ]
+  },
+  {
+   "key": "adoption",
+   "label": "Adoption & Usage",
+   "segments": [
+    {
+     "name": "Awareness",
+     "score": 4,
+     "rag": "green",
+     "points": [
+      "All 5 handlers named the SOP library unprompted and knew where it sits.",
+      "New starters are pointed at it in week one of the academy."
+     ],
+     "evidence": "5 handler interviews, 5-8 Sep 2026",
+     "sourceIds": [
+      "s2"
+     ]
+    },
+    {
+     "name": "Observed adherence vs claimed",
+     "score": 3,
+     "rag": "amber",
+     "points": [
+      "On all 3 files walked, the documented in-system steps were followed in the documented order.",
+      "At every handover the handler left the system: an email to the adjuster and a personal Excel tracker to remember it."
+     ],
+     "evidence": "3 files walked end to end, 8 Sep 2026",
+     "sourceIds": [
+      "s3"
+     ],
+     "quote": {
+      "text": "Everyone says they follow the checklist. On two of the three files, nobody did.",
+      "sourceId": "s3"
+     }
+    },
+    {
+     "name": "Built into onboarding",
+     "score": 4,
+     "rag": "green",
+     "points": [
+      "The six-week academy teaches against the live document and ends in a signed competency check.",
+      "The check is repeated at six months."
+     ],
+     "evidence": "Academy lead interview and onboarding sign-off records, 5 Sep 2026",
+     "sourceIds": [
+      "s4",
+      "s5"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "deviation",
+   "label": "Deviation Management",
+   "segments": [
+    {
+     "name": "Detection mechanism",
+     "score": 1,
+     "rag": "red",
+     "points": [
+      "Nothing records a departure from the procedure. ClaimsCore stores the outcome of a step, never whether the step was followed.",
+      "Every deviation the scan found came from watching or from someone remembering it."
+     ],
+     "evidence": "ClaimsCore export and QA lead interview, 4 Sep 2026",
+     "sourceIds": [
+      "s1",
+      "s6"
+     ]
+    },
+    {
+     "name": "Structured escalation & discussion",
+     "score": 2,
+     "rag": "red",
+     "points": [
+      "A weekly quality huddle exists and handlers do raise problems in it.",
+      "Nothing feeds it: the agenda is whatever someone recalls that week, so the handover failures never reach it."
+     ],
+     "evidence": "QA huddle minutes Q3 2026 and team lead interview, 5 Sep 2026",
+     "sourceIds": [
+      "s7",
+      "s8"
+     ]
+    },
+    {
+     "name": "Root-cause & corrective action",
+     "score": 2,
+     "rag": "red",
+     "points": [
+      "Root cause is run on complaints, which is 1 file in 40, and never on a procedural deviation.",
+      "The re-keying between the contact centre and ClaimsCore has been raised in three separate huddles with no action recorded."
+     ],
+     "evidence": "QA huddle minutes Q3 2026, 5 Sep 2026",
+     "sourceIds": [
+      "s7"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "maintenance",
+   "label": "Maintenance & Update",
+   "segments": [
+    {
+     "name": "Review cadence",
+     "score": 3,
+     "rag": "amber",
+     "points": [
+      "SOPs are reviewed on the ClaimsCore release cycle, twice a year, and the review does happen.",
+      "It is a QA desk exercise. No handler is asked what the procedure gets wrong."
+     ],
+     "evidence": "ClaimsCore SOP library export with version history, 4 Sep 2026",
+     "sourceIds": [
+      "s1"
+     ]
+    },
+    {
+     "name": "Update triggered by deviation",
+     "score": 1,
+     "rag": "red",
+     "points": [
+      "The loop cannot close: with no detection there is nothing for an update to be triggered by.",
+      "No SOP in the export cites a deviation as the reason it changed."
+     ],
+     "evidence": "ClaimsCore SOP version history cross-referenced against the huddle minutes, 4 Sep 2026",
+     "sourceIds": [
+      "s9"
+     ]
+    },
+    {
+     "name": "Change control & retraining",
+     "score": null,
+     "rag": null,
+     "points": [],
+     "evidence": ""
+    }
+   ]
+  }
+ ],
+ "gaps": [
+  "Maintenance & Update · When an SOP does change with a ClaimsCore release, how is the team told and who confirms they can work the new way? Ask the academy lead and two handlers who worked through the last release."
+ ],
+ "sourceIds": [],
+ "sourcePanel": {
+  "build": "client",
+  "scoredBy": "Prepared by Nova Reperta, Oct 2026.",
+  "src": {
+   "s1": {
+    "label": "ClaimsCore SOP library export, with version history",
+    "group": "data",
+    "date": "Sep 2026"
+   },
+   "s2": {
+    "label": "Claims handlers, five across tenure",
+    "group": "interviews",
+    "date": "Sep 2026"
+   },
+   "s3": {
+    "label": "Observation, three files walked end to end",
+    "group": "observations",
+    "date": "Sep 2026"
+   },
+   "s4": {
+    "label": "Academy lead",
+    "group": "interviews",
+    "date": "Sep 2026"
+   },
+   "s5": {
+    "label": "Onboarding sign-off records",
+    "group": "documents",
+    "date": "Sep 2026"
+   },
+   "s6": {
+    "label": "Quality assurance lead",
+    "group": "interviews",
+    "date": "Sep 2026"
+   },
+   "s7": {
+    "label": "QA huddle minutes, Q3 2026",
+    "group": "documents",
+    "date": "Sep 2026"
+   },
+   "s8": {
+    "label": "Team lead, Claims Handling",
+    "group": "interviews",
+    "date": "Sep 2026"
+   },
+   "s9": {
+    "label": "SOP changes matched to the deviations in the huddle minutes",
+    "group": "analysis",
+    "date": "Sep 2026",
+    "method": "We matched every deviation in the Q3 huddle minutes to the SOP step it breaks, then checked the version history for a change afterwards.",
+    "builtFrom": [
+     "s1",
+     "s7"
+    ]
+   }
+  }
+ }
 };
 (function(){
   var C={green:'var(--rag-green)',amber:'var(--rag-amber)',red:'var(--rag-red)',na:'var(--rag-na)'};
@@ -389,17 +717,23 @@ const DATA = /* DATA */ {
     return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 60 60">'+s.join('')+'</svg>';}
   function ladder(st){var f=st.avg==null?0:Math.round(st.avg),c='';for(var i=1;i<=5;i++){c+='<span class="lc" style="background:'+(i<=f?C[st.rag]:'var(--slate-10)')+'"></span>';}return '<div class="ladd">'+c+'</div>';}
   function scoreTag(s){var r=segRag(s);return '<span class="sub-sc" style="color:'+C[r]+'">'+(s==null?'n/a':s+'/5')+'</span>';}
-  function subItem(sg,quiet){var r=sg.rag||segRag(sg.score);
+  // the sources (i): the shared panel (operating-baseline/assets/source-panel.html) draws it; a page
+  // rendered without a source register shows none.
+  function srcKey(k,sg){return 'seg:'+k+'|'+sg.name;}
+  function srcI(k,sg){if(!window.NRSRC||sg.score==null)return '';return NRSRC.icon(srcKey(k,sg),function(){return {eyebrow:sg.name,score:sg.score,rag:sg.rag||segRag(sg.score),ids:sg.sourceIds||[],quote:sg.quote||null};});}
+  function srcAll(){var o=[];function add(l){(l||[]).forEach(function(i){if(o.indexOf(i)<0)o.push(i);});}
+    add(DATA.sourceIds);DATA.aspects.forEach(function(a){a.segments.forEach(function(g){if(g.score!=null)add(g.sourceIds);});});return o;}
+  function subItem(sg,quiet,k){var r=sg.rag||segRag(sg.score);
     var body=sg.score==null?(quiet?'':'<div class="na">Not assessed this round (to probe)</div>')
       :'<ul class="ins">'+(sg.points||[]).map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>';
-    return '<div class="sub"><div class="sub-h"><span class="dot" style="background:'+C[r]+'"></span><span class="sub-nm">'+esc(sg.name)+'</span>'+scoreTag(sg.score)+'</div>'+body+'</div>';}
+    return '<div class="sub nrsrc-row"><div class="sub-h"><span class="dot" style="background:'+C[r]+'"></span><span class="sub-nm">'+esc(sg.name)+'</span>'+scoreTag(sg.score)+srcI(k,sg)+'</div>'+body+'</div>';}
   function dimPill(st){var p=PILL[st.rag];return '<span class="chpill" style="background:'+p[0]+';color:'+p[1]+'">'+p[2]+(st.avg!=null?' · '+st.avg.toFixed(1)+'/5':'')+'</span>';}
   // a dimension nobody probed says so ONCE, not once per subdimension
   function allNa(st){return st.segs.length>0&&st.segs.every(function(x){return x.score==null;});}
   function naNote(st){return allNa(st)?'<div class="na">Not assessed this round.</div>':'';}
   function card(st,lead){return '<div class="card" data-ek="'+st.k+'"><div class="step">'+st.n+'</div>'+
     '<div class="chd">'+lead+'<div class="cnm">'+esc(st.label)+'</div>'+dimPill(st)+'</div>'+
-    '<div class="cq">'+esc(st.q)+'</div>'+ladder(st)+naNote(st)+'<div class="subs">'+st.segs.map(function(sg){return subItem(sg,allNa(st));}).join('')+'</div></div>';}
+    '<div class="cq">'+esc(st.q)+'</div>'+ladder(st)+naNote(st)+'<div class="subs">'+st.segs.map(function(sg){return subItem(sg,allNa(st),st.k);}).join('')+'</div></div>';}
   function renderCycle(){return '<div class="grid">'+steps.map(function(st){return card(st,donut(st.n-1,C[st.rag],60));}).join('')+'</div>';}
   function renderFlow(){var p,cp;
     var ribbon='<div class="ribbon">'+steps.map(function(st,i){p=PILL[st.rag];
@@ -420,7 +754,7 @@ const DATA = /* DATA */ {
     steps.forEach(function(z,i){var ac=start+(i+0.5)*slot,lp=polar(cx,cy,mid,ac);g.push(clText(lp[0],lp[1],clWrap(z.label),'#fff',10.5));});
     steps.forEach(function(z,i){var bp=polar(cx,cy,mid,start+(i+0.8)*slot);g.push(clBadge(bp[0],bp[1],z.n,'var(--wheel-badge-bg)','var(--navy)'));});
     var ring='<svg viewBox="0 0 580 560" width="100%" style="max-width:520px;display:block;margin:0 auto">'+g.join('')+'</svg>';
-    function blk(st){var pl=PILL[st.rag];return '<div class="cl-blk" data-ek="'+st.k+'"><div class="cl-h"><span class="cl-num">'+st.n+'</span><span class="cl-n">'+esc(st.label)+'</span><span class="chpill" style="background:'+pl[0]+';color:'+pl[1]+'">'+(st.avg!=null?st.avg.toFixed(1)+'/5':'n/a')+'</span></div><div class="cl-q">'+esc(st.q)+'</div>'+ladder(st)+'<ul class="ins">'+st.segs.map(function(sg){var nm='<b>'+esc(sg.name)+'</b>',r=sg.rag||segRag(sg.score),sc=sg.score==null?'<span style="color:var(--mut);font-style:italic">n/a</span>':'<span style="color:'+C[r]+';font-weight:700">'+sg.score+'/5</span>';return sg.score==null?'<li style="--bc:'+C[r]+'">'+nm+' '+sc+'</li>':'<li style="--bc:'+C[r]+'">'+nm+' '+sc+': '+esc((sg.points||[]).join(' '))+'</li>';}).join('')+'</ul></div>';}
+    function blk(st){var pl=PILL[st.rag];return '<div class="cl-blk" data-ek="'+st.k+'"><div class="cl-h"><span class="cl-num">'+st.n+'</span><span class="cl-n">'+esc(st.label)+'</span><span class="chpill" style="background:'+pl[0]+';color:'+pl[1]+'">'+(st.avg!=null?st.avg.toFixed(1)+'/5':'n/a')+'</span></div><div class="cl-q">'+esc(st.q)+'</div>'+ladder(st)+'<ul class="ins">'+st.segs.map(function(sg){var nm='<b>'+esc(sg.name)+'</b>',r=sg.rag||segRag(sg.score),sc=sg.score==null?'<span style="color:var(--mut);font-style:italic">n/a</span>':'<span style="color:'+C[r]+';font-weight:700">'+sg.score+'/5</span>';return sg.score==null?'<li style="--bc:'+C[r]+'">'+nm+' '+sc+'</li>':'<li class="nrsrc-row" style="--bc:'+C[r]+'">'+nm+' '+sc+srcI(st.k,sg)+': '+esc((sg.points||[]).join(' '))+'</li>';}).join('')+'</ul></div>';}
     function col(list){return '<div class="cl-col">'+list.map(function(st){return blk(st);}).join('')+'</div>';}
     var half=Math.ceil(steps.length/2);
     return '<div class="classic">'+col(steps.slice(0,half))+ring+col(steps.slice(half))+'</div>';
@@ -435,7 +769,9 @@ const DATA = /* DATA */ {
   document.getElementById('lens').textContent=DATA.lens||'SOP WHEEL';
   document.getElementById('title').innerHTML=hl(DATA.keyMessage||'');
   document.getElementById('subt').textContent=DATA.teamName||'';
-  document.getElementById('src').innerHTML=DATA.source?('<b style="color:var(--txt)">Source:</b> '+DATA.source):'';
+  function drawSrc(){document.getElementById('src').innerHTML=(DATA.source?('<b style="color:var(--txt)">Source:</b> '+DATA.source):'')+
+    (window.NRSRC&&NRSRC.on()?NRSRC.icon('slide',function(){return {eyebrow:'All sources on this page',ids:srcAll()};}):'');}
+  drawSrc();
   document.getElementById('lg').innerHTML='<b style="color:var(--txt);margin-right:4px">Legend:</b>'+['green','amber','red'].map(function(k){var p=PILL[k],lab={green:'Good 4–5',amber:'Fair 3',red:'Weak 1–2'}[k];return '<span class="lp" style="background:'+p[0]+';color:'+p[1]+'">● '+lab+'</span>';}).join('');
 
   function fitView(){var v=document.getElementById('view'),vi=document.getElementById('vinner');
@@ -445,7 +781,7 @@ const DATA = /* DATA */ {
     // The width-trick (widen, then scale back) makes content height depend on the scale, which makes an
     // iterative fit oscillate and sometimes overshoot (bottom clips). H*s is monotonic in s, so binary-search
     // the LARGEST scale whose content still fits the frame height with a safety gap. Cannot overshoot.
-    var lo=0.25,hi=1.12,best=0.25;
+    var lo=0.25,hi=1.12*nrZ(),best=0.25;
     for(var k=0;k<12;k++){
       var s=(lo+hi)/2;
       vi.style.width=(100/s)+'%';
@@ -454,7 +790,7 @@ const DATA = /* DATA */ {
     }
     vi.style.width=(100/best)+'%';vi.style.transform='scale('+best+')';
     if(st){var free=(ah-10)/best-vi.scrollHeight; if(free>1)st.style.height=(st.offsetHeight+free)+'px';}}
-  function render(){document.getElementById('vinner').innerHTML=VIEWS[cur]()+renderGaps();requestAnimationFrame(fitView);setTimeout(fitView,60);}
+  function render(){if(window.NRSRC)NRSRC.close();drawSrc();document.getElementById('vinner').innerHTML=VIEWS[cur]()+renderGaps();requestAnimationFrame(fitView);setTimeout(fitView,60);}
   function seg(id,attr,cb){var box=document.getElementById(id);box.querySelectorAll('button').forEach(function(b){b.onclick=function(){box.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});b.classList.add('on');cb(b.getAttribute(attr));};});}
   seg('views','data-v',function(v){cur=v;render();});
   seg('theme','data-s',function(t){document.getElementById('pw').setAttribute('data-t',t);render();});
@@ -575,6 +911,88 @@ const DATA = /* DATA */ {
   }
 })();
 </script>
+<!-- NR-GLASS:BEGIN — the glass layer (diagnostic-skill-builder/templates/glass-layer.html, put in by
+     scripts/patch_glass.py). Everything that floats above the page is glass; the page itself stays solid
+     (cards, tables, charts, slides). Small things get liquid glass: a lens at the edges, a light rim and a
+     highlight that follows the pointer. Large things (the edit sidebar, big pop-ups) get calmer frosted glass.
+     Hooks: .nr-glass (small), .nr-glass-lg (large), .nr-glass-tint (a dark tinted message), .nr-glass-night (with
+     .nr-glass: small glass that always sits on a dark surface, like the canvas twin), plus the shared
+     pieces every instrument has. Do not edit a copy in a page: change this file and run patch_glass.py. -->
+<style id="nr-glass">
+  :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu){
+    background-color:rgba(255,255,255,.55)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.34),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(14px) saturate(185%) brightness(1.06);backdrop-filter:blur(14px) var(--nr-lens,) saturate(185%) brightness(1.06);
+    border-color:transparent!important;
+    box-shadow:0 22px 50px -12px rgba(11,35,71,.28),0 2px 6px rgba(11,35,71,.08),inset 0 0 0 .5px rgba(255,255,255,.6),inset 1.5px 1.5px 0 -.5px rgba(255,255,255,.95),inset -1px -1px 0 -.5px rgba(255,255,255,.5)!important}
+  :is(#ed,.nr-glass-lg){
+    background-color:rgba(255,255,255,.74)!important;-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);
+    box-shadow:-24px 0 60px -28px rgba(11,35,71,.38),inset 1px 0 0 rgba(255,255,255,.85)!important;border-color:rgba(255,255,255,.6)!important}
+  :is(.nr-toast,#nr-ask-msg,.nr-glass-tint){
+    background:rgba(11,35,71,.72)!important;-webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);
+    box-shadow:0 16px 36px -12px rgba(11,35,71,.45),inset 0 0 0 .5px rgba(255,255,255,.18),inset 1px 1px 0 -.5px rgba(255,255,255,.45)!important}
+  /* what sits on glass: light fills, never glass on glass */
+  :is(#ed,.nr-glass-lg) :is(.edh,.edf){background:rgba(255,255,255,.35)!important}
+  /* dark */
+  :is([data-t="dark"],html.dark) :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu){
+    background-color:rgba(20,30,44,.56)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.08),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(14px) saturate(170%) brightness(.9);backdrop-filter:blur(14px) var(--nr-lens,) saturate(170%) brightness(.9);
+    box-shadow:0 22px 50px -12px rgba(0,0,0,.6),inset 0 0 0 .5px rgba(255,255,255,.16),inset 1.5px 1.5px 0 -.5px rgba(255,255,255,.35),inset -1px -1px 0 -.5px rgba(255,255,255,.12)!important}
+  :is([data-t="dark"],html.dark) :is(#ed,.nr-glass-lg){background-color:rgba(22,32,44,.78)!important;box-shadow:-24px 0 60px -28px rgba(0,0,0,.7),inset 1px 0 0 rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.1)!important}
+  :is([data-t="dark"],html.dark) :is(#ed,.nr-glass-lg) :is(.edh,.edf){background:rgba(255,255,255,.05)!important}
+  /* glass that always sits on a dark surface (the canvas twin): the dark values in both themes */
+  .nr-glass.nr-glass-night{background-color:rgba(12,21,38,.58)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.07),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(12px) saturate(160%) brightness(.9);backdrop-filter:blur(12px) var(--nr-lens,) saturate(160%) brightness(.9);
+    box-shadow:0 18px 44px -14px rgba(0,0,0,.65),inset 0 0 0 .5px rgba(143,168,206,.22),inset 1.5px 1.5px 0 -.5px rgba(175,198,246,.35),inset -1px -1px 0 -.5px rgba(175,198,246,.12)!important}
+  /* when glass cannot be glass: solid, as before */
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg){background-color:var(--card,#fff)!important;background-image:none!important}}
+  @media (prefers-reduced-transparency:reduce){
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg){background-color:var(--card,#fff)!important;background-image:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+    :is(.nr-toast,#nr-ask-msg,.nr-glass-tint){background:var(--navy-fill,#0B2347)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}}
+  @media print{
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg,.nr-toast,#nr-ask-msg,.nr-glass-tint){-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:#fff!important;box-shadow:none!important}}
+</style>
+<svg id="nr-glass-defs" width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false"></svg>
+<script id="nr-glass-js">
+(function(){
+  /* the lens: only where a browser can put an SVG filter inside backdrop-filter (Chrome, Edge, the Claude desktop
+     app). Safari and Firefox would draw nothing at all, so they keep the plain frosted glass. */
+  var ua=navigator.userAgent, lens=/Chrome\/|Chromium\/|Edg\//.test(ua)&&!/Firefox\//.test(ua);
+  var calm=window.matchMedia&&(matchMedia('(prefers-reduced-transparency: reduce)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var SMALL='.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu', R=16, BEZEL=22, MAXA=700*800, n=0;
+  var defs=document.getElementById('nr-glass-defs'), NS='http://www.w3.org/2000/svg';
+  function lensMap(w,h,r){ var c=document.createElement('canvas'); c.width=w; c.height=h; var x=c.getContext('2d'), im=x.createImageData(w,h), d=im.data;
+    for(var j=0;j<h;j++) for(var i=0;i<w;i++){
+      var cx=Math.min(Math.max(i,r),w-r), cy=Math.min(Math.max(j,r),h-r), dx=i-cx, dy=j-cy, nx=0, ny=0, dist;
+      if((i<r||i>w-r)&&(j<r||j>h-r)){ var l=Math.sqrt(dx*dx+dy*dy)||1; dist=r-l; nx=dx/l; ny=dy/l; }
+      else { var a=i, b=w-1-i, t=j, u=h-1-j, m=Math.min(a,b,t,u); dist=m; if(m===a)nx=-1; else if(m===b)nx=1; else if(m===t)ny=-1; else ny=1; }
+      var k=Math.pow(Math.max(0,1-dist/BEZEL),3), o=(j*w+i)*4; d[o]=128+nx*k*127; d[o+1]=128+ny*k*127; d[o+2]=128; d[o+3]=255; }
+    x.putImageData(im,0,0); return c.toDataURL(); }
+  function filterFor(el){ if(!el.__nrg){ var id='nr-lens-'+(++n), f=document.createElementNS(NS,'filter');
+      f.setAttribute('id',id); f.setAttribute('filterUnits','userSpaceOnUse'); f.setAttribute('primitiveUnits','userSpaceOnUse'); f.setAttribute('x','0'); f.setAttribute('y','0'); f.setAttribute('color-interpolation-filters','sRGB');
+      var im=document.createElementNS(NS,'feImage'); im.setAttribute('x','0'); im.setAttribute('y','0'); im.setAttribute('preserveAspectRatio','none'); im.setAttribute('result','map');
+      var dm=document.createElementNS(NS,'feDisplacementMap'); dm.setAttribute('in','SourceGraphic'); dm.setAttribute('in2','map'); dm.setAttribute('scale','0'); dm.setAttribute('xChannelSelector','R'); dm.setAttribute('yChannelSelector','G');
+      f.appendChild(im); f.appendChild(dm); defs.appendChild(f); el.__nrg={id:id,f:f,im:im,dm:dm,key:''}; }
+    return el.__nrg; }
+  function grow(g){ if(calm){ g.dm.setAttribute('scale','40'); return; } var t0=performance.now();   /* the glass materialises by bending more */
+    (function step(t){ var p=Math.min(1,(t-t0)/260); g.dm.setAttribute('scale',(40*(1-Math.pow(1-p,3))).toFixed(1)); if(p<1) requestAnimationFrame(step); })(t0); }
+  function scan(){ q=0; if(!lens||calm&&matchMedia('(prefers-reduced-transparency: reduce)').matches) return;
+    document.querySelectorAll(SMALL).forEach(function(el){
+      var w=Math.round(el.offsetWidth), h=Math.round(el.offsetHeight), shown=w>0&&h>0&&getComputedStyle(el).visibility!=='hidden';
+      var g=el.__nrg; if(!shown){ if(g) g.key=''; return; } if(w*h>MAXA) return;
+      g=filterFor(el); var key=w+'x'+h; if(g.key===key) return; var fresh=!g.key; g.key=key;
+      var r=parseFloat(getComputedStyle(el).borderTopLeftRadius)||R;
+      g.f.setAttribute('width',w); g.f.setAttribute('height',h); g.im.setAttribute('width',w); g.im.setAttribute('height',h); g.im.setAttribute('href',lensMap(w,h,Math.min(r,w/2,h/2)));
+      el.style.setProperty('--nr-lens','url(#'+g.id+')'); if(fresh) grow(g); }); }
+  var q=0; function soon(){ if(!q) q=requestAnimationFrame(scan); }
+  function start(){ scan(); new MutationObserver(soon).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style','hidden','open']}); window.addEventListener('resize',soon); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
+  /* the highlight follows the pointer across a small piece of glass */
+  document.addEventListener('pointermove',function(e){ var el=e.target.closest&&e.target.closest(SMALL); if(!el) return; var r=el.getBoundingClientRect();
+    el.style.setProperty('--lx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%'); el.style.setProperty('--ly',((e.clientY-r.top)/r.height*100).toFixed(1)+'%'); },{passive:true});
+})();
+</script>
+<!-- NR-GLASS:END -->
 <style>
 /* ── READ MODE · narrow screens ──────────────────────────────────────────────
    This artifact normally scales its whole body down so the page fits one screen.
