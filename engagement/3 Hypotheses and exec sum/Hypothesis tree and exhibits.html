@@ -999,7 +999,7 @@ html.dark .foot a{color:var(--link)}
 .x-sheet .x-bdg{align-self:flex-start;font-size:10.5px;padding:3px 6px;margin-bottom:6%}
 .x-kind{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:var(--fs-11);color:var(--ink-3)}
 </style>
-<script>window.__NR_SHELL__={"screen": "findings", "client": "Northwind Assurance", "name": "OpEx diagnostic (one frame)", "where": "Diagnose · week 7 of 9", "built": "16 Oct 08:34", "switch": true};</script>
+<script>window.__NR_SHELL__={"screen": "findings", "client": "Northwind Assurance", "name": "OpEx diagnostic (one frame)", "where": "Diagnose · week 7 of 9", "built": "18 Oct 14:10", "switch": true};</script>
 </head>
 <body>
 <!-- @@NR-SHELL:BEGIN  The shared frame of the Cockpit, the Findings dashboard and Engagement setup.
@@ -1095,6 +1095,11 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
   .nrs-hd-r{flex-basis:100%;justify-content:flex-start;margin-left:0}
   .nrs-hd-r:empty{display:none}
   .nrs-chips{justify-content:flex-start}
+  /* the page's chips stay on one row: swipe for more (Gilles, 17 Oct 2026) */
+  .nrs-hd-r{min-width:0}
+  .nrs-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:calc(100% + 16px);margin-right:-16px;padding-right:24px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
+  .nrs-chips::-webkit-scrollbar{display:none}
+  .nrs-chip{flex:none;white-space:nowrap}
 }
 /* the menu as a strip of icons (wide screens only): the arrow at the bottom folds it and opens it again, kept per viewer (nr_rail) */
 .nrs-sw-b svg{display:none;width:16px;height:16px}
@@ -1118,6 +1123,20 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
   html.nrs-rail .nrs-rl svg{transform:rotate(180deg)}
 }
 @media (max-width:900px){ .nrs-rl{display:none} }
+/* on a touchscreen there is no hover: the strip shows each name under its icon, and every shell control is big enough to tap */
+@media (min-width:901px) and (hover:none){
+  html.nrs-rail{--nrs-w:84px}
+  html.nrs-rail .nrs-sb{padding:14px 5px 12px}
+  html.nrs-rail .nrs-nav .nrs-i,html.nrs-rail .nrs-set,html.nrs-rail .nrs-dm{flex-direction:column;justify-content:center;gap:4px;height:auto;min-height:44px;padding:7px 0 6px}
+  html.nrs-rail .nrs-nav .nrs-l,html.nrs-rail .nrs-set .nrs-l,html.nrs-rail .nrs-dm .nrs-l{position:static;width:auto;height:auto;clip:auto;overflow:hidden;white-space:normal;text-align:center;font-size:9.5px;line-height:1.15;max-width:76px;overflow-wrap:normal;word-break:normal}
+  html.nrs-rail .nrs-n{top:6px;right:14px}
+  html.nrs-rail .nrs-sw-b{height:38px}
+}
+@media (hover:none){
+  .nrs-sw-b{min-height:36px}
+  .nrs-chip{min-height:32px;align-items:center}
+  .nrs-dm,.nrs-i{min-height:36px}
+}
 @media print{ .nrs-sb,.nrs-scrim,.nrs-burger{display:none!important} }
 </style>
 <script id="nrs-js">
@@ -1131,7 +1150,10 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
       if(v==null){ var o=localStorage.getItem('nr_eng_theme'); if(o) v=(o==='dark')?'1':'0'; }
       return v; }catch(e){ return null; } }
   if(read()==='1') root.classList.add('dark');
-  try{ if(localStorage.getItem('nr_rail')==='1') root.classList.add('nrs-rail'); }catch(e){}
+  /* the menu strip: what the viewer chose, else folded on a laptop or tablet (up to 1180 px) so the page gets the room */
+  function railPick(){ try{ return localStorage.getItem('nr_rail'); }catch(e){ return null; } }
+  function railAuto(){ return window.innerWidth<=1180; }
+  if(railPick()==='1'||(railPick()==null&&railAuto())) root.classList.add('nrs-rail');
   var P={moon:'<path d="M20 13.5A8 8 0 1 1 10.5 4a6.5 6.5 0 0 0 9.5 9.5z"/>', menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
     gear:'<circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.6M12 18.4V21M3 12h2.6M18.4 12H21M5.6 5.6l1.9 1.9M16.5 16.5l1.9 1.9M5.6 18.4l1.9-1.9M16.5 7.5l1.9-1.9"/>',
     back:'<path d="M15 5l-7 7 7 7"/>', fold:'<path d="M11 7l-5 5 5 5M18 7l-5 5 5 5"/>',
@@ -1178,13 +1200,13 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
     /* the walkthrough (the @@NR-TOUR block) on the screens that carry it: the cockpit and findings */
     tourLink:function(){ return window.NRTour?'<button type="button" class="nrs-i nrs-set" data-nrs-tour data-nrs-tip="Take the tour">'+svg(P.play)+'<span class="nrs-l">Take the tour</span></button>':''; },
     isRail:function(){ return root.classList.contains('nrs-rail'); },
-    rail:function(){ var r=root.classList.toggle('nrs-rail'); S.tip(null);
-      try{ localStorage.setItem('nr_rail',r?'1':'0'); }catch(e){}
+    rail:function(set){ var r=set==null?root.classList.toggle('nrs-rail'):root.classList.toggle('nrs-rail',set); S.tip(null);
+      if(set==null){ try{ localStorage.setItem('nr_rail',r?'1':'0'); }catch(e){} }
       document.querySelectorAll('[data-nrs-rail]').forEach(function(b){ b.setAttribute('aria-pressed',r?'true':'false'); b.setAttribute('data-nrs-tip',r?'Open the menu':'Fold the menu'); var l=b.querySelector('.nrs-l'); if(l) l.textContent=r?'Open the menu':'Fold the menu'; });
       try{ window.dispatchEvent(new Event('resize')); document.dispatchEvent(new CustomEvent('nr-rail',{detail:{rail:r}})); }catch(e){} },
     /* in the strip, a name shows next to the icon on hover */
     tip:function(el){ var t=document.querySelector('.nrs-tip');
-      if(!el||!S.isRail()||window.innerWidth<=900){ if(t) t.style.display='none'; return; }
+      if(!el||!S.isRail()||window.innerWidth<=900||(window.matchMedia&&matchMedia('(hover:none)').matches)){ if(t) t.style.display='none'; return; }
       if(!t){ t=document.createElement('div'); t.className='nrs-tip nr-glass-tint'; t.setAttribute('role','tooltip'); document.body.appendChild(t); }
       var r=el.getBoundingClientRect(), sb=document.querySelector('.nrs-sb'); t.textContent=el.getAttribute('data-nrs-tip');
       t.style.display='block'; t.style.left=((sb?sb.getBoundingClientRect().right:r.right)+8)+'px'; t.style.top=(r.top+r.height/2-t.offsetHeight/2)+'px'; },
@@ -1221,6 +1243,9 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') S.close(); });
   document.addEventListener('mouseover',function(e){ var el=e.target&&e.target.closest?e.target.closest('.nrs-sb [data-nrs-tip]'):null; S.tip(el); });
   document.addEventListener('scroll',function(){ S.tip(null); },true);
+  /* no choice made yet: the strip follows the window, folded up to 1180 px */
+  var railT=null; window.addEventListener('resize',function(){ if(railPick()!=null) return; clearTimeout(railT);
+    railT=setTimeout(function(){ if(railPick()==null&&S.isRail()!==railAuto()) S.rail(railAuto()); },150); });
   window.NRShell=S;
 })();
 </script>
@@ -1232,7 +1257,7 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
   <div class="page" id="page"></div>
 </main>
 <div class="scrim" id="scrim"><div class="modal nr-glass-lg" id="modal" role="dialog" aria-modal="true"></div></div>
-<script>window.__NR_FINDINGS__=/*NR_FINDINGS*/{"client":"Northwind Assurance","name":"OpEx diagnostic (one frame)","problem":"Northwind can free a fifth of its claims and service effort without lowering service levels.","decision":"Which levers go into next year's budget, decided at the SteerCo at the end of October 2026.","decisionDate":null,"answer":"Five levers address about 10 FTE of the potential, and the two biggest need the contact centre and the claims system connected first","moved":[],"couldChange":null,"execsumHref":null,"analyses":[{"k":"mae","n":"Team activity map (MAE)","s":"Evidence in","st":"info"},{"k":"process-map","n":"Process map","s":"Evidence in","st":"info"},{"k":"service-blueprint","n":"Service blueprint","s":"Evidence in","st":"info"},{"k":"client-data","n":"Client data request","s":"Not started","st":"none"},{"k":"interview","n":"Interviews and workshops","s":"Evidence in","st":"info"},{"k":"ote-waterfall","n":"Where the team’s time goes (OTE)","s":"Done","st":"ok"}],"tree":[{"id":"n1","no":"1","t":"The effort is lost moving information between systems, not in claim decisions","nodes":["n1","n2","n3"],"j":"1 confirmed · 1 rejected","children":[{"id":"n2","no":"1.1","t":"Every motor claim is keyed twice, in ClaimsCore and in PolicyHub","parent":null,"status":"Confirmed","at":"18 Sep","by":"Thomas Merckx","rationale":"Heard at the kick-off (sample data)","test":"mae","findings":"MAE, Claims Handling: 6.5 of 42 FTE goes to re-keying (MAE session with Ilse Vermeulen, 17 Sep 2026)","ev":{"mae":[{"scope":"Claims Handling","e":"s","note":"MAE, Claims Handling: 6.5 of 42 FTE goes to re-keying (MAE session with Ilse Vermeulen, 17 Sep 2026)"}]}},{"id":"n3","no":"1.2","t":"Checking cover needs a second system for every claim","parent":null,"status":"Rejected","at":"22 Sep","by":"Thomas Merckx","rationale":"Heard at the kick-off (sample data)","test":"process-map","findings":"Process map, Claims Handling: cover is checked in ClaimsCore for 9 claims in 10 (workshop, 22 Sep 2026)","ev":{"process-map":[{"scope":"Claims Handling","e":"c","note":"Process map, Claims Handling: cover is checked in ClaimsCore for 9 claims in 10 (workshop, 22 Sep 2026)"}]}}]},{"id":"n4","no":"2","t":"Customer Service and Recovery carry work the claims process creates","nodes":["n4","n5","n6","n7","n8"],"j":"1 partially confirmed · 1 in progress · 1 to investigate","children":[{"id":"n6","no":"2.1","t":"Four in ten calls to Customer Service are status requests","parent":"Customers call because nobody tells them where their claim stands","status":"In progress","at":null,"by":null,"rationale":"Heard at the kick-off (sample data)","test":"service-blueprint","findings":"","ev":{"service-blueprint":[{"scope":"Customer Service","e":"i","note":""}]}},{"id":"n7","no":"2.2","t":"Status calls peak in the week after a claim is filed","parent":"Customers call because nobody tells them where their claim stands","status":"To investigate","at":null,"by":null,"rationale":"Heard at the kick-off (sample data)","test":"client-data","findings":"","ev":{"client-data":[{"scope":"Customer Service","e":"o","note":""}]}},{"id":"n8","no":"2.3","t":"Recovery & Legal asks again for documents Claims already holds","parent":null,"status":"Partially confirmed","at":"19 Sep","by":"Thomas Merckx","rationale":"Heard at the kick-off (sample data)","test":"interview","findings":"Holds for property claims, not for motor (interview with Joris Van Acker, 19 Sep 2026)","ev":{"interview":[{"scope":"Recovery & Legal","e":"p","note":"Holds for property claims, not for motor (interview with Joris Van Acker, 19 Sep 2026)"}]}}]}],"insights":[],"outputs":[{"hyp":"n7","a":"client-data","scope":"Customer Service","where":"Planned","t":"Client data request · Customer Service"},{"hyp":null,"a":"ote-waterfall","scope":"Claims Handling","t":"OTE Waterfall (Top-Down)","where":"Working","href":"../../_engine/toolkit/artifacts/ch/ote-waterfall.WORKING.html","path":"../../_engine/toolkit/artifacts/ch/ote-waterfall.WORKING.html","folder":"2. Diagnose","upd":"15 Oct"}],"lenses":{"dims":[{"k":"proc","label":"Processes"},{"k":"cust","label":"Customer"},{"k":"mgmt","label":"Management systems"},{"k":"data","label":"Data, systems & integrations"},{"k":"mind","label":"Mindset & behaviors"},{"k":"org","label":"Organisation"}],"inst":{"process-map":"proc","waste-observations":"proc","sop-wheel":"proc","nps-analysis":"cust","service-blueprint":"cust","kano-analysis":"cust","wilo-analysis":"mgmt","performance-wheel":"mgmt","skills-wheel":"mgmt","kpi-cascade":"mgmt","data-maturity":"data","team-barometer":"mind","raci-diagnostic":"org"},"baseline":["inefficiency-register","opportunity-register","ote-waterfall","mae","org-baseline"]}}/*END_NR_FINDINGS*/;</script>
+<script>window.__NR_FINDINGS__=/*NR_FINDINGS*/{"client":"Northwind Assurance","name":"OpEx diagnostic (one frame)","problem":"Northwind can free a fifth of its claims and service effort without lowering service levels.","decision":"Which levers go into next year's budget, decided at the SteerCo at the end of October 2026.","decisionDate":null,"answer":"Five levers address about 10 FTE of the potential, and the two biggest need the contact centre and the claims system connected first","moved":[],"couldChange":null,"execsumHref":null,"analyses":[{"k":"mae","n":"Team activity map (MAE)","s":"Evidence in","st":"info"},{"k":"process-map","n":"Process map","s":"Evidence in","st":"info"},{"k":"service-blueprint","n":"Service blueprint","s":"Evidence in","st":"info"},{"k":"client-data","n":"Client data request","s":"Not started","st":"none"},{"k":"interview","n":"Interviews and workshops","s":"Evidence in","st":"info"},{"k":"ote-waterfall","n":"Where the team’s time goes (OTE)","s":"Done","st":"ok"}],"tree":[{"id":"n1","no":"1","t":"The effort is lost moving information between systems, not in claim decisions","nodes":["n1","n2","n3"],"j":"1 confirmed · 1 rejected","children":[{"id":"n2","no":"1.1","t":"Every motor claim is keyed twice, in ClaimsCore and in PolicyHub","parent":null,"status":"Confirmed","at":"18 Sep","by":"Thomas Merckx","rationale":"Heard at the kick-off (sample data)","test":"mae","findings":"MAE, Claims Handling: 6.5 of 42 FTE goes to re-keying (MAE session with Ilse Vermeulen, 17 Sep 2026)","ev":{"mae":[{"scope":"Claims Handling","e":"s","note":"MAE, Claims Handling: 6.5 of 42 FTE goes to re-keying (MAE session with Ilse Vermeulen, 17 Sep 2026)"}]}},{"id":"n3","no":"1.2","t":"Checking cover needs a second system for every claim","parent":null,"status":"Rejected","at":"22 Sep","by":"Thomas Merckx","rationale":"Heard at the kick-off (sample data)","test":"process-map","findings":"Process map, Claims Handling: cover is checked in ClaimsCore for 9 claims in 10 (workshop, 22 Sep 2026)","ev":{"process-map":[{"scope":"Claims Handling","e":"c","note":"Process map, Claims Handling: cover is checked in ClaimsCore for 9 claims in 10 (workshop, 22 Sep 2026)"}]}}]},{"id":"n4","no":"2","t":"Customer Service and Recovery carry work the claims process creates","nodes":["n4","n5","n6","n7","n8"],"j":"1 partially confirmed · 1 in progress · 1 to investigate","children":[{"id":"n6","no":"2.1","t":"Four in ten calls to Customer Service are status requests","parent":"Customers call because nobody tells them where their claim stands","status":"In progress","at":null,"by":null,"rationale":"Heard at the kick-off (sample data)","test":"service-blueprint","findings":"","ev":{"service-blueprint":[{"scope":"Customer Service","e":"i","note":""}]}},{"id":"n7","no":"2.2","t":"Status calls peak in the week after a claim is filed","parent":"Customers call because nobody tells them where their claim stands","status":"To investigate","at":null,"by":null,"rationale":"Heard at the kick-off (sample data)","test":"client-data","findings":"","ev":{"client-data":[{"scope":"Customer Service","e":"o","note":""}]}},{"id":"n8","no":"2.3","t":"Recovery & Legal asks again for documents Claims already holds","parent":null,"status":"Partially confirmed","at":"19 Sep","by":"Thomas Merckx","rationale":"Heard at the kick-off (sample data)","test":"interview","findings":"Holds for property claims, not for motor (interview with Joris Van Acker, 19 Sep 2026)","ev":{"interview":[{"scope":"Recovery & Legal","e":"p","note":"Holds for property claims, not for motor (interview with Joris Van Acker, 19 Sep 2026)"}]}}]}],"insights":[],"outputs":[{"hyp":"n7","a":"client-data","scope":"Customer Service","where":"Planned","t":"Client data request · Customer Service"},{"hyp":null,"a":"ote-waterfall","scope":"Claims Handling","t":"OTE Waterfall (Top-Down)","where":"Working","href":"../../_engine/toolkit/artifacts/ch/ote-waterfall.WORKING.html","path":"../../_engine/toolkit/artifacts/ch/ote-waterfall.WORKING.html","folder":"2. Diagnose","upd":"17 Oct"}],"lenses":{"dims":[{"k":"proc","label":"Processes"},{"k":"cust","label":"Customer"},{"k":"mgmt","label":"Management systems"},{"k":"data","label":"Data, systems & integrations"},{"k":"mind","label":"Mindset & behaviors"},{"k":"org","label":"Organisation"}],"inst":{"process-map":"proc","waste-observations":"proc","sop-wheel":"proc","nps-analysis":"cust","service-blueprint":"cust","kano-analysis":"cust","wilo-analysis":"mgmt","performance-wheel":"mgmt","skills-wheel":"mgmt","kpi-cascade":"mgmt","data-maturity":"data","team-barometer":"mind","raci-diagnostic":"org"},"baseline":["inefficiency-register","opportunity-register","ote-waterfall","mae","org-baseline"]}}/*END_NR_FINDINGS*/;</script>
 <script id="findings-js">
 /* The findings screen for any engagement: the problem statement and our answer, the hypothesis tree
    that carries it, the insights and the exhibits behind every hypothesis.
@@ -1632,5 +1657,24 @@ draw();
 })();
 </script>
 <!-- NR-GLASS:END -->
+<!-- NR-REFIT:BEGIN — fit again when the space changes (diagnostic-skill-builder/templates/refit-layer.html,
+     put in by scripts/patch_refit.py). Every page fits its view on a window resize. The space a page has can
+     also change without one: fonts that arrive late, the header stacking, a preview pane or iframe that grows
+     after the first paint. Then the page used to keep its first fit until you switched tabs. This watches the
+     view and the window, and replays the page's own resize handling once that space has really changed
+     (a change in the page's content alone does not count). -->
+<script>(function(){
+  var last = '', t = 0;
+  function box(){ var v = document.getElementById('view'); return (v ? v.clientWidth + 'x' + v.clientHeight + '/' : '') + innerWidth + 'x' + innerHeight; }
+  function kick(){ var k = box(); if(k === last) return; last = k; window.dispatchEvent(new Event('resize')); }
+  function soon(){ cancelAnimationFrame(t); t = requestAnimationFrame(kick); }
+  function again(){ last = ''; soon(); }
+  function watch(){ if(!window.ResizeObserver) return; var ro = new ResizeObserver(soon), v = document.getElementById('view');
+    if(v) ro.observe(v); ro.observe(document.documentElement); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watch); else watch();
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(again);
+  window.addEventListener('load', again);
+})();</script>
+<!-- NR-REFIT:END -->
 </body>
 </html>

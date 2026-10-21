@@ -70,7 +70,7 @@
   .tob{display:flex;flex-wrap:wrap;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
   .cbox{flex:0 0 12%;font-size:13px;font-weight:700;color:var(--txt);padding-right:12px;line-height:1.3}
   .tree.wc .obox{flex-basis:17%}
-  .obox.miss{background:var(--tint-red);color:var(--rag-red-text);border:1.5px dashed var(--rag-red)}
+  .obox.miss{background:var(--srf,#F7F9FB);color:var(--mut);border:1.5px dotted var(--mut);font-weight:600}
   .kids.nolines::before{display:none}
   .addline{flex:0 0 100%;display:flex;align-items:center;padding:6px 0 0}
   .addline .obox.ghost,.addline .dbox.ghost{background:none;padding:0;border:0}
@@ -132,8 +132,8 @@
   .rg td.kn>span{display:block;color:var(--mut);margin-top:3px;line-height:1.35}
   .rg .cpill{margin-left:4px;vertical-align:1px}
   #art{--cue:var(--navy)} #art[data-t="dark"]{--cue:#EAEFF5}
-  .rg .tp{display:inline-block;font-size:var(--fs-115);font-weight:700;padding:1px 9px;border-radius:999px;border:1.5px solid var(--cue);color:var(--cue);line-height:1.35}
-  .rg .tp.lagging{background:var(--cue);color:var(--bg,#fff)} #art[data-t="dark"] .rg .tp.lagging{color:#0B2347}
+  .rg .tp{display:inline-block;font-size:var(--fs-115);font-weight:700;padding:1px 9px;border-radius:999px;border:1.5px solid var(--cue);color:var(--cue);line-height:1.35;background:transparent!important}
+  .rg .tp.lagging{background:var(--cue)!important;color:#fff} #art[data-t="dark"] .rg .tp.lagging{color:#0B2347}
   .rg .tp.lean{border-style:dashed}
   .rg .lvl{display:flex;align-items:center;margin-top:5px;color:var(--mut)}
   .lad{display:inline-flex;gap:2px;margin-right:6px;flex:none} .lad i{width:5px;height:11px;border-radius:1px;background:var(--line)} .lad i.on{background:var(--cue)}
@@ -157,6 +157,13 @@
   .cpill.drop{background:var(--tint-na);color:var(--rag-na-text)}
   .kbox.dropped{background:transparent;border:1px dashed var(--line);color:var(--mut)}
   .kbox.dropped .kn{text-decoration:line-through}
+
+  /* the category as a pill inside the objective box (Gilles, 21 Oct 2026) */
+  .obox{flex-basis:21%}
+  .obox .catp{display:inline-block;font-size:var(--fs-105);font-weight:700;letter-spacing:.3px;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.16);color:#fff;margin-bottom:5px}
+  .obox .on{display:block}
+  .obox.miss .catp{background:var(--tint-red);color:var(--rag-red-text)}
+  .addline .obox.ghost{flex-basis:21%}
   table{border-collapse:collapse;width:100%}
   th{text-align:left;font-size:var(--fs-105);letter-spacing:.6px;text-transform:uppercase;color:var(--mut);font-weight:700;padding:0 20px 9px 0;border-bottom:2px solid var(--line)}
   td{font-size:13px;color:var(--txt);padding:11px 20px 11px 0;border-bottom:1px solid var(--line);vertical-align:top}
@@ -782,14 +789,14 @@ const DATA = /* DATA */ {
     return O.map(function(o,i){return [o,i];}).sort(function(a,b){var x=ci[a[0].categoryId],y=ci[b[0].categoryId];x=x==null?99:x;y=y==null?99:y;return x-y||a[1]-b[1];}).map(function(p){return p[0];}); }
   function ED(k,id){ return ''/*<EDIT>*/+(ON?' data-'+k+'="'+esc(id)+'"':'')/*</EDIT>*/; }
   /* the add buttons sit in the column of the thing they add: a driver under the drivers, a KPI under the KPIs */
-  function addLine(o){ return ''/*<EDIT>*/+(ON?'<div class="addline">'+(CATS().length?'<div class="cbox"></div>':'')+'<div class="obox ghost"></div><div class="kids"><div class="dgroup"><div class="dbox ghost"><button class="addk" data-adddrv="'+esc(o.id)+'">+ Add driver</button></div><div class="kids2"><button class="addk" data-add="'+esc(o.id)+'">+ Add KPI</button></div></div></div></div>':'')/*</EDIT>*/; }
+  function addLine(o){ return ''/*<EDIT>*/+(ON?'<div class="addline">'+'<div class="obox ghost"></div><div class="kids"><div class="dgroup"><div class="dbox ghost"><button class="addk" data-adddrv="'+esc(o.id)+'">+ Add driver</button></div><div class="kids2"><button class="addk" data-add="'+esc(o.id)+'">+ Add KPI</button></div></div></div></div>':'')/*</EDIT>*/; }
   function addTail(){ var h='';/*<EDIT>*/ if(ON){ var miss=HOUSE_CATS.filter(function(c){return !by(CATS(),c[0]);});
     var wc=CATS().length>0;
-    h='<div class="addline top">'+(wc?'<div class="cbox">'+(miss.length?'<button class="addk" data-addcat="1">+ Add category</button>':'')+'</div>':'')+'<div><button class="addk" data-addobj="">+ Add main objective</button></div></div>'; } /*</EDIT>*/ return h; }
+    h='<div class="addline top"><button class="addk" data-addobj="">+ Add main objective</button>'+(wc&&miss.length?'<button class="addk" data-addcat="1">+ Add category</button>':'')+'</div>'; } /*</EDIT>*/ return h; }
   /* A · the KPI tree: category → main objective → driver → KPI → input */
   function renderTree(){
     var withCat=CATS().length>0;
-    var h='<div class="tree'+(withCat?' wc':'')+'"><div class="tob th">'+(withCat?'<div class="cbox h">Category</div>':'')+'<div class="obox h">Main objective</div><div class="kids h"><div class="dgroup"><div class="dbox h">Driver</div>'+
+    var h='<div class="tree"><div class="tob th">'+'<div class="obox h">Main objective</div><div class="kids h"><div class="dgroup"><div class="dbox h">Driver</div>'+
       '<div class="kids2 h"><div class="kid2"><div class="kbox h">KPI</div><div class="inp h">Input</div></div></div></div></div></div>';
     var M=DATA.mission||{};
     if(M.text) h='<div class="mission"'+ED('mis','1')+'><b>Mission</b><span>'+esc(M.text)+'</span></div>'+h;
@@ -800,9 +807,8 @@ const DATA = /* DATA */ {
       var groups=ds.map(function(d){return {d:d,ks:ks.filter(function(n){return n.driverId===d.id;})};});
       var loose=ks.filter(function(n){return !by(ds,n.driverId);}); if(loose.length||!groups.length) groups.push({d:null,ks:loose});
       var gap=(DATA.gaps||[]).filter(function(g){return g.objectiveId===o.id;})[0], c=by(CATS(),o.categoryId);
-      var cl=''; if(withCat){ var first=c&&!shown[c.id]; if(c) shown[c.id]=1;
-        cl='<div class="cbox"'+(c?ED('cat',c.id):'')+'>'+(first?esc(c.name):(c?'':'No category'))+'</div>'; }
-      var r='<div class="tob">'+cl+'<div class="obox"'+ED('obj',o.id)+'>'+esc(o.name)+'</div><div class="kids">';
+      var pill=withCat?'<span class="catp"'+(c?ED('cat',c.id):'')+'>'+(c?esc(c.name):'No category')+'</span>':'';
+      var r='<div class="tob"><div class="obox"'+ED('obj',o.id)+'>'+pill+'<span class="on">'+esc(o.name)+'</span></div><div class="kids">';
       groups.forEach(function(g){
         r+='<div class="kid"><div class="dgroup">'+(g.d?'<div class="dbox"'+ED('drv',g.d.id)+'>'+esc(g.d.name)+'</div>':'<div class="dbox empty"></div>')+'<div class="kids2">';
         if(!g.ks.length) r+='<div class="kid2"><div class="kbox none">'+esc(gap&&!ks.length?gap.note:'No KPI yet')+'</div><div class="inp"></div></div>';
@@ -816,7 +822,7 @@ const DATA = /* DATA */ {
     if(withCat){
       CATS().forEach(function(c){ var os=objs.filter(function(o){return o.categoryId===c.id;});
         if(os.length) os.forEach(function(o){h+=objRow(o);});
-        else h+='<div class="tob"><div class="cbox"'+ED('cat',c.id)+'>'+esc(c.name)+'</div><div class="obox miss"'+ED('addobj',c.id)+'>No objective</div><div class="kids nolines"></div></div>'; });
+        else h+='<div class="tob"><div class="obox miss"'+ED('addobj',c.id)+'><span class="catp">'+esc(c.name)+'</span><span class="on">No objective</span></div><div class="kids nolines"></div></div>'; });
       objs.filter(function(o){return !by(CATS(),o.categoryId);}).forEach(function(o){h+=objRow(o);});
     } else objs.forEach(function(o){h+=objRow(o);});
     return h+'</div>'+addTail();
@@ -926,7 +932,7 @@ const DATA = /* DATA */ {
   function seg(id,attr,cb){var box=document.getElementById(id);box.querySelectorAll('button').forEach(function(b){b.onclick=function(){box.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});b.classList.add('on');cb(b.getAttribute(attr));};});}
   seg('views','data-v',function(v){cur=v;render();});
   seg('theme','data-s',function(t){document.getElementById('art').setAttribute('data-t',t);render();});
-  window.addEventListener('resize',fitView);
+  window.addEventListener('resize',fitView);/* fit again when the space changes after the first paint: late fonts, the chrome stacking, an iframe that grows */if(window.ResizeObserver){var _fv=0;new ResizeObserver(function(){cancelAnimationFrame(_fv);_fv=requestAnimationFrame(fitView);}).observe(document.getElementById('view'));}if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitView);window.addEventListener('load',fitView);
 /*<EDIT>*/
   var ON=false, DELTA=[], edp=document.getElementById('ed');
   var LOCK_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>', UNLOCK_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>';
@@ -1481,4 +1487,23 @@ const DATA = /* DATA */ {
   [style*="ellipsis"]{white-space:normal!important;text-overflow:clip!important;overflow:visible!important}
 }
 </style>
+<!-- NR-REFIT:BEGIN — fit again when the space changes (diagnostic-skill-builder/templates/refit-layer.html,
+     put in by scripts/patch_refit.py). Every page fits its view on a window resize. The space a page has can
+     also change without one: fonts that arrive late, the header stacking, a preview pane or iframe that grows
+     after the first paint. Then the page used to keep its first fit until you switched tabs. This watches the
+     view and the window, and replays the page's own resize handling once that space has really changed
+     (a change in the page's content alone does not count). -->
+<script>(function(){
+  var last = '', t = 0;
+  function box(){ var v = document.getElementById('view'); return (v ? v.clientWidth + 'x' + v.clientHeight + '/' : '') + innerWidth + 'x' + innerHeight; }
+  function kick(){ var k = box(); if(k === last) return; last = k; window.dispatchEvent(new Event('resize')); }
+  function soon(){ cancelAnimationFrame(t); t = requestAnimationFrame(kick); }
+  function again(){ last = ''; soon(); }
+  function watch(){ if(!window.ResizeObserver) return; var ro = new ResizeObserver(soon), v = document.getElementById('view');
+    if(v) ro.observe(v); ro.observe(document.documentElement); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watch); else watch();
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(again);
+  window.addEventListener('load', again);
+})();</script>
+<!-- NR-REFIT:END -->
 </body></html>
