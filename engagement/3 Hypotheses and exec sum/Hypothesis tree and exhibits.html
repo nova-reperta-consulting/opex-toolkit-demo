@@ -819,6 +819,8 @@ html.dark .nmm .spill.sp-plan{background:#22324d;color:#b8c8e8} html.dark .nmm .
 .page{max-width:none}
 .fx-embed #sb,.fx-embed .nrs-scrim,.fx-embed #hd,.fx-embed .f-mock{display:none!important}
 .fx-embed .main{margin-left:0!important}
+.f-leaf.f-off{opacity:.38}
+.f-leaf.f-off:hover{opacity:.7}
 .fx-embed .page{padding:2px 0 24px}
 .tc .gs2 .sbar .seg{min-width:0;overflow:hidden;text-overflow:ellipsis;flex-shrink:1}
 .f-empty{padding:28px 24px}
@@ -999,7 +1001,7 @@ html.dark .foot a{color:var(--link)}
 .x-sheet .x-bdg{align-self:flex-start;font-size:10.5px;padding:3px 6px;margin-bottom:6%}
 .x-kind{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:var(--fs-11);color:var(--ink-3)}
 </style>
-<script>window.__NR_SHELL__={"screen": "findings", "client": "Northwind Assurance", "name": "OpEx diagnostic (one frame)", "where": "Diagnose · week 7 of 9", "built": "18 Oct 14:10", "switch": true};</script>
+<script>window.__NR_SHELL__={"screen": "findings", "client": "Northwind Assurance", "name": "OpEx diagnostic (one frame)", "where": "Diagnose · week 8 of 9", "built": "23 Oct 06:34", "switch": true};</script>
 </head>
 <body>
 <!-- @@NR-SHELL:BEGIN  The shared frame of the Cockpit, the Findings dashboard and Engagement setup.
@@ -1210,9 +1212,11 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
       if(!t){ t=document.createElement('div'); t.className='nrs-tip nr-glass-tint'; t.setAttribute('role','tooltip'); document.body.appendChild(t); }
       var r=el.getBoundingClientRect(), sb=document.querySelector('.nrs-sb'); t.textContent=el.getAttribute('data-nrs-tip');
       t.style.display='block'; t.style.left=((sb?sb.getBoundingClientRect().right:r.right)+8)+'px'; t.style.top=(r.top+r.height/2-t.offsetHeight/2)+'px'; },
-    foot:function(){ var c=S.cfg(), d=S.isDark();
+    /* extra: a screen's own links in the foot, under the menu (the findings dashboard: Hand over, The methodology) */
+    foot:function(extra){ var c=S.cfg(), d=S.isDark();
       var rl=S.isRail()?'Open the menu':'Fold the menu';
-      return '<div class="nrs-foot">'+S.tourLink()+S.setupLink(c)+'<button type="button" class="nrs-dm" data-nrs-theme aria-pressed="'+d+'" data-nrs-tip="Dark mode">'+svg(P.moon)+'<span class="nrs-l">Dark mode</span><i class="nrs-tg" aria-hidden="true"></i></button>'+
+      var ex=(extra||[]).map(function(i){ return '<button type="button" class="nrs-i nrs-set'+(i.on?' on':'')+'" data-nrs-k="'+esc(i.k)+'"'+(i.on?' aria-current="page"':'')+' data-nrs-tip="'+esc(i.label)+'">'+svg(i.icon)+'<span class="nrs-l">'+esc(i.label)+'</span></button>'; }).join('');
+      return '<div class="nrs-foot">'+ex+S.tourLink()+S.setupLink(c)+'<button type="button" class="nrs-dm" data-nrs-theme aria-pressed="'+d+'" data-nrs-tip="Dark mode">'+svg(P.moon)+'<span class="nrs-l">Dark mode</span><i class="nrs-tg" aria-hidden="true"></i></button>'+
         '<button type="button" class="nrs-dm nrs-rl" data-nrs-rail aria-pressed="'+S.isRail()+'" data-nrs-tip="'+rl+'">'+svg(P.fold)+'<span class="nrs-l">'+rl+'</span></button>'+
         (c&&c.built?'<p class="nrs-built">Built '+esc(c.built)+' from the engagement folder</p>':'')+'</div>'; },
     /* groups: [{label, items:[{k, label, icon (svg paths) | glyph (html), on, n, nCls, cls, title}]}] */
@@ -1221,10 +1225,10 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
         var n=(i.n!==''&&i.n!=null&&i.n!==0)?'<em class="nrs-n'+(i.nCls?' '+i.nCls:'')+'"'+(i.title?' title="'+esc(i.title)+'"':'')+'>'+esc(i.n)+'</em>':'';
         return '<button type="button" class="nrs-i'+(i.on?' on':'')+(i.cls?' '+i.cls:'')+'" data-nrs-k="'+esc(i.k)+'"'+(i.on?' aria-current="page"':'')+' data-nrs-tip="'+esc(i.label)+(n?' · '+esc(i.n):'')+'">'+
           (i.glyph!=null?i.glyph:svg(i.icon))+'<span class="nrs-l">'+esc(i.label)+'</span>'+n+'</button>'; }).join('')+'</div>'; }).join(''); },
-    /* draw the whole sidebar into el. o: {screen, brand:{client,name,where}, groups, navClass, go(k)} */
+    /* draw the whole sidebar into el. o: {screen, brand:{client,name,where}, groups, navClass, go(k), foot:[{k,label,icon,on}]} */
     render:function(el,o){ if(!el) return; o=o||{}; GO=o.go||null;
       el.classList.add('nrs-sb');
-      el.innerHTML=S.brand(o.brand)+S.switcher(o.screen)+'<nav class="nrs-nav'+(o.navClass?' '+o.navClass:'')+'" aria-label="Pages">'+S.nav(o.groups)+'</nav>'+S.foot(); },
+      el.innerHTML=S.brand(o.brand)+S.switcher(o.screen)+'<nav class="nrs-nav'+(o.navClass?' '+o.navClass:'')+'" aria-label="Pages">'+S.nav(o.groups)+'</nav>'+S.foot(o.foot); },
     burger:function(){ return '<button type="button" class="nrs-burger" aria-label="Menu" data-nrs-menu>'+svg(P.menu)+'</button>'; },
     open:function(on){ var sb=document.querySelector('.nrs-sb'), sc=document.querySelector('.nrs-scrim');
       if(!sb) return; var v=(on==null)?!sb.classList.contains('open'):!!on;
@@ -1257,7 +1261,8 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
   <div class="page" id="page"></div>
 </main>
 <div class="scrim" id="scrim"><div class="modal nr-glass-lg" id="modal" role="dialog" aria-modal="true"></div></div>
-<script>window.__NR_FINDINGS__=/*NR_FINDINGS*/{"client":"Northwind Assurance","name":"OpEx diagnostic (one frame)","problem":"Northwind can free a fifth of its claims and service effort without lowering service levels.","decision":"Which levers go into next year's budget, decided at the SteerCo at the end of October 2026.","decisionDate":null,"answer":"Five levers address about 10 FTE of the potential, and the two biggest need the contact centre and the claims system connected first","moved":[],"couldChange":null,"execsumHref":null,"analyses":[{"k":"mae","n":"Team activity map (MAE)","s":"Evidence in","st":"info"},{"k":"process-map","n":"Process map","s":"Evidence in","st":"info"},{"k":"service-blueprint","n":"Service blueprint","s":"Evidence in","st":"info"},{"k":"client-data","n":"Client data request","s":"Not started","st":"none"},{"k":"interview","n":"Interviews and workshops","s":"Evidence in","st":"info"},{"k":"ote-waterfall","n":"Where the team’s time goes (OTE)","s":"Done","st":"ok"}],"tree":[{"id":"n1","no":"1","t":"The effort is lost moving information between systems, not in claim decisions","nodes":["n1","n2","n3"],"j":"1 confirmed · 1 rejected","children":[{"id":"n2","no":"1.1","t":"Every motor claim is keyed twice, in ClaimsCore and in PolicyHub","parent":null,"status":"Confirmed","at":"18 Sep","by":"Thomas Merckx","rationale":"Heard at the kick-off (sample data)","test":"mae","findings":"MAE, Claims Handling: 6.5 of 42 FTE goes to re-keying (MAE session with Ilse Vermeulen, 17 Sep 2026)","ev":{"mae":[{"scope":"Claims Handling","e":"s","note":"MAE, Claims Handling: 6.5 of 42 FTE goes to re-keying (MAE session with Ilse Vermeulen, 17 Sep 2026)"}]}},{"id":"n3","no":"1.2","t":"Checking cover needs a second system for every claim","parent":null,"status":"Rejected","at":"22 Sep","by":"Thomas Merckx","rationale":"Heard at the kick-off (sample data)","test":"process-map","findings":"Process map, Claims Handling: cover is checked in ClaimsCore for 9 claims in 10 (workshop, 22 Sep 2026)","ev":{"process-map":[{"scope":"Claims Handling","e":"c","note":"Process map, Claims Handling: cover is checked in ClaimsCore for 9 claims in 10 (workshop, 22 Sep 2026)"}]}}]},{"id":"n4","no":"2","t":"Customer Service and Recovery carry work the claims process creates","nodes":["n4","n5","n6","n7","n8"],"j":"1 partially confirmed · 1 in progress · 1 to investigate","children":[{"id":"n6","no":"2.1","t":"Four in ten calls to Customer Service are status requests","parent":"Customers call because nobody tells them where their claim stands","status":"In progress","at":null,"by":null,"rationale":"Heard at the kick-off (sample data)","test":"service-blueprint","findings":"","ev":{"service-blueprint":[{"scope":"Customer Service","e":"i","note":""}]}},{"id":"n7","no":"2.2","t":"Status calls peak in the week after a claim is filed","parent":"Customers call because nobody tells them where their claim stands","status":"To investigate","at":null,"by":null,"rationale":"Heard at the kick-off (sample data)","test":"client-data","findings":"","ev":{"client-data":[{"scope":"Customer Service","e":"o","note":""}]}},{"id":"n8","no":"2.3","t":"Recovery & Legal asks again for documents Claims already holds","parent":null,"status":"Partially confirmed","at":"19 Sep","by":"Thomas Merckx","rationale":"Heard at the kick-off (sample data)","test":"interview","findings":"Holds for property claims, not for motor (interview with Joris Van Acker, 19 Sep 2026)","ev":{"interview":[{"scope":"Recovery & Legal","e":"p","note":"Holds for property claims, not for motor (interview with Joris Van Acker, 19 Sep 2026)"}]}}]}],"insights":[],"outputs":[{"hyp":"n7","a":"client-data","scope":"Customer Service","where":"Planned","t":"Client data request · Customer Service"},{"hyp":null,"a":"ote-waterfall","scope":"Claims Handling","t":"OTE Waterfall (Top-Down)","where":"Working","href":"../../_engine/toolkit/artifacts/ch/ote-waterfall.WORKING.html","path":"../../_engine/toolkit/artifacts/ch/ote-waterfall.WORKING.html","folder":"2. Diagnose","upd":"17 Oct"}],"lenses":{"dims":[{"k":"proc","label":"Processes"},{"k":"cust","label":"Customer"},{"k":"mgmt","label":"Management systems"},{"k":"data","label":"Data, systems & integrations"},{"k":"mind","label":"Mindset & behaviors"},{"k":"org","label":"Organisation"}],"inst":{"process-map":"proc","waste-observations":"proc","sop-wheel":"proc","nps-analysis":"cust","service-blueprint":"cust","kano-analysis":"cust","wilo-analysis":"mgmt","performance-wheel":"mgmt","skills-wheel":"mgmt","kpi-cascade":"mgmt","data-maturity":"data","team-barometer":"mind","raci-diagnostic":"org"},"baseline":["inefficiency-register","opportunity-register","ote-waterfall","mae","org-baseline"]}}/*END_NR_FINDINGS*/;</script>
+<script>window.__NR_ROOM__=/*NR_ROOM*/null/*END_NR_ROOM*/;</script>
+<script>window.__NR_FINDINGS__=/*NR_FINDINGS*/{"client":"Northwind Assurance","name":"OpEx diagnostic (one frame)","problem":"Northwind can free a fifth of its claims and service effort without lowering service levels.","decision":"Which levers go into next year's budget, decided at the SteerCo at the end of October 2026.","decisionDate":null,"answer":"Five levers address about 10 FTE of the potential, and the two biggest need the contact centre and the claims system connected first","moved":[],"couldChange":null,"execsumHref":null,"analyses":[{"k":"mae","n":"Team activity map (MAE)","s":"Evidence in","st":"info"},{"k":"process-map","n":"Process map","s":"Evidence in","st":"info"},{"k":"service-blueprint","n":"Service blueprint","s":"Evidence in","st":"info"},{"k":"client-data","n":"Client data request","s":"Not started","st":"none"},{"k":"interview","n":"Interviews and workshops","s":"Evidence in","st":"info"},{"k":"ote-waterfall","n":"Where the team’s time goes (OTE)","s":"Done","st":"ok"}],"tree":[{"id":"n1","no":"1","t":"The effort is lost moving information between systems, not in claim decisions","nodes":["n1","n2","n3"],"j":"1 confirmed · 1 rejected","children":[{"id":"n2","no":"1.1","t":"Every motor claim is keyed twice, in ClaimsCore and in PolicyHub","parent":null,"status":"Confirmed","at":"18 Sep","by":"Thomas Merckx","rationale":"Heard at the kick-off (sample data)","test":"mae","findings":"MAE, Claims Handling: 6.5 of 42 FTE goes to re-keying (MAE session with Ilse Vermeulen, 17 Sep 2026)","ev":{"mae":[{"scope":"Claims Handling","e":"s","note":"MAE, Claims Handling: 6.5 of 42 FTE goes to re-keying (MAE session with Ilse Vermeulen, 17 Sep 2026)"}]}},{"id":"n3","no":"1.2","t":"Checking cover needs a second system for every claim","parent":null,"status":"Rejected","at":"22 Sep","by":"Thomas Merckx","rationale":"Heard at the kick-off (sample data)","test":"process-map","findings":"Process map, Claims Handling: cover is checked in ClaimsCore for 9 claims in 10 (workshop, 22 Sep 2026)","ev":{"process-map":[{"scope":"Claims Handling","e":"c","note":"Process map, Claims Handling: cover is checked in ClaimsCore for 9 claims in 10 (workshop, 22 Sep 2026)"}]}}]},{"id":"n4","no":"2","t":"Customer Service and Recovery carry work the claims process creates","nodes":["n4","n5","n6","n7","n8"],"j":"1 partially confirmed · 1 in progress · 1 to investigate","children":[{"id":"n6","no":"2.1","t":"Four in ten calls to Customer Service are status requests","parent":"Customers call because nobody tells them where their claim stands","status":"In progress","at":null,"by":null,"rationale":"Heard at the kick-off (sample data)","test":"service-blueprint","findings":"","ev":{"service-blueprint":[{"scope":"Customer Service","e":"i","note":""}]}},{"id":"n7","no":"2.2","t":"Status calls peak in the week after a claim is filed","parent":"Customers call because nobody tells them where their claim stands","status":"To investigate","at":null,"by":null,"rationale":"Heard at the kick-off (sample data)","test":"client-data","findings":"","ev":{"client-data":[{"scope":"Customer Service","e":"o","note":""}]}},{"id":"n8","no":"2.3","t":"Recovery & Legal asks again for documents Claims already holds","parent":null,"status":"Partially confirmed","at":"19 Sep","by":"Thomas Merckx","rationale":"Heard at the kick-off (sample data)","test":"interview","findings":"Holds for property claims, not for motor (interview with Joris Van Acker, 19 Sep 2026)","ev":{"interview":[{"scope":"Recovery & Legal","e":"p","note":"Holds for property claims, not for motor (interview with Joris Van Acker, 19 Sep 2026)"}]}}]}],"insights":[],"outputs":[{"hyp":"n7","a":"client-data","scope":"Customer Service","where":"Planned","t":"Client data request · Customer Service"},{"hyp":null,"a":"ote-waterfall","scope":"Claims Handling","t":"OTE Waterfall (Top-Down)","where":"Working","href":"../../_engine/toolkit/artifacts/ch/ote-waterfall.WORKING.html","path":"../../_engine/toolkit/artifacts/ch/ote-waterfall.WORKING.html","folder":"2. Diagnose","upd":"21 Oct"}],"lenses":{"dims":[{"k":"proc","label":"Processes"},{"k":"cust","label":"Customer"},{"k":"mgmt","label":"Management systems"},{"k":"data","label":"Data, systems & integrations"},{"k":"mind","label":"Mindset & behaviors"},{"k":"org","label":"Organisation"}],"inst":{"process-map":"proc","waste-observations":"proc","sop-wheel":"proc","nps-analysis":"cust","service-blueprint":"cust","kano-analysis":"cust","wilo-analysis":"mgmt","performance-wheel":"mgmt","skills-wheel":"mgmt","kpi-cascade":"mgmt","data-maturity":"data","team-barometer":"mind","raci-diagnostic":"org"},"baseline":["inefficiency-register","opportunity-register","ote-waterfall","mae","org-baseline"]}}/*END_NR_FINDINGS*/;</script>
 <script id="findings-js">
 /* The findings screen for any engagement: the problem statement and our answer, the hypothesis tree
    that carries it, the insights and the exhibits behind every hypothesis.
@@ -1298,7 +1303,8 @@ var I={
  answer:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r=".8"/>',
  tree:'<rect x="9" y="3" width="6" height="4.5" rx="1"/><rect x="3" y="16.5" width="6" height="4.5" rx="1"/><rect x="15" y="16.5" width="6" height="4.5" rx="1"/><path d="M12 7.5V12M6 16.5V12h12v4.5"/>',
  ins:'<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/>',
- ex:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'};
+ ex:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+ room:'<ellipse cx="12" cy="5.5" rx="7.6" ry="2.9"/><path d="M4.4 5.5v13c0 1.6 3.4 2.9 7.6 2.9s7.6-1.3 7.6-2.9v-13M4.4 12c0 1.6 3.4 2.9 7.6 2.9s7.6-1.3 7.6-2.9"/>'};
 var OUT_TGT=' target="_blank" rel="noopener"';
 
 /* ─── routing ─── */
@@ -1306,10 +1312,14 @@ var PAGES=[
  {k:'answer',label:'The answer',icon:I.answer,sub:'Where our answer stands, and what it rests on'},
  {k:'tree',label:'Hypothesis tree',icon:I.tree,sub:'The problem broken down, and what tests each part'},
  {k:'insights',label:'Insights',icon:I.ins,sub:'What we learned, and the hypothesis it touches'},
- {k:'exhibits',label:'Exhibits',icon:I.ex,sub:'Every analysis behind each hypothesis, and what it produced'}];
+ {k:'exhibits',label:'Exhibits',icon:I.ex,sub:'Every analysis behind each hypothesis, and what it produced'},
+ {k:'room',label:'Data room',icon:I.room,sub:'Every transcript, document, data extract and photo we collected, and what cites it'}];
 var KEY='nr_findings_page', cur='answer';
 /* embedded in a practice's own findings dashboard (OpEx): ?embed=tree|exhibits shows that one page, without the frame */
 var EMBED=(function(){try{var m=/[?&]embed=(tree|exhibits)/.exec(location.search);return m?m[1]:null}catch(e){return null}})();
+/* the OpEx dashboard's team picker: &team=<name> greys out the hypotheses no analysis on that team speaks to */
+var TEAM=(function(){try{var m=/[?&]team=([^&]*)/.exec(location.search);return m?decodeURIComponent(m[1]):null}catch(e){return null}})();
+function forTeam(l){if(!TEAM)return true;var ev=l.ev||{};return Object.keys(ev).some(function(k){return (ev[k]||[]).some(function(r){return !r.scope||r.scope===TEAM})})}
 if(EMBED){document.documentElement.classList.add('fx-embed');try{if(/[?&]dark=1/.test(location.search))document.documentElement.classList.add('dark')}catch(e){}
  window.addEventListener('message',function(e){if(e.data&&typeof e.data==='object'&&'nrTheme' in e.data){document.documentElement.classList.toggle('dark',!!e.data.nrTheme);draw()}});}
 try{var sv=sessionStorage.getItem(KEY);if(sv&&PAGES.some(function(p){return p.k===sv}))cur=sv}catch(e){}
@@ -1330,7 +1340,7 @@ function draw(){
  if(window.NRShell) NRShell.render(document.getElementById('sb'),{screen:'findings',brand:{client:(NRShell.cfg()||{}).client||D.client,name:(NRShell.cfg()||{}).name||D.name,where:(NRShell.cfg()||{}).where||D.where},
   groups:[{items:PAGES.map(function(x){return {k:x.k,label:x.label,icon:x.icon,on:x.k===cur}})}],go:go});
  document.getElementById('hd').innerHTML=(window.NRShell?NRShell.burger():'')+'<div class="nrs-hd-l"><h1 class="nrs-hd-t">'+p.label+'</h1><p class="nrs-hd-s">'+p.sub+'</p></div><div class="tbr nrs-hd-r"><div class="tbx nrs-chips">'+chips()+'</div></div>';
- document.getElementById('page').innerHTML=({answer:pAnswer,tree:pTree,insights:pInsights,exhibits:pExhibits})[cur]()+(D.sample?'<p class="f-mock">Sample · Brightfield and its figures are fictional</p>':'');
+ document.getElementById('page').innerHTML=({answer:pAnswer,tree:pTree,insights:pInsights,exhibits:pExhibits,room:function(){if(!window.NRRoom){setTimeout(draw,0);return ''}return NRRoom.html()}})[cur]()+(D.sample?'<p class="f-mock">Sample · Brightfield and its figures are fictional</p>':'');
  /* embedded (the OpEx dashboard), this page has no title bar of its own: its figures go up to the host's */
  if(EMBED&&window.parent!==window) try{window.parent.postMessage({nrChips:chips(),nrFx:cur},'*')}catch(e){}
 }
@@ -1363,7 +1373,7 @@ function pAnswer(){
   +'<section class="tc"><div class="top"><h2>Analyses</h2></div><b class="n">'+done+' <small>of '+A.length+' done</small></b><div class="gs2">'
    +(A.length?sbar([[done,'done','f-c-conf'],[prog,'running','f-c-prog'],[A.length-done-prog,'not started','f-c-inv']]):'<div class="sbar"><span class="seg f-c-inv" style="flex:1">None planned yet</span></div>')+'</div>'
    +'<div class="lst">'+A.map(function(a){var hs=LEAVES.filter(function(l){return (l.ev||{})[a.k]}).map(function(l){return l.no}),sc=scopesOf(a.k);
-     return '<div class="lr f-lr"><i class="ci '+(a.st==='ok'?'f-c-conf':a.st==='info'?'f-c-prog':'f-c-inv')+'">'+esc(a.n.split(/\s+/).map(function(w){return w[0]}).join('').slice(0,2).toUpperCase())+'</i><span class="t"><b>'+esc(a.n)+'</b><span>'+(hs.length?'Tests '+hs.join(', '):'Tests no hypothesis yet')+(sc.length?' · '+esc(sc.join(', ')):'')+'</span></span><span class="s" style="color:var(--'+a.st+')">'+esc(a.s)+'</span></div>'}).join('')+'</div>'
+     return '<div class="lr f-lr"><i class="ci '+(a.st==='ok'?'f-c-conf':a.st==='info'?'f-c-prog':'f-c-inv')+'">'+esc(a.n.split(/\s+/).map(function(w){return w[0]}).join('').slice(0,2).toUpperCase())+'</i><span class="t"><b>'+esc(a.n)+'</b><span>'+(hs.length?'Tests '+hs.join(', '):'Tests no hypothesis')+(sc.length?' · '+esc(sc.join(', ')):'')+'</span></span><span class="s" style="color:var(--'+a.st+')">'+esc(a.s)+'</span></div>'}).join('')+'</div>'
    +'<div class="foot"><span></span><a data-go="exhibits">All exhibits →</a></div></section>'
  +'</div></div>';
 }
@@ -1379,7 +1389,7 @@ function pTree(){
  return top+(D.problem?'<div class="f-root"><div class="itag">Problem statement</div><div class="t">'+esc(D.problem)+'</div></div><div class="f-stem"></div>':'')
   +'<div class="f-br'+(nb>4?' many':'')+'" style="--nb:'+nb+'">'+D.tree.map(function(b){var r=roll(b);return '<section class="tc"><div class="top"><h2>'+esc(b.no)+' · '+esc(b.t)+'</h2>'+pill(r)+'</div><div class="gs2">'
    +'<div class="sbar">'+(b.children||[]).map(function(c){return '<span class="seg '+st(c.status)[1]+'" style="flex:1" title="'+esc(c.no)+' '+esc(c.status||'To investigate')+'"></span>'}).join('')+'</div></div>'
-   +'<div class="lst">'+(b.children||[]).map(function(l){return '<div class="lr f-leaf" data-leaf="'+esc(l.id)+'"><i class="ci '+st(l.status)[1]+'">'+esc(l.no)+'</i><span class="t">'+(l.parent?'<span class="f-par">'+esc(l.parent)+'</span>':'')+'<b style="white-space:normal">'+esc(l.t)+'</b><span>'+esc(l.test?an(l.test).n:'No analysis named yet')+'</span></span><span></span></div>'}).join('')+'</div></section>'}).join('')+'</div>'+leg;
+   +'<div class="lst">'+(b.children||[]).map(function(l){var off=!forTeam(l);return '<div class="lr f-leaf'+(off?' f-off':'')+'" data-leaf="'+esc(l.id)+'"'+(off?' title="Nothing on '+esc(TEAM)+' tests this one"':'')+'><i class="ci '+st(l.status)[1]+'">'+esc(l.no)+'</i><span class="t">'+(l.parent?'<span class="f-par">'+esc(l.parent)+'</span>':'')+'<b style="white-space:normal">'+esc(l.t)+'</b><span>'+esc(l.test?an(l.test).n:'No analysis named yet')+'</span></span><span></span></div>'}).join('')+'</div></section>'}).join('')+'</div>'+leg;
 }
 function pPlan(){
  var A=D.analyses;
@@ -1465,7 +1475,7 @@ function fileChip(o){
  var x=o.href?ext(o.path||o.href):'html', c=FTYPE_X[x]||'#5B6B82', b='<span class="x-bdg" style="background:'+c+'">'+esc(x?x.toUpperCase():'FILE')+'</span><span class="x-ft">'+esc(o.t)+'</span>';
  return o.href?'<a class="x-file" href="'+esc(o.href)+'"'+OUT_TGT+' title="'+esc(o.t)+'">'+b+'</a>':'<span class="x-file">'+b+'</span>'}
 function xrow(r,lead){
- var hy=!lead?'':r.l?'<span class="x-hy" data-leaf="'+esc(r.l.id)+'"><i class="ci '+st(r.l.status)[1]+'">'+esc(r.l.no)+'</i><span>'+esc(r.l.t)+'</span></span>':'<span class="x-hy"><span style="color:var(--watch)">Tests no hypothesis yet</span></span>';
+ var hy=!lead?'':r.l?'<span class="x-hy" data-leaf="'+esc(r.l.id)+'"><i class="ci '+st(r.l.status)[1]+'">'+esc(r.l.no)+'</i><span>'+esc(r.l.t)+'</span></span>':'<span class="x-hy"><span class="mut">Tests no hypothesis</span></span>';
  return '<div class="x-row'+(lead?' x-lead':'')+'">'+hy
   +'<span class="x-ec">'+(r.e?effTag(r.e):'')+'</span><span class="x-an"><b>'+esc(r.n)+'</b>'+(r.scope?'<span>'+esc(r.scope)+'</span>':'')+'</span>'
   +'<span class="x-note">'+(r.note?esc(r.note):r.l?'<span class="mut">No note yet.</span>':'')+'</span>'+fileChip(r.o)+'</div>'}
@@ -1502,7 +1512,7 @@ function byHypRows(){
   if(!hs)return '';
   return '<section class="card f-grp"><div class="f-gh"><h2>'+esc(b.no)+' · '+esc(b.t)+'</h2>'+pill(roll(b))+'</div>'+hs+'</section>'}).join('');
  var orph=D.outputs.filter(function(o){return !o.hyp&&built(o)&&(EF==='all'||o.where===EF)});
- if(orph.length) body+='<section class="card f-grp" style="border-style:dashed"><div class="f-gh"><h2>Not tied to a hypothesis yet</h2><span class="mut" style="margin-left:auto">'+orph.length+' '+(orph.length===1?'exhibit':'exhibits')+'</span></div><p class="mut" style="margin:4px 0 6px">Built, but no hypothesis names the analysis. Link it in the tree, or ask whether it is needed.</p>'
+ if(orph.length) body+='<section class="card f-grp"><div class="f-gh"><h2>Baseline, scope and research</h2><span class="mut" style="margin-left:auto">'+orph.length+' '+(orph.length===1?'exhibit':'exhibits')+'</span></div><p class="mut" style="margin:4px 0 6px">What we built to understand the scope, the baseline or the market. No hypothesis needs to name these.</p>'
   +orph.map(function(o){return '<div class="x-row"><span class="x-ec"></span><span class="x-an"><b>'+esc(an(o.a).n)+'</b>'+(o.scope?'<span>'+esc(o.scope)+'</span>':'')+'</span><span class="x-note"></span>'+fileChip(o)+'</div>'}).join('')+'</section>';
  return body;
 }
@@ -1519,7 +1529,7 @@ function byFile(){
  var chips='<div class="x-br"><button class="'+(XB==='all'?'on':'')+'" data-xb="all">All</button>'+D.tree.map(function(b){return '<button class="'+(XB===b.id?'on':'')+'" data-xb="'+esc(b.id)+'" title="'+esc(b.t)+'">'+esc(b.no)+' · '+esc(b.t.length>42?b.t.slice(0,41)+'…':b.t)+'</button>'}).join('')+'</div>';
  var grid=files.length?'<div class="x-grid">'+files.map(function(f){var o=f.o;
    return '<div class="x-tile">'+preview(o)+'<div class="x-tb"><b>'+esc(o.t)+'</b><span class="mut">'+esc([an(o.a).n,o.folder,o.upd].filter(Boolean).join(' · '))+'</span>'
-    +'<div class="x-uses">'+(f.uses.length?f.uses.map(function(u){return '<span class="x-use" data-leaf="'+esc(u.l.id)+'" title="'+esc(u.l.t)+'"><i class="x-e-'+u.e+'"></i>'+esc(u.l.no)+(u.scope?' · '+esc(u.scope):'')+' <em class="x-e-'+u.e+'">'+EFF[u.e][0].toLowerCase()+'</em></span>'}).join(''):'<span class="x-use"><em style="color:var(--watch)">Not tied to a hypothesis yet</em></span>')+'</div>'
+    +'<div class="x-uses">'+(f.uses.length?f.uses.map(function(u){return '<span class="x-use" data-leaf="'+esc(u.l.id)+'" title="'+esc(u.l.t)+'"><i class="x-e-'+u.e+'"></i>'+esc(u.l.no)+(u.scope?' · '+esc(u.scope):'')+' <em class="x-e-'+u.e+'">'+EFF[u.e][0].toLowerCase()+'</em></span>'}).join(''):'<span class="x-use"><em class="mut">Not tied to a hypothesis</em></span>')+'</div>'
     +'<div class="x-tf"><span class="f-sp" style="'+SP[o.where]+'">'+esc(o.where)+'</span>'+openLink(o)+'</div></div></div>'}).join('')+'</div>':'';
  var loose=[];LEAVES.forEach(function(l){if(XB!=='all'&&l.parentB.id!==XB)return;results(l).forEach(function(r){if(!r.o||!built(r.o))loose.push(r)})});
  if(EF!=='all')loose=[];
@@ -1575,6 +1585,166 @@ draw();
 })();
 
 </script>
+<!-- @@NR-ROOM:BEGIN  The data room: every source the engagement collected (transcripts, documents, data, screenshots
+     and photos, research), in one table with search and filters; a row opens the source with its written version
+     and what cites it (Gilles, 22 Oct 2026). The same block in the OpEx findings dashboard (the master,
+     engagement-dashboard.html) and the findings screen for any practice: copy_dashboard.py carries it.
+     Data: window.__NR_ROOM__ (generate_dashboard.py, from sources.py room). Change it here, in the master. -->
+<style id="nr-room-css">
+.nrr{--r-ink:var(--text,var(--ink));--r-mut:var(--muted,var(--ink-3));--r-line:var(--divider,var(--line));color:var(--r-ink)}
+.nrr-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 12px}
+.nrr-q{flex:1 1 240px;min-width:200px;height:34px;border:1px solid var(--r-line);border-radius:9px;padding:0 12px;background:var(--surface);color:var(--r-ink);font:inherit;font-size:var(--fs-13,13px)}
+.nrr-seg{display:inline-flex;flex-wrap:wrap;gap:4px}
+.nrr-c{height:30px;padding:0 11px;border:1px solid var(--r-line);border-radius:999px;background:var(--surface);color:var(--r-mut);font:inherit;font-size:var(--fs-12,12px);cursor:pointer;white-space:nowrap}
+.nrr-c b{font-weight:600;color:var(--r-ink);margin-left:4px}
+.nrr-c.on{background:var(--navy);border-color:var(--navy);color:#fff}.nrr-c.on b{color:#fff}
+html.dark .nrr-c.on,html.dark .nrr-btn.pri{background:#DCE5F5;border-color:#DCE5F5;color:#0F2B52}html.dark .nrr-c.on b{color:#0F2B52}
+.nrr-sel{height:30px;border:1px solid var(--r-line);border-radius:999px;padding:0 10px;background:var(--surface);color:var(--r-ink);font:inherit;font-size:var(--fs-12,12px)}
+.nrr-tw{border:1px solid var(--r-line);border-radius:12px;background:var(--surface);overflow-x:auto}
+.nrr-t{width:100%;border-collapse:collapse;font-size:var(--fs-13,13px);min-width:640px}
+.nrr-t th{text-align:left;font-weight:600;font-size:var(--fs-11,11px);color:var(--r-mut);padding:10px 12px;border-bottom:1px solid var(--r-line);white-space:nowrap;cursor:pointer;user-select:none}
+.nrr-t th.on{color:var(--r-ink)}.nrr-t th i{font-style:normal;margin-left:3px}
+.nrr-t td{padding:9px 12px;border-bottom:1px solid var(--r-line);vertical-align:middle;white-space:nowrap}
+.nrr-t tr:last-child td{border-bottom:0}
+.nrr-t tbody tr{cursor:pointer}.nrr-t tbody tr:hover td{background:var(--surface-2)}
+.nrr-t td.nm{white-space:normal;width:46%}
+.nrr-nm{display:block;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.nrr-hit{font-size:var(--fs-11,11px);color:var(--r-mut);margin-left:6px}
+.nrr-mut{color:var(--r-mut)}
+.nrr-k{display:inline-flex;align-items:center;gap:6px;color:var(--r-mut)}
+.nrr-k svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.nrr-o{display:inline-block;font-size:var(--fs-11,11px);font-weight:600;border-radius:5px;padding:1px 7px;margin-right:4px;background:color-mix(in srgb,var(--navy) 10%,transparent);color:var(--navy)}
+html.dark .nrr-o{color:#BFD3F2;background:rgba(191,211,242,.12)}
+.nrr-o.internal{background:color-mix(in srgb,#B8620A 14%,transparent);color:#9A520A}
+.nrr-o.thirdparty{background:color-mix(in srgb,#6B4E9E 14%,transparent);color:#5A3F8A}
+.nrr-o.internet{background:color-mix(in srgb,#2A8C82 14%,transparent);color:#1F6F66}
+html.dark .nrr-o.internal{color:#F2B26B}html.dark .nrr-o.thirdparty{color:#C9B4EC}html.dark .nrr-o.internet{color:#7FD3C8}
+.nrr-n{font-variant-numeric:tabular-nums}
+.nrr-none{padding:28px 16px;text-align:center;color:var(--r-mut);font-size:var(--fs-13,13px)}
+.nrr-foot{margin:10px 2px 0;font-size:var(--fs-12,12px);color:var(--r-mut)}
+.nrr-foot a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.nrr-scrim{position:fixed;inset:0;z-index:120;background:rgba(10,20,40,.32);display:none;align-items:flex-start;justify-content:center;padding:5vh 16px;overflow-y:auto}
+.nrr-scrim.on{display:flex}
+.nrr-win{width:min(760px,100%);border-radius:16px;background:var(--surface);color:var(--r-ink);box-shadow:0 24px 64px rgba(0,0,0,.24);border:1px solid var(--r-line)}
+.nrr-wh{display:flex;gap:12px;align-items:flex-start;padding:20px 22px 14px;border-bottom:1px solid var(--r-line)}
+.nrr-wh h2{font:700 var(--fs-20,20px)/1.25 var(--fh,inherit);margin:0;color:var(--r-ink)}
+.nrr-meta{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:8px;font-size:var(--fs-12,12px);color:var(--r-mut);align-items:center}
+.nrr-x{margin-left:auto;border:0;background:none;font-size:22px;line-height:1;color:var(--r-mut);cursor:pointer;padding:2px 6px}
+.nrr-wb{padding:16px 22px 22px}
+.nrr-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.nrr-btn{height:32px;padding:0 13px;border-radius:9px;border:1px solid var(--r-line);background:var(--surface);color:var(--r-ink);font:inherit;font-size:var(--fs-13,13px);font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+.nrr-btn.pri{background:var(--navy);border-color:var(--navy);color:#fff}
+.nrr-h{font-size:var(--fs-11,11px);font-weight:600;color:var(--r-mut);text-transform:uppercase;letter-spacing:.6px;margin:18px 0 6px}
+.nrr-p{font-size:var(--fs-13,13px);line-height:1.55;margin:0}
+.nrr-use{display:flex;gap:10px;padding:7px 0;border-top:1px solid var(--r-line);font-size:var(--fs-13,13px);line-height:1.45}
+.nrr-use:first-of-type{border-top:0}
+.nrr-use span{flex:none;width:118px;color:var(--r-mut);font-size:var(--fs-12,12px)}
+.nrr-txt{position:relative;font-size:var(--fs-13,13px);line-height:1.6;background:var(--surface-2);border-radius:10px;padding:12px 14px;overflow:hidden}
+.nrr-txt.cut{max-height:260px}
+.nrr-txt.cut:after{content:"";position:absolute;left:0;right:0;bottom:0;height:70px;background:linear-gradient(transparent,var(--surface-2))}
+.nrr-txt h1,.nrr-txt h2,.nrr-txt h3{font-size:var(--fs-14,14px);margin:10px 0 4px}
+.nrr-txt p{margin:0 0 8px}.nrr-txt ul{margin:0 0 8px;padding-left:18px}
+.nrr-txt mark{background:color-mix(in srgb,#E8BF49 45%,transparent);color:inherit;border-radius:3px}
+</style>
+<script id="nr-room-js">
+window.NRRoom=(function(){
+  var KIND={conversation:['Interviews and meetings','Interview or meeting','<path d="M4 5h16v11H9l-5 4z"/>'],
+    document:['Documents','Document','<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h6M9.5 16h6"/>'],
+    data:['Data','Data','<rect x="4" y="4" width="16" height="16" rx="1.5"/><path d="M4 10h16M4 15h16M10 4v16"/>'],
+    picture:['Screenshots and photos','Screenshot or photo','<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 8"/>'],
+    research:['Desk research','Desk research','<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/>'],
+    analysis:['Our analyses','Analysis','<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>']};
+  var ORDER=['conversation','document','data','picture','research','analysis'];
+  var ORIGIN={client:'Client',internal:'Internal',thirdparty:'Third party',internet:'Internet'};
+  var F={k:'all',o:'all',q:'',nc:false,s:'date',d:-1}, OPEN=null, FULL=false;
+  try{ var sv=JSON.parse(localStorage.getItem('nr_room_f')||'null'); if(sv&&typeof sv==='object'){ F.k=sv.k||'all'; F.o=sv.o||'all'; F.s=sv.s||'date'; F.d=sv.d||-1; } }catch(e){}
+  function keep(){ try{ localStorage.setItem('nr_room_f',JSON.stringify({k:F.k,o:F.o,s:F.s,d:F.d})); }catch(e){} }
+  function D(){ var r=window.__NR_ROOM__; return r&&Array.isArray(r.sources)?r:null; }
+  function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function day(iso){ var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso||''); return m?(+m[3])+' '+MON[+m[2]-1]+' '+m[1].slice(2):(iso||''); }
+  function icon(k){ return '<svg viewBox="0 0 24 24" aria-hidden="true">'+((KIND[k]||KIND.document)[2])+'</svg>'; }
+  function tag(o){ return '<span class="nrr-o '+o+'">'+(ORIGIN[o]||o)+'</span>'; }
+  function hay(s){ return [s.id,s.label,(s.people||[]).join(' '),s.by,s.clientLabel,(KIND[s.kind]||[])[1],s.type].join(' ').toLowerCase(); }
+  function inText(s,q){ return !!(q&&s.body&&s.body.toLowerCase().indexOf(q)>=0); }
+  function base(){ var d=D(); if(!d) return []; var q=F.q.trim().toLowerCase();
+    return d.sources.filter(function(s){ if(F.o!=='all'&&(s.origins||[]).indexOf(F.o)<0) return false; if(F.nc&&(s.uses||[]).length) return false;
+      return !q||hay(s).indexOf(q)>=0||inText(s,q); }); }
+  function rows(){ var L=base().filter(function(s){ return F.k==='all'||s.kind===F.k; });
+    var key={date:function(s){return s.date||''},src:function(s){return (s.label||'').toLowerCase()},kind:function(s){return ORDER.indexOf(s.kind)},by:function(s){return (s.by||'').toLowerCase()},use:function(s){return (s.uses||[]).length}}[F.s]||function(s){return s.date||''};
+    return L.slice().sort(function(a,b){ var x=key(a),y=key(b); return (x<y?-1:x>y?1:0)*F.d||((a.id<b.id)?1:-1); }); }
+  /* one origin across the register (often only the client's): the column would repeat one word on every row */
+  function oneOrigin(){ var o={}; D().sources.forEach(function(s){ (s.origins||[]).forEach(function(x){ o[x]=1; }); }); return Object.keys(o).length<2; }
+  function table(){ var L=rows(), q=F.q.trim().toLowerCase(), oc=!oneOrigin();
+    if(!L.length) return '<div class="nrr-none">Nothing matches. Clear the search or the filters.</div>';
+    var th=function(k,l){ return '<th class="'+(F.s===k?'on':'')+'" onclick="NRRoom.sort(\''+k+'\')">'+l+(F.s===k?'<i>'+(F.d<0?'↓':'↑')+'</i>':'')+'</th>'; };
+    return '<table class="nrr-t"><thead><tr>'+th('date','Date')+th('src','Source')+th('kind','Kind')+(oc?'<th style="cursor:default">Origin</th>':'')+th('by','Captured by')+th('use','Cited by')+'</tr></thead><tbody>'+
+      L.map(function(s){ var n=(s.uses||[]).length, txt=q&&hay(s).indexOf(q)<0&&inText(s,q);
+        return '<tr onclick="NRRoom.open(\''+esc(s.id)+'\')"><td class="nrr-n">'+esc(day(s.date))+'</td>'+
+          '<td class="nm"><span class="nrr-nm" title="'+esc(s.label)+'">'+esc(s.label)+(txt?'<span class="nrr-hit">found in the text</span>':'')+'</span></td>'+
+          '<td><span class="nrr-k">'+icon(s.kind)+esc((KIND[s.kind]||[0,s.kind])[1])+'</span></td>'+
+          (oc?'<td>'+(s.origins||[]).map(tag).join('')+'</td>':'')+'<td>'+esc(s.by||'')+'</td>'+
+          '<td class="nrr-n">'+(n?n:'<span class="nrr-mut">not yet</span>')+'</td></tr>'; }).join('')+'</tbody></table>'; }
+  function chips(){ var B=base(), n=function(k){ return B.filter(function(s){return k==='all'||s.kind===k;}).length; };
+    var ks=ORDER.filter(function(k){ return D().sources.some(function(s){return s.kind===k;}); });
+    return '<button class="nrr-c'+(F.k==='all'?' on':'')+'" onclick="NRRoom.set(\'k\',\'all\')">All<b>'+n('all')+'</b></button>'+
+      ks.map(function(k){ return '<button class="nrr-c'+(F.k===k?' on':'')+'" onclick="NRRoom.set(\'k\',\''+k+'\')">'+KIND[k][0]+'<b>'+n(k)+'</b></button>'; }).join(''); }
+  function origins(){ var os=Object.keys(ORIGIN).filter(function(o){ return D().sources.some(function(s){return (s.origins||[]).indexOf(o)>=0;}); });
+    if(os.length<2) return '';
+    return '<select class="nrr-sel" onchange="NRRoom.set(\'o\',this.value)" aria-label="Origin"><option value="all">Every origin</option>'+
+      os.map(function(o){ return '<option value="'+o+'"'+(F.o===o?' selected':'')+'>'+ORIGIN[o]+'</option>'; }).join('')+'</select>'; }
+  function foot(){ var d=D(), n=d.sources.filter(function(s){return !(s.uses||[]).length;}).length;
+    return '<p class="nrr-foot">'+d.sources.length+' sources in the register'+(n?' · <a href="javascript:void 0" onclick="NRRoom.set(\'nc\','+(!F.nc)+')">'+(F.nc?'Show every source':n+' not cited by anything yet')+'</a>':'')+'. A source joins the data room when it is registered (insight capture does it as it files a note).</p>'; }
+  function html(){ var d=D();
+    if(!d||!d.sources.length) return '<div class="nrr"><div class="nrr-tw"><div class="nrr-none"><b style="color:var(--r-ink)">No sources registered yet</b><br>Every transcript, document, data extract and photo lands here once it is filed and registered. Insight capture does that when you drop a note or a transcript.</div></div></div>';
+    if(F.k!=='all'&&!d.sources.some(function(s){return s.kind===F.k;})) F.k='all';
+    return '<div class="nrr"><div class="nrr-bar"><input class="nrr-q" type="search" placeholder="Search a name, a word in a transcript, SRC-012" value="'+esc(F.q)+'" oninput="NRRoom.set(\'q\',this.value)">'+origins()+
+      '</div><div class="nrr-bar"><div class="nrr-seg" id="nrr-chips">'+chips()+'</div></div><div class="nrr-tw" id="nrr-list">'+table()+'</div><div id="nrr-foot">'+foot()+'</div></div>'; }
+  function redraw(){ var l=document.getElementById('nrr-list'); if(!l) return false; l.innerHTML=table();
+    var c=document.getElementById('nrr-chips'); if(c) c.innerHTML=chips(); var f=document.getElementById('nrr-foot'); if(f) f.innerHTML=foot(); return true; }
+  function set(k,v){ F[k]=v; if(k!=='q') keep(); if(!redraw()&&window.NRRoom.onChange) window.NRRoom.onChange(); }
+  function sort(k){ if(F.s===k) F.d=-F.d; else { F.s=k; F.d=(k==='date'||k==='use')?-1:1; } keep(); redraw(); }
+  /* the written version, as plain markdown: headings, bold, lists, paragraphs; the search word marked */
+  function md(t,q){ var out=[], list=false;
+    String(t||'').split(/\n/).forEach(function(l){ var x=esc(l).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+      if(q) x=x.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig'),'<mark>$1</mark>');
+      var h=/^(#{1,3})\s+(.*)$/.exec(x), li=/^\s*[-*]\s+(.*)$/.exec(x);
+      if(li){ if(!list){ out.push('<ul>'); list=true; } out.push('<li>'+li[1]+'</li>'); return; }
+      if(list){ out.push('</ul>'); list=false; }
+      if(h) out.push('<h3>'+h[2]+'</h3>'); else if(x.trim()) out.push('<p>'+x+'</p>'); });
+    if(list) out.push('</ul>'); return out.join(''); }
+  function win(s){ var q=F.q.trim(), uses=s.uses||[], d=D();
+    var meta=[ '<span class="nrr-k">'+icon(s.kind)+esc((KIND[s.kind]||[0,s.kind])[1])+(s.type?' · '+esc(s.type):'')+'</span>', '<span>'+esc(day(s.date))+'</span>' ]
+      .concat(oneOrigin()?[]:['<span>'+(s.origins||[]).map(tag).join('')+'</span>']).concat(s.by?['<span>captured by '+esc(s.by)+'</span>']:[]).concat(['<span>'+esc(s.id)+'</span>']);
+    var who=(s.people||[]).join(', ');
+    var built=(s.builtFrom||[]).map(function(i){ var b=d.sources.filter(function(x){return x.id===i;})[0]; return b?'<a href="javascript:void 0" onclick="NRRoom.open(\''+esc(b.id)+'\')">'+esc(b.label)+'</a>':''; }).filter(Boolean);
+    return '<div class="nrr-win nrr" role="dialog" aria-label="'+esc(s.label)+'"><div class="nrr-wh"><div style="min-width:0"><h2>'+esc(s.label)+'</h2><div class="nrr-meta">'+meta.join('')+'</div></div>'+
+      '<button class="nrr-x" onclick="NRRoom.close()" aria-label="Close">×</button></div><div class="nrr-wb">'+
+      '<div class="nrr-btns">'+(s.href?'<a class="nrr-btn pri" href="'+esc(s.href)+'" target="_blank" rel="noopener">Open the file</a>':'')+
+        (s.body?'<button class="nrr-btn" onclick="NRRoom.full()">'+(FULL?'Show less':'Read it all')+'</button>':'')+'</div>'+
+      (who||s.clientLabel?'<div class="nrr-h">Who</div><p class="nrr-p">'+esc(who)+(s.clientLabel&&who.indexOf(s.clientLabel)<0?(who?' · ':'')+esc(s.clientLabel):'')+'</p>':'')+
+      (s.method?'<div class="nrr-h">Method</div><p class="nrr-p">'+esc(s.method)+'</p>':'')+
+      (built.length?'<div class="nrr-h">Built from</div><p class="nrr-p">'+built.join(' · ')+'</p>':'')+
+      '<div class="nrr-h">Cited by'+(uses.length?' ('+uses.length+')':'')+'</div>'+
+      (uses.length?uses.map(function(u){ return '<div class="nrr-use"><span>'+esc(u.type)+'</span><div>'+esc(u.title)+'</div></div>'; }).join('')
+        :'<p class="nrr-p nrr-mut">Nothing cites it yet.</p>')+
+      (s.body?'<div class="nrr-h">'+(s.kind==='picture'?'What it shows':s.kind==='data'?'What it holds':'The written version')+'</div><div class="nrr-txt'+(FULL?'':' cut')+'">'+md(s.body,q)+'</div>'
+        :'<div class="nrr-h">The written version</div><p class="nrr-p nrr-mut">No written version yet. Open the file.</p>')+
+      '</div></div>'; }
+  function scrim(){ var e=document.getElementById('nrr-scrim'); if(!e){ e=document.createElement('div'); e.className='nrr-scrim'; e.id='nrr-scrim';
+      e.onclick=function(ev){ if(ev.target===e) close(); }; document.body.appendChild(e); } return e; }
+  function open(id){ var d=D(); if(!d) return; var s=d.sources.filter(function(x){return x.id===id;})[0]; if(!s) return;
+    var q=F.q.trim().toLowerCase(), hit=OPEN!==id&&inText(s,q);
+    if(OPEN!==id) FULL=hit; OPEN=id; var e=scrim(); e.innerHTML=win(s); e.classList.add('on'); e.scrollTop=0; document.body.style.overflow='hidden';
+    if(hit){ var m=e.querySelector('.nrr-txt mark'); if(m) setTimeout(function(){ m.scrollIntoView({block:'center'}); },30); } }
+  function close(){ OPEN=null; var e=document.getElementById('nrr-scrim'); if(e){ e.classList.remove('on'); e.innerHTML=''; } document.body.style.overflow=''; }
+  function full(){ FULL=!FULL; var y=scrim().scrollTop; open(OPEN); scrim().scrollTop=y; }
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&OPEN) close(); });
+  return {html:html, set:set, sort:sort, open:open, close:close, full:full,
+    count:function(){ var d=D(); return d?d.sources.length:0; }, onChange:null};
+})();
+</script>
+<!-- @@NR-ROOM:END -->
 <!-- NR-GLASS:BEGIN — the glass layer (diagnostic-skill-builder/templates/glass-layer.html, put in by
      scripts/patch_glass.py). Everything that floats above the page is glass; the page itself stays solid
      (cards, tables, charts, slides). Small things get liquid glass: a lens at the edges, a light rim and a

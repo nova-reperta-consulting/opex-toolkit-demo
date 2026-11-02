@@ -75,7 +75,7 @@
   .t-company .n-name{font-size:14px;font-weight:700;color:var(--navy)}
   .t-company .n-fte{font-size:12px;color:var(--navy2);margin-top:3px}
   .t-company .n-sub{font-size:var(--fs-10);color:var(--slate);margin-top:4px;letter-spacing:.4px}
-  .t-dept .nc{background:var(--card);border-color:var(--line)!important;box-shadow:var(--sh);--nr-tc:var(--navy);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent));border-radius:7px}
+  .t-dept .nc{background:var(--card);border-color:var(--line)!important;box-shadow:var(--sh);--nr-tc:var(--navy);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
   .t-dept .n-name{font-size:12.5px;font-weight:700;color:var(--navy)}
   .t-dept .n-fte{font-size:var(--fs-11);color:var(--txt);margin-top:2px}
   .t-team.in .nc{background:var(--card);border-color:var(--line);box-shadow:var(--sh)}
@@ -836,7 +836,7 @@ const DATA = /* DATA */ {
  "sourceIds": [],
  "sourcePanel": {
   "build": "client",
-  "scoredBy": "Prepared by Nova Reperta, Oct 2026.",
+  "scoredBy": "Prepared by Nova Reperta, Nov 2026.",
   "src": {}
  }
 };
@@ -1532,6 +1532,25 @@ render();
 })();
 </script>
 <!-- NR-GLASS:END -->
+<!-- NR-REFIT:BEGIN — fit again when the space changes (diagnostic-skill-builder/templates/refit-layer.html,
+     put in by scripts/patch_refit.py). Every page fits its view on a window resize. The space a page has can
+     also change without one: fonts that arrive late, the header stacking, a preview pane or iframe that grows
+     after the first paint. Then the page used to keep its first fit until you switched tabs. This watches the
+     view and the window, and replays the page's own resize handling once that space has really changed
+     (a change in the page's content alone does not count). -->
+<script>(function(){
+  var last = '', t = 0;
+  function box(){ var v = document.getElementById('view'); return (v ? v.clientWidth + 'x' + v.clientHeight + '/' : '') + innerWidth + 'x' + innerHeight; }
+  function kick(){ var k = box(); if(k === last) return; last = k; window.dispatchEvent(new Event('resize')); }
+  function soon(){ cancelAnimationFrame(t); t = requestAnimationFrame(kick); }
+  function again(){ last = ''; soon(); }
+  function watch(){ if(!window.ResizeObserver) return; var ro = new ResizeObserver(soon), v = document.getElementById('view');
+    if(v) ro.observe(v); ro.observe(document.documentElement); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watch); else watch();
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(again);
+  window.addEventListener('load', again);
+})();</script>
+<!-- NR-REFIT:END -->
 <style>
 /* ── READ MODE · narrow screens ──────────────────────────────────────────────
    This artifact normally scales its whole body down so the page fits one screen.
@@ -1569,23 +1588,4 @@ render();
   [style*="ellipsis"]{white-space:normal!important;text-overflow:clip!important;overflow:visible!important}
 }
 </style>
-<!-- NR-REFIT:BEGIN — fit again when the space changes (diagnostic-skill-builder/templates/refit-layer.html,
-     put in by scripts/patch_refit.py). Every page fits its view on a window resize. The space a page has can
-     also change without one: fonts that arrive late, the header stacking, a preview pane or iframe that grows
-     after the first paint. Then the page used to keep its first fit until you switched tabs. This watches the
-     view and the window, and replays the page's own resize handling once that space has really changed
-     (a change in the page's content alone does not count). -->
-<script>(function(){
-  var last = '', t = 0;
-  function box(){ var v = document.getElementById('view'); return (v ? v.clientWidth + 'x' + v.clientHeight + '/' : '') + innerWidth + 'x' + innerHeight; }
-  function kick(){ var k = box(); if(k === last) return; last = k; window.dispatchEvent(new Event('resize')); }
-  function soon(){ cancelAnimationFrame(t); t = requestAnimationFrame(kick); }
-  function again(){ last = ''; soon(); }
-  function watch(){ if(!window.ResizeObserver) return; var ro = new ResizeObserver(soon), v = document.getElementById('view');
-    if(v) ro.observe(v); ro.observe(document.documentElement); }
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watch); else watch();
-  if(document.fonts && document.fonts.ready) document.fonts.ready.then(again);
-  window.addEventListener('load', again);
-})();</script>
-<!-- NR-REFIT:END -->
 </body></html>

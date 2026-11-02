@@ -14,7 +14,7 @@ import os, re, sys
 
 FORBIDDEN = ["Helvetia", "helvetia", "Allianz", "allianz", "Carrefour", "carrefour",
              "Ethias", "ethias", "DLH", "sdworx", "SD Worx", "SDWorx",
-             "mortgage-ops", "anon-ops",
+             "mortgage-ops", "anon-ops", "Euroclear", "euroclear", "EUROCLEAR",
              "Strictly Confidential"]
 WORD = ["ALZ", "dlh", "alz"]
 SKIP_DIRS = {".git", ".github", "node_modules"}

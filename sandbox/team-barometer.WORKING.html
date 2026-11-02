@@ -185,7 +185,7 @@ table.hm tr.all th.rw{font-weight:800;color:var(--nr-navy)}
 #pw[data-t="dark"] table.hm tr.all th.rw{color:var(--ink)}
 table.hm tr.all td{outline:2px solid rgba(0,32,91,.35);outline-offset:-2px}
 .hmleg{display:flex;gap:9px;align-items:center;margin-top:9px;font-size:var(--fs-11);color:var(--muted)}
-.dqbox{margin-top:12px;border:1px solid var(--border);background:var(--tint);padding:9px 13px;font-size:var(--fs-115);color:var(--ink);--nr-tc:var(--warn);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent));border-radius:7px}
+.dqbox{margin-top:12px;border:1px solid var(--border);background:var(--tint);padding:9px 13px;font-size:var(--fs-115);color:var(--ink);--nr-tc:var(--warn);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
 .dqbox b{color:var(--warn)}
 
   /* -- responsive chrome: on a narrow screen the absolute toprow would collide, so drop it
@@ -195,11 +195,11 @@ table.hm tr.all td{outline:2px solid rgba(0,32,91,.35);outline-offset:-2px}
     .nr-rail{width:24px}
   }
   /*<EDIT>*/
-  #pw.editing .dcol-side{cursor:pointer;transition:.12s}
+  #pw.editing .dcol-side{cursor:pointer;transition:opacity .12s,filter .12s,box-shadow .12s,background-color .12s,border-color .12s,outline-color .12s}
   #pw.editing .dcol-side:hover{outline:2px solid var(--accent);outline-offset:4px;border-radius:12px}
-  #pw.editing #title{cursor:pointer;transition:.12s}
+  #pw.editing #title{cursor:pointer;transition:opacity .12s,filter .12s,box-shadow .12s,background-color .12s,border-color .12s,outline-color .12s}
   #pw.editing #title:hover{outline:2px solid var(--accent);outline-offset:4px;border-radius:8px}
-  #pw.editing .dcol-main{opacity:.5;filter:saturate(.7);cursor:help;transition:.15s}
+  #pw.editing .dcol-main{opacity:.5;filter:saturate(.7);cursor:help;transition:opacity .15s,filter .15s,box-shadow .15s,background-color .15s,border-color .15s,outline-color .15s}
   #lock{width:34px;height:34px;border:1px solid var(--line);background:var(--card);border-radius:9px;color:var(--mut);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
   #lock svg{width:17px;height:17px;display:block}
   #lock.unlocked{background:var(--rag-amber);border-color:var(--rag-amber);color:#fff}
@@ -222,7 +222,7 @@ table.hm tr.all td{outline:2px solid rgba(0,32,91,.35);outline-offset:-2px}
   #ed .cap{display:block;font-size:var(--fs-10);color:var(--mut);font-weight:400;margin-top:4px;letter-spacing:0;text-transform:none}
   #ed .cap2{font-weight:400;color:var(--mut);letter-spacing:0;text-transform:none;margin-left:4px}
   #ed .edq{font-size:var(--fs-11);color:var(--mut);margin-top:6px}
-  #ed .sect{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:12px;--nr-tc:transparent;background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
+  #ed .sect{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:12px;--nr-tc:var(--line);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
   #ed .sect.pos{--nr-tc:var(--rag-green)} #ed .sect.pos label{color:var(--rag-green)}
   #ed .sect.neg{--nr-tc:var(--rag-amber)} #ed .sect.neg label{color:#B07A1E}
   #ed .sect.take{--nr-tc:var(--navy);background:var(--slate-10)} #ed .sect.take label{color:var(--navy)}
@@ -924,7 +924,7 @@ const DATA = /* DATA */ {
  "sourceIds": [],
  "sourcePanel": {
   "build": "working",
-  "scoredBy": "Prepared by Nova Reperta, Oct 2026.",
+  "scoredBy": "Prepared by Nova Reperta, Nov 2026.",
   "src": {
    "src-01": {
     "id": "src-01",
@@ -1460,7 +1460,7 @@ const DATA = /* DATA */ {
     prev();kmt.addEventListener("input",prev);
     edp.querySelector('#km_hl').onclick=function(){
       var s=kmt.selectionStart,e2=kmt.selectionEnd,v=kmt.value;
-      if(s===e2){kmt.focus();return;}
+      if(s===e2){kmt.focus();return;} /* nrSnapWord: a highlight never starts or ends inside a word */ while(s<e2&&/\s/.test(v.charAt(s)))s++; while(e2>s&&/\s/.test(v.charAt(e2-1)))e2--; while(s>0&&/[\p{L}\p{N}]/u.test(v.charAt(s-1))&&/[\p{L}\p{N}]/u.test(v.charAt(s)))s--; while(e2<v.length&&/[\p{L}\p{N}]/u.test(v.charAt(e2))&&/[\p{L}\p{N}]/u.test(v.charAt(e2-1)))e2++;
       var sl=v.slice(s,e2);
       if(/^\*\*[\s\S]*\*\*$/.test(sl)){kmt.value=v.slice(0,s)+sl.slice(2,-2)+v.slice(e2);kmt.setSelectionRange(s,e2-4);}
       else{kmt.value=v.slice(0,s)+'**'+sl+'**'+v.slice(e2);kmt.setSelectionRange(s,e2+4);}
@@ -1820,6 +1820,25 @@ const DATA = /* DATA */ {
 })();
 </script>
 <!-- NR-GLASS:END -->
+<!-- NR-REFIT:BEGIN — fit again when the space changes (diagnostic-skill-builder/templates/refit-layer.html,
+     put in by scripts/patch_refit.py). Every page fits its view on a window resize. The space a page has can
+     also change without one: fonts that arrive late, the header stacking, a preview pane or iframe that grows
+     after the first paint. Then the page used to keep its first fit until you switched tabs. This watches the
+     view and the window, and replays the page's own resize handling once that space has really changed
+     (a change in the page's content alone does not count). -->
+<script>(function(){
+  var last = '', t = 0;
+  function box(){ var v = document.getElementById('view'); return (v ? v.clientWidth + 'x' + v.clientHeight + '/' : '') + innerWidth + 'x' + innerHeight; }
+  function kick(){ var k = box(); if(k === last) return; last = k; window.dispatchEvent(new Event('resize')); }
+  function soon(){ cancelAnimationFrame(t); t = requestAnimationFrame(kick); }
+  function again(){ last = ''; soon(); }
+  function watch(){ if(!window.ResizeObserver) return; var ro = new ResizeObserver(soon), v = document.getElementById('view');
+    if(v) ro.observe(v); ro.observe(document.documentElement); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watch); else watch();
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(again);
+  window.addEventListener('load', again);
+})();</script>
+<!-- NR-REFIT:END -->
 <style>
 /* ── READ MODE · narrow screens ──────────────────────────────────────────────
    This artifact normally scales its whole body down so the page fits one screen.
@@ -1857,23 +1876,4 @@ const DATA = /* DATA */ {
   [style*="ellipsis"]{white-space:normal!important;text-overflow:clip!important;overflow:visible!important}
 }
 </style>
-<!-- NR-REFIT:BEGIN — fit again when the space changes (diagnostic-skill-builder/templates/refit-layer.html,
-     put in by scripts/patch_refit.py). Every page fits its view on a window resize. The space a page has can
-     also change without one: fonts that arrive late, the header stacking, a preview pane or iframe that grows
-     after the first paint. Then the page used to keep its first fit until you switched tabs. This watches the
-     view and the window, and replays the page's own resize handling once that space has really changed
-     (a change in the page's content alone does not count). -->
-<script>(function(){
-  var last = '', t = 0;
-  function box(){ var v = document.getElementById('view'); return (v ? v.clientWidth + 'x' + v.clientHeight + '/' : '') + innerWidth + 'x' + innerHeight; }
-  function kick(){ var k = box(); if(k === last) return; last = k; window.dispatchEvent(new Event('resize')); }
-  function soon(){ cancelAnimationFrame(t); t = requestAnimationFrame(kick); }
-  function again(){ last = ''; soon(); }
-  function watch(){ if(!window.ResizeObserver) return; var ro = new ResizeObserver(soon), v = document.getElementById('view');
-    if(v) ro.observe(v); ro.observe(document.documentElement); }
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watch); else watch();
-  if(document.fonts && document.fonts.ready) document.fonts.ready.then(again);
-  window.addEventListener('load', again);
-})();</script>
-<!-- NR-REFIT:END -->
 </body></html>

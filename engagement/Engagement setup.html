@@ -2797,9 +2797,11 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
       if(!t){ t=document.createElement('div'); t.className='nrs-tip nr-glass-tint'; t.setAttribute('role','tooltip'); document.body.appendChild(t); }
       var r=el.getBoundingClientRect(), sb=document.querySelector('.nrs-sb'); t.textContent=el.getAttribute('data-nrs-tip');
       t.style.display='block'; t.style.left=((sb?sb.getBoundingClientRect().right:r.right)+8)+'px'; t.style.top=(r.top+r.height/2-t.offsetHeight/2)+'px'; },
-    foot:function(){ var c=S.cfg(), d=S.isDark();
+    /* extra: a screen's own links in the foot, under the menu (the findings dashboard: Hand over, The methodology) */
+    foot:function(extra){ var c=S.cfg(), d=S.isDark();
       var rl=S.isRail()?'Open the menu':'Fold the menu';
-      return '<div class="nrs-foot">'+S.tourLink()+S.setupLink(c)+'<button type="button" class="nrs-dm" data-nrs-theme aria-pressed="'+d+'" data-nrs-tip="Dark mode">'+svg(P.moon)+'<span class="nrs-l">Dark mode</span><i class="nrs-tg" aria-hidden="true"></i></button>'+
+      var ex=(extra||[]).map(function(i){ return '<button type="button" class="nrs-i nrs-set'+(i.on?' on':'')+'" data-nrs-k="'+esc(i.k)+'"'+(i.on?' aria-current="page"':'')+' data-nrs-tip="'+esc(i.label)+'">'+svg(i.icon)+'<span class="nrs-l">'+esc(i.label)+'</span></button>'; }).join('');
+      return '<div class="nrs-foot">'+ex+S.tourLink()+S.setupLink(c)+'<button type="button" class="nrs-dm" data-nrs-theme aria-pressed="'+d+'" data-nrs-tip="Dark mode">'+svg(P.moon)+'<span class="nrs-l">Dark mode</span><i class="nrs-tg" aria-hidden="true"></i></button>'+
         '<button type="button" class="nrs-dm nrs-rl" data-nrs-rail aria-pressed="'+S.isRail()+'" data-nrs-tip="'+rl+'">'+svg(P.fold)+'<span class="nrs-l">'+rl+'</span></button>'+
         (c&&c.built?'<p class="nrs-built">Built '+esc(c.built)+' from the engagement folder</p>':'')+'</div>'; },
     /* groups: [{label, items:[{k, label, icon (svg paths) | glyph (html), on, n, nCls, cls, title}]}] */
@@ -2808,10 +2810,10 @@ button.nrs-chip.on{border-color:var(--nrs-chip-ink);box-shadow:inset 0 0 0 1px v
         var n=(i.n!==''&&i.n!=null&&i.n!==0)?'<em class="nrs-n'+(i.nCls?' '+i.nCls:'')+'"'+(i.title?' title="'+esc(i.title)+'"':'')+'>'+esc(i.n)+'</em>':'';
         return '<button type="button" class="nrs-i'+(i.on?' on':'')+(i.cls?' '+i.cls:'')+'" data-nrs-k="'+esc(i.k)+'"'+(i.on?' aria-current="page"':'')+' data-nrs-tip="'+esc(i.label)+(n?' · '+esc(i.n):'')+'">'+
           (i.glyph!=null?i.glyph:svg(i.icon))+'<span class="nrs-l">'+esc(i.label)+'</span>'+n+'</button>'; }).join('')+'</div>'; }).join(''); },
-    /* draw the whole sidebar into el. o: {screen, brand:{client,name,where}, groups, navClass, go(k)} */
+    /* draw the whole sidebar into el. o: {screen, brand:{client,name,where}, groups, navClass, go(k), foot:[{k,label,icon,on}]} */
     render:function(el,o){ if(!el) return; o=o||{}; GO=o.go||null;
       el.classList.add('nrs-sb');
-      el.innerHTML=S.brand(o.brand)+S.switcher(o.screen)+'<nav class="nrs-nav'+(o.navClass?' '+o.navClass:'')+'" aria-label="Pages">'+S.nav(o.groups)+'</nav>'+S.foot(); },
+      el.innerHTML=S.brand(o.brand)+S.switcher(o.screen)+'<nav class="nrs-nav'+(o.navClass?' '+o.navClass:'')+'" aria-label="Pages">'+S.nav(o.groups)+'</nav>'+S.foot(o.foot); },
     burger:function(){ return '<button type="button" class="nrs-burger" aria-label="Menu" data-nrs-menu>'+svg(P.menu)+'</button>'; },
     open:function(on){ var sb=document.querySelector('.nrs-sb'), sc=document.querySelector('.nrs-scrim');
       if(!sb) return; var v=(on==null)?!sb.classList.contains('open'):!!on;
@@ -2975,8 +2977,8 @@ table.tteams .tt-h2{display:none}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
 })();
 </script>
-<script>window.__NR_FOLDER_BUILD__={"id": "northwind", "builtAt": "2026-10-18 14:10"};</script>
-<script>window.__NR_SHELL__={"screen": "setup", "client": "Northwind Assurance", "name": "OpEx diagnostic (one frame)", "where": "Diagnose · week 7 of 9", "built": "18 Oct 14:10", "switch": false};</script>
+<script>window.__NR_FOLDER_BUILD__={"id": "northwind", "builtAt": "2026-10-23 06:34", "checkinXlsx": false};</script>
+<script>window.__NR_SHELL__={"screen": "setup", "client": "Northwind Assurance", "name": "OpEx diagnostic (one frame)", "where": "Diagnose · week 8 of 9", "built": "23 Oct 06:34", "switch": false};</script>
 </head>
 <body>
 
@@ -3039,7 +3041,7 @@ const M = {
     'wilo-analysis':    {label:'What leaders spend time on', type:'matrix', cat:'dimension', lens:'mgmt', skill:'wilo-analyser', status:'envisioned', trig:'run the WILO analysis for {team}', note:'Where the team lead\u2019s week actually goes, against where it should go.'},
     'performance-wheel':{label:'Performance wheel', type:'rated-wheel', cat:'dimension', lens:'mgmt', skill:'performance-wheel-builder', status:'live', trig:'run the performance wheel for {team}', note:'How the team is steered: targets, routines, decision rights — scored 1 to 5 against a fixed rubric.'},
     'skills-wheel':     {label:'Skills wheel', type:'rated-wheel', cat:'dimension', lens:'mgmt', skill:'skills-wheel-builder', status:'live', trig:'run the skills wheel for {team}', note:'Whether the team has the skills it needs, and how those skills are kept up.'},
-    'kpi-cascade':      {label:'KPI cascade', type:'node-map', cat:'dimension', lens:'mgmt', skill:'kpi-cascade-builder', status:'envisioned', trig:'build the KPI cascade for {team}', note:'Follows a performance indicator down from company level to the department, the team and the individual, and shows where the chain breaks.'},
+    'kpi-cascade':      {label:'KPI cascade', type:'node-map', cat:'dimension', lens:'mgmt', skill:'kpi-cascade-builder', status:'in-build', trig:'run the KPI cascade for {team}', note:'Maps the team’s KPIs from its main objectives to the data behind them, and shows which level owns each one and which meeting discusses it.'},
     'data-maturity':    {label:'Data maturity assessment', type:'matrix', cat:'dimension', lens:'data', skill:'data-maturity-builder', status:'live', trig:'run the data maturity assessment for {team}', note:'Scores the data points the team works on, and reads each process off the weakest one it leans on: how much of the work AI can run on today, and what it would take to unblock the rest.'},
     'team-barometer':   {label:'Team barometer', type:'matrix', cat:'dimension', lens:'mind', skill:'team-barometer-builder', status:'live', trig:'run the team barometer for {team}', note:'Asks the team itself, by survey. Their answers, not our judgement.'},
     'raci-diagnostic':  {label:'RACI diagnostic', type:'matrix', cat:'dimension', lens:'org', skill:'raci-diagnostic-builder', status:'live', trig:'run the RACI diagnostic for {team}', note:'Who is responsible, accountable, consulted and informed for each activity in a process, and which activities have nobody accountable, two people accountable, or nobody doing the work.'},
@@ -3237,6 +3239,10 @@ function instrumentsForLevel(lens,lvl){
    folder's engagement and keeps its own browser storage. */
 const APP = window.__NR_APP__==='setup' ? 'setup' : 'dashboard';
 const FB = window.__NR_FOLDER_BUILD__ || null;
+/* the Excel copy of the Daily whiteboard (checkin_excel.py): asked for here, once per engagement. Not set yet: on when
+   the folder already holds Check-in.xlsx (generate_setup.py puts checkinXlsx in the folder build). Gilles, 23 Oct 2026. */
+const xlOn=()=>E&&E.checkinExcel!=null?!!E.checkinExcel:!!(FB&&FB.checkinXlsx);
+function setXl(v){ E.checkinExcel=!!v; save(); go('s1'); }
 const LS_ENG = APP==='setup' ? (FB?'nr_setup_folder_'+FB.id:'nr_setup_v1')
                              : (FB?'nr_engagement_folder_'+FB.id:'nr_engagement_v2'),
       LS_THEME='nr_eng_theme', LS_DEMO='nr_engagement_demo_off';
@@ -3261,7 +3267,7 @@ function blank(){
        own chain. Hence a LIST — usually of one. */
     scope:{statement:'',entity:'',processes:[],objectives:[],outOfScope:[],constraints:[],
       valueChains:[]},
-    divisions:[], teams:[], nrMembers:[], teamAssign:{},
+    divisions:[], teams:[], nrMembers:[], teamAssign:{}, look:{use:'house'},
     methodology:{ref:M.ref,version:M.version,approach:'full-diagnostic',overrides:{}},
     plan:{tracks:[],baseline:[],registers:[],crossCutting:[],perTeam:{}},
     weights:{proc:1,cust:1,mgmt:1,data:1,mind:1,org:1},
@@ -3836,24 +3842,22 @@ function setupNav(){
   return out;
 }
 function setupSteps(){ return setupNav().filter(x=>x.k); }
+/* Two ways to read the engagement (Gilles, 22 Oct 2026). The answer: the Summary, then one page per step of
+   the chain, hypothesis > total potential > levers and the addressable potential > roadmap. The raw view: every
+   output, result and insight in one list. The picker in the title bar switches every page between all teams
+   and one team, so the team deep dive needs no page of its own. Hand over and The methodology sit in the foot. */
 const LIVE_NAV=[
-  {sec:'The findings'},
   {k:'summary',i:'book',l:'Summary'},
-  {k:'chain',i:'chain',l:'Value chain'},
-  {k:'teams',i:'users',l:'Teams',num:()=>inScopeTeams().length},
-  {k:'hyptree',i:'layers',l:'Hypothesis tree'},
-  {k:'exhibits',i:'grid',l:'Exhibits'},
-  {sec:'Where things are'},
-  {k:'outputs',i:'folder',l:'All outputs',num:()=>outModel().n||''},
-  {sec:'Client views'},
-  {k:'roadmap',i:'route',l:'Transformation roadmap'},
-  {k:'benefits',i:'euro',l:'Benefits overview'},
-  {sec:'Workspace'},
-  {k:'inbox',i:'inbox',l:'New for your teams',num:()=>ibCount()||''},
-  {k:'export',i:'down',l:'Hand over'},
-  {sec:'Guide'},
-  {k:'how',i:'help',l:'The methodology'}
+  {sec:'The answer'},
+  {k:'hyptree',no:1,l:'Hypotheses'},
+  {k:'potential',no:2,l:'Potential'},
+  {k:'levers',no:3,l:'Levers'},
+  {k:'roadmap',no:4,l:'Roadmap'},
+  {sec:'The raw view'},
+  {k:'evidence',i:'folder',l:'All evidence',num:()=>ibCount()||''},
+  {k:'dataroom',i:'db',l:'Data room',num:()=>(window.NRRoom&&NRRoom.count())||''}
 ];
+const LIVE_FOOT=[{k:'export',i:'down',l:'Hand over'},{k:'how',i:'help',l:'The methodology'}];
 const START_NAV=[{sec:'Start'},{k:'start',i:'folder',l:'Open an engagement'},{sec:'Guide'},{k:'how',i:'help',l:'The methodology'}];
 
 const TITLES={
@@ -3870,12 +3874,16 @@ const TITLES={
   inbox:['New for your teams','What colleagues heard or changed that touches the teams you own'],
   overview:['Engagement setup','What this engagement is for, what it covers, and how it is configured'],
   dims:['Findings by dimension','Total and addressable potential, dimension by dimension'],
-  summary:['Summary','What the engagement has found so far'],
-  hyptree:['Hypothesis tree','The problem broken down, and what tests each part'],
+  summary:['Summary','What we found so far, and how it hangs together'],
+  hyptree:['Hypotheses','The problem broken down, and what tests each part'],
+  potential:['Potential','How much time could be freed, and where it sits'],
+  levers:['Levers','What we would change per dimension, and how much of the potential it addresses'],
+  evidence:['All evidence','Every output, result and insight behind the findings'],
+  dataroom:['Data room','Every transcript, document, data extract and photo we collected, and what cites it'],
   exhibits:['Exhibits','Every analysis behind each hypothesis, and what it produced'],
   exec:['Overview for the client','The headline numbers, the way the client sees them'],
   chain:['Value chain','The teams on the chain the client earns its money along'],
-  roadmap:['Transformation roadmap','What happens when, and what has to come first'],
+  roadmap:['Roadmap','What happens when, and what it is worth'],
   benefits:['Benefits overview','What the potential is worth, and what it costs to get'],
   teams:['Teams','Every team in scope, one tab per view'],
   outputs:['All outputs','Every analysis in the wave, and where it lives'],
@@ -3919,9 +3927,11 @@ function renderShell(){
   $('#topbar').classList.remove('teammode');
   $('#tb-right').innerHTML=[
     si>=0&&si<steps.length-1 ? nextBtn(steps[si+1].k) : '',
-    MODE!=='setup' ? (ACTIONS[PAGE]||(()=>''))() : ''
+    MODE!=='setup' ? tbRight() : ''
   ].join('');
 }
+/* the right of the title bar: the page's own figures and switches, then the team picker on every page that has one */
+function tbRight(){ return (ACTIONS[PAGE]||(()=>''))()+(MODE==='live'&&window.scopePicker&&SCOPE_PAGES.includes(PAGE)?scopePicker():''); }
 
 /* The sidebar is the shared frame (NRShell, the @@NR-SHELL block): the brand block, the
    Cockpit | Findings switch in a folder build, this screen's menu, and the dark-mode switch.
@@ -3932,9 +3942,9 @@ function shellGroups(){
     if(it.sec){ g={label:it.sec,items:[]}; groups.push(g); return; }
     if(!g){ g={label:'',items:[]}; groups.push(g); }
     const done=it.n?stepDone(it.k):false, nv=it.num?it.num():'';
-    g.items.push({k:it.k, label:it.l, on:PAGE===it.k, icon:ICO[it.i]||'',
-      glyph:it.n?`<span class="nrs-st">${done?'&#10003;':it.n}</span>`:null,
-      cls:(it.n?'stp':'')+(done?' done':''), n:nv||(it.later&&!done?'can wait':''), nCls:it.k==='inbox'?'hot':(it.later&&!done&&!nv?'later':'')});
+    g.items.push({k:it.k, label:it.l, on:PAGE===it.k||(PAGE==='dims'&&it.k==='levers'), icon:ICO[it.i]||'',
+      glyph:it.n?`<span class="nrs-st">${done?'&#10003;':it.n}</span>`:it.no?`<span class="nrs-st">${it.no}</span>`:null,
+      cls:(it.n?'stp':'')+(done?' done':''), n:nv||(it.later&&!done?'can wait':''), nCls:(it.k==='inbox'||it.k==='evidence')?'hot':(it.later&&!done&&!nv?'later':'')});
   });
   return groups;
 }
@@ -3945,6 +3955,7 @@ function renderEngBlock(){
     brand:{client:E&&E.client, name:named?(E.name||''):(APP==='setup'?'Engagement setup':'Findings dashboard'),
            where:c?c.where:NRShell.where(E)},
     groups:shellGroups(), navClass:PAGE==='begin'?'muted':'',
+    foot:MODE==='live'?LIVE_FOOT.map(x=>({k:x.k,label:x.l,icon:ICO[x.i]||'',on:PAGE===x.k})):null,
     go:k=>{ if(k==='tour'){ tourOpen(); return; } if(k==='new'){ startNew(); return; } go(k); }});
 }
 
@@ -4118,8 +4129,8 @@ function fxFrame(p){
   if(!src) return `<div style="background:var(--surface);border:1px solid var(--divider);border-radius:var(--r);padding:24px 26px;max-width:760px">
     <div style="font:700 14px/1.3 var(--fh);margin-bottom:6px">Built from the engagement folder</div>
     <p style="font-size:13px;line-height:1.55;color:var(--muted)">The hypothesis tree and the exhibits behind each hypothesis come from the engagement folder. Open this dashboard from the folder's 0. Project management to see them.</p></div>`;
-  const dark=document.documentElement.classList.contains('dark');
-  return `<iframe class="fx-frame" src="${esc(src)}?embed=${p}${dark?'&dark=1':''}" title="${p==='tree'?'Hypothesis tree':'Exhibits'}" style="display:block;width:100%;height:calc(100vh - 120px);border:0;background:transparent"></iframe>`;
+  const dark=document.documentElement.classList.contains('dark'), tm=p==='tree'&&window.scopeTeam?scopeTeam():null;
+  return `<iframe class="fx-frame" src="${esc(src)}?embed=${p}${dark?'&dark=1':''}${tm?'&team='+encodeURIComponent(tm.name):''}" title="${p==='tree'?'Hypotheses':'Exhibits'}" style="display:block;width:100%;height:calc(100vh - 120px);border:0;background:transparent"></iframe>`;
 }
 PAGES.hyptree=()=>fxFrame('tree');
 PAGES.exhibits=()=>fxFrame('exhibits');
@@ -4129,7 +4140,7 @@ const FX_CHIPS={};
 window.addEventListener('message',e=>{ const d=e.data; if(!d||typeof d!=='object'||!('nrChips' in d)) return;
   if(![...document.querySelectorAll('.fx-frame')].some(f=>f.contentWindow===e.source)) return;
   const k=d.nrFx==='tree'?'hyptree':'exhibits'; FX_CHIPS[k]=String(d.nrChips||'');
-  if(PAGE===k){ const r=document.getElementById('tb-right'); if(r) r.innerHTML=ACTIONS[k](); } });
+  if(PAGE===k){ const r=document.getElementById('tb-right'); if(r) r.innerHTML=tbRight(); } });
 ACTIONS.hyptree=()=>FX_CHIPS.hyptree?`<div class="nrs-chips">${FX_CHIPS.hyptree}</div>`:'';
 ACTIONS.exhibits=()=>FX_CHIPS.exhibits?`<div class="nrs-chips">${FX_CHIPS.exhibits}</div>`:'';
 
@@ -4242,12 +4253,30 @@ PAGES.s1=()=>{
           </select></div>
       </div>
       <p class="hint" style="margin-top:6px">Short name for the folder and files: <b id="f-id">${esc(E.id||'—')}</b>. Made from the client and engagement name.</p>
-      <div style="margin-top:10px">
-        ${field('Check-in workbook on SharePoint','links.checkin',{ph:'https://…sharepoint.com/…/Check-in.xlsx',hint:'Optional. Open Check-in.xlsx in 0. Project management on SharePoint, choose Copy link and paste it here: the cockpit\'s Open in Excel button opens it.'})}
+      <div class="xl-row" style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:12px;padding-top:12px;border-top:1px solid var(--divider)">
+        <div><b style="font-family:var(--fh)">Excel copy of the Daily whiteboard</b>
+          <span class="hint" style="display:block;margin-top:3px;font-size:var(--fs-105);color:var(--muted-2);line-height:1.45">For a team that also wants to update the whiteboard in Excel. The team keeps working in the cockpit; Claude keeps the two in line.</span></div>
+        <div class="tgl ${xlOn()?'on':''}" role="switch" aria-checked="${xlOn()}" title="Excel copy of the Daily whiteboard" onclick="setXl(${!xlOn()})"><span class="sw"></span></div>
       </div>
+      ${xlOn()?`<span class="hint" style="display:block;margin-top:2px">${FB&&FB.checkinXlsx?'Check-in.xlsx sits in 0. Project management. The cockpit shows Open in Excel and Sync now.':'Check-in.xlsx is made in 0. Project management at the next refresh. The cockpit then shows Open in Excel and Sync now.'}</span>
+      <div style="margin-top:10px">${field('Link to Check-in.xlsx on SharePoint','links.checkin',{ph:'https://…sharepoint.com/…/Check-in.xlsx',hint:'Optional. Once the file is there, choose Copy link on SharePoint and paste it here, so Open in Excel opens it from the cockpit.'})}</div>`
+      :(FB&&FB.checkinXlsx?`<span class="hint" style="display:block;margin-top:2px">Check-in.xlsx stays in the folder, but the cockpit no longer offers it and it is no longer kept in line. Anything changed in it and not synced yet goes to the cockpit first.</span>`:'')}
     </div>
+  </div>
+
+  <div class="dd-section"><span class="eyebrow">Which look do the deliverables use?</span>
+    <div class="ch-grid">${Object.entries(LOOK_CARDS).map(([k,c])=>card(lookUse()===k,`pickLook('${k}')`,c.label,c)).join('')}</div>
+    ${lookUse()==='client'?`<p class="ch-next">${E.look&&E.look.theme?'The client look is set up. Every deck and deliverable for this engagement uses it.':'Send to Claude with one of the client\'s PowerPoint decks. Claude reads it and shows you the look in the chat before anything is built.'}</p>`:''}
   </div>`;
 };
+/* the look of everything made for this engagement: the house look, or the client's template
+   (client-template-builder sets it up and adds look.theme). One look per engagement. */
+const LOOK_CARDS={
+  house:{label:'Nova Reperta house look',d:'Our own colours, font and logo.',get:'Every deck and deliverable in the standard NR look.'},
+  client:{label:'The client\'s template',d:'The client\'s colours, font, logo and slide frame, with our layouts inside.',get:'Every deck and deliverable for this engagement in the client\'s look, agreed with you first.'}
+};
+const lookUse=()=>(E.look&&E.look.use)||'house';
+function pickLook(k){ if(lookUse()===k) return; E.look=Object.assign({},E.look||{},{use:k}); save(); go('s1'); }
 /* an empty work-stream table follows the kind of engagement: three OpEx phases, or one phase to rename */
 function resetEmptyStructure(){ if(E.structure && !allStreams().length) E.structure=null; }
 function pickPractice(k){
@@ -4801,6 +4830,7 @@ PAGES.s6=()=>{
       ${row('Partner',esc(E.assignment.partner||'—'))}
       ${row('Case lead',esc(E.assignment.lead||'—'))}
       ${row('Window',`${esc(dmy(E.assignment.start))} → ${esc(dmy(E.assignment.target))}`)}
+      ${row('Look',esc(lookUse()==='client'?'The client\'s template'+(E.look&&E.look.theme?'':' (still to set up)'):'Nova Reperta house look'))}
     </div>
     <div class="card">
       <div class="ch"><span class="ct">${opex?'Plan':'Who does what'}</span>${opex?`<span class="badge-soft">${planCount()} analyses</span>`:''}</div>
@@ -5547,7 +5577,8 @@ const fdTeam=id=>{ const t=(E.teams||[]).find(x=>x.id===id); return t?t.name:'';
 const fdLever=k=>{ const l=lev(k); return `<span class="fd-chip" style="background:${l.bg};color:${l.t}">${esc(l.label)}</span>`; };
 const fdMag=m=>m&&isFinite(+m.value)?`${+m.value} ${FD_UNIT[m.unit]||m.unit}`:'not quantified';
 
-function fdOverview(m){
+function fdOverview(m,opt){
+  opt=opt||{};
   const scope=m.teams.reduce((a,t)=>a+(+t.fte||0),0);
   const pf=m.pains.reduce((a,p)=>a+(p.fte||0),0), pn=m.pains.filter(p=>p.fte==null).length;
   const gf=m.imps.reduce((a,o)=>a+(o.fte||0),0), gn=m.imps.filter(o=>o.fte==null).length;
@@ -5597,9 +5628,9 @@ function fdOverview(m){
     ${without.length?`<p class="fd-note">No pain points captured yet for ${fdPl(without.length,'team','teams')}: ${esc(without.map(g=>g.t.name).join(', '))}.</p>`:''}
     ${loose?`<p class="fd-note">${fdPl(loose,'pain point is','pain points are')} not tied to a team yet, so ${loose===1?'it is':'they are'} left out of this grid.</p>`:''}`:'';
   const head=m.B?'':narr('Where this comes from',`Pain points and improvements come from the operating baseline, as the analyses capture them. There is no baseline in this engagement yet, so the rows below only show what is planned.`);
-  return head+tiles+`<div class="fd-key"><span class="kp">Total potential (FTE)</span><span class="kg">Addressable potential (FTE)</span></div>
+  return head+(opt.noTiles?'':tiles)+`<div class="fd-key"><span class="kp">Total potential (FTE)</span><span class="kg">Addressable potential (FTE)</span></div>
     <div class="fd-wrap"><table class="fd-tbl"><thead><tr><th>Dimension</th><th>Our judgement</th><th>FTE</th><th>Levers</th><th>Analyses done</th></tr></thead><tbody>${rows}</tbody></table></div>
-    ${notes.map(n=>`<p class="fd-note">${n}</p>`).join('')}${mtx}`;
+    ${notes.map(n=>`<p class="fd-note">${n}</p>`).join('')}${opt.noMatrix?'':mtx}`;
 }
 
 function fdDetail(m,k){
@@ -5619,7 +5650,7 @@ function fdDetail(m,k){
   const ana=x.plan.length?`<div class="fd-wrap"><table class="fd-tbl fd-ana"><tbody>${x.plan.map(p=>`<tr><td>${esc(p.t.name)}</td><td>${p.list.map(i=>`<span class="fd-ina${x.isDone(i,p.t.id)?' ok':''}">${x.isDone(i,p.t.id)?'&#10003; ':''}${esc(fdInst(i))}</span>`).join('')}</td></tr>`).join('')}</tbody></table></div>`
     : `<p class="fd-none">Nothing is planned on this dimension.</p>`;
   const skip=m.teams.filter(t=>!x.plan.some(p=>p.t.id===t.id));
-  return `<button class="fd-back" onclick="go('summary')">&larr; Summary</button>${title}
+  return `<button class="fd-back" onclick="go('levers')">&larr; Levers</button>${title}
     <div class="fd-cols">
       <div class="fd-col"><span class="eyebrow">Pain points</span>${pains.length?pains.map(pItem).join(''):'<p class="fd-none">None captured yet.</p>'}</div>
       <div class="fd-col"><span class="eyebrow">Improvements</span>${imps.length?imps.map(iItem).join(''):'<p class="fd-none">None proposed yet.</p>'}
@@ -5824,7 +5855,7 @@ window.nrDiag={
 };
 
 /* the executive summary view for a diagnostic: pain by team and division, pain and potential per dimension */
-function diagSummaryHtml(){
+function diagSummaryHtml(noKpi){
   const m=fdModel(), O=outModel(), teams=inScopeTeams(), X=teams.map(t=>diagTeam(t.id,m,O));
   const scope=teams.reduce((a,t)=>a+(+t.fte||0),0), as=X.filter(x=>x.P.length), assessed=as.reduce((a,x)=>a+x.fte,0);
   const tied=m.pains.reduce((a,p)=>a+(p.fte||0),0), win=m.imps.reduce((a,o)=>a+(o.fte||0),0);
@@ -5853,7 +5884,7 @@ function diagSummaryHtml(){
     none:x.P.length?fdPl(x.P.length,'pain point','pain points')+', not in FTE':x.ran?'No pain point found':'Not run yet',
     tip:x.P.length?dimTip(x.d,x.P,x.I,String((R[x.d.k]||{}).judgement||'').trim()):''}));
   const bj=best?String((R[best.d.k]||{}).judgement||'').trim():'';
-  return kp+`<div class="diag-row">
+  return (noKpi?'':kp)+`<div class="diag-row">
     <div class="diag-grp"><div class="eyebrow">Where the potential sits</div><div class="card diag-box">
       <div class="diag-titlerow"><h2 class="diag-h2">Potential by team &amp; division</h2></div>
       <div class="hm-legend"><span class="hm-cap">Total potential as a share of scope</span>
@@ -6932,6 +6963,8 @@ ACTIONS.inbox=()=>{ if(!E||!ibMe()) return '';
 ibLoad();
 
 /* ── guide ────────────────────────────────────────────────────────────── */
+/* The data room (Gilles, 22 Oct 2026): every source in one table, the @@NR-ROOM block below */
+PAGES.dataroom=()=>window.NRRoom?NRRoom.html():'';
 PAGES.how=()=>
 `<div class="finding-grid" style="margin-bottom:22px">
   <div class="finding blue"><div class="fi-tag"><span class="fi-dot"></span>First · You set it up</div>
@@ -6942,22 +6975,20 @@ PAGES.how=()=>
     <p>Claude reads the setup against the NR method, questions a scope that is too vague or a team set deeper than the assignment warrants, then sets up the folder and proposes the plan. It never runs an analysis without asking you first.</p></div>
   <div class="finding amber"><div class="fi-tag"><span class="fi-dot"></span>After that · You work from it</div>
     <div class="fi-title">Two views of one folder</div>
-    <p>The <b>Cockpit</b> shows where the engagement stands: the plan, actions, people and risks. This screen, <b>Findings</b>, shows what we found, team by team. To run an analysis, ask Claude in the chat: it prepares the session, walks you through it and writes the results back to the folder.</p></div>
+    <p>The <b>Cockpit</b> shows where the engagement stands: the plan, actions, people and risks. This screen, <b>Findings</b>, shows what we found, for all teams or one. To run an analysis, ask Claude in the chat: it prepares the session, walks you through it and writes the results back to the folder.</p></div>
 </div>
 
 <div class="dd-section"><span class="eyebrow">What each page is for</span>
   <div class="card"><div class="tbl-wrap"><table class="tbl">
     <thead><tr><th style="width:190px">Page</th><th>The question it answers</th></tr></thead><tbody>
-    <tr><td class="tnm">Summary</td><td>What have we found so far? One page for the steering committee: our answer today, every team, and where the potential sits.</td></tr>
-    <tr><td class="tnm">Value chain</td><td>Where along the client's business does it hurt? The teams arranged the way the client earns its money, with the potential found at each stage.</td></tr>
-    <tr><td class="tnm">Teams</td><td>One team at a time: its baseline, the findings on each dimension, the improvement potential, AI readiness, the analyses that ran and the opportunities that followed.</td></tr>
-    <tr><td class="tnm">Hypothesis tree</td><td>The problem broken down into hypotheses, and which analysis tests each one.</td></tr>
-    <tr><td class="tnm">Exhibits</td><td>The evidence behind each hypothesis: every analysis and what it produced.</td></tr>
-    <tr><td class="tnm">All outputs</td><td>Every analysis in the engagement, where it stands and where its file lives.</td></tr>
-    <tr><td class="tnm">Transformation roadmap</td><td>What happens when? Every opportunity placed in a horizon, by when the client can actually start.</td></tr>
-    <tr><td class="tnm">Benefits overview</td><td>What is it worth, and what does it cost to get? The business case, on the cost per FTE set in Engagement setup.</td></tr>
-    <tr><td class="tnm">New for your teams</td><td>What colleagues heard in their interviews that belongs to your teams. You decide whether it goes in.</td></tr>
-    <tr><td class="tnm">Hand over</td><td>Giving what you changed on this screen to Claude, so it lands in the engagement folder.</td></tr>
+    <tr><td class="tnm">Summary</td><td>What have we found so far? The storyline as it reads today, and one figure for each step below. Click a figure to open its page.</td></tr>
+    <tr><td class="tnm">1 Hypotheses</td><td>The problem broken down into hypotheses. Click one to see the analyses that tested it and what they showed.</td></tr>
+    <tr><td class="tnm">2 Potential</td><td>How much time could be freed, per team and division, and where it goes: waste, rigidity, variability or other. Switch to the value chain to see it along the process.</td></tr>
+    <tr><td class="tnm">3 Levers</td><td>What we would change, dimension by dimension, with our judgement, and how much of the potential the levers address.</td></tr>
+    <tr><td class="tnm">4 Roadmap</td><td>When each lever starts, by when the client can actually start it, and what it is worth.</td></tr>
+    <tr><td class="tnm">All evidence</td><td>Every output, result and insight in one list. Group it by hypothesis, team or dimension; open any file from it. What colleagues heard that touches your teams shows here too.</td></tr>
+    <tr><td class="tnm">The team picker</td><td>At the top right of every page. Pick a team and each page shows that team only; pick All teams to go back.</td></tr>
+    <tr><td class="tnm">Hand over</td><td>Giving what you changed on this screen to Claude, so it lands in the engagement folder. At the bottom of the menu.</td></tr>
     <tr><td class="tnm">Engagement setup</td><td>Scope, teams, our team, work streams, key dates and the key parameters. At the bottom of the menu.</td></tr>
     </tbody></table></div>
     <p class="lead-in" style="margin:11px 0 0">The findings pages stay empty until analyses land, and say so. They never show a number nobody has measured.</p></div>
@@ -6999,6 +7030,391 @@ PAGES.how=()=>
     <p class="lead-in" style="margin-bottom:0">Everything on these pages is saved in one small file that travels with the engagement. The teams you list here become the teams every later analysis works on, so the names and the scope you set now are the ones that show up in the client deck at the end. You can see the file itself under <b>Settings</b> if you ever want to — nothing is hidden.</p>
   </div>
 </div>`;
+</script>
+<style id="find-simple-css">
+/* ── the findings, simplified (22 Oct 2026): the team picker, the view switches, the Summary tiles, the levers bridge, All evidence ── */
+.sc-dd{position:relative;flex:none}
+.sc-pick{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 12px 0 11px;border:1px solid var(--border-heavy);border-radius:10px;background:var(--surface);color:var(--text);font:600 var(--fs-115)/1 var(--fb);cursor:pointer;white-space:nowrap;max-width:280px}
+.sc-pick:hover{border-color:var(--muted-2)}
+.sc-pick svg{width:15px;height:15px;flex:none}
+.sc-pick .sc-pl{overflow:hidden;text-overflow:ellipsis}
+.sc-pick.team{background:var(--navy);border-color:var(--navy);color:#fff}
+html.dark .sc-pick.team{background:#24324D;border-color:#34466A}
+.sc-pick .sc-ch{opacity:.7}
+.sc-menu{display:none;position:absolute;right:0;top:calc(100% + 6px);z-index:400;min-width:260px;max-height:min(70vh,520px);overflow:auto;padding:6px;border-radius:12px}
+.sc-dd.open .sc-menu{display:block}
+.sc-mg{font:700 var(--fs-9)/1 var(--fb);letter-spacing:.8px;text-transform:uppercase;color:var(--muted-2);padding:10px 10px 5px}
+.sc-mi{display:flex;width:100%;align-items:baseline;gap:10px;justify-content:space-between;border:0;background:none;color:var(--text);font:500 var(--fs-115)/1.3 var(--fb);text-align:left;padding:7px 10px;border-radius:8px;cursor:pointer}
+.sc-mi small{color:var(--muted);font-size:var(--fs-10);white-space:nowrap}
+.sc-mi:hover{background:rgba(15,43,82,.06)}
+html.dark .sc-mi:hover{background:rgba(255,255,255,.07)}
+.sc-mi.on{font-weight:700}
+.sc-mi span{position:relative}
+.sc-mi.on span::before{content:"";position:absolute;left:-9px;top:50%;width:5px;height:5px;margin-top:-2.5px;border-radius:50%;background:var(--green)}
+.sc-mi{padding-left:14px}
+.sc-seg{display:inline-flex;flex:none;border:1px solid var(--border-heavy);border-radius:10px;overflow:hidden;height:34px}
+.sc-seg button{border:0;background:var(--surface);color:var(--muted);font:600 var(--fs-11)/1 var(--fb);padding:0 12px;cursor:pointer;white-space:nowrap}
+.sc-seg button+button{border-left:1px solid var(--border-heavy)}
+.sc-seg button.on{background:var(--navy);color:#fff}
+html.dark .sc-seg button.on{background:#24324D}
+#tb-right{gap:10px}
+.sc-team .tsub-nav{display:none!important}
+/* Summary: the storyline, then one tile per step */
+.sm-wrap{display:flex;flex-direction:column;gap:22px}
+.sm-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.sm-tile{position:relative;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:3px;background:var(--surface);border:1px solid var(--divider);border-radius:var(--r);box-shadow:var(--sh);padding:16px 18px 15px;cursor:pointer;font:inherit;color:var(--text);min-height:118px}
+.sm-tile:hover{border-color:var(--border-heavy)}
+.sm-tile:hover .sm-go{color:var(--green);transform:translateX(2px)}
+.sm-l{display:flex;align-items:center;gap:8px;font:700 var(--fs-10)/1.2 var(--fb);letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.sm-no{display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border-radius:50%;border:1.5px solid var(--border-heavy);font-size:var(--fs-95);letter-spacing:0;color:var(--muted)}
+.sm-v{font:800 26px/1.15 var(--fh);color:var(--green);margin-top:8px;font-variant-numeric:tabular-nums}
+.sm-v.none{color:var(--muted-2)}
+.sm-s{font-size:var(--fs-11);color:var(--muted);line-height:1.4}
+.sm-go{position:absolute;right:16px;top:14px;color:var(--muted-2);font-size:15px;transition:transform .12s,color .12s}
+@media (max-width:1100px){.sm-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.sm-tiles{grid-template-columns:1fr}.sm-tile{min-height:0}}
+/* Levers: the bridge from the total potential to the part a lever addresses */
+.lv-br{background:var(--surface);border:1px solid var(--divider);border-radius:var(--r);box-shadow:var(--sh);padding:16px 20px 14px;margin-bottom:20px}
+.lv-row{display:grid;grid-template-columns:minmax(110px,170px) minmax(0,1fr) 64px;gap:12px;align-items:center}
+.lv-nm{font:700 var(--fs-115)/1.3 var(--fb);color:var(--text)}
+.lv-bar{display:flex;height:22px;border-radius:6px;overflow:hidden;background:var(--surface-2)}
+.lv-bar i{display:block;height:100%}
+.lv-bar i.a{background:#1D7044}
+.lv-bar i.r{background:repeating-linear-gradient(135deg,#E9A897 0 6px,#F3D3CB 6px 11px)}
+html.dark .lv-bar i.r{background:repeating-linear-gradient(135deg,#7A3A2C 0 6px,#5A2A20 6px 11px)}
+.lv-v{font:800 var(--fs-115)/1 var(--fb);text-align:right;font-variant-numeric:tabular-nums}
+.lv-lg{display:flex;flex-wrap:wrap;gap:6px 18px;margin:10px 0 0;font-size:var(--fs-105);color:var(--muted)}
+.lv-lg b{color:var(--text);margin-left:3px;font-variant-numeric:tabular-nums}
+.lv-lg i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.lv-tbl{width:100%;border-collapse:collapse}
+.lv-tbl td{padding:9px 10px;border-bottom:1px solid var(--divider);font-size:var(--fs-115);vertical-align:top}
+.lv-tbl tr.g td{background:var(--surface-2);font-weight:700;font-size:var(--fs-11)}
+.lv-tbl td.n{text-align:right;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.lv-tbl small{display:block;color:var(--muted);font-size:var(--fs-10);margin-top:2px}
+/* All evidence */
+.ev-bar{position:relative;z-index:30;display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 16px}
+.ev-q{flex:1 1 240px;min-width:0;height:36px;border:1px solid var(--border-heavy);border-radius:10px;padding:0 12px;background:var(--surface);color:var(--text);font:500 var(--fs-115)/1 var(--fb)}
+.ev-nw{display:inline-flex;align-items:center;gap:7px;height:34px;border:1px solid var(--border-heavy);border-radius:10px;background:var(--surface);color:var(--text);font:600 var(--fs-11)/1 var(--fb);padding:0 12px;cursor:pointer;white-space:nowrap}
+.ev-nw.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.ev-nw em{font-style:normal;background:#C4553F;color:#fff;border-radius:999px;padding:2px 7px;font-size:var(--fs-95)}
+.ev-g{display:flex;align-items:baseline;gap:10px;font:700 var(--fs-115)/1.35 var(--fb);color:var(--text);margin:22px 0 8px}
+.ev-g:first-child{margin-top:4px}
+.ev-g small{font-weight:500;color:var(--muted);font-size:var(--fs-105)}
+.ev-card{background:var(--surface);border:1px solid var(--divider);border-radius:var(--r);box-shadow:var(--sh);padding:4px 16px}
+.ev-leaf{padding:12px 0;border-bottom:1px solid var(--divider)}
+.ev-leaf:last-child{border-bottom:0}
+.ev-lh{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:start;margin-bottom:4px}
+.ev-no{display:inline-flex;align-items:center;justify-content:center;width:28px;height:22px;border-radius:999px;font:800 var(--fs-95)/1 var(--fb);color:#fff;background:var(--muted-2)}
+.ev-no.s-conf{background:#1D7044}.ev-no.s-rej{background:#C4553F}.ev-no.s-part{background:#D49A3A}.ev-no.s-prog{background:#5B7FB8}
+.ev-lt{font:600 var(--fs-115)/1.4 var(--fb);color:var(--text)}
+.ev-ls{font-size:var(--fs-10);font-weight:700;color:var(--muted);white-space:nowrap;padding-top:3px}
+.ev-r{display:grid;grid-template-columns:30px 96px minmax(0,1fr) minmax(0,1.5fr) minmax(0,1fr);gap:10px;align-items:start;padding:6px 0}
+.ev-r>span:first-child{grid-column:1}
+.ev-eff{display:inline-block;font:700 var(--fs-95)/1 var(--fb);padding:4px 8px;border-radius:999px;white-space:nowrap;background:var(--surface-2);color:var(--muted)}
+.ev-eff.e-s{background:#E3F1E9;color:#1D7044}.ev-eff.e-c{background:#F8E1DB;color:#A23A26}.ev-eff.e-p{background:#FBEBD0;color:#8A5A0B}.ev-eff.e-i{background:#E4ECF7;color:#2A4D8F}.ev-eff.e-ins{background:#EEE9F6;color:#5B3F8C}
+html.dark .ev-eff.e-s{background:#16382A;color:#7FD1A6}html.dark .ev-eff.e-c{background:#3F2019;color:#F0A08E}html.dark .ev-eff.e-p{background:#3D2D10;color:#F0C47A}html.dark .ev-eff.e-i{background:#1C2C47;color:#9DB8E6}html.dark .ev-eff.e-ins{background:#2C2440;color:#C8B6EE}
+.ev-a b{display:block;font:600 var(--fs-11)/1.35 var(--fb);color:var(--text)}
+.ev-a small,.ev-n small{display:block;color:var(--muted);font-size:var(--fs-10);margin-top:2px}
+.ev-n{font-size:var(--fs-11);line-height:1.45;color:var(--text)}
+.ev-f{min-width:0;text-align:right}
+.ev-file{display:inline-flex;align-items:center;gap:6px;max-width:100%;text-decoration:none;color:var(--green);font:600 var(--fs-105)/1.3 var(--fb)}
+.ev-file span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ev-file:hover span:last-child{text-decoration:underline}
+.ev-ty{flex:none;font:800 var(--fs-8)/1 var(--fb);letter-spacing:.4px;background:var(--green);color:#fff;border-radius:4px;padding:3px 5px}
+.ev-pl{font-size:var(--fs-105);color:var(--muted-2)}
+.ev-none{padding:24px 6px;color:var(--muted);font-size:var(--fs-115)}
+@media (max-width:760px){
+  .ev-r{grid-template-columns:auto minmax(0,1fr);gap:4px 10px}
+  .ev-r>span:first-child{display:none}
+  .ev-n,.ev-f{grid-column:1/-1;text-align:left}
+  .ev-lh{grid-template-columns:30px minmax(0,1fr)}
+  .ev-ls{grid-column:2}
+  .lv-row{grid-template-columns:minmax(0,1fr) 56px}.lv-row .lv-bar{grid-column:1/-1;grid-row:2}
+}
+</style>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE FINDINGS, SIMPLIFIED (Gilles, 22 Oct 2026)
+   Two ways to read the engagement. The answer: Summary, then one page per step of the chain
+   (1 Hypotheses, 2 Potential, 3 Levers, 4 Roadmap). The raw view: All evidence, every output,
+   result and insight in one list, grouped by hypothesis, team or dimension.
+   The picker in the title bar switches every page between all teams and one team. For one team
+   each page shows that team's own view (the team deep dive's tabs, one per page), so the deep dive
+   needs no page of its own. Old page keys (teams, chain, exhibits, outputs, benefits, inbox) land
+   on their new home.
+   ═══════════════════════════════════════════════════════════════════════════ */
+const SCOPE_PAGES=['summary','hyptree','potential','levers','roadmap','evidence'];
+var SCOPE=null, VIEW={summary:'overview',potential:'team',levers:'dim',evidence:'hyp'}, EVF={q:'',st:'all',dim:'',nw:false}, NR_SUB_SELF=false;
+try{ SCOPE=localStorage.getItem('nr_find_scope')||null; }catch(e){}
+try{ const v=JSON.parse(localStorage.getItem('nr_find_view')||'null'); if(v&&typeof v==='object') Object.assign(VIEW,v); }catch(e){}
+function saveView(){ try{ localStorage.setItem('nr_find_view',JSON.stringify(VIEW)); }catch(e){} }
+function scopeTeam(){ if(!SCOPE||!E) return null; const t=inScopeTeams().find(x=>x.id===SCOPE); if(!t){ SCOPE=null; return null; } return t; }
+function setScope(id){ SCOPE=id||null; try{ id?localStorage.setItem('nr_find_scope',id):localStorage.removeItem('nr_find_scope'); }catch(e){}
+  scClose(); go(SCOPE_PAGES.includes(PAGE)?PAGE:'summary'); }
+function setView(p,v){ VIEW[p]=v; saveView(); goKeep(PAGE); }
+const SC_ICO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 4.5a3.2 3.2 0 0 1 0 6.2M21 20a6 6 0 0 0-4-5.6"/></svg>';
+const SC_CHEV='<svg class="sc-ch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+/* the team picker: All teams, then the teams grouped by division */
+function scopePicker(){
+  const t=scopeTeam(), teams=inScopeTeams(); if(teams.length<2&&!t) return '';
+  const fte=x=>x.fte!=null&&x.fte!==''?Math.round(+x.fte)+' FTE':'';
+  const all=teams.reduce((a,x)=>a+(+x.fte||0),0);
+  const row=x=>`<button class="sc-mi${t&&t.id===x.id?' on':''}" role="option" aria-selected="${!!(t&&t.id===x.id)}" onclick="setScope('${x.id}')"><span>${esc(x.name)}</span><small>${fte(x)}</small></button>`;
+  const divs=divisionsOf(), many=divs.length>1;
+  const menu=`<button class="sc-mi${!t?' on':''}" role="option" aria-selected="${!t}" onclick="setScope(null)"><span>All teams</span><small>${all?Math.round(all)+' FTE':''}</small></button>`
+    +divs.map(d=>(many||d.name!=='Unassigned'?`<div class="sc-mg">${esc(d.name)}</div>`:'')+d.teams.map(row).join('')).join('');
+  return `<div class="sc-dd" id="sc-dd"><button class="sc-pick${t?' team':''}" onclick="scToggle(event,'sc-dd')" aria-haspopup="listbox" title="Show all teams, or one">${SC_ICO}<span class="sc-pl">${t?esc(t.name):'All teams'}</span>${SC_CHEV}</button>
+    <div class="sc-menu nr-glass" role="listbox">${menu}</div></div>`;
+}
+function scToggle(e,id){ e.stopPropagation(); const d=document.getElementById(id); if(!d) return;
+  const open=!d.classList.contains('open'); scClose(); if(open){ d.classList.add('open'); const on=d.querySelector('.sc-mi.on'); if(on) on.scrollIntoView({block:'nearest'}); } }
+function scClose(){ document.querySelectorAll('.sc-dd.open').forEach(x=>x.classList.remove('open')); }
+document.addEventListener('click',e=>{ if(!e.target.closest||!e.target.closest('.sc-dd')) scClose(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') scClose(); });
+/* a view switch in the title bar */
+const scSeg=(p,opts,cur)=>`<div class="sc-seg" role="group">${opts.map(([v,l])=>`<button class="${(cur||VIEW[p])===v?'on':''}" onclick="setView('${p}','${v}')">${l}</button>`).join('')}</div>`;
+const chip=(b,l)=>`<span class="nrs-chip"><b>${b}</b> ${l}</span>`;
+
+/* ── one team: the team deep dive's view for this page, drawn without its own tab bar ── */
+function lmaOk(id){ return isDiag()?!!(window.nrDiag&&nrDiag.lmaRan(id)):true; }
+function leverView(){ const v=VIEW.levers; return v==='ready'?'ready':isDiag()?'dim':'opp'; }
+function teamPane(sub){ setTimeout(()=>teamMount(sub),0); return `<div class="qsx sc-team"><div id="page-teams"></div></div>`; }
+function teamMount(sub){
+  if(!window.QS||!scopeTeam()||!document.getElementById('page-teams')) return;
+  NR_SUB_SELF=true;
+  try{ QS.pickTeam(SCOPE); }catch(e){}
+  try{ QS.setTeamSub(sub); }catch(e){}
+  try{ QS.mount('teams'); }
+  catch(err){ const el=document.getElementById('page-teams'); if(el) el.innerHTML='<div class="pagelead">This view could not be drawn: '+esc(String(err.message||err))+'</div>'; }
+  NR_SUB_SELF=false;
+}
+/* a link inside a team's view that used to switch tabs now opens the page that shows it */
+window.nrTeamSub=function(k){
+  if(NR_SUB_SELF||!scopeTeam()||PAGE==='teams') return false;
+  const to={overview:['summary','summary','overview'], diagnostic:['summary','summary','lma'], potential:['potential'],
+    findings:['levers','levers','dim'], readiness:['levers','levers','ready'], opportunities:['levers','levers',isDiag()?'dim':'opp'],
+    roadmap:['roadmap'], baseline:['evidence','evidence','base'], analyses:['evidence','evidence','dim']}[k];
+  if(!to) return false;
+  if(to[1]){ VIEW[to[1]]=to[2]; saveView(); }
+  if(to[0]==='evidence') EVF.nw=false;
+  setTimeout(()=>go(to[0]),0); return true;
+};
+
+/* ── old page keys land on their new home ── */
+const _goFindings=go;
+go=function(k){
+  if(APP!=='setup'){
+    if(k==='teams'){ const id=(window.QS&&QS.activeTeamId)||((inScopeTeams()[0]||{}).id); if(id){ SCOPE=id; try{ localStorage.setItem('nr_find_scope',id); }catch(e){} } k='summary'; }
+    else if(k==='chain'){ VIEW.potential='chain'; k='potential'; }
+    else if(k==='exhibits'||k==='outputs'){ EVF.nw=false; k='evidence'; }
+    else if(k==='benefits') k='roadmap';
+    else if(k==='inbox'){ EVF.nw=true; k='evidence'; }
+  }
+  return _goFindings(k);
+};
+openTeam=function(id){ SCOPE=id; try{ localStorage.setItem('nr_find_scope',id); }catch(e){} scClose();
+  go(SCOPE_PAGES.includes(PAGE)&&PAGE!=='hyptree'?PAGE:'summary'); };
+window.nrOpenTeam=openTeam;
+
+/* ── the hypothesis tree's data (window.__NR_HYP__, written by generate_dashboard.py from the folder) ── */
+function hypData(){ const H=window.__NR_HYP__; return H&&typeof H==='object'&&Array.isArray(H.tree)?H:null; }
+function hypLeaves(){ const H=hypData(); return H?[].concat(...H.tree.map(b=>b.children||[])):[]; }
+const HYP_ST={'Confirmed':'s-conf','Rejected':'s-rej','Partially confirmed':'s-part','In progress':'s-prog'};
+const EV_EFF={s:'Supports',c:'Contradicts',p:'Partly',i:'In progress',o:'Still to run'};
+
+/* ── Summary ── */
+const _story=()=>{ const O=outModel(), S=storyModel(O);
+  const dots=rs=>`<span class="fo-dots">${rs.map(r=>`<i class="${r.st==='done'?'f':r.st==='wip'?'h':''}" title="${esc(outLabel(r.i)+(r.t?' · '+fdTeam(r.t):'')+' · '+OUT_ST[r.st])}"></i>`).join('')}</span>`;
+  const story=S&&S.length
+    ? S.map((s,n)=>{ const open=STORY_OPEN.has(s.k);
+        return `<div class="fo-st"><div class="fo-st-r" onclick="storyToggle('${s.k}')" tabindex="0" onkeydown="if(event.key==='Enter')storyToggle('${s.k}')">
+          <span class="fo-num">${n+1}</span><div class="fo-st-t"><small>${esc(s.label)}</small>${esc(s.lead)}</div>
+          ${s.rows.length?dots(s.rows):'<span class="fo-mut fo-sm">No analysis named</span>'}<span class="fo-chev${open?' on':''}">›</span></div>
+          ${open?`<div class="fo-st-o">${s.rows.length?s.rows.map(r=>outRow(r,true)).join(''):'<p class="fo-none">The evidence behind this line names no analysis yet.</p>'}</div>`:''}</div>`; }).join('')
+    : `<div class="fo-empty"><b>No executive summary yet.</b> Once the analyses are in, ask Claude to build the executive summary. Its lead sentences show here, each with the outputs behind it.
+        <button class="fo-a q" onclick="copy('build the executive summary','Sentence copied: say it to Claude')">Copy the sentence</button></div>`;
+  return `<div class="fo-sec" style="margin:0">${foSec('The storyline, as it reads today', S&&S.length?'A dot per output behind the line, filled when done':'')}${story}</div>`;
+};
+function summaryTiles(){
+  const L=hypLeaves(), tested=L.filter(l=>l.status&&l.status!=='To investigate'&&l.status!=='Parked').length,
+    rej=L.filter(l=>l.status==='Rejected').length, conf=L.filter(l=>l.status==='Confirmed').length;
+  const scope=inScopeTeams().reduce((a,t)=>a+(+t.fte||0),0);
+  let tot=0, add=0, nl=0, mostly='';
+  if(isDiag()){ const m=fdModel(); tot=m.pains.reduce((a,p)=>a+(p.fte||0),0); add=m.imps.reduce((a,o)=>a+(o.fte||0),0); nl=m.imps.length;
+    const B=window.__NR_SPLIT__; if(B&&Object.keys(B).length){ const k={}, O=outModel();
+      inScopeTeams().forEach(t=>{ const x=diagTeam(t.id,m,O), sh=B[t.id]; if(sh) SPLIT_KINDS.forEach(([kk])=>{ k[kk]=(k[kk]||0)+x.tied*(sh[kk]||0); }); });
+      const top=Object.keys(k).sort((a,b)=>k[b]-k[a])[0]; if(top&&k[top]>0) mostly='mostly '+SPLIT_KINDS.find(x=>x[0]===top)[1].toLowerCase(); } }
+  else { tot=totalFte(); add=tot; nl=opps().length; }
+  const o=opps(), v=valueCase();
+  const tile=(n,k,label,val,sub,none)=>`<button class="sm-tile" onclick="go('${k}')"><span class="sm-l"><span class="sm-no">${n}</span>${label}</span>
+    <b class="sm-v${none?' none':''}">${val}</b><span class="sm-s">${sub}</span><span class="sm-go" aria-hidden="true">&rarr;</span></button>`;
+  return `<div class="sm-tiles">
+    ${tile(1,'hyptree','Hypotheses',L.length?`${tested} of ${L.length}`:'—',L.length?['tested',conf?conf+' confirmed':'',rej?rej+' rejected':''].filter(Boolean).join(' · '):'No hypothesis tree yet',!L.length)}
+    ${tile(2,'potential','Potential',tot?f1(tot)+' FTE':'—',tot?['total',scope?Math.round(tot/scope*100)+'% of the scope':'',mostly].filter(Boolean).join(' · '):'Nothing measured yet',!tot)}
+    ${tile(3,'levers','Levers',add?f1(add)+' FTE':'—',add?`addressable · ${fdPl(nl,'lever','levers')}`:nl?fdPl(nl,'lever','levers')+', not sized yet':'No lever yet',!add)}
+    ${tile(4,'roadmap','Roadmap',o.length?String(o.length):'—',o.length?['initiatives',v.annual>0?eur(v.annual)+' a year':'over two years'].join(' · '):'Nothing to sequence yet',!o.length)}
+  </div>`;
+}
+PAGES.summary=()=>{
+  const t=scopeTeam();
+  if(t) return teamPane(lmaOk(t.id)&&VIEW.summary==='lma'?'diagnostic':'overview');
+  return `<div class="sm-wrap">${_story()}${summaryTiles()}</div>`;
+};
+ACTIONS.summary=()=>{ const t=scopeTeam();
+  if(t) return lmaOk(t.id)?scSeg('summary',[['overview','Overview'],['lma','Lean maturity']],VIEW.summary==='lma'?'lma':'overview'):'';
+  const O=outModel(), x=O.rows.find(r=>r.i==='exec-sum'&&r.open);
+  return x?`<a class="fchip go" style="text-decoration:none" href="${outHref(x.open)}"${OUT_TGT}>Open the executive summary</a>`:''; };
+
+/* ── 2 Potential ── */
+const _chainPage=PAGES.chain;
+PAGES.potential=()=>{
+  const t=scopeTeam(); if(t) return teamPane('potential');
+  if(VIEW.potential==='chain'&&VCS().length) return _chainPage();
+  if(isDiag()) return `<div class="qsx qs-flow"><div id="page-summary">${diagSummaryHtml(true)}</div></div>`;
+  setTimeout(qsMountSummary,0); return `<div class="qsx qs-flow"><div id="page-summary"></div></div>`;
+};
+ACTIONS.potential=()=>{ if(scopeTeam()) return '';
+  let c='';
+  if(isDiag()){ const m=fdModel(), tot=m.pains.reduce((a,p)=>a+(p.fte||0),0), sc=inScopeTeams().reduce((a,x)=>a+(+x.fte||0),0);
+    if(tot) c=`<div class="nrs-chips">${chip(f1(tot)+' FTE','total potential')}${sc?chip(Math.round(tot/sc*100)+'%','of the scope'):''}</div>`; }
+  return c+(VCS().length?scSeg('potential',[['team','By team'],['chain','Along the value chain']],VIEW.potential==='chain'?'chain':'team'):''); };
+
+/* ── 3 Levers ── */
+function leverBridge(m){
+  const tot=m.pains.reduce((a,p)=>a+(p.fte||0),0), add=Math.min(tot,m.imps.reduce((a,o)=>a+(o.fte||0),0)); if(!tot) return '';
+  const rest=Math.max(0,tot-add);
+  return `<div class="lv-br"><div class="lv-row"><span class="lv-nm">Total potential</span>
+      <span class="lv-bar"><i class="a" style="width:${add/tot*100}%" title="Addressed by a lever: ${f1(add)} FTE"></i><i class="r" style="width:${rest/tot*100}%" title="No lever yet: ${f1(rest)} FTE"></i></span>
+      <span class="lv-v">${f1(tot)}</span></div>
+    <div class="lv-lg"><span><i style="background:#1D7044"></i>Addressable potential<b>${f1(add)} FTE</b></span><span><i style="background:repeating-linear-gradient(135deg,#E9A897 0 3px,#F3D3CB 3px 5px)"></i>No lever yet<b>${f1(rest)} FTE</b></span></div></div>`;
+}
+function leversByType(){
+  const o=opps(); if(!o.length) return fempty('No levers yet','Levers land here once the analyses have turned what we found into improvements.');
+  const G={}, order=[]; o.forEach(x=>{ const k=x.lever||''; if(!G[k]){ G[k]=[]; order.push(k); } G[k].push(x); });
+  order.sort((a,b)=>G[b].reduce((s,x)=>s+fteOf(x),0)-G[a].reduce((s,x)=>s+fteOf(x),0));
+  return `<div class="card" style="padding:4px 12px"><table class="lv-tbl"><tbody>${order.map(k=>{ const L=k?lev(k):{label:'No lever type yet',dot:'var(--muted-2)'}, f=G[k].reduce((s,x)=>s+fteOf(x),0);
+    return `<tr class="g"><td colspan="2"><span class="fo-dot" style="background:${L.dot||'var(--muted-2)'};display:inline-block;margin-right:8px"></span>${esc(L.label)} · ${fdPl(G[k].length,'initiative','initiatives')}</td><td class="n">~${f.toFixed(1)}</td></tr>`
+      +G[k].map(x=>`<tr><td>${esc(x.title||'Untitled')}<small>${esc(fdTeam(x.team)||'')}</small></td><td>${esc(((M.horizons||[]).find(h=>h.k===horizonOf(x))||{}).when||'')}</td><td class="n">${fteOf(x).toFixed(1)}</td></tr>`).join(''); }).join('')}</tbody></table></div>`;
+}
+PAGES.levers=()=>{
+  const t=scopeTeam(), v=leverView();
+  if(t) return teamPane(v==='ready'?'readiness':v==='opp'?'opportunities':'findings');
+  if(isDiag()){ const m=fdModel(); return leverBridge(m)+fdOverview(m,{noTiles:1,noMatrix:1}); }
+  return leversByType();
+};
+ACTIONS.levers=()=>{ const t=scopeTeam();
+  if(t) return scSeg('levers',isDiag()?[['dim','By dimension'],['ready','By AI readiness']]:[['opp','All levers'],['ready','By AI readiness']],leverView());
+  if(isDiag()){ const m=fdModel(), tot=m.pains.reduce((a,p)=>a+(p.fte||0),0), add=m.imps.reduce((a,o)=>a+(o.fte||0),0);
+    return m.imps.length?`<div class="nrs-chips">${chip(m.imps.length,m.imps.length===1?'lever':'levers')}${tot?chip(Math.round(Math.min(add,tot)/tot*100)+'%','of the total potential addressed'):''}</div>`:''; }
+  const o=opps(); return o.length?`<div class="nrs-chips">${chip(o.length,o.length===1?'lever':'levers')}</div>`:''; };
+
+/* ── 4 Roadmap: when each lever starts, and what it is worth ── */
+const _roadmapPage=PAGES.roadmap, _benefitsPage=PAGES.benefits;
+PAGES.roadmap=()=>{
+  const t=scopeTeam(); if(t) return teamPane('roadmap');
+  return _roadmapPage()+`<div class="dd-section" style="margin-top:30px">${sec('What it is worth')}</div>`+_benefitsPage();
+};
+ACTIONS.roadmap=()=>{ if(scopeTeam()) return ''; const o=opps(), v=valueCase();
+  return o.length?`<div class="nrs-chips">${chip(o.length,o.length===1?'initiative':'initiatives')}${v.annual>0?chip(eur(v.annual),'a year at full ramp'):''}</div>`:''; };
+
+/* ── All evidence: every output, result and insight in one list ── */
+function evAnalysisLabel(k){ const H=hypData(); if((M.inst||{})[k]||(M.aiWork||{})[k]) return outLabel(k); const a=H&&(H.analyses||[]).find(x=>x.k===k); return a?a.n:String(k||''); }
+const evLens=k=>((M.inst||{})[k]||{}).lens||'';
+function evHit(txt){ const q=EVF.q.trim().toLowerCase(); return !q||String(txt).toLowerCase().includes(q); }
+function evFileChip(f){ if(!f||!f.href) return '<span class="ev-pl">No file yet</span>';
+  const ext=(String(f.href).split('?')[0].split('.').pop()||'').toUpperCase().slice(0,4);
+  return `<a class="ev-file" href="${esc(f.href)}"${OUT_TGT} title="${esc(f.t||'')}"><span class="ev-ty">${esc(ext||'FILE')}</span><span>${esc(f.t||'Open')}</span></a>`; }
+/* the results under the hypotheses, the insights tied to them, and the outputs tied to none */
+function evByHyp(){
+  const H=hypData(), O=outModel(), team=scopeTeam(), tn=team?team.name:null, items=[];
+  const used=new Set();
+  const nameId={}; inScopeTeams().forEach(t=>{ nameId[t.name]=t.id; });
+  const groups=(H?H.tree:[]).map(b=>({b, leaves:(b.children||[]).map(l=>{
+    const rows=[];
+    Object.keys(l.ev||{}).forEach(k=>(l.ev[k]||[]).forEach(e=>{
+      const tid=e.scope?nameId[e.scope]||'':'';
+      /* the file: the one the tree names, else the analysis's own build for that team in the folder */
+      let f=(H.outputs||[]).find(o=>o.hyp===l.id&&o.a===k&&(o.scope||null)===(e.scope||null)&&o.href);
+      if(!f){ const r=O.rows.find(x=>x.i===k&&(x.t||'')===tid&&x.st==='done'&&x.open); if(r) f={href:outHref(r.open),t:outLabel(r.i)+(r.t?' · '+fdTeam(r.t):'')}; }
+      used.add(k+'|'+(tid||e.scope||''));
+      if(tn&&e.scope!==tn) return;
+      if(EVF.dim&&evLens(k)!==EVF.dim) return;
+      const st=f?'done':e.e==='o'?'planned':'wip';
+      if(!evHit([l.t,evAnalysisLabel(k),e.scope,e.note,f&&f.t].join(' '))) return;
+      items.push(st); if(EVF.st!=='all'&&EVF.st!==st) return;
+      rows.push(`<div class="ev-r"><span></span><span><span class="ev-eff e-${esc(e.e)}">${EV_EFF[e.e]||''}</span></span>
+        <div class="ev-a"><b>${esc(evAnalysisLabel(k))}</b>${tn?'':`<small>${esc(e.scope||'All teams')}</small>`}</div>
+        <div class="ev-n">${esc(e.note||(e.e==='o'?'Still to run':''))}</div><div class="ev-f">${evFileChip(f)}</div></div>`); }));
+    (H.insights||[]).filter(i=>i.hyp===l.id).forEach(i=>{
+      if(EVF.dim||(EVF.st!=='all')) return;
+      if(tn&&!String((i.t||'')+' '+(i.from||'')).toLowerCase().includes(tn.toLowerCase())) return;
+      if(!evHit([l.t,i.t,i.from].join(' '))) return;
+      rows.push(`<div class="ev-r"><span></span><span><span class="ev-eff e-ins">Insight</span></span>
+        <div class="ev-n" style="grid-column:span 2">${esc(i.t)}<small>${esc([i.from,i.w].filter(Boolean).join(' · '))}${i.e==='s'?' · supports':i.e==='c'?' · contradicts':''}</small></div>
+        <div class="ev-f">${i.href?`<a class="ev-file" href="${esc(i.href)}"${OUT_TGT}><span class="ev-ty">SRC</span><span>The source</span></a>`:''}</div></div>`); });
+    return {l, rows};
+  }).filter(x=>x.rows.length)})).filter(g=>g.leaves.length);
+  /* the outputs no hypothesis names */
+  const loose=O.rows.filter(r=>r.st==='done'&&!used.has(r.i+'|'+(r.t||''))&&!(team&&r.t!==team.id)&&!(EVF.dim&&evLens(r.i)!==EVF.dim)
+    &&evHit([outLabel(r.i),r.t?fdTeam(r.t):'',r.owner,r.folder].join(' ')));
+  loose.forEach(r=>items.push(r.st));
+  const lr=loose.filter(r=>EVF.st==='all'||r.st===EVF.st);
+  const html=groups.map(g=>`<div class="ev-g">${esc(g.b.no)} · ${esc(g.b.t)}</div><div class="ev-card">${g.leaves.map(x=>`<div class="ev-leaf">
+      <div class="ev-lh"><span class="ev-no ${HYP_ST[x.l.status]||''}">${esc(x.l.no)}</span><span class="ev-lt">${esc(x.l.t)}</span><span class="ev-ls">${esc(x.l.status||'To investigate')}</span></div>${x.rows.join('')}</div>`).join('')}</div>`).join('')
+    +evPurpose(lr,team);
+  return {items, html:html||(H?'':'<p class="ev-none">No hypothesis tree yet. Ask Claude to build it; until then, group the evidence by team or dimension.</p>')};
+}
+function evByOut(by){
+  const O=outModel(), team=scopeTeam(), items=[];
+  const rows=O.rows.filter(r=>!(team&&r.t!==team.id)&&!(EVF.dim&&evLens(r.i)!==EVF.dim)
+    &&evHit([outLabel(r.i),r.t?fdTeam(r.t):'',evLens(r.i)?dimOf(evLens(r.i)).label:'',r.owner,r.folder].join(' ')));
+  rows.forEach(r=>items.push(r.st));
+  const shown=rows.filter(r=>EVF.st==='all'||r.st===EVF.st);
+  const G=[], key=r=>{ if(by==='team') return r.lvl==='wave'?'The engagement':r.lvl==='chain'?'Across teams':fdTeam(r.t);
+    const x=(M.inst||{})[r.i]||{}; return x.lens?dimOf(x.lens).label:(x.cat==='baseline'||x.cat==='register')?'Baseline':'Across dimensions'; };
+  shown.forEach(r=>{ const g=key(r); let x=G.find(y=>y.g===g); if(!x) G.push(x={g,l:[]}); x.l.push(r); });
+  if(by==='dim'){ const ord=['Baseline'].concat(M.dims.map(d=>d.label),['Across dimensions']); G.sort((a,b)=>ord.indexOf(a.g)-ord.indexOf(b.g)); }
+  const H=hypData(), ins=H&&!EVF.dim&&EVF.st==='all'&&!team?(H.insights||[]).filter(i=>evHit([i.t,i.from].join(' '))):[];
+  const html=G.map(x=>`<div class="ev-g">${esc(x.g)}<small>${fdPl(x.l.length,'output','outputs')}</small></div>${x.l.map(r=>outRow(r,by!=='team'&&!team,by!=='dim')).join('')}`).join('')
+    +(ins.length?`<div class="ev-g">Insights<small>${ins.length}</small></div><div class="ev-card">${ins.map(i=>`<div class="ev-r"><span></span><span><span class="ev-eff e-ins">Insight</span></span>
+      <div class="ev-n" style="grid-column:span 2">${esc(i.t)}<small>${esc([i.from,i.w].filter(Boolean).join(' · '))}</small></div><div class="ev-f">${i.href?`<a class="ev-file" href="${esc(i.href)}"${OUT_TGT}><span class="ev-ty">SRC</span><span>The source</span></a>`:''}</div></div>`).join('')}</div>`:'');
+  return {items, html};
+}
+/* without a hypothesis tree there is nothing to group by hypothesis: the list opens by team (one team: by dimension) */
+/* Not every analysis tests a hypothesis: some build the baseline and the scope, some are market and desk research.
+   The outputs no hypothesis names are grouped by what they are for (Gilles, 22 Oct 2026). */
+const EV_PURPOSE=[['base','Baseline and scope'],['market','Market and desk research'],['eng','The engagement'],['other','Other analyses']];
+function evPurposeOf(i){ const x=(M.inst||{})[i]||{}, c=x.cat||'';
+  if(c==='baseline'||c==='register') return 'base';
+  if(c==='outside-in'||/desk|market|outside/.test(i)) return 'market';
+  if(c==='cross-cutting') return 'eng';
+  return 'other'; }
+function evPurpose(rows,team){ return EV_PURPOSE.map(([k,l])=>{ const rs=rows.filter(r=>evPurposeOf(r.i)===k); return rs.length?`<div class="ev-g">${l}<small>${fdPl(rs.length,'output','outputs')}</small></div>${rs.map(r=>outRow(r,!team,true)).join('')}`:''; }).join(''); }
+function evView(){ const t=scopeTeam(); let v=VIEW.evidence; if(v==='hyp'&&!hypData()) v=t?'dim':'team'; if(t) return v==='team'?'dim':v; return v==='base'?'hyp':v; }
+function evModel(){ const v=evView(); return v==='hyp'?evByHyp():evByOut(v==='team'?'team':'dim'); }
+function evList(){ const r=evModel(); return r.html||'<p class="ev-none">Nothing matches.</p>'; }
+function evSet(k,v){ if(k==='q'){ EVF.q=v; const el=document.getElementById('ev-list'); if(el){ el.innerHTML=evList(); const r=document.getElementById('tb-right'); if(r) r.innerHTML=tbRight(); return; } }
+  else if(k==='st') EVF.st=EVF.st===v?'all':v; else if(k==='dim'){ EVF.dim=v; scClose(); } else if(k==='nw') EVF.nw=!EVF.nw;
+  goKeep('evidence'); }
+PAGES.evidence=()=>{
+  if(EVF.nw) return `<div class="ev-bar"><button class="ev-nw on" onclick="evSet('nw')">New for my teams${ibCount()?` <em>${ibCount()}</em>`:''}</button><span class="fo-mut" style="font-size:var(--fs-11)">What colleagues heard that touches your teams. Click again for all the evidence.</span></div>`+PAGES.inbox();
+  const t=scopeTeam(), v=evView();
+  const views=(t?[['hyp','By hypothesis'],['dim','By dimension'],['base','Activity map']]:[['hyp','By hypothesis'],['team','By team'],['dim','By dimension']]).filter(x=>x[0]!=='hyp'||hypData());
+  const seg=`<div class="sc-seg" role="group">${views.map(([k,l])=>`<button class="${v===k?'on':''}" onclick="setView('evidence','${k}')">${l}</button>`).join('')}</div>`;
+  const nw=`<button class="ev-nw" onclick="evSet('nw')">New for my teams${ibCount()?` <em>${ibCount()}</em>`:''}</button>`;
+  if(v==='base') return `<div class="ev-bar">${seg}<span style="flex:1"></span>${nw}</div>`+teamPane('baseline');
+  const dl=EVF.dim?dimOf(EVF.dim).label:'All dimensions';
+  const dd=`<div class="sc-dd" id="ev-dim"><button class="sc-pick" onclick="scToggle(event,'ev-dim')" aria-haspopup="listbox"><span class="sc-pl">${esc(dl)}</span>${SC_CHEV}</button>
+    <div class="sc-menu nr-glass" role="listbox" style="left:0;right:auto"><button class="sc-mi${!EVF.dim?' on':''}" onclick="evSet('dim','')"><span>All dimensions</span></button>${M.dims.map(d=>`<button class="sc-mi${EVF.dim===d.k?' on':''}" onclick="evSet('dim','${d.k}')"><span>${esc(d.label)}</span></button>`).join('')}</div></div>`;
+  return `<div class="ev-bar"><input class="ev-q" type="search" placeholder="Search: an analysis, a team, a colleague, a word" value="${esc(EVF.q)}" oninput="evSet('q',this.value)">${seg}${dd}${nw}</div>
+    <div id="ev-list">${evList()}</div>`;
+};
+ACTIONS.evidence=()=>{
+  if(EVF.nw) return ACTIONS.inbox?ACTIONS.inbox():'';
+  if(evView()==='base') return '';
+  const it=evModel().items, n=s=>it.filter(x=>x===s).length;
+  const c=(s,l)=>{ const k=n(s); return k||EVF.st===s?`<button class="nrs-chip${EVF.st===s?' on':''}" onclick="evSet('st','${s}')" title="${EVF.st===s?'Show all again':'Show only these'}"><b>${k}</b> ${l}</button>`:''; };
+  return `<div class="nrs-chips">${c('done','done')}${c('wip','in progress')}${c('planned','still to run')}</div>`; };
 </script>
 
 <script>window.__QS_DATA__ = {"client": "Northwind Assurance", "teams": [{"id": "ch", "name": "Claims Handling", "dept": "Claims Operations", "priority": 1, "lead": "Ilse Vermeulen", "email": "", "fte": 42, "session": "3-4 Sep 2026", "format": "In-person", "status": "validated", "scores": {"proc": 2, "cust": 2, "mgmt": 2, "data": 2, "mind": 4, "org": 2}, "lever": "data", "readiness": "fix", "potential": 38, "readinessScore": 41, "fteImpact": [12, 16.1], "finding": "16,1 of the 42 FTE is avoidable, and almost two thirds of it is spent moving information around the claim rather than deciding it.", "insight": "The losses are handovers, not decisions. Connect the contact centre to the claims system, put cover on the claim and chase adjusters automatically, and 7,3 FTE goes without anyone working faster.", "rationale": {"proc": "The claim crosses four systems and is re-keyed at two of the handovers; adjuster reports are chased by hand.", "cust": "Nothing on the customer's side says where the claim stands, so 4,0 FTE goes on answering the call that follows.", "mgmt": "The report pack is complete and refreshes overnight, but the numbers are read after the fact rather than used to decide the day.", "data": "Only 7,0 of the 38,0 FTE mapped sits on data an assistant could run on; structure and ownership are the blockers.", "mind": "Team spirit is 96% favourable and the team volunteered most of the problems themselves; workload is the one negative.", "org": "Triage has no accountable owner and settlement has two, so complex files drift and every settlement waits for a signature."}, "subs": {"proc": [["Process clarity & standardisation", 3], ["Value-adding ratio", 1], ["E2E handoff quality", 1], ["Volume & demand variability", 2], ["Exception & error rate", 3]], "cust": [["Understanding of customer (segments) & expectations", 2], ["Client satisfaction & quality of customer touchpoints", 1], ["Demand understanding", 2], ["Customer centricity in decisions", 2]], "mgmt": [["KPI relevance & alignment", 3], ["Performance management routines", 2], ["Capacity & workload management", 1], ["Decision rights & accountability", 2], ["Continuous improvement structure", 2]], "data": [["Data availability & completeness", 3], ["Data quality & consistency", 3], ["System integration maturity", 1], ["Tooling fit", 2], ["Analytics & reporting maturity", 2]], "mind": [["Change openness", 4], ["AI & digital appetite", 4], ["Empowerment & initiative", 4], ["Leadership modeling", 3], ["Learning culture", 4]], "org": [["Structural fit", 3], ["E2E ownership", 1], ["Spans & layers", 3], ["Role clarity & specialisation", 2], ["Capacity & skills mix", 2]]}, "activities": [{"name": "Take the first notification of loss", "tasks": ["Take the call and capture the circumstances", "Re-key the notification into the claims system"], "nature": "R", "natureRationale": "Deterministic, rule-based steps", "fte": 1.5, "pct": 4, "volume": "~1.900 notifications/month", "opt": 0.55}, {"name": "Register the claim and open the file", "tasks": ["Create the claim record", "Attach the documents received by mail"], "nature": "R", "natureRationale": "Deterministic, rule-based steps", "fte": 4.5, "pct": 11, "volume": "~1.900 files/month", "opt": 0.35}, {"name": "Check cover against the policy", "tasks": ["Look up the policy and read the cover", "Record the cover decision on the file"], "nature": "R", "natureRationale": "Deterministic, rule-based steps", "fte": 5.0, "pct": 12, "volume": "~1.900 cover checks/month", "opt": 0.45}, {"name": "Triage the claim by complexity", "tasks": ["Score the claim against the triage rules"], "nature": "S", "natureRationale": "Recurring patterns with light judgement", "fte": 2.5, "pct": 6, "volume": "~1.900 triage decisions/month", "opt": 0.25}, {"name": "Instruct and follow up the loss adjuster", "tasks": ["Select and instruct an adjuster", "Chase the adjuster report", "Read the report and update the reserve"], "nature": "S", "natureRationale": "Recurring patterns with light judgement", "fte": 6.5, "pct": 15, "volume": "~640 adjuster instructions/month", "opt": 0.5}, {"name": "Screen for fraud indicators", "tasks": ["Run the indicator checklist", "Refer a flagged file to investigation"], "nature": "S", "natureRationale": "Recurring patterns with light judgement", "fte": 3.0, "pct": 7, "volume": "~1.900 screenings/month", "opt": 0.4}, {"name": "Agree the repair route with the garage", "tasks": ["Book the vehicle into a network garage", "Approve the repair estimate"], "nature": "K", "natureRationale": "Expert judgement on an unstructured file", "fte": 4.0, "pct": 10, "volume": "~980 repairs/month", "opt": 0.15}, {"name": "Calculate and approve the settlement", "tasks": ["Calculate the settlement", "Obtain the second signature above the limit", "Record the settlement decision"], "nature": "K", "natureRationale": "Expert judgement on an unstructured file", "fte": 7.0, "pct": 17, "volume": "~1.750 settlements/month", "opt": 0.4}, {"name": "Release the payment", "tasks": ["Prepare and release the payment run"], "nature": "R", "natureRationale": "Deterministic, rule-based steps", "fte": 1.0, "pct": 2, "volume": "~1.750 payments/month", "opt": 0.1}, {"name": "Handle customer queries during the claim", "tasks": ["Answer status calls on open claims"], "nature": "S", "natureRationale": "Recurring patterns with light judgement", "fte": 2.0, "pct": 5, "volume": "~2.400 status calls/month", "opt": 0.6}, {"name": "Recover from the third party", "tasks": ["Build and send the recovery file"], "nature": "S", "natureRationale": "Recurring patterns with light judgement", "fte": 3.5, "pct": 8, "volume": "~310 recovery files/month", "opt": 0.45}, {"name": "Close the file and archive", "tasks": ["Check the file is complete and close it"], "nature": "R", "natureRationale": "Deterministic, rule-based steps", "fte": 1.5, "pct": 4, "volume": "~1.750 closures/month", "opt": 0.1}], "inefficiency": [{"ind": "Value-adding time (OTE)", "val": "32% of paid time", "dim": "proc"}, {"ind": "Notification typed twice", "val": "2,5 FTE", "dim": "proc"}, {"ind": "Chasing adjuster reports", "val": "3,0 FTE", "dim": "proc"}, {"ind": "Cover looked up in a second system", "val": "1,8 FTE", "dim": "data"}, {"ind": "Status calls on open claims", "val": "4,0 FTE (in Customer Service)", "dim": "cust"}, {"ind": "Peaks the team cannot staff for", "val": "27% rigidity", "dim": "mgmt"}], "tools": [["ClaimsCore", "Registration, assessment, settlement", "core"], ["PolicyHub", "Cover verification", "gap"], ["RepairPortal", "Repair booking and estimates", "core"], ["Contact Centre", "Notification and status calls", "gap"], ["Excel + e-mail", "Settlement calculation, recovery, adjuster chasing", "shadow"]], "dataNeeds": [["Policy cover", "PolicyHub", "reliable"], ["Claim status", "ClaimsCore", "reliable"], ["Settlement calculation", "Personal spreadsheet", "unreliable"], ["Adjuster reports", "E-mail attachments", "unreliable"], ["Recovery evidence", "Scattered across the file", "unavailable"]], "opps": [{"activity": "Take the first notification of loss", "nature": "R", "lever": "auto", "driver": "proc", "fte": [2.0, 2.5], "readiness": "fix", "horizon": "0-6m", "note": "Needs the contact-centre tool connected to the claims system"}, {"activity": "Check cover against the policy", "nature": "R", "lever": "auto", "driver": "data", "fte": [1.4, 1.8], "readiness": "fix", "horizon": "0-6m", "note": "PolicyHub must expose cover as a service"}, {"activity": "Instruct and follow up the loss adjuster", "nature": "S", "lever": "auto", "driver": "proc", "fte": [2.2, 3.0], "readiness": "fix", "horizon": "0-6m", "note": "Needs a due date on the instruction, which does not exist today"}, {"activity": "Handle customer queries during the claim", "nature": "S", "lever": "aienh", "driver": "cust", "fte": [3.0, 4.0], "readiness": "fix", "horizon": "6-12m", "note": "Gated on the claim status object passing data maturity"}, {"activity": "Calculate and approve the settlement", "nature": "K", "lever": "process", "driver": "proc", "fte": [1.0, 1.5], "readiness": "act", "horizon": "6-12m", "note": "Ends the personal spreadsheets and makes the calculation auditable"}, {"activity": "Triage the claim by complexity", "nature": "S", "lever": "org", "driver": "org", "fte": [0.8, 1.2], "readiness": "act", "horizon": "6-12m", "note": "Requires the skill record the skills wheel found missing"}], "division": "Claims Operations"}, {"id": "cs", "name": "Customer Service", "dept": "Claims Operations", "division": "Claims Operations", "priority": 2, "lead": "Bram Hendrickx", "email": "", "fte": 15, "session": "", "format": "", "status": "validated", "scores": {"proc": 2, "cust": 2, "mgmt": 3, "data": 2, "mind": 4, "org": 3}, "lever": "aienh", "readiness": "fix", "potential": 58, "readinessScore": 60, "fteImpact": [3.5, 4.5], "finding": "4,0 FTE goes on answering customers who ring because nothing on their side tells them where their claim stands.", "insight": "The fix does not sit in this team: it sits in the claim status the handlers maintain next door.", "rationale": {"proc": "", "cust": "", "mgmt": "", "data": "", "mind": "", "org": ""}, "subs": {"proc": [], "cust": [], "mgmt": [], "data": [], "mind": [], "org": []}, "activities": [{"name": "Take the first notification of loss", "fte": 6.0, "pct": 40, "nature": "R", "natureRationale": "", "volume": "~1.900 calls/month", "tasks": ["Capture the circumstances", "Re-key into the claims system"], "opt": 0.55}, {"name": "Answer status calls on open claims", "fte": 9.0, "pct": 60, "nature": "S", "natureRationale": "", "volume": "~2.400 calls/month", "tasks": ["Look the claim up", "Explain where it stands"], "opt": 0.6}], "inefficiency": [], "tools": [], "dataNeeds": [], "opps": [{"activity": "Answer status calls on open claims", "nature": "S", "lever": "aienh", "driver": "cust", "fte": [3.0, 4.0], "readiness": "fix", "horizon": "6-12m", "note": "Gated on the claim status object"}, {"activity": "Take the first notification of loss", "nature": "R", "lever": "auto", "driver": "proc", "fte": [1.2, 1.6], "readiness": "fix", "horizon": "0-6m", "note": "Same interface as the claims-side fix"}]}, {"id": "rl", "name": "Recovery & Legal", "dept": "Claims Operations", "division": "Claims Operations", "priority": 6, "lead": "Joris Van Acker", "email": "", "fte": 9, "session": "", "format": "", "status": "validated", "scores": {"proc": 2, "cust": 3, "mgmt": 2, "data": 2, "mind": 3, "org": 2}, "lever": "process", "readiness": "fix", "potential": 37, "readinessScore": 50, "fteImpact": [1.2, 1.8], "finding": "Recovery files are rebuilt from scratch on both sides of the handover, and nobody owns the outcome.", "insight": "Give recovery one owner and one record and the duplication disappears without any technology.", "rationale": {"proc": "", "cust": "", "mgmt": "", "data": "", "mind": "", "org": ""}, "subs": {"proc": [], "cust": [], "mgmt": [], "data": [], "mind": [], "org": []}, "activities": [{"name": "Build the recovery file", "fte": 4.0, "pct": 44, "nature": "S", "natureRationale": "", "volume": "~310 files/month", "tasks": ["Gather the evidence", "Draft the claim"], "opt": 0.45}, {"name": "Follow up third parties", "fte": 5.0, "pct": 56, "nature": "S", "natureRationale": "", "volume": "~310 open files", "tasks": ["Chase", "Escalate to legal"], "opt": 0.3}], "inefficiency": [], "tools": [], "dataNeeds": [], "opps": [{"activity": "Build the recovery file", "nature": "S", "lever": "process", "driver": "org", "fte": [1.2, 1.8], "readiness": "fix", "horizon": "6-12m", "note": "Follows the RACI fix on recovery"}]}, {"id": "mu", "name": "Motor Underwriting", "dept": "Underwriting", "division": "Underwriting & Pricing", "priority": 7, "lead": "Tom Verlinden", "email": "", "fte": 48, "session": "", "format": "", "status": "validated", "scores": {"proc": 3, "cust": 3, "mgmt": 3, "data": 2, "mind": 3, "org": 3}, "lever": "auto", "readiness": "fix", "potential": 37, "readinessScore": 50, "fteImpact": [5.0, 7.0], "finding": "Two thirds of motor quotes are straight-through, but every referral is re-keyed into the pricing tool by hand.", "insight": "The referral path is where the effort sits, and it is rule-based enough to automate.", "rationale": {"proc": "", "cust": "", "mgmt": "", "data": "", "mind": "", "org": ""}, "subs": {"proc": [], "cust": [], "mgmt": [], "data": [], "mind": [], "org": []}, "activities": [{"name": "Quote and accept standard risks", "fte": 22.0, "pct": 46, "nature": "R", "natureRationale": "", "volume": "~7.400 quotes/month", "tasks": ["Price", "Accept or refer"], "opt": 0.35}, {"name": "Handle referrals", "fte": 16.0, "pct": 33, "nature": "S", "natureRationale": "", "volume": "~1.900 referrals/month", "tasks": ["Re-key into the pricing tool", "Decide"], "opt": 0.45}, {"name": "Renew the book", "fte": 10.0, "pct": 21, "nature": "R", "natureRationale": "", "volume": "~5.000 renewals/month", "tasks": ["Re-rate", "Issue"], "opt": 0.3}], "inefficiency": [], "tools": [], "dataNeeds": [], "opps": [{"activity": "Handle referrals", "nature": "R", "lever": "auto", "driver": "proc", "fte": [3.0, 4.5], "readiness": "act", "horizon": "0-6m", "note": "Referral data already exists in the quote"}, {"activity": "Renew the book", "nature": "R", "lever": "auto", "driver": "proc", "fte": [2.0, 2.5], "readiness": "fix", "horizon": "6-12m", "note": "Needs the rating table cleaned up"}]}, {"id": "pu", "name": "Property Underwriting", "dept": "Underwriting", "division": "Underwriting & Pricing", "priority": 8, "lead": "Sofie Claes", "email": "", "fte": 40, "session": "", "format": "", "status": "validated", "scores": {"proc": 2, "cust": 3, "mgmt": 2, "data": 2, "mind": 3, "org": 2}, "lever": "data", "readiness": "fix", "potential": 41, "readinessScore": 50, "fteImpact": [4.0, 6.0], "finding": "Survey reports arrive as PDFs and are summarised by hand before anything can be priced.", "insight": "The same document problem as claims, one process earlier.", "rationale": {"proc": "", "cust": "", "mgmt": "", "data": "", "mind": "", "org": ""}, "subs": {"proc": [], "cust": [], "mgmt": [], "data": [], "mind": [], "org": []}, "activities": [{"name": "Assess the risk", "fte": 18.0, "pct": 45, "nature": "K", "natureRationale": "", "volume": "~900 risks/month", "tasks": ["Read the survey", "Judge the exposure"], "opt": 0.35}, {"name": "Summarise survey reports", "fte": 12.0, "pct": 30, "nature": "S", "natureRationale": "", "volume": "~900 reports/month", "tasks": ["Read the PDF", "Type the summary"], "opt": 0.6}, {"name": "Issue the policy", "fte": 10.0, "pct": 25, "nature": "R", "natureRationale": "", "volume": "~800 policies/month", "tasks": ["Generate documents", "Send"], "opt": 0.3}], "inefficiency": [], "tools": [], "dataNeeds": [], "opps": [{"activity": "Summarise survey reports", "nature": "S", "lever": "aiacc", "driver": "data", "fte": [2.5, 3.5], "readiness": "fix", "horizon": "6-12m", "note": "Blocked until survey reports are structured"}, {"activity": "Issue the policy", "nature": "R", "lever": "auto", "driver": "proc", "fte": [1.5, 2.5], "readiness": "fix", "horizon": "0-6m", "note": "Document generation is already templated"}]}, {"id": "pa", "name": "Pricing & Actuarial", "dept": "Underwriting", "division": "Underwriting & Pricing", "priority": 9, "lead": "Katrien Aerts", "email": "", "fte": 18, "session": "", "format": "", "status": "validated", "scores": {"proc": 4, "cust": 3, "mgmt": 4, "data": 4, "mind": 4, "org": 4}, "lever": "aiacc", "readiness": "act", "potential": 28, "readinessScore": 80, "fteImpact": [1.5, 2.5], "finding": "The strongest management system in scope: reliable data, a real model dialogue, clear ownership.", "insight": "Little to fix here. It is the team the others should be compared against.", "rationale": {"proc": "", "cust": "", "mgmt": "", "data": "", "mind": "", "org": ""}, "subs": {"proc": [], "cust": [], "mgmt": [], "data": [], "mind": [], "org": []}, "activities": [{"name": "Refresh the pricing models", "fte": 8.0, "pct": 44, "nature": "K", "natureRationale": "", "volume": "quarterly cycle", "tasks": ["Prepare data", "Refit", "Review"], "opt": 0.2}, {"name": "Prepare the data", "fte": 6.0, "pct": 33, "nature": "S", "natureRationale": "", "volume": "quarterly cycle", "tasks": ["Extract", "Clean", "Reconcile"], "opt": 0.4}, {"name": "Report on adequacy", "fte": 4.0, "pct": 22, "nature": "S", "natureRationale": "", "volume": "monthly", "tasks": ["Build the pack", "Present"], "opt": 0.25}], "inefficiency": [], "tools": [], "dataNeeds": [], "opps": [{"activity": "Prepare the data", "nature": "S", "lever": "aiacc", "driver": "data", "fte": [1.5, 2.5], "readiness": "act", "horizon": "0-6m", "note": "Data is reliable and the team is willing"}]}, {"id": "bd", "name": "Broker Desk", "dept": "Distribution", "division": "Distribution & Marketing", "priority": 10, "lead": "Peter Maes", "email": "", "fte": 58, "session": "", "format": "", "status": "validated", "scores": {"proc": 2, "cust": 2, "mgmt": 2, "data": 1, "mind": 3, "org": 2}, "lever": "data", "readiness": "fix", "potential": 47, "readinessScore": 40, "fteImpact": [7.0, 10.0], "finding": "Broker requests arrive by e-mail in free text and are sorted by hand before anyone can act on them.", "insight": "The largest single pool in scope, and it is blocked on the same thing as claims: content that is not in fields.", "rationale": {"proc": "", "cust": "", "mgmt": "", "data": "", "mind": "", "org": ""}, "subs": {"proc": [], "cust": [], "mgmt": [], "data": [], "mind": [], "org": []}, "activities": [{"name": "Sort and route broker mail", "fte": 20.0, "pct": 34, "nature": "S", "natureRationale": "", "volume": "~11.000 mails/month", "tasks": ["Read", "Classify", "Route"], "opt": 0.6}, {"name": "Answer broker questions", "fte": 22.0, "pct": 38, "nature": "S", "natureRationale": "", "volume": "~6.500 questions/month", "tasks": ["Look up", "Reply"], "opt": 0.45}, {"name": "Onboard new brokers", "fte": 16.0, "pct": 28, "nature": "R", "natureRationale": "", "volume": "~90 onboardings/month", "tasks": ["Collect documents", "Set up access"], "opt": 0.35}], "inefficiency": [], "tools": [], "dataNeeds": [], "opps": [{"activity": "Sort and route broker mail", "nature": "S", "lever": "aiacc", "driver": "data", "fte": [3.5, 5.0], "readiness": "fix", "horizon": "6-12m", "note": "Needs a structured intake first"}, {"activity": "Answer broker questions", "nature": "S", "lever": "aiacc", "driver": "cust", "fte": [2.5, 3.5], "readiness": "fix", "horizon": "6-12m", "note": "Knowledge base has to be consolidated"}, {"activity": "Onboard new brokers", "nature": "R", "lever": "auto", "driver": "proc", "fte": [1.0, 1.5], "readiness": "fix", "horizon": "0-6m", "note": "Rule-based once documents are complete"}]}, {"id": "ds", "name": "Direct Sales", "dept": "Distribution", "division": "Distribution & Marketing", "priority": 11, "lead": "Nele De Smet", "email": "", "fte": 74, "session": "", "format": "", "status": "validated", "scores": {"proc": 3, "cust": 3, "mgmt": 3, "data": 2, "mind": 4, "org": 3}, "lever": "aiacc", "readiness": "fix", "potential": 41, "readinessScore": 60, "fteImpact": [8.0, 11.0], "finding": "Half the calls are quotes that never convert, and nothing tells an agent which ones are worth the time.", "insight": "Biggest team in scope and the most willing; the constraint is what the agent can see, not what they can do.", "rationale": {"proc": "", "cust": "", "mgmt": "", "data": "", "mind": "", "org": ""}, "subs": {"proc": [], "cust": [], "mgmt": [], "data": [], "mind": [], "org": []}, "activities": [{"name": "Handle inbound sales calls", "fte": 34.0, "pct": 46, "nature": "S", "natureRationale": "", "volume": "~19.000 calls/month", "tasks": ["Qualify", "Quote", "Close"], "opt": 0.4}, {"name": "Follow up open quotes", "fte": 22.0, "pct": 30, "nature": "S", "natureRationale": "", "volume": "~8.000 open quotes", "tasks": ["Call back", "Re-quote"], "opt": 0.5}, {"name": "Administer new business", "fte": 18.0, "pct": 24, "nature": "R", "natureRationale": "", "volume": "~4.200 policies/month", "tasks": ["Check", "Issue", "File"], "opt": 0.3}], "inefficiency": [], "tools": [], "dataNeeds": [], "opps": [{"activity": "Follow up open quotes", "nature": "S", "lever": "aiacc", "driver": "cust", "fte": [4.0, 5.5], "readiness": "act", "horizon": "0-6m", "note": "Conversion data exists and the team wants it"}, {"activity": "Administer new business", "nature": "R", "lever": "auto", "driver": "proc", "fte": [2.0, 3.0], "readiness": "fix", "horizon": "6-12m", "note": "Rule-based, systems already integrated"}, {"activity": "Handle inbound sales calls", "nature": "S", "lever": "aienh", "driver": "cust", "fte": [2.0, 2.5], "readiness": "fix", "horizon": "12-24m", "note": "Needs the quote data cleaned first"}]}, {"id": "it", "name": "IT & Systems", "dept": "Corporate", "division": "Corporate & Support", "priority": 12, "lead": "Dirk Peeters", "email": "", "fte": 38, "session": "", "format": "", "status": "validated", "scores": {"proc": 3, "cust": 2, "mgmt": 3, "data": 3, "mind": 3, "org": 2}, "lever": "process", "readiness": "act", "potential": 31, "readinessScore": 60, "fteImpact": [3.0, 4.5], "finding": "Most of the integration work the business is waiting on sits in one backlog with no owner for sequencing.", "insight": "The three system fixes claims needs all land here. Sequencing them is the constraint, not capacity.", "rationale": {"proc": "", "cust": "", "mgmt": "", "data": "", "mind": "", "org": ""}, "subs": {"proc": [], "cust": [], "mgmt": [], "data": [], "mind": [], "org": []}, "activities": [{"name": "Run the integration backlog", "fte": 14.0, "pct": 37, "nature": "K", "natureRationale": "", "volume": "~40 items open", "tasks": ["Scope", "Build", "Release"], "opt": 0.3}, {"name": "Support the core systems", "fte": 16.0, "pct": 42, "nature": "S", "natureRationale": "", "volume": "~600 tickets/month", "tasks": ["Triage", "Resolve"], "opt": 0.35}, {"name": "Manage releases", "fte": 8.0, "pct": 21, "nature": "R", "natureRationale": "", "volume": "monthly", "tasks": ["Package", "Test", "Deploy"], "opt": 0.25}], "inefficiency": [], "tools": [], "dataNeeds": [], "opps": [{"activity": "Support the core systems", "nature": "S", "lever": "auto", "driver": "proc", "fte": [2.0, 3.0], "readiness": "fix", "horizon": "6-12m", "note": "Ticket patterns are repetitive"}, {"activity": "Run the integration backlog", "nature": "K", "lever": "process", "driver": "org", "fte": [1.0, 1.5], "readiness": "act", "horizon": "0-6m", "note": "Needs a single owner for sequencing"}]}, {"id": "cr", "name": "Compliance & Risk", "dept": "Corporate", "division": "Corporate & Support", "priority": 13, "lead": "Wouter Segers", "email": "", "fte": 16, "session": "", "format": "", "status": "validated", "scores": {"proc": 3, "cust": 3, "mgmt": 3, "data": 2, "mind": 3, "org": 3}, "lever": "auto", "readiness": "fix", "potential": 31, "readinessScore": 50, "fteImpact": [1.5, 2.5], "finding": "Controls are well designed and evidenced by hand; the evidence gathering is the whole cost.", "insight": "Nothing wrong with the control framework. The effort is in proving it every quarter.", "rationale": {"proc": "", "cust": "", "mgmt": "", "data": "", "mind": "", "org": ""}, "subs": {"proc": [], "cust": [], "mgmt": [], "data": [], "mind": [], "org": []}, "activities": [{"name": "Run the control cycle", "fte": 7.0, "pct": 44, "nature": "S", "natureRationale": "", "volume": "quarterly", "tasks": ["Request evidence", "Test", "Report"], "opt": 0.4}, {"name": "Handle regulatory reporting", "fte": 5.0, "pct": 31, "nature": "R", "natureRationale": "", "volume": "monthly", "tasks": ["Extract", "Format", "File"], "opt": 0.35}, {"name": "Advise the business", "fte": 4.0, "pct": 25, "nature": "K", "natureRationale": "", "volume": "ad hoc", "tasks": ["Review", "Advise"], "opt": 0.1}], "inefficiency": [], "tools": [], "dataNeeds": [], "opps": [{"activity": "Run the control cycle", "nature": "S", "lever": "auto", "driver": "proc", "fte": [1.0, 1.5], "readiness": "fix", "horizon": "6-12m", "note": "Evidence sits in systems already"}, {"activity": "Handle regulatory reporting", "nature": "R", "lever": "auto", "driver": "data", "fte": [0.5, 1.0], "readiness": "fix", "horizon": "0-6m", "note": "Deterministic extracts"}]}, {"id": "hr", "name": "HR & Talent", "dept": "Corporate", "division": "Corporate & Support", "priority": 14, "lead": "Marleen Ruysse", "email": "", "fte": 12, "session": "", "format": "", "status": "validated", "scores": {"proc": 3, "cust": 3, "mgmt": 3, "data": 2, "mind": 4, "org": 3}, "lever": "auto", "readiness": "fix", "potential": 27, "readinessScore": 60, "fteImpact": [1.0, 1.5], "finding": "Recruitment and onboarding admin is manual, but the volumes are small enough that it is not where the money is.", "insight": "Low priority: the maturity is fine and the pool is small.", "rationale": {"proc": "", "cust": "", "mgmt": "", "data": "", "mind": "", "org": ""}, "subs": {"proc": [], "cust": [], "mgmt": [], "data": [], "mind": [], "org": []}, "activities": [{"name": "Recruit and onboard", "fte": 6.0, "pct": 60, "nature": "S", "natureRationale": "", "volume": "~90 hires/year", "tasks": ["Screen", "Interview", "Onboard"], "opt": 0.3}, {"name": "Run payroll and admin", "fte": 4.0, "pct": 40, "nature": "R", "natureRationale": "", "volume": "monthly", "tasks": ["Collect", "Check", "Submit"], "opt": 0.35}], "inefficiency": [], "tools": [], "dataNeeds": [], "opps": [{"activity": "Run payroll and admin", "nature": "R", "lever": "auto", "driver": "proc", "fte": [1.0, 1.5], "readiness": "fix", "horizon": "6-12m", "note": "Rule-based"}]}, {"id": "csa", "name": "Claims Support & Admin", "dept": "Claims Operations", "division": "Claims Operations", "priority": 5, "lead": "", "email": "", "fte": 6, "session": "", "format": "", "status": "baseline", "scores": {"proc": 0, "cust": 0, "mgmt": 0, "data": 0, "mind": 0, "org": 0}, "lever": null, "readiness": null, "potential": 0, "readinessScore": 0, "fteImpact": [0, 0], "finding": "Out of the first wave. Scanning and archive; assessment not started.", "insight": "", "rationale": {"proc": "", "cust": "", "mgmt": "", "data": "", "mind": "", "org": ""}, "subs": {"proc": [], "cust": [], "mgmt": [], "data": [], "mind": [], "org": []}, "activities": [], "inefficiency": [], "tools": [], "dataNeeds": [], "opps": []}, {"id": "fc", "name": "Finance Control", "dept": "Finance", "division": "Corporate & Support", "priority": 4, "lead": "Nele Coppens", "email": "", "fte": 5, "session": "", "format": "", "status": "baseline", "scores": {"proc": 0, "cust": 0, "mgmt": 0, "data": 0, "mind": 0, "org": 0}, "lever": null, "readiness": null, "potential": 0, "readinessScore": 0, "fteImpact": [0, 0], "finding": "Assessment ongoing. Releases claim payments and books the recoveries.", "insight": "", "rationale": {"proc": "", "cust": "", "mgmt": "", "data": "", "mind": "", "org": ""}, "subs": {"proc": [], "cust": [], "mgmt": [], "data": [], "mind": [], "org": []}, "activities": [], "inefficiency": [], "tools": [], "dataNeeds": [], "opps": []}, {"id": "mk", "name": "Marketing", "dept": "Distribution", "division": "Distribution & Marketing", "priority": 15, "lead": "", "email": "", "fte": 14, "session": "", "format": "", "status": "baseline", "scores": {"proc": 0, "cust": 0, "mgmt": 0, "data": 0, "mind": 0, "org": 0}, "lever": null, "readiness": null, "potential": 0, "readinessScore": 0, "fteImpact": [0, 0], "finding": "Assessment ongoing. Scheduled in the second wave.", "insight": "", "rationale": {"proc": "", "cust": "", "mgmt": "", "data": "", "mind": "", "org": ""}, "subs": {"proc": [], "cust": [], "mgmt": [], "data": [], "mind": [], "org": []}, "activities": [], "inefficiency": [], "tools": [], "dataNeeds": [], "opps": []}], "engagement": {"divisions": [{"name": "Claims Operations", "teams": ["ch", "cs", "rl", "csa"]}, {"name": "Underwriting & Pricing", "teams": ["mu", "pu", "pa"]}, {"name": "Distribution & Marketing", "teams": ["bd", "ds", "mk"]}, {"name": "Corporate & Support", "teams": ["it", "cr", "hr", "fc"]}]}, "artifacts": {"counts": {"total": 116, "produced": 10, "planned": 106}, "artifacts": [{"team": "ch", "lens": "proc", "instrument": "process-map", "label": "Process map", "producedBy": "process-map-builder", "status": "produced", "producedAt": "4 Sep 2026", "path": "../sandbox/process-map.html", "pstat": "live"}, {"team": "ch", "lens": "cust", "instrument": "service-blueprint", "label": "Service blueprint", "producedBy": "service-blueprint-builder", "status": "produced", "producedAt": "8 Sep 2026", "path": "../sandbox/service-blueprint.html", "pstat": "live"}, {"team": "ch", "lens": "mgmt", "instrument": "performance-wheel", "label": "Performance wheel", "producedBy": "performance-wheel-builder", "status": "produced", "producedAt": "3 Sep 2026", "path": "../sandbox/performance-wheel.html", "pstat": "live"}, {"team": "ch", "lens": "mgmt", "instrument": "skills-wheel", "label": "Skills wheel", "producedBy": "skills-wheel-builder", "status": "produced", "producedAt": "4 Sep 2026", "path": "../sandbox/skills-wheel.html", "pstat": "live"}, {"team": "ch", "lens": "data", "instrument": "data-maturity", "label": "Data maturity", "producedBy": "data-maturity-builder", "status": "produced", "producedAt": "8 Sep 2026", "path": "../sandbox/data-maturity.html", "pstat": "live"}, {"team": "ch", "lens": "mind", "instrument": "team-barometer", "label": "Team barometer", "producedBy": "team-barometer-builder", "status": "produced", "producedAt": "8 Sep 2026", "path": "../sandbox/team-barometer.html", "pstat": "live"}, {"team": "ch", "lens": "org", "instrument": "raci-diagnostic", "label": "RACI diagnostic", "producedBy": "raci-diagnostic-builder", "status": "produced", "producedAt": "8 Sep 2026", "path": "../sandbox/raci-diagnostic.html", "pstat": "live"}, {"team": "ch", "lens": "team", "instrument": "opportunity-register", "label": "Opportunity register", "producedBy": "ai-opportunity-heatmap", "status": "produced", "producedAt": "8 Sep 2026", "path": "../sandbox/opportunity-register.html", "pstat": "live"}, {"team": "ch", "lens": "team", "instrument": "hypothesis-tree", "label": "Hypothesis tree", "producedBy": "hypothesis-tree-builder", "status": "produced", "producedAt": "8 Sep 2026", "path": "../sandbox/hypothesis-tree.html", "pstat": "live"}, {"team": "ch", "lens": "team", "instrument": "exec-sum", "label": "Executive summary", "producedBy": "exec-sum-synthesiser", "status": "produced", "producedAt": "8 Sep 2026", "path": "../sandbox/exec-sum.html", "pstat": "live"}, {"team": "ch", "lens": "proc", "instrument": "inefficiency-register", "label": "Pain point register", "producedBy": "inefficiency-register-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "ch", "lens": "team", "instrument": "lma", "label": "Lean maturity scan", "producedBy": "lma-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "cs", "lens": "proc", "instrument": "process-map", "label": "Process map", "producedBy": "process-map-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "cs", "lens": "cust", "instrument": "service-blueprint", "label": "Service blueprint", "producedBy": "service-blueprint-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "cs", "lens": "mgmt", "instrument": "performance-wheel", "label": "Performance wheel", "producedBy": "performance-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "cs", "lens": "mgmt", "instrument": "skills-wheel", "label": "Skills wheel", "producedBy": "skills-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "cs", "lens": "data", "instrument": "data-maturity", "label": "Data maturity", "producedBy": "data-maturity-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "cs", "lens": "mind", "instrument": "team-barometer", "label": "Team barometer", "producedBy": "team-barometer-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "cs", "lens": "org", "instrument": "raci-diagnostic", "label": "RACI diagnostic", "producedBy": "raci-diagnostic-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "cs", "lens": "team", "instrument": "opportunity-register", "label": "Opportunity register", "producedBy": "ai-opportunity-heatmap", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "rl", "lens": "proc", "instrument": "process-map", "label": "Process map", "producedBy": "process-map-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "rl", "lens": "cust", "instrument": "service-blueprint", "label": "Service blueprint", "producedBy": "service-blueprint-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "rl", "lens": "mgmt", "instrument": "performance-wheel", "label": "Performance wheel", "producedBy": "performance-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "rl", "lens": "mgmt", "instrument": "skills-wheel", "label": "Skills wheel", "producedBy": "skills-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "rl", "lens": "data", "instrument": "data-maturity", "label": "Data maturity", "producedBy": "data-maturity-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "rl", "lens": "mind", "instrument": "team-barometer", "label": "Team barometer", "producedBy": "team-barometer-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "rl", "lens": "org", "instrument": "raci-diagnostic", "label": "RACI diagnostic", "producedBy": "raci-diagnostic-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "rl", "lens": "team", "instrument": "opportunity-register", "label": "Opportunity register", "producedBy": "ai-opportunity-heatmap", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "mu", "lens": "proc", "instrument": "process-map", "label": "Process map", "producedBy": "process-map-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "mu", "lens": "cust", "instrument": "service-blueprint", "label": "Service blueprint", "producedBy": "service-blueprint-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "mu", "lens": "mgmt", "instrument": "performance-wheel", "label": "Performance wheel", "producedBy": "performance-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "mu", "lens": "mgmt", "instrument": "skills-wheel", "label": "Skills wheel", "producedBy": "skills-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "mu", "lens": "data", "instrument": "data-maturity", "label": "Data maturity", "producedBy": "data-maturity-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "mu", "lens": "mind", "instrument": "team-barometer", "label": "Team barometer", "producedBy": "team-barometer-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "mu", "lens": "org", "instrument": "raci-diagnostic", "label": "RACI diagnostic", "producedBy": "raci-diagnostic-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "mu", "lens": "team", "instrument": "opportunity-register", "label": "Opportunity register", "producedBy": "ai-opportunity-heatmap", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "pu", "lens": "proc", "instrument": "process-map", "label": "Process map", "producedBy": "process-map-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "pu", "lens": "cust", "instrument": "service-blueprint", "label": "Service blueprint", "producedBy": "service-blueprint-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "pu", "lens": "mgmt", "instrument": "performance-wheel", "label": "Performance wheel", "producedBy": "performance-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "pu", "lens": "mgmt", "instrument": "skills-wheel", "label": "Skills wheel", "producedBy": "skills-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "pu", "lens": "data", "instrument": "data-maturity", "label": "Data maturity", "producedBy": "data-maturity-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "pu", "lens": "mind", "instrument": "team-barometer", "label": "Team barometer", "producedBy": "team-barometer-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "pu", "lens": "org", "instrument": "raci-diagnostic", "label": "RACI diagnostic", "producedBy": "raci-diagnostic-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "pu", "lens": "team", "instrument": "opportunity-register", "label": "Opportunity register", "producedBy": "ai-opportunity-heatmap", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "pa", "lens": "proc", "instrument": "process-map", "label": "Process map", "producedBy": "process-map-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "pa", "lens": "cust", "instrument": "service-blueprint", "label": "Service blueprint", "producedBy": "service-blueprint-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "pa", "lens": "mgmt", "instrument": "performance-wheel", "label": "Performance wheel", "producedBy": "performance-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "pa", "lens": "mgmt", "instrument": "skills-wheel", "label": "Skills wheel", "producedBy": "skills-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "pa", "lens": "data", "instrument": "data-maturity", "label": "Data maturity", "producedBy": "data-maturity-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "pa", "lens": "mind", "instrument": "team-barometer", "label": "Team barometer", "producedBy": "team-barometer-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "pa", "lens": "org", "instrument": "raci-diagnostic", "label": "RACI diagnostic", "producedBy": "raci-diagnostic-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "pa", "lens": "team", "instrument": "opportunity-register", "label": "Opportunity register", "producedBy": "ai-opportunity-heatmap", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "bd", "lens": "proc", "instrument": "process-map", "label": "Process map", "producedBy": "process-map-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "bd", "lens": "cust", "instrument": "service-blueprint", "label": "Service blueprint", "producedBy": "service-blueprint-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "bd", "lens": "mgmt", "instrument": "performance-wheel", "label": "Performance wheel", "producedBy": "performance-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "bd", "lens": "mgmt", "instrument": "skills-wheel", "label": "Skills wheel", "producedBy": "skills-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "bd", "lens": "data", "instrument": "data-maturity", "label": "Data maturity", "producedBy": "data-maturity-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "bd", "lens": "mind", "instrument": "team-barometer", "label": "Team barometer", "producedBy": "team-barometer-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "bd", "lens": "org", "instrument": "raci-diagnostic", "label": "RACI diagnostic", "producedBy": "raci-diagnostic-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "bd", "lens": "team", "instrument": "opportunity-register", "label": "Opportunity register", "producedBy": "ai-opportunity-heatmap", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "ds", "lens": "proc", "instrument": "process-map", "label": "Process map", "producedBy": "process-map-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "ds", "lens": "cust", "instrument": "service-blueprint", "label": "Service blueprint", "producedBy": "service-blueprint-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "ds", "lens": "mgmt", "instrument": "performance-wheel", "label": "Performance wheel", "producedBy": "performance-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "ds", "lens": "mgmt", "instrument": "skills-wheel", "label": "Skills wheel", "producedBy": "skills-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "ds", "lens": "data", "instrument": "data-maturity", "label": "Data maturity", "producedBy": "data-maturity-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "ds", "lens": "mind", "instrument": "team-barometer", "label": "Team barometer", "producedBy": "team-barometer-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "ds", "lens": "org", "instrument": "raci-diagnostic", "label": "RACI diagnostic", "producedBy": "raci-diagnostic-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "ds", "lens": "team", "instrument": "opportunity-register", "label": "Opportunity register", "producedBy": "ai-opportunity-heatmap", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "it", "lens": "proc", "instrument": "process-map", "label": "Process map", "producedBy": "process-map-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "it", "lens": "cust", "instrument": "service-blueprint", "label": "Service blueprint", "producedBy": "service-blueprint-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "it", "lens": "mgmt", "instrument": "performance-wheel", "label": "Performance wheel", "producedBy": "performance-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "it", "lens": "mgmt", "instrument": "skills-wheel", "label": "Skills wheel", "producedBy": "skills-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "it", "lens": "data", "instrument": "data-maturity", "label": "Data maturity", "producedBy": "data-maturity-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "it", "lens": "mind", "instrument": "team-barometer", "label": "Team barometer", "producedBy": "team-barometer-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "it", "lens": "org", "instrument": "raci-diagnostic", "label": "RACI diagnostic", "producedBy": "raci-diagnostic-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "it", "lens": "team", "instrument": "opportunity-register", "label": "Opportunity register", "producedBy": "ai-opportunity-heatmap", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "cr", "lens": "proc", "instrument": "process-map", "label": "Process map", "producedBy": "process-map-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "cr", "lens": "cust", "instrument": "service-blueprint", "label": "Service blueprint", "producedBy": "service-blueprint-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "cr", "lens": "mgmt", "instrument": "performance-wheel", "label": "Performance wheel", "producedBy": "performance-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "cr", "lens": "mgmt", "instrument": "skills-wheel", "label": "Skills wheel", "producedBy": "skills-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "cr", "lens": "data", "instrument": "data-maturity", "label": "Data maturity", "producedBy": "data-maturity-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "cr", "lens": "mind", "instrument": "team-barometer", "label": "Team barometer", "producedBy": "team-barometer-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "cr", "lens": "org", "instrument": "raci-diagnostic", "label": "RACI diagnostic", "producedBy": "raci-diagnostic-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "cr", "lens": "team", "instrument": "opportunity-register", "label": "Opportunity register", "producedBy": "ai-opportunity-heatmap", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "hr", "lens": "proc", "instrument": "process-map", "label": "Process map", "producedBy": "process-map-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "hr", "lens": "cust", "instrument": "service-blueprint", "label": "Service blueprint", "producedBy": "service-blueprint-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "hr", "lens": "mgmt", "instrument": "performance-wheel", "label": "Performance wheel", "producedBy": "performance-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "hr", "lens": "mgmt", "instrument": "skills-wheel", "label": "Skills wheel", "producedBy": "skills-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "hr", "lens": "data", "instrument": "data-maturity", "label": "Data maturity", "producedBy": "data-maturity-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "hr", "lens": "mind", "instrument": "team-barometer", "label": "Team barometer", "producedBy": "team-barometer-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "hr", "lens": "org", "instrument": "raci-diagnostic", "label": "RACI diagnostic", "producedBy": "raci-diagnostic-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "hr", "lens": "team", "instrument": "opportunity-register", "label": "Opportunity register", "producedBy": "ai-opportunity-heatmap", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "csa", "lens": "proc", "instrument": "process-map", "label": "Process map", "producedBy": "process-map-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "csa", "lens": "cust", "instrument": "service-blueprint", "label": "Service blueprint", "producedBy": "service-blueprint-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "csa", "lens": "mgmt", "instrument": "performance-wheel", "label": "Performance wheel", "producedBy": "performance-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "csa", "lens": "mgmt", "instrument": "skills-wheel", "label": "Skills wheel", "producedBy": "skills-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "csa", "lens": "data", "instrument": "data-maturity", "label": "Data maturity", "producedBy": "data-maturity-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "csa", "lens": "mind", "instrument": "team-barometer", "label": "Team barometer", "producedBy": "team-barometer-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "csa", "lens": "org", "instrument": "raci-diagnostic", "label": "RACI diagnostic", "producedBy": "raci-diagnostic-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "csa", "lens": "team", "instrument": "opportunity-register", "label": "Opportunity register", "producedBy": "ai-opportunity-heatmap", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "fc", "lens": "proc", "instrument": "process-map", "label": "Process map", "producedBy": "process-map-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "fc", "lens": "cust", "instrument": "service-blueprint", "label": "Service blueprint", "producedBy": "service-blueprint-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "fc", "lens": "mgmt", "instrument": "performance-wheel", "label": "Performance wheel", "producedBy": "performance-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "fc", "lens": "mgmt", "instrument": "skills-wheel", "label": "Skills wheel", "producedBy": "skills-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "fc", "lens": "data", "instrument": "data-maturity", "label": "Data maturity", "producedBy": "data-maturity-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "fc", "lens": "mind", "instrument": "team-barometer", "label": "Team barometer", "producedBy": "team-barometer-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "fc", "lens": "org", "instrument": "raci-diagnostic", "label": "RACI diagnostic", "producedBy": "raci-diagnostic-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "fc", "lens": "team", "instrument": "opportunity-register", "label": "Opportunity register", "producedBy": "ai-opportunity-heatmap", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "mk", "lens": "proc", "instrument": "process-map", "label": "Process map", "producedBy": "process-map-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "mk", "lens": "cust", "instrument": "service-blueprint", "label": "Service blueprint", "producedBy": "service-blueprint-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "mk", "lens": "mgmt", "instrument": "performance-wheel", "label": "Performance wheel", "producedBy": "performance-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "mk", "lens": "mgmt", "instrument": "skills-wheel", "label": "Skills wheel", "producedBy": "skills-wheel-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "mk", "lens": "data", "instrument": "data-maturity", "label": "Data maturity", "producedBy": "data-maturity-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "mk", "lens": "mind", "instrument": "team-barometer", "label": "Team barometer", "producedBy": "team-barometer-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "mk", "lens": "org", "instrument": "raci-diagnostic", "label": "RACI diagnostic", "producedBy": "raci-diagnostic-builder", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}, {"team": "mk", "lens": "team", "instrument": "opportunity-register", "label": "Opportunity register", "producedBy": "ai-opportunity-heatmap", "status": "planned", "producedAt": null, "path": null, "pstat": "live"}]}};</script>
@@ -9761,7 +10177,8 @@ function wireReadinessTips(){
     if(window.NR_TOUCH) el.addEventListener('click', e=>{ showTipHTML(html, e); e.stopPropagation(); });
   });
 }
-function setTeamSub(k){ teamSub=k; renderTeamContent();
+function setTeamSub(k){ if(window.nrTeamSub&&window.nrTeamSub(k)) return;   /* the findings dashboard shows each tab on its own page */
+  teamSub=k; renderTeamContent();
   const sc=document.querySelector('.tdd-bar'); if(sc) sc.scrollIntoView({block:'nearest'});
 }
 // single-team, initiative-level 2-year roadmap — the team's own slice of the global roadmap sequencer
@@ -10892,6 +11309,8 @@ return {actIneff, actMatch, actOpp, addMember, aiReadinessVerdict, analysesPage,
 <script>window.__NR_FINDINGS_EMBED__ = /*NR_FX*/null/*END_NR_FX*/;</script>
 <script>window.__NR_OUTPUTS__ = /*NR_OUTPUTS*/null/*END_NR_OUTPUTS*/;
 window.__NR_SOURCES__ = /*NR_SOURCES*/null/*END_NR_SOURCES*/;
+window.__NR_HYP__ = /*NR_HYP*/null/*END_NR_HYP*/;
+window.__NR_ROOM__ = /*NR_ROOM*/null/*END_NR_ROOM*/;
 var DATA = {sourcePanel: window.__NR_SOURCES__ || null};
 window.__NR_SPLIT__ = /*NR_SPLIT*/null/*END_NR_SPLIT*/;
 window.__NR_EXECSUM__ = /*NR_EXECSUM*/null/*END_NR_EXECSUM*/;</script>
@@ -12626,6 +13045,166 @@ window.__NR_INBOX__ = null;
 })();
 </script>
 <style id="nr-ask-css">.nr-asking{outline:2px solid var(--rag-red,#D2645A)!important;outline-offset:2px}</style>
+<!-- @@NR-ROOM:BEGIN  The data room: every source the engagement collected (transcripts, documents, data, screenshots
+     and photos, research), in one table with search and filters; a row opens the source with its written version
+     and what cites it (Gilles, 22 Oct 2026). The same block in the OpEx findings dashboard (the master,
+     engagement-dashboard.html) and the findings screen for any practice: copy_dashboard.py carries it.
+     Data: window.__NR_ROOM__ (generate_dashboard.py, from sources.py room). Change it here, in the master. -->
+<style id="nr-room-css">
+.nrr{--r-ink:var(--text,var(--ink));--r-mut:var(--muted,var(--ink-3));--r-line:var(--divider,var(--line));color:var(--r-ink)}
+.nrr-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 12px}
+.nrr-q{flex:1 1 240px;min-width:200px;height:34px;border:1px solid var(--r-line);border-radius:9px;padding:0 12px;background:var(--surface);color:var(--r-ink);font:inherit;font-size:var(--fs-13,13px)}
+.nrr-seg{display:inline-flex;flex-wrap:wrap;gap:4px}
+.nrr-c{height:30px;padding:0 11px;border:1px solid var(--r-line);border-radius:999px;background:var(--surface);color:var(--r-mut);font:inherit;font-size:var(--fs-12,12px);cursor:pointer;white-space:nowrap}
+.nrr-c b{font-weight:600;color:var(--r-ink);margin-left:4px}
+.nrr-c.on{background:var(--navy);border-color:var(--navy);color:#fff}.nrr-c.on b{color:#fff}
+html.dark .nrr-c.on,html.dark .nrr-btn.pri{background:#DCE5F5;border-color:#DCE5F5;color:#0F2B52}html.dark .nrr-c.on b{color:#0F2B52}
+.nrr-sel{height:30px;border:1px solid var(--r-line);border-radius:999px;padding:0 10px;background:var(--surface);color:var(--r-ink);font:inherit;font-size:var(--fs-12,12px)}
+.nrr-tw{border:1px solid var(--r-line);border-radius:12px;background:var(--surface);overflow-x:auto}
+.nrr-t{width:100%;border-collapse:collapse;font-size:var(--fs-13,13px);min-width:640px}
+.nrr-t th{text-align:left;font-weight:600;font-size:var(--fs-11,11px);color:var(--r-mut);padding:10px 12px;border-bottom:1px solid var(--r-line);white-space:nowrap;cursor:pointer;user-select:none}
+.nrr-t th.on{color:var(--r-ink)}.nrr-t th i{font-style:normal;margin-left:3px}
+.nrr-t td{padding:9px 12px;border-bottom:1px solid var(--r-line);vertical-align:middle;white-space:nowrap}
+.nrr-t tr:last-child td{border-bottom:0}
+.nrr-t tbody tr{cursor:pointer}.nrr-t tbody tr:hover td{background:var(--surface-2)}
+.nrr-t td.nm{white-space:normal;width:46%}
+.nrr-nm{display:block;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.nrr-hit{font-size:var(--fs-11,11px);color:var(--r-mut);margin-left:6px}
+.nrr-mut{color:var(--r-mut)}
+.nrr-k{display:inline-flex;align-items:center;gap:6px;color:var(--r-mut)}
+.nrr-k svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.nrr-o{display:inline-block;font-size:var(--fs-11,11px);font-weight:600;border-radius:5px;padding:1px 7px;margin-right:4px;background:color-mix(in srgb,var(--navy) 10%,transparent);color:var(--navy)}
+html.dark .nrr-o{color:#BFD3F2;background:rgba(191,211,242,.12)}
+.nrr-o.internal{background:color-mix(in srgb,#B8620A 14%,transparent);color:#9A520A}
+.nrr-o.thirdparty{background:color-mix(in srgb,#6B4E9E 14%,transparent);color:#5A3F8A}
+.nrr-o.internet{background:color-mix(in srgb,#2A8C82 14%,transparent);color:#1F6F66}
+html.dark .nrr-o.internal{color:#F2B26B}html.dark .nrr-o.thirdparty{color:#C9B4EC}html.dark .nrr-o.internet{color:#7FD3C8}
+.nrr-n{font-variant-numeric:tabular-nums}
+.nrr-none{padding:28px 16px;text-align:center;color:var(--r-mut);font-size:var(--fs-13,13px)}
+.nrr-foot{margin:10px 2px 0;font-size:var(--fs-12,12px);color:var(--r-mut)}
+.nrr-foot a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.nrr-scrim{position:fixed;inset:0;z-index:120;background:rgba(10,20,40,.32);display:none;align-items:flex-start;justify-content:center;padding:5vh 16px;overflow-y:auto}
+.nrr-scrim.on{display:flex}
+.nrr-win{width:min(760px,100%);border-radius:16px;background:var(--surface);color:var(--r-ink);box-shadow:0 24px 64px rgba(0,0,0,.24);border:1px solid var(--r-line)}
+.nrr-wh{display:flex;gap:12px;align-items:flex-start;padding:20px 22px 14px;border-bottom:1px solid var(--r-line)}
+.nrr-wh h2{font:700 var(--fs-20,20px)/1.25 var(--fh,inherit);margin:0;color:var(--r-ink)}
+.nrr-meta{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:8px;font-size:var(--fs-12,12px);color:var(--r-mut);align-items:center}
+.nrr-x{margin-left:auto;border:0;background:none;font-size:22px;line-height:1;color:var(--r-mut);cursor:pointer;padding:2px 6px}
+.nrr-wb{padding:16px 22px 22px}
+.nrr-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.nrr-btn{height:32px;padding:0 13px;border-radius:9px;border:1px solid var(--r-line);background:var(--surface);color:var(--r-ink);font:inherit;font-size:var(--fs-13,13px);font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+.nrr-btn.pri{background:var(--navy);border-color:var(--navy);color:#fff}
+.nrr-h{font-size:var(--fs-11,11px);font-weight:600;color:var(--r-mut);text-transform:uppercase;letter-spacing:.6px;margin:18px 0 6px}
+.nrr-p{font-size:var(--fs-13,13px);line-height:1.55;margin:0}
+.nrr-use{display:flex;gap:10px;padding:7px 0;border-top:1px solid var(--r-line);font-size:var(--fs-13,13px);line-height:1.45}
+.nrr-use:first-of-type{border-top:0}
+.nrr-use span{flex:none;width:118px;color:var(--r-mut);font-size:var(--fs-12,12px)}
+.nrr-txt{position:relative;font-size:var(--fs-13,13px);line-height:1.6;background:var(--surface-2);border-radius:10px;padding:12px 14px;overflow:hidden}
+.nrr-txt.cut{max-height:260px}
+.nrr-txt.cut:after{content:"";position:absolute;left:0;right:0;bottom:0;height:70px;background:linear-gradient(transparent,var(--surface-2))}
+.nrr-txt h1,.nrr-txt h2,.nrr-txt h3{font-size:var(--fs-14,14px);margin:10px 0 4px}
+.nrr-txt p{margin:0 0 8px}.nrr-txt ul{margin:0 0 8px;padding-left:18px}
+.nrr-txt mark{background:color-mix(in srgb,#E8BF49 45%,transparent);color:inherit;border-radius:3px}
+</style>
+<script id="nr-room-js">
+window.NRRoom=(function(){
+  var KIND={conversation:['Interviews and meetings','Interview or meeting','<path d="M4 5h16v11H9l-5 4z"/>'],
+    document:['Documents','Document','<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h6M9.5 16h6"/>'],
+    data:['Data','Data','<rect x="4" y="4" width="16" height="16" rx="1.5"/><path d="M4 10h16M4 15h16M10 4v16"/>'],
+    picture:['Screenshots and photos','Screenshot or photo','<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 8"/>'],
+    research:['Desk research','Desk research','<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/>'],
+    analysis:['Our analyses','Analysis','<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>']};
+  var ORDER=['conversation','document','data','picture','research','analysis'];
+  var ORIGIN={client:'Client',internal:'Internal',thirdparty:'Third party',internet:'Internet'};
+  var F={k:'all',o:'all',q:'',nc:false,s:'date',d:-1}, OPEN=null, FULL=false;
+  try{ var sv=JSON.parse(localStorage.getItem('nr_room_f')||'null'); if(sv&&typeof sv==='object'){ F.k=sv.k||'all'; F.o=sv.o||'all'; F.s=sv.s||'date'; F.d=sv.d||-1; } }catch(e){}
+  function keep(){ try{ localStorage.setItem('nr_room_f',JSON.stringify({k:F.k,o:F.o,s:F.s,d:F.d})); }catch(e){} }
+  function D(){ var r=window.__NR_ROOM__; return r&&Array.isArray(r.sources)?r:null; }
+  function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function day(iso){ var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso||''); return m?(+m[3])+' '+MON[+m[2]-1]+' '+m[1].slice(2):(iso||''); }
+  function icon(k){ return '<svg viewBox="0 0 24 24" aria-hidden="true">'+((KIND[k]||KIND.document)[2])+'</svg>'; }
+  function tag(o){ return '<span class="nrr-o '+o+'">'+(ORIGIN[o]||o)+'</span>'; }
+  function hay(s){ return [s.id,s.label,(s.people||[]).join(' '),s.by,s.clientLabel,(KIND[s.kind]||[])[1],s.type].join(' ').toLowerCase(); }
+  function inText(s,q){ return !!(q&&s.body&&s.body.toLowerCase().indexOf(q)>=0); }
+  function base(){ var d=D(); if(!d) return []; var q=F.q.trim().toLowerCase();
+    return d.sources.filter(function(s){ if(F.o!=='all'&&(s.origins||[]).indexOf(F.o)<0) return false; if(F.nc&&(s.uses||[]).length) return false;
+      return !q||hay(s).indexOf(q)>=0||inText(s,q); }); }
+  function rows(){ var L=base().filter(function(s){ return F.k==='all'||s.kind===F.k; });
+    var key={date:function(s){return s.date||''},src:function(s){return (s.label||'').toLowerCase()},kind:function(s){return ORDER.indexOf(s.kind)},by:function(s){return (s.by||'').toLowerCase()},use:function(s){return (s.uses||[]).length}}[F.s]||function(s){return s.date||''};
+    return L.slice().sort(function(a,b){ var x=key(a),y=key(b); return (x<y?-1:x>y?1:0)*F.d||((a.id<b.id)?1:-1); }); }
+  /* one origin across the register (often only the client's): the column would repeat one word on every row */
+  function oneOrigin(){ var o={}; D().sources.forEach(function(s){ (s.origins||[]).forEach(function(x){ o[x]=1; }); }); return Object.keys(o).length<2; }
+  function table(){ var L=rows(), q=F.q.trim().toLowerCase(), oc=!oneOrigin();
+    if(!L.length) return '<div class="nrr-none">Nothing matches. Clear the search or the filters.</div>';
+    var th=function(k,l){ return '<th class="'+(F.s===k?'on':'')+'" onclick="NRRoom.sort(\''+k+'\')">'+l+(F.s===k?'<i>'+(F.d<0?'↓':'↑')+'</i>':'')+'</th>'; };
+    return '<table class="nrr-t"><thead><tr>'+th('date','Date')+th('src','Source')+th('kind','Kind')+(oc?'<th style="cursor:default">Origin</th>':'')+th('by','Captured by')+th('use','Cited by')+'</tr></thead><tbody>'+
+      L.map(function(s){ var n=(s.uses||[]).length, txt=q&&hay(s).indexOf(q)<0&&inText(s,q);
+        return '<tr onclick="NRRoom.open(\''+esc(s.id)+'\')"><td class="nrr-n">'+esc(day(s.date))+'</td>'+
+          '<td class="nm"><span class="nrr-nm" title="'+esc(s.label)+'">'+esc(s.label)+(txt?'<span class="nrr-hit">found in the text</span>':'')+'</span></td>'+
+          '<td><span class="nrr-k">'+icon(s.kind)+esc((KIND[s.kind]||[0,s.kind])[1])+'</span></td>'+
+          (oc?'<td>'+(s.origins||[]).map(tag).join('')+'</td>':'')+'<td>'+esc(s.by||'')+'</td>'+
+          '<td class="nrr-n">'+(n?n:'<span class="nrr-mut">not yet</span>')+'</td></tr>'; }).join('')+'</tbody></table>'; }
+  function chips(){ var B=base(), n=function(k){ return B.filter(function(s){return k==='all'||s.kind===k;}).length; };
+    var ks=ORDER.filter(function(k){ return D().sources.some(function(s){return s.kind===k;}); });
+    return '<button class="nrr-c'+(F.k==='all'?' on':'')+'" onclick="NRRoom.set(\'k\',\'all\')">All<b>'+n('all')+'</b></button>'+
+      ks.map(function(k){ return '<button class="nrr-c'+(F.k===k?' on':'')+'" onclick="NRRoom.set(\'k\',\''+k+'\')">'+KIND[k][0]+'<b>'+n(k)+'</b></button>'; }).join(''); }
+  function origins(){ var os=Object.keys(ORIGIN).filter(function(o){ return D().sources.some(function(s){return (s.origins||[]).indexOf(o)>=0;}); });
+    if(os.length<2) return '';
+    return '<select class="nrr-sel" onchange="NRRoom.set(\'o\',this.value)" aria-label="Origin"><option value="all">Every origin</option>'+
+      os.map(function(o){ return '<option value="'+o+'"'+(F.o===o?' selected':'')+'>'+ORIGIN[o]+'</option>'; }).join('')+'</select>'; }
+  function foot(){ var d=D(), n=d.sources.filter(function(s){return !(s.uses||[]).length;}).length;
+    return '<p class="nrr-foot">'+d.sources.length+' sources in the register'+(n?' · <a href="javascript:void 0" onclick="NRRoom.set(\'nc\','+(!F.nc)+')">'+(F.nc?'Show every source':n+' not cited by anything yet')+'</a>':'')+'. A source joins the data room when it is registered (insight capture does it as it files a note).</p>'; }
+  function html(){ var d=D();
+    if(!d||!d.sources.length) return '<div class="nrr"><div class="nrr-tw"><div class="nrr-none"><b style="color:var(--r-ink)">No sources registered yet</b><br>Every transcript, document, data extract and photo lands here once it is filed and registered. Insight capture does that when you drop a note or a transcript.</div></div></div>';
+    if(F.k!=='all'&&!d.sources.some(function(s){return s.kind===F.k;})) F.k='all';
+    return '<div class="nrr"><div class="nrr-bar"><input class="nrr-q" type="search" placeholder="Search a name, a word in a transcript, SRC-012" value="'+esc(F.q)+'" oninput="NRRoom.set(\'q\',this.value)">'+origins()+
+      '</div><div class="nrr-bar"><div class="nrr-seg" id="nrr-chips">'+chips()+'</div></div><div class="nrr-tw" id="nrr-list">'+table()+'</div><div id="nrr-foot">'+foot()+'</div></div>'; }
+  function redraw(){ var l=document.getElementById('nrr-list'); if(!l) return false; l.innerHTML=table();
+    var c=document.getElementById('nrr-chips'); if(c) c.innerHTML=chips(); var f=document.getElementById('nrr-foot'); if(f) f.innerHTML=foot(); return true; }
+  function set(k,v){ F[k]=v; if(k!=='q') keep(); if(!redraw()&&window.NRRoom.onChange) window.NRRoom.onChange(); }
+  function sort(k){ if(F.s===k) F.d=-F.d; else { F.s=k; F.d=(k==='date'||k==='use')?-1:1; } keep(); redraw(); }
+  /* the written version, as plain markdown: headings, bold, lists, paragraphs; the search word marked */
+  function md(t,q){ var out=[], list=false;
+    String(t||'').split(/\n/).forEach(function(l){ var x=esc(l).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+      if(q) x=x.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig'),'<mark>$1</mark>');
+      var h=/^(#{1,3})\s+(.*)$/.exec(x), li=/^\s*[-*]\s+(.*)$/.exec(x);
+      if(li){ if(!list){ out.push('<ul>'); list=true; } out.push('<li>'+li[1]+'</li>'); return; }
+      if(list){ out.push('</ul>'); list=false; }
+      if(h) out.push('<h3>'+h[2]+'</h3>'); else if(x.trim()) out.push('<p>'+x+'</p>'); });
+    if(list) out.push('</ul>'); return out.join(''); }
+  function win(s){ var q=F.q.trim(), uses=s.uses||[], d=D();
+    var meta=[ '<span class="nrr-k">'+icon(s.kind)+esc((KIND[s.kind]||[0,s.kind])[1])+(s.type?' · '+esc(s.type):'')+'</span>', '<span>'+esc(day(s.date))+'</span>' ]
+      .concat(oneOrigin()?[]:['<span>'+(s.origins||[]).map(tag).join('')+'</span>']).concat(s.by?['<span>captured by '+esc(s.by)+'</span>']:[]).concat(['<span>'+esc(s.id)+'</span>']);
+    var who=(s.people||[]).join(', ');
+    var built=(s.builtFrom||[]).map(function(i){ var b=d.sources.filter(function(x){return x.id===i;})[0]; return b?'<a href="javascript:void 0" onclick="NRRoom.open(\''+esc(b.id)+'\')">'+esc(b.label)+'</a>':''; }).filter(Boolean);
+    return '<div class="nrr-win nrr" role="dialog" aria-label="'+esc(s.label)+'"><div class="nrr-wh"><div style="min-width:0"><h2>'+esc(s.label)+'</h2><div class="nrr-meta">'+meta.join('')+'</div></div>'+
+      '<button class="nrr-x" onclick="NRRoom.close()" aria-label="Close">×</button></div><div class="nrr-wb">'+
+      '<div class="nrr-btns">'+(s.href?'<a class="nrr-btn pri" href="'+esc(s.href)+'" target="_blank" rel="noopener">Open the file</a>':'')+
+        (s.body?'<button class="nrr-btn" onclick="NRRoom.full()">'+(FULL?'Show less':'Read it all')+'</button>':'')+'</div>'+
+      (who||s.clientLabel?'<div class="nrr-h">Who</div><p class="nrr-p">'+esc(who)+(s.clientLabel&&who.indexOf(s.clientLabel)<0?(who?' · ':'')+esc(s.clientLabel):'')+'</p>':'')+
+      (s.method?'<div class="nrr-h">Method</div><p class="nrr-p">'+esc(s.method)+'</p>':'')+
+      (built.length?'<div class="nrr-h">Built from</div><p class="nrr-p">'+built.join(' · ')+'</p>':'')+
+      '<div class="nrr-h">Cited by'+(uses.length?' ('+uses.length+')':'')+'</div>'+
+      (uses.length?uses.map(function(u){ return '<div class="nrr-use"><span>'+esc(u.type)+'</span><div>'+esc(u.title)+'</div></div>'; }).join('')
+        :'<p class="nrr-p nrr-mut">Nothing cites it yet.</p>')+
+      (s.body?'<div class="nrr-h">'+(s.kind==='picture'?'What it shows':s.kind==='data'?'What it holds':'The written version')+'</div><div class="nrr-txt'+(FULL?'':' cut')+'">'+md(s.body,q)+'</div>'
+        :'<div class="nrr-h">The written version</div><p class="nrr-p nrr-mut">No written version yet. Open the file.</p>')+
+      '</div></div>'; }
+  function scrim(){ var e=document.getElementById('nrr-scrim'); if(!e){ e=document.createElement('div'); e.className='nrr-scrim'; e.id='nrr-scrim';
+      e.onclick=function(ev){ if(ev.target===e) close(); }; document.body.appendChild(e); } return e; }
+  function open(id){ var d=D(); if(!d) return; var s=d.sources.filter(function(x){return x.id===id;})[0]; if(!s) return;
+    var q=F.q.trim().toLowerCase(), hit=OPEN!==id&&inText(s,q);
+    if(OPEN!==id) FULL=hit; OPEN=id; var e=scrim(); e.innerHTML=win(s); e.classList.add('on'); e.scrollTop=0; document.body.style.overflow='hidden';
+    if(hit){ var m=e.querySelector('.nrr-txt mark'); if(m) setTimeout(function(){ m.scrollIntoView({block:'center'}); },30); } }
+  function close(){ OPEN=null; var e=document.getElementById('nrr-scrim'); if(e){ e.classList.remove('on'); e.innerHTML=''; } document.body.style.overflow=''; }
+  function full(){ FULL=!FULL; var y=scrim().scrollTop; open(OPEN); scrim().scrollTop=y; }
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&OPEN) close(); });
+  return {html:html, set:set, sort:sort, open:open, close:close, full:full,
+    count:function(){ var d=D(); return d?d.sources.length:0; }, onChange:null};
+})();
+</script>
+<!-- @@NR-ROOM:END -->
 <!-- NR-GLASS:BEGIN — the glass layer (diagnostic-skill-builder/templates/glass-layer.html, put in by
      scripts/patch_glass.py). Everything that floats above the page is glass; the page itself stays solid
      (cards, tables, charts, slides). Small things get liquid glass: a lens at the edges, a light rim and a
@@ -12708,6 +13287,25 @@ window.__NR_INBOX__ = null;
 })();
 </script>
 <!-- NR-GLASS:END -->
+<!-- NR-REFIT:BEGIN — fit again when the space changes (diagnostic-skill-builder/templates/refit-layer.html,
+     put in by scripts/patch_refit.py). Every page fits its view on a window resize. The space a page has can
+     also change without one: fonts that arrive late, the header stacking, a preview pane or iframe that grows
+     after the first paint. Then the page used to keep its first fit until you switched tabs. This watches the
+     view and the window, and replays the page's own resize handling once that space has really changed
+     (a change in the page's content alone does not count). -->
+<script>(function(){
+  var last = '', t = 0;
+  function box(){ var v = document.getElementById('view'); return (v ? v.clientWidth + 'x' + v.clientHeight + '/' : '') + innerWidth + 'x' + innerHeight; }
+  function kick(){ var k = box(); if(k === last) return; last = k; window.dispatchEvent(new Event('resize')); }
+  function soon(){ cancelAnimationFrame(t); t = requestAnimationFrame(kick); }
+  function again(){ last = ''; soon(); }
+  function watch(){ if(!window.ResizeObserver) return; var ro = new ResizeObserver(soon), v = document.getElementById('view');
+    if(v) ro.observe(v); ro.observe(document.documentElement); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watch); else watch();
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(again);
+  window.addEventListener('load', again);
+})();</script>
+<!-- NR-REFIT:END -->
 <script id="nr-handover">
 /* patch_handover.py --screen: the one hand-over (HANDOVER_JS) on an engagement screen. Engagement setup sends its setup through it when the page is opened in the engagement artifact; anywhere else the screen copies it for the chat. Do not edit here: change HANDOVER_JS and run the patcher again. */
 (function(){
@@ -12764,24 +13362,5 @@ window.__NR_INBOX__ = null;
   window.NRHand={ready:function(){ return !!NR_INBOX; }, connecting:function(){ return !!(NR_FRAMED&&NR_INBOX===null); }, over:nrHandOver, say:nrSay, mine:nrMine, whoDecides:nrWhoDecides};
 })();
 </script>
-<!-- NR-REFIT:BEGIN — fit again when the space changes (diagnostic-skill-builder/templates/refit-layer.html,
-     put in by scripts/patch_refit.py). Every page fits its view on a window resize. The space a page has can
-     also change without one: fonts that arrive late, the header stacking, a preview pane or iframe that grows
-     after the first paint. Then the page used to keep its first fit until you switched tabs. This watches the
-     view and the window, and replays the page's own resize handling once that space has really changed
-     (a change in the page's content alone does not count). -->
-<script>(function(){
-  var last = '', t = 0;
-  function box(){ var v = document.getElementById('view'); return (v ? v.clientWidth + 'x' + v.clientHeight + '/' : '') + innerWidth + 'x' + innerHeight; }
-  function kick(){ var k = box(); if(k === last) return; last = k; window.dispatchEvent(new Event('resize')); }
-  function soon(){ cancelAnimationFrame(t); t = requestAnimationFrame(kick); }
-  function again(){ last = ''; soon(); }
-  function watch(){ if(!window.ResizeObserver) return; var ro = new ResizeObserver(soon), v = document.getElementById('view');
-    if(v) ro.observe(v); ro.observe(document.documentElement); }
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watch); else watch();
-  if(document.fonts && document.fonts.ready) document.fonts.ready.then(again);
-  window.addEventListener('load', again);
-})();</script>
-<!-- NR-REFIT:END -->
 </body>
 </html>
