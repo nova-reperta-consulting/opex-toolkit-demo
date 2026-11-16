@@ -5404,7 +5404,7 @@ table.tteams .tt-h2{display:none}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
 })();
 </script>
-<script>window.__NR_FOLDER_BUILD__={"id": "northwind-securities", "builtAt": "2026-11-16 15:36"};</script>
+<script>window.__NR_FOLDER_BUILD__={"id": "northwind-securities", "builtAt": "2026-11-16 15:45"};</script>
 <script>window.__NR_VIEW__='client';</script>
 </head>
 <body>
@@ -15932,10 +15932,10 @@ html.nr-client .qsx .tsub-nav .tsub::after{display:none!important}
        label) gives way; two labels of the same weight move one under the other */
     var ts=[].slice.call(svg.querySelectorAll('text')).filter(function(t){ return t.style.display!=='none'; });
     ts.forEach(function(t){ if(t.getAttribute('data-y0')) t.setAttribute('y',t.getAttribute('data-y0')); });
-    function hit(a,b){ var x=a.getBoundingClientRect(), y=b.getBoundingClientRect(); return x.width&&y.width&&x.left<y.right+3&&y.left<x.right+3&&x.top<y.bottom&&y.top<x.bottom; }
+    function hit(a,b){ var x=a.getBoundingClientRect(), y=b.getBoundingClientRect(); return x.width&&y.width&&x.left<y.right+3&&y.left<x.right+3&&x.top<y.bottom-3&&y.top<x.bottom-3; }
     for(var pass=0;pass<4;pass++) for(var i=0;i<ts.length;i++) for(var j=i+1;j<ts.length;j++){ var a=ts[i], b=ts[j]; if(a.style.display==='none'||b.style.display==='none'||!hit(a,b)) continue;
       var wa=+(a.getAttribute('font-weight')||400), wb=+(b.getAttribute('font-weight')||400);
-      if(wa!==wb){ (wa<wb?a:b).style.display='none'; continue; }
+      if(wa!==wb){ var L=wa<wb?a:b, H=wa<wb?b:a, lr=L.getBoundingClientRect(), hr=H.getBoundingClientRect(); if(lr.top>hr.top){ if(!L.getAttribute('data-y0')) L.setAttribute('data-y0',L.getAttribute('y')); L.setAttribute('y',(parseFloat(L.getAttribute('y'))+(hr.bottom-lr.top+1)/k).toFixed(1)); } else L.style.display='none'; continue; } if(wa<700){ b.style.display='none'; continue; }
       if(!b.getAttribute('data-y0')) b.setAttribute('data-y0',b.getAttribute('y'));
       b.setAttribute('y',(parseFloat(b.getAttribute('y'))+parseFloat(b.getAttribute('font-size'))*1.25).toFixed(1)); } }
   /* on a phone the wide drawings take a simpler form (Gilles, 16 Nov 2026): a spider plot becomes one bar per dimension,
