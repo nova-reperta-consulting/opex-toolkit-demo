@@ -2921,224 +2921,205 @@ html.nrs-setup #page .sx-ta{field-sizing:content;resize:none;height:auto;min-hei
 html.nrs-setup .nrs-n.later{color:var(--ds-text-3);font-weight:400}
 </style>
 <style id="nrs-setup3-css">
-/* ── Engagement setup, tile redesign (16 Nov 2026) ─────────────────────────────────────────
-   Tiles as in the Training Companion: title inside the tile, actions top right, KPI tiles in their
-   own row. Sizes on the design system's scale (11 / 12.5 / 14 / 18). Prefixed x3- throughout. */
-html.nrs-setup{--x3-ln:#C9CDD4;--x3-nr:#DDE5F0;--x3-nrf:#0F2B52;--x3-cl:#EDE7DA;--x3-clf:#6B5320;--x3-hover:#F8F7F4;--x3-shadow:0 12px 32px rgba(16,24,40,.16),0 2px 6px rgba(16,24,40,.08)}
-html.dark.nrs-setup{--x3-ln:#3A4454;--x3-nr:#24324D;--x3-nrf:#DCE5F5;--x3-cl:#3A3427;--x3-clf:#E3D3AE;--x3-hover:rgba(255,255,255,.04);--x3-shadow:0 12px 32px rgba(0,0,0,.5),0 2px 6px rgba(0,0,0,.3)}
-html.nrs-setup .x3{max-width:1120px;margin:0 auto;font-family:var(--ds-font);font-size:var(--ds-fs-body);color:var(--ds-text);font-variant-numeric:tabular-nums}
+/* ── Engagement setup on the design guide (16 Nov 2026) ── only the five sizes and the design tokens ── */
+html.nrs-setup{--x4-ln:#C9CDD4;--x4-nr:#DDE5F0;--x4-nrf:#0F2B52;--x4-cl:#EDE7DA;--x4-clf:#6B5320;--x4-hov:#F8F7F4;--x4-glass:rgba(255,255,255,.92);--x4-pop:0 12px 32px rgba(16,24,40,.16),0 2px 6px rgba(16,24,40,.08)}
+html.dark.nrs-setup{--x4-ln:#3A4454;--x4-nr:#24324D;--x4-nrf:#DCE5F5;--x4-cl:#3A3427;--x4-clf:#E3D3AE;--x4-hov:rgba(255,255,255,.04);--x4-glass:rgba(30,36,48,.94);--x4-pop:0 12px 32px rgba(0,0,0,.5),0 2px 6px rgba(0,0,0,.3)}
+html.nrs-setup .stepfoot{display:none!important}
+html.nrs-setup .x3{max-width:1600px;margin:0;font-family:var(--ds-font);font-size:var(--ds-fs-body);color:var(--ds-text);font-variant-numeric:tabular-nums}
 html.nrs-setup .x3 *{box-sizing:border-box}
-/* tiles */
-html.nrs-setup .x3g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px;align-items:start}
-html.nrs-setup .x3t{background:var(--ds-card);border-radius:14px;padding:14px 18px 16px;min-width:0;margin-bottom:12px}
-html.nrs-setup .x3g > .x3t{margin:0}
-html.nrs-setup .x3t.x3full{grid-column:1/-1}
-html.nrs-setup .x3h{display:flex;align-items:center;gap:10px;min-height:30px;margin-bottom:8px;flex-wrap:wrap}
-html.nrs-setup .x3h h2{margin:0;display:flex;align-items:center;gap:8px;font:700 var(--ds-fs-body)/1.3 var(--ds-font);color:var(--ds-accent);letter-spacing:0}
-html.dark.nrs-setup .x3h h2{color:var(--ds-good)}
-html.nrs-setup .x3h h2 svg{width:15px;height:15px;flex:none}
-html.nrs-setup .x3r{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-html.nrs-setup .x3note{font:400 var(--ds-fs-label)/1.3 var(--ds-font);color:var(--ds-text-2)}
-html.nrs-setup .x3f{margin:10px 0 0;font:400 var(--ds-fs-label)/1.5 var(--ds-font);color:var(--ds-text-2)}
-html.nrs-setup .x3f b{font-weight:600;color:var(--ds-text)}
-html.nrs-setup .x3p{margin:0 0 10px;font:400 var(--ds-fs-body)/1.5 var(--ds-font);color:var(--ds-text-2)}
-html.nrs-setup .x3empty{margin:4px 0 10px;font:400 var(--ds-fs-body)/1.5 var(--ds-font);color:var(--ds-text-2)}
-html.nrs-setup .x3sub{margin:14px 0 2px;font:600 var(--ds-fs-label)/1.3 var(--ds-font);color:var(--ds-text-2)}
-/* KPI tiles */
-html.nrs-setup .x3k{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:12px}
-html.nrs-setup .x3t.x3kt{margin:0;padding:12px 16px 14px}
-html.nrs-setup .x3kt .x3h{min-height:22px;margin-bottom:4px}
-html.nrs-setup .x3kt .x3h h2 svg{width:14px;height:14px}
-html.nrs-setup .x3kv{min-width:0}
-html.nrs-setup .x3kv b{display:block;font:700 20px/1.2 var(--ds-font);letter-spacing:-.01em;color:var(--ds-text)}
-html.nrs-setup .x3kv b small{font:400 var(--ds-fs-body)/1 var(--ds-font);color:var(--ds-text-2);letter-spacing:0}
-html.nrs-setup .x3kv > span{display:block;margin-top:2px;font:400 var(--ds-fs-label)/1.35 var(--ds-font);color:var(--ds-text-2)}
-html.nrs-setup .x3kv.x3in-tile{margin:0 0 6px}
-/* rows */
-html.nrs-setup .x3rows{display:flex;flex-direction:column}
-html.nrs-setup .x3row{display:flex;align-items:center;gap:12px;min-height:44px;position:relative;width:100%;border:0;background:transparent;padding:0;text-align:left;font:inherit;color:inherit}
-html.nrs-setup .x3rows > .x3row + .x3row::before{content:"";position:absolute;top:0;left:0;right:0;border-top:.5px solid var(--ds-fill-strong)}
-html.nrs-setup .x3l{flex:0 1 auto;min-width:110px;max-width:60%;color:var(--ds-text-2);padding:4px 0;line-height:1.35}
-html.nrs-setup .x3v{flex:1;min-width:0;display:flex;align-items:center;justify-content:flex-end;gap:8px}
-html.nrs-setup .x3row.x3top{align-items:flex-start}html.nrs-setup .x3row.x3top .x3l{padding-top:12px}
-html.nrs-setup .x3in{flex:1;min-width:0;height:44px;border:0;background:transparent;padding:0;outline:none;font:400 var(--ds-fs-body)/1.3 var(--ds-font);color:var(--ds-text);box-shadow:none}
-html.nrs-setup .x3in.r{text-align:right}
-html.nrs-setup .x3in::placeholder,html.nrs-setup .x3ta::placeholder{color:var(--ds-text-3)}
-html.nrs-setup .x3add .x3in::placeholder{color:var(--ds-text-2)}
-html.nrs-setup .x3ta{flex:1;min-width:0;border:0;background:transparent;resize:none;outline:none;padding:12px 0;min-height:44px;font:400 var(--ds-fs-body)/1.45 var(--ds-font);color:var(--ds-text);field-sizing:content;box-shadow:none}
-html.nrs-setup .x3ta.r{text-align:right}
-html.nrs-setup .x3row:focus-within{background:var(--x3-hover)}
-html.nrs-setup .x3unit{color:var(--ds-text-2)}
-html.nrs-setup .x3x{width:22px;height:22px;flex:none;border:0;background:transparent;color:var(--ds-text-3);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
-html.nrs-setup .x3x:hover{background:var(--ds-fill-strong);color:var(--ds-text)}
-html.nrs-setup .x3x svg{width:11px;height:11px}
-html.nrs-setup .x3hn{width:28px;height:22px;flex:none;border-radius:6px;background:var(--ds-info-soft);color:var(--ds-info);font:700 var(--ds-fs-label)/1 var(--ds-font);display:flex;align-items:center;justify-content:center}
-html.nrs-setup .x3hn.add{background:transparent;box-shadow:inset 0 0 0 1px var(--x3-ln);color:var(--ds-text-3)}
-html.nrs-setup .x3li .x3hn{align-self:flex-start;margin-top:11px}
-html.nrs-setup .x3li .x3x{align-self:flex-start;margin-top:11px}
-html.nrs-setup .x3row.x3link{cursor:pointer}html.nrs-setup .x3row.x3link:hover{background:var(--x3-hover)}
-html.nrs-setup .x3grow{flex:1;min-width:0}
-html.nrs-setup .x3chev{width:14px;height:14px;flex:none;color:var(--ds-text-3)}
-/* buttons, switch, segmented, tags, avatars */
-html.nrs-setup .x3btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:28px;padding:0 12px;border:0;border-radius:8px;background:var(--ds-fill);color:var(--ds-text);font:600 var(--ds-fs-body)/1 var(--ds-font);cursor:pointer;white-space:nowrap}
-html.nrs-setup .x3btn:hover{background:var(--ds-fill-strong)}
-html.nrs-setup .x3btn.primary{background:var(--ds-navy);color:#fff}html.nrs-setup .x3btn.primary:hover{filter:brightness(1.12)}
-html.dark.nrs-setup .x3btn.primary{background:var(--ds-info);color:var(--ds-ground)}
-html.nrs-setup .x3btn.x3dangerb{color:#A3302A}
-html.nrs-setup .x3sw{width:44px;height:26px;border-radius:999px;background:var(--ds-fill-strong);position:relative;flex:none;border:0;cursor:pointer;padding:0}
-html.nrs-setup .x3sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(16,24,40,.15);transition:transform .2s cubic-bezier(.32,.72,0,1)}
-html.nrs-setup .x3sw.on{background:var(--ds-good)}html.nrs-setup .x3sw.on::after{transform:translateX(18px)}
-html.nrs-setup .x3seg{display:inline-flex;gap:2px;padding:2px;border-radius:8px;background:var(--ds-fill-strong)}
-html.nrs-setup .x3seg button{height:24px;padding:0 12px;border:0;border-radius:6px;background:transparent;font:600 var(--ds-fs-body)/1 var(--ds-font);color:var(--ds-text-2);cursor:pointer;white-space:nowrap}
-html.nrs-setup .x3seg button.on{background:var(--ds-card);color:var(--ds-text);box-shadow:0 1px 2px rgba(16,24,40,.10)}
-html.nrs-setup .x3tag{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;font:600 var(--ds-fs-label)/1 var(--ds-font);white-space:nowrap;flex:none}
-html.nrs-setup .x3tag.none{background:var(--ds-none-soft);color:var(--ds-none)}html.nrs-setup .x3tag.warn{background:var(--ds-warn-soft);color:var(--ds-warn)}
-html.nrs-setup .x3tag.good{background:var(--ds-good-soft);color:var(--ds-good)}html.nrs-setup .x3tag.info{background:var(--ds-info-soft);color:var(--ds-info)}
-html.nrs-setup .x3av{width:26px;height:26px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font:700 10px/1 var(--ds-font)}
-html.nrs-setup .x3av.nr{background:var(--x3-nr);color:var(--x3-nrf)}html.nrs-setup .x3av.cl{background:var(--x3-cl);color:var(--x3-clf)}
-html.nrs-setup .x3warn{color:var(--ds-warn)}html.nrs-setup .x3mut{color:var(--ds-text-3)}
-html.nrs-setup .x3pill{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px;border:0;border-radius:999px;background:var(--ds-fill);color:var(--ds-text);font:600 var(--ds-fs-label)/1 var(--ds-font);cursor:pointer}
-html.nrs-setup .x3pill:hover{background:var(--ds-fill-strong)}
-html.nrs-setup .x3pill.on{background:var(--ds-info-soft);color:var(--ds-info)}html.nrs-setup .x3pill svg{width:11px;height:11px}
-html.nrs-setup .x3chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px}
-html.nrs-setup .x3links{display:flex;gap:16px;flex-wrap:wrap;margin:6px 0 4px}
-html.nrs-setup .x3lnk{border:0;background:transparent;padding:0;color:var(--ds-navy);font:600 var(--ds-fs-body)/1.3 var(--ds-font);cursor:pointer}
-html.dark.nrs-setup .x3lnk{color:var(--ds-info)}html.nrs-setup .x3lnk:hover{text-decoration:underline}
-html.nrs-setup .x3sugg{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 8px}
-html.nrs-setup .x3sugg > span{font:400 var(--ds-fs-label)/1.3 var(--ds-font);color:var(--ds-text-2);margin-right:4px}
-/* the menu button and the menu */
-html.nrs-setup .x3db{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 8px 0 6px;margin-right:-8px;border:0;border-radius:8px;background:transparent;font:600 var(--ds-fs-body)/1 var(--ds-font);color:var(--ds-text);cursor:pointer;white-space:nowrap;flex:none}
-html.nrs-setup .x3db:hover,html.nrs-setup .x3db.open{background:var(--ds-fill)}
-html.nrs-setup .x3db.sm{height:28px}
-html.nrs-setup .x3dv.ph{color:var(--ds-text-2);font-weight:400}
-html.nrs-setup .x3db .x3chev{transition:transform .15s}html.nrs-setup .x3db.open .x3chev{transform:rotate(180deg)}
-html.nrs-setup .x3mi{width:26px;height:26px;border-radius:7px;flex:none;display:flex;align-items:center;justify-content:center;font:700 9.5px/1 var(--ds-font);letter-spacing:.02em}
-html.nrs-setup .x3mi svg{width:15px;height:15px}
-html.nrs-setup .x3db .x3mi{width:20px;height:20px;border-radius:6px;font-size:8.5px}html.nrs-setup .x3db .x3mi svg{width:12px;height:12px}
+/* header figures */
+html.nrs-setup #tb-std{display:flex;align-items:center;min-width:0}
+html.nrs-setup .x4figs{display:flex;align-items:center;gap:22px;margin-left:22px;padding-left:22px;border-left:1px solid var(--ds-line);min-height:36px}
+html.nrs-setup .x4fig{white-space:nowrap}
+html.nrs-setup .x4fig b{display:block;font:700 var(--ds-fs-title)/1.15 var(--ds-font);color:var(--ds-text);letter-spacing:-.01em}
+html.nrs-setup .x4fig span{display:block;font:400 var(--ds-fs-label)/1.3 var(--ds-font);color:var(--ds-text-2)}
+html.nrs-setup .x4fig.warn b{color:var(--ds-warn)}
+html.nrs-setup #tb-right{display:flex;align-items:center;gap:8px}
+/* grid and cards */
+html.nrs-setup .x4g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch}
+html.nrs-setup .x4c{background:var(--ds-card);border-radius:12px;padding:16px 18px;min-width:0}
+html.nrs-setup .x4c.span{grid-column:1/-1}
+html.nrs-setup .x4ch{display:flex;align-items:center;gap:8px;min-height:28px;margin-bottom:12px}
+html.nrs-setup .x4ch h2{margin:0;font:700 var(--ds-fs-heading)/1.35 var(--ds-font);color:var(--ds-text);letter-spacing:0}
+html.nrs-setup .x4n{font:400 var(--ds-fs-label)/1 var(--ds-font);color:var(--ds-text-2)}
+html.nrs-setup .x4r{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+html.nrs-setup .x4note{font:400 var(--ds-fs-label)/1.3 var(--ds-font);color:var(--ds-text-2)}
+html.nrs-setup .x4hint{margin:6px 0 0;font:400 var(--ds-fs-label)/1.45 var(--ds-font);color:var(--ds-text-2)}
+html.nrs-setup .x4hint b{font-weight:600;color:var(--ds-text)}
+html.nrs-setup .x4p{margin:0 0 8px;font:400 var(--ds-fs-body)/1.55 var(--ds-font);color:var(--ds-text)}
+html.nrs-setup .x4p:last-child{margin-bottom:0}
+html.nrs-setup .x4p b{font-weight:700}
+html.nrs-setup .x4empty{margin:0 0 8px;font:400 var(--ds-fs-body)/1.5 var(--ds-font);color:var(--ds-text-2)}
+html.nrs-setup .x4sub{margin:16px 0 4px;font:600 var(--ds-fs-label)/1.3 var(--ds-font);color:var(--ds-text-2)}
+html.nrs-setup .x4mut{color:var(--ds-text-3)}
+html.nrs-setup .x4warn{color:var(--ds-warn)}
+html.nrs-setup .x4strong{font-weight:600}
+/* fields: label above, grey 32px */
+html.nrs-setup .x4fg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px}
+html.nrs-setup .x4fl{min-width:0}
+html.nrs-setup .x4fl.w{grid-column:1/-1}
+html.nrs-setup .x4fl > label{display:block;margin:0 0 5px;font:400 var(--ds-fs-label)/1.3 var(--ds-font);color:var(--ds-text-2)}
+html.nrs-setup .x4in{display:flex;align-items:center;gap:8px;width:100%;height:32px;padding:0 10px;border:0;border-radius:8px;background:var(--ds-fill);
+  font:400 var(--ds-fs-body)/1.3 var(--ds-font);color:var(--ds-text);outline:none;box-shadow:none;text-align:left;min-width:0}
+html.nrs-setup .x4in.r{text-align:right}
+html.nrs-setup .x4in::placeholder,html.nrs-setup .x4ced::placeholder,html.nrs-setup .x4pill-in::placeholder{color:var(--ds-text-3)}
+html.nrs-setup .x4in:focus,html.nrs-setup .x4in.open{background:var(--ds-card);box-shadow:inset 0 0 0 2px var(--ds-navy)}
+html.dark.nrs-setup .x4in:focus,html.dark.nrs-setup .x4in.open{box-shadow:inset 0 0 0 2px var(--ds-info)}
+html.nrs-setup .x4ta{display:block;height:auto;min-height:32px;padding:7px 10px;resize:none;line-height:1.45;field-sizing:content}
+html.nrs-setup .x4stmt{min-height:120px}
+html.nrs-setup .x4ro{color:var(--ds-text-2);background:transparent;padding:0;box-shadow:inset 0 -1px 0 var(--ds-line);border-radius:0}
+html.nrs-setup .x4dd{cursor:pointer;font-weight:600}
+html.nrs-setup .x4dd .x3dv{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html.nrs-setup .x3dv.ph{color:var(--ds-text-3);font-weight:400}
+html.nrs-setup .x4dd.warn .x3dv.ph,html.nrs-setup .x4cell.warn .x3dv.ph{color:var(--ds-warn)}
+html.nrs-setup .x3chev{width:14px;height:14px;flex:none;color:var(--ds-text-2)}
+html.nrs-setup .x4dt{position:relative;cursor:pointer;font-weight:600}
+html.nrs-setup .x4dt.none{color:var(--ds-text-3);font-weight:400}
+html.nrs-setup .x4cal{width:14px;height:14px;margin-left:auto;color:var(--ds-text-2);flex:none}
+html.nrs-setup .x4dt input,html.nrs-setup .x4dtc input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;padding:0}
+html.nrs-setup .x3mi{width:20px;height:20px;border-radius:6px;flex:none;display:flex;align-items:center;justify-content:center;font:700 var(--ds-fs-mark)/1 var(--ds-font)}
+html.nrs-setup .x3mi svg{width:12px;height:12px}
+/* buttons, switch, segmented, tags, people */
+html.nrs-setup .x4b{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:0;border-radius:8px;background:var(--ds-fill);color:var(--ds-text);font:600 var(--ds-fs-body)/1 var(--ds-font);cursor:pointer;white-space:nowrap}
+html.nrs-setup .x4b:hover{background:var(--ds-fill-strong)}
+html.nrs-setup .x4b:active{transform:scale(.97)}
+html.nrs-setup .x4b.primary{background:var(--ds-action);color:var(--ds-on-action)}
+html.dark.nrs-setup .x4b.primary{background:var(--ds-info);color:var(--ds-ground)}
+html.nrs-setup .x4lnk{border:0;background:transparent;padding:0;color:var(--ds-navy);font:600 var(--ds-fs-body)/1 var(--ds-font);cursor:pointer;white-space:nowrap}
+html.dark.nrs-setup .x4lnk{color:var(--ds-info)}
+html.nrs-setup .x4lnk:hover{text-decoration:underline}
+html.nrs-setup .x4links{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px}
+html.nrs-setup .x4addr{display:flex;align-items:center;gap:18px;min-height:40px}
+html.nrs-setup .x4sw{width:36px;height:20px;border-radius:999px;background:var(--ds-fill-strong);position:relative;flex:none;border:0;cursor:pointer;padding:0}
+html.nrs-setup .x4sw::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:var(--ds-shadow-thumb);transition:transform .2s cubic-bezier(.32,.72,0,1)}
+html.nrs-setup .x4sw.on{background:var(--ds-good)}html.nrs-setup .x4sw.on::after{transform:translateX(16px)}
+html.nrs-setup .x4swr{display:flex;align-items:center;gap:10px;min-height:32px;font:400 var(--ds-fs-body)/1.3 var(--ds-font)}
+html.nrs-setup .x4seg{display:inline-flex;gap:2px;padding:2px;border-radius:8px;background:var(--ds-fill-strong);height:32px}
+html.nrs-setup .x4seg button{height:28px;padding:0 12px;border:0;border-radius:6px;background:transparent;font:600 var(--ds-fs-body)/1 var(--ds-font);color:var(--ds-text-2);cursor:pointer}
+html.nrs-setup .x4seg button.on{background:var(--ds-card);color:var(--ds-text);box-shadow:var(--ds-shadow-thumb)}
+html.nrs-setup .x4tag{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;font:600 var(--ds-fs-label)/1 var(--ds-font);white-space:nowrap;flex:none}
+html.nrs-setup .x4tag.none{background:var(--ds-none-soft);color:var(--ds-none)}html.nrs-setup .x4tag.warn{background:var(--ds-warn-soft);color:var(--ds-warn)}
+html.nrs-setup .x4tag.good{background:var(--ds-good-soft);color:var(--ds-good)}
+html.nrs-setup .x4av{width:24px;height:24px;border-radius:50%;flex:none;display:inline-flex;align-items:center;justify-content:center;font:700 var(--ds-fs-mark)/1 var(--ds-font)}
+html.nrs-setup .x4av.nr{background:var(--x4-nr);color:var(--x4-nrf)}html.nrs-setup .x4av.cl{background:var(--x4-cl);color:var(--x4-clf)}html.nrs-setup .x4av.no{background:var(--ds-fill);color:var(--ds-text-3)}
+html.nrs-setup .x4pill{display:inline-flex;align-items:center;height:28px;padding:0 12px;border:0;border-radius:999px;background:var(--ds-fill);color:var(--ds-text);font:600 var(--ds-fs-label)/1 var(--ds-font);cursor:pointer}
+html.nrs-setup .x4pill:hover{background:var(--ds-fill-strong)}
+html.nrs-setup .x4sugg{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 10px}
+html.nrs-setup .x4sugg > span{font:400 var(--ds-fs-label)/1.3 var(--ds-font);color:var(--ds-text-2);margin-right:4px}
+html.nrs-setup .x4ck{width:18px;height:18px;border-radius:5px;border:0;padding:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;background:var(--ds-navy);color:#fff;flex:none}
+html.dark.nrs-setup .x4ck{background:var(--ds-info);color:var(--ds-ground)}
+html.nrs-setup .x4ck svg{width:12px;height:12px}
+html.nrs-setup .x4ck.off{background:transparent;box-shadow:inset 0 0 0 1.5px var(--x4-ln)}
+/* the house table */
+html.nrs-setup .x4t{min-width:0}
+html.nrs-setup .x4th,html.nrs-setup .x4tr{display:grid;grid-template-columns:var(--cols);align-items:center;column-gap:12px;padding:0 10px}
+html.nrs-setup .x4th{height:30px;background:var(--ds-fill);border-radius:8px;font:400 var(--ds-fs-label)/1 var(--ds-font);color:var(--ds-text-2)}
+html.nrs-setup .x4th span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.nrs-setup .x4tr{min-height:40px;position:relative;border-bottom:1px solid var(--ds-line)}
+html.nrs-setup .x4tr:hover{background:var(--x4-hov)}
+html.nrs-setup .x4tr > span{min-width:0;display:flex;align-items:center}
+html.nrs-setup .x4th .r,html.nrs-setup .x4tr > .r{justify-content:flex-end;text-align:right}
+html.nrs-setup .x4th .c,html.nrs-setup .x4tr > .c{justify-content:center;text-align:center}
+html.nrs-setup .x4tr.out .x4ced{color:var(--ds-text-3)}
+html.nrs-setup .x4tr.flash{background:var(--ds-info-soft)}
+html.nrs-setup .x4nm{gap:8px}
+html.nrs-setup .x4ced{width:100%;min-width:0;height:28px;margin-left:-8px;padding:0 8px;border:0;border-radius:8px;background:transparent;font:400 var(--ds-fs-body)/1 var(--ds-font);color:var(--ds-text);outline:none;text-overflow:ellipsis}
+html.nrs-setup .x4ced.strong{font-weight:600}
+html.nrs-setup .x4ced.r{text-align:right;margin-left:0;margin-right:-8px}
+html.nrs-setup .x4ced:hover{background:var(--ds-fill)}
+html.nrs-setup .x4ced:focus{background:var(--ds-card);box-shadow:inset 0 0 0 2px var(--ds-navy)}
+html.dark.nrs-setup .x4ced:focus{box-shadow:inset 0 0 0 2px var(--ds-info)}
+html.nrs-setup .x4cell{display:inline-flex;align-items:center;gap:6px;max-width:100%;height:28px;margin-left:-8px;padding:0 8px;border:0;border-radius:8px;background:transparent;font:400 var(--ds-fs-body)/1 var(--ds-font);color:var(--ds-text);cursor:pointer;position:relative}
+html.nrs-setup .x4cell .x3dv{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html.nrs-setup .x4cell .x3chev{width:12px;height:12px;color:var(--ds-text-3)}
+html.nrs-setup .x4cell:hover,html.nrs-setup .x4cell.open{background:var(--ds-fill)}
+html.nrs-setup .x4dtc.none{color:var(--ds-text-3)}
+html.nrs-setup .x4more{width:28px;height:28px;border:0;border-radius:8px;background:transparent;color:var(--ds-text-3);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;opacity:0}
+html.nrs-setup .x4more svg{width:16px;height:16px}
+html.nrs-setup .x4tr:hover .x4more,html.nrs-setup .x4li:hover .x4more,html.nrs-setup .x4more:focus-visible,html.nrs-setup .x4more.open{opacity:1}
+html.nrs-setup .x4more:hover,html.nrs-setup .x4more.open{background:var(--ds-fill);color:var(--ds-text)}
+html.nrs-setup .x4t .x4addr{padding:0 10px}
+html.nrs-setup .x4addr.in{padding-left:42px;border-bottom:1px solid var(--ds-line);min-height:36px}
+html.nrs-setup .x4grp{background:transparent}
+html.nrs-setup .x4grp .x4ced.strong{max-width:320px}
+html.nrs-setup .x4sub2 > span:first-child{padding-left:32px}
+html.nrs-setup .x4phases{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+html.nrs-setup .x4phn{width:auto;font-weight:600;field-sizing:content;min-width:90px}
+html.nrs-setup .x4pill-in{height:24px;padding:0 10px;border:0;border-radius:999px;background:var(--ds-info-soft);color:var(--ds-info);font:600 var(--ds-fs-label)/1 var(--ds-font);outline:none;max-width:100%}
+html.nrs-setup .x4pill-in.empty{background:transparent;box-shadow:inset 0 0 0 1px var(--x4-ln)}
+html.nrs-setup .x4pill-in:focus{box-shadow:inset 0 0 0 2px var(--ds-navy)}
+/* item lists */
+html.nrs-setup .x4ls{display:flex;flex-direction:column}
+html.nrs-setup .x4li{display:flex;align-items:center;gap:10px;min-height:40px;border-bottom:1px solid var(--ds-line);width:100%;background:transparent;border-left:0;border-right:0;border-top:0;padding:0;text-align:left;font:400 var(--ds-fs-body)/1.35 var(--ds-font);color:var(--ds-text)}
+html.nrs-setup .x4li:hover{background:var(--x4-hov)}
+html.nrs-setup .x4tx{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:text;padding:4px 0;border-radius:6px}
+html.nrs-setup .x4tx b{font-weight:600}
+html.nrs-setup .x4hn{width:28px;flex:none;font:700 var(--ds-fs-label)/1 var(--ds-font);color:var(--ds-text-2)}
+html.nrs-setup .x4li .x4edl{margin:4px 0}
+html.nrs-setup .x4ls .x4addr .x4ta{margin:4px 0}
+html.nrs-setup .x4link{cursor:pointer}
+html.nrs-setup .x4link .x4tx{cursor:pointer}
+html.nrs-setup .x4link .x4tag{margin-right:2px}
+/* menus: glass, under their control, aligned left */
 html.nrs-setup .x3scrim{position:fixed;inset:0;z-index:290;display:none}html.nrs-setup .x3scrim.open{display:block}
-html.nrs-setup .x3menu{position:fixed;z-index:300;display:none;overflow:auto;background:var(--ds-card);border-radius:12px;box-shadow:var(--x3-shadow);padding:6px;font-family:var(--ds-font)}
-html.nrs-setup .x3menu.open{display:block}
-html.nrs-setup .x3fil{display:flex;gap:4px;flex-wrap:wrap;padding:4px 4px 8px;margin-bottom:4px;border-bottom:.5px solid var(--ds-fill-strong);position:sticky;top:-6px;background:var(--ds-card);z-index:1}
-html.nrs-setup .x3fil button{height:26px;padding:0 10px;border:0;border-radius:999px;background:var(--ds-fill);color:var(--ds-text-2);font:600 var(--ds-fs-label)/1 var(--ds-font);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
-html.nrs-setup .x3fil button small{font-weight:400;opacity:.75}
+html.nrs-setup .x3menu{position:fixed;z-index:300;display:none;overflow:auto;background:var(--x4-glass);-webkit-backdrop-filter:blur(14px) saturate(185%);backdrop-filter:blur(14px) saturate(185%);
+  border-radius:12px;box-shadow:var(--x4-pop);padding:6px;font-family:var(--ds-font);color:var(--ds-text)}
+html.nrs-setup .x3menu.open{display:block;animation:x4drop .16s ease-out}
+@keyframes x4drop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+html.nrs-setup .x3fil{display:flex;gap:4px;flex-wrap:wrap;padding:2px 2px 8px;margin-bottom:4px;border-bottom:1px solid var(--ds-line);position:sticky;top:-6px;background:var(--x4-glass);z-index:1}
+html.nrs-setup .x3fil button{height:24px;padding:0 10px;border:0;border-radius:999px;background:var(--ds-fill);color:var(--ds-text-2);font:600 var(--ds-fs-label)/1 var(--ds-font);cursor:pointer}
+html.nrs-setup .x3fil button small{font:inherit;font-weight:400;opacity:.8}
 html.nrs-setup .x3fil button.on{background:var(--ds-navy);color:#fff}
 html.dark.nrs-setup .x3fil button.on{background:var(--ds-info);color:var(--ds-ground)}
-html.nrs-setup .x3mh{padding:10px 8px 4px;font:600 var(--ds-fs-label)/1.3 var(--ds-font);color:var(--ds-text-2)}
-html.nrs-setup .x3mh:first-child,html.nrs-setup .x3fil + .x3mh{padding-top:4px}
-html.nrs-setup .x3it{display:flex;align-items:center;gap:10px;width:100%;min-height:38px;padding:6px 8px;border:0;border-radius:8px;background:transparent;text-align:left;font:400 var(--ds-fs-body)/1.3 var(--ds-font);color:var(--ds-text);cursor:pointer}
-html.nrs-setup .x3it:hover{background:var(--ds-ground)}
-html.nrs-setup .x3it.on{font-weight:600;background:var(--ds-ground)}
-html.nrs-setup .x3mt{flex:1;min-width:0}
-html.nrs-setup .x3mt small{display:block;margin-top:2px;font:400 var(--ds-fs-label)/1.35 var(--ds-font);color:var(--ds-text-2)}
-html.nrs-setup .x3mck{width:14px;flex:none;color:var(--ds-navy)}html.nrs-setup .x3mck svg{width:14px;height:14px}
+html.nrs-setup .x3mh{padding:8px 8px 3px;font:600 var(--ds-fs-label)/1.3 var(--ds-font);color:var(--ds-text-2)}
+html.nrs-setup .x3it{display:flex;align-items:center;gap:8px;width:100%;min-height:32px;padding:0 8px;border:0;border-radius:8px;background:transparent;text-align:left;font:400 var(--ds-fs-body)/1.3 var(--ds-font);color:var(--ds-text);cursor:pointer;white-space:nowrap}
+html.nrs-setup .x3it:hover{background:var(--ds-fill)}
+html.nrs-setup .x3it.on{font-weight:600}
+html.nrs-setup .x3it.dis{cursor:default;color:var(--ds-text-2)}html.nrs-setup .x3it.dis:hover{background:transparent}
+html.nrs-setup .x3it.danger{color:var(--ds-bad)}
+html.nrs-setup .x3it.link{color:var(--ds-navy);font-weight:600}
+html.dark.nrs-setup .x3it.link{color:var(--ds-info)}
+html.nrs-setup .x3it small{margin-left:auto;padding-left:16px;font:400 var(--ds-fs-label)/1 var(--ds-font);color:var(--ds-text-2)}
+html.nrs-setup .x3mt{min-width:0;overflow:hidden;text-overflow:ellipsis}
+html.nrs-setup .x3mck{width:14px;flex:none;color:var(--ds-navy);display:flex}
 html.dark.nrs-setup .x3mck{color:var(--ds-info)}
-/* popover */
-html.nrs-setup .x3pop{position:fixed;z-index:300;display:none;width:340px;background:var(--ds-card);border-radius:12px;box-shadow:var(--x3-shadow);padding:10px 14px 12px;font-family:var(--ds-font);font-size:var(--ds-fs-body);color:var(--ds-text)}
-html.nrs-setup .x3pop.open{display:block}
-html.nrs-setup .x3ph{font:700 var(--ds-fs-body)/1.3 var(--ds-font);margin:2px 0 4px}
-html.nrs-setup .x3pop .x3l{min-width:0;flex:none}
-html.nrs-setup .x3pr{cursor:pointer;min-height:40px;justify-content:space-between}
-html.nrs-setup button.x3pr:hover{background:var(--x3-hover)}
-html.nrs-setup .x3pf{display:flex;gap:8px;align-items:center;margin-top:10px}
-html.nrs-setup .x3cb{width:20px;height:20px;border-radius:6px;flex:none;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1.5px var(--x3-ln);color:#fff}
-html.nrs-setup .x3cb.on{background:var(--ds-navy);box-shadow:none}html.nrs-setup .x3cb svg{width:12px;height:12px}
-html.dark.nrs-setup .x3cb.on{background:var(--ds-info)}
-html.nrs-setup .x3dln{font-weight:700}
-html.nrs-setup .x3on-pop{box-shadow:inset 0 0 0 2px var(--ds-navy)!important}
-/* sheet: centred, changes save as you type */
-html.nrs-setup .x3shw{position:fixed;inset:0;z-index:250;display:none}
-html.nrs-setup .x3shw.open{display:block}
-html.nrs-setup .x3shs{position:absolute;inset:0;background:rgba(15,20,30,.28)}
-html.nrs-setup .x3sh{position:absolute;left:50%;top:8vh;width:min(560px,calc(100vw - 32px));max-height:84vh;transform:translateX(-50%);overflow:auto;background:var(--ds-ground);border-radius:16px;box-shadow:0 24px 64px rgba(16,24,40,.24);font-family:var(--ds-font);font-size:var(--ds-fs-body);color:var(--ds-text)}
-html.nrs-setup .x3shh{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:52px;padding:0 12px;position:sticky;top:0;background:var(--ds-ground);z-index:2;border-radius:16px 16px 0 0}
-html.nrs-setup .x3shh b{font:700 var(--ds-fs-heading)/1.3 var(--ds-font);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:360px}
-html.nrs-setup .x3done{justify-self:end;border:0;background:transparent;font:700 var(--ds-fs-body)/1 var(--ds-font);color:var(--ds-navy);cursor:pointer;padding:6px 8px;border-radius:6px}
-html.dark.nrs-setup .x3done{color:var(--ds-info)}html.nrs-setup .x3done:hover{background:var(--ds-fill-strong)}
-html.nrs-setup .x3shb{padding:4px 16px 20px}
-html.nrs-setup .x3grp{background:var(--ds-card);border-radius:12px;padding:0 14px;margin-top:14px}
-html.nrs-setup .x3shb > .x3grp:first-child{margin-top:4px}
-html.nrs-setup .x3shb .x3f{margin:6px 14px 0}
-html.nrs-setup .x3shb .x3sub{margin:16px 14px 6px}
-html.nrs-setup .x3shb .x3chips{margin:0 2px}
-html.nrs-setup .x3danger{justify-content:center;color:#A3302A;font-weight:600;cursor:pointer}
-html.dark.nrs-setup .x3danger{color:#F08A80}
-/* tables */
-html.nrs-setup .x3tbl{margin:0 -10px}
-html.nrs-setup .x3th,html.nrs-setup .x3tr{display:grid;grid-template-columns:var(--cols);align-items:center;column-gap:14px;padding:0 10px}
-html.nrs-setup .x3th{height:30px;font:600 var(--ds-fs-label)/1 var(--ds-font);color:var(--ds-text-2)}
-html.nrs-setup .x3tr{min-height:44px;border-radius:8px;position:relative;width:100%;border:0;background:transparent;text-align:left;font:inherit;color:inherit;cursor:pointer}
-html.nrs-setup button.x3tr:hover{background:var(--x3-hover)}
-html.nrs-setup .x3tr + .x3tr::before{content:"";position:absolute;top:0;left:10px;right:10px;border-top:.5px solid var(--ds-fill-strong)}
-html.nrs-setup .x3tr > span{min-width:0;overflow-wrap:anywhere}
-html.nrs-setup .x3tr .nm{display:flex;align-items:center;gap:10px;font-weight:600}
-html.nrs-setup .x3th .r,html.nrs-setup .x3tr .r{text-align:right}
-html.nrs-setup .x3tr.x3ms{cursor:default}
-html.nrs-setup .x3tr.x3ms > span{overflow:visible}
-html.nrs-setup .x3msk{display:flex;align-items:center;gap:6px}
-html.nrs-setup .x3msk .x3db{margin:0 0 0 -6px}
-html.nrs-setup .x3dt{position:relative;display:inline-flex;align-items:center;height:32px;padding:0 8px;margin-right:-8px;border-radius:8px;font-weight:600;cursor:pointer;white-space:nowrap}
-html.nrs-setup .x3tr .x3dt{margin:0 0 0 -8px}
-html.nrs-setup .x3dt:hover{background:var(--ds-fill)}
-html.nrs-setup .x3dt.none{color:var(--ds-text-3);font-weight:400}
-html.nrs-setup .x3dt input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;padding:0}
-/* scope */
-html.nrs-setup .x3stmt{width:100%;min-height:96px;border:0;background:transparent;resize:none;outline:none;padding:0;font:400 var(--ds-fs-body)/1.6 var(--ds-font);color:var(--ds-text);field-sizing:content}
-html.nrs-setup .x3stv{display:flex;flex-direction:column;gap:10px}
-html.nrs-setup .x3sp{margin:0;display:flex;gap:16px;font:400 var(--ds-fs-body)/1.6 var(--ds-font)}
-html.nrs-setup .x3spl{flex:0 0 96px;font:600 var(--ds-fs-label)/1.3 var(--ds-font);color:var(--ds-text-2);padding-top:3px}
-html.nrs-setup .x3spt{flex:1;min-width:0}html.nrs-setup .x3spt b{font-weight:700}
-html.nrs-setup .x3chipw .sx-chips{padding:4px 0 8px}
-html.nrs-setup .x3chipw .sx-chips::before{display:none}
-html.nrs-setup .x3second{margin-top:6px}
-html.nrs-setup .x3dl{align-items:flex-start}
-html.nrs-setup .x3pillin{flex:none;margin-top:8px;height:28px;padding:0 12px;border:0;border-radius:999px;background:var(--ds-info-soft);color:var(--ds-info);font:600 var(--ds-fs-body)/1 var(--ds-font);outline:none;field-sizing:content;min-width:9ch;max-width:280px}
-html.nrs-setup .x3pillin.empty{background:transparent;box-shadow:inset 0 0 0 1px var(--x3-ln)}
-html.nrs-setup .x3pillin:focus{box-shadow:inset 0 0 0 2px var(--ds-navy)}
-/* teams: the org chart */
-html.nrs-setup .x3org{margin-top:6px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;align-items:start}
-html.nrs-setup .x3oc{min-width:0;border-radius:10px}
+html.nrs-setup .x3mck svg{width:14px;height:14px}
+html.nrs-setup .x3pop{width:300px}
+html.nrs-setup .x3on-pop{background:var(--ds-fill)!important}
+/* scope chips (from the earlier layer) */
+html.nrs-setup .x4chips .sx-chips{padding:0!important;margin:0!important}
+html.nrs-setup .x4chips .sx-chips::before{display:none}
+html.nrs-setup .x4second{margin-top:12px}
+/* teams: the org chart view */
+html.nrs-setup .x3org{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;align-items:start;margin-bottom:4px}
+html.nrs-setup .x3oc{min-width:0;border-radius:8px}
 html.nrs-setup .x3oc.over{box-shadow:0 0 0 6px var(--ds-sidebar);background:var(--ds-sidebar)}
-html.nrs-setup .x3dh{display:flex;align-items:baseline;gap:8px;padding:0 0 8px;border-bottom:1px solid var(--ds-fill-strong);margin-bottom:2px}
-html.nrs-setup .x3dh b{font:700 var(--ds-fs-body)/1.3 var(--ds-font)}
+html.nrs-setup .x3dh{display:flex;align-items:baseline;gap:8px;height:30px;padding:0 10px;background:var(--ds-fill);border-radius:8px;align-items:center}
+html.nrs-setup .x3dh b{font:600 var(--ds-fs-body)/1.2 var(--ds-font);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 html.nrs-setup .x3dh span{margin-left:auto;font:400 var(--ds-fs-label)/1 var(--ds-font);color:var(--ds-text-2);white-space:nowrap}
-html.nrs-setup .x3trow{display:flex;align-items:center;gap:10px;min-height:56px;padding:4px 0;position:relative;cursor:grab}
-html.nrs-setup .x3trow + .x3trow::before{content:"";position:absolute;top:0;left:0;right:0;border-top:.5px solid var(--ds-fill-strong)}
+html.nrs-setup .x3trow{display:flex;align-items:center;gap:10px;min-height:48px;padding:0 10px;border-bottom:1px solid var(--ds-line);cursor:grab}
 html.nrs-setup .x3trow.dragging{opacity:.35}
-html.nrs-setup .x3tmain{flex:1;min-width:0;display:flex;align-items:center;gap:10px;min-height:56px;padding:0;border:0;background:transparent;text-align:left;font:inherit;color:inherit;cursor:pointer;border-radius:8px}
-html.nrs-setup .x3tmain:hover{background:var(--x3-hover)}
+html.nrs-setup .x3tmain{flex:1;min-width:0;display:flex;align-items:center;gap:10px;min-height:46px;padding:0;border:0;background:transparent;text-align:left;font:inherit;color:inherit;cursor:pointer}
 html.nrs-setup .x3tx{flex:1;min-width:0}
-html.nrs-setup .x3tx b{display:block;font-weight:600;line-height:1.3}
-html.nrs-setup .x3tx > span{display:block;margin-top:2px;font:400 var(--ds-fs-label)/1.35 var(--ds-font);color:var(--ds-text-2)}
-html.nrs-setup .x3fte{flex:none;min-width:30px;text-align:right;font:700 var(--ds-fs-heading)/1.1 var(--ds-font)}
-html.nrs-setup .x3fte small{display:block;font:400 10px/1.2 var(--ds-font);color:var(--ds-text-2)}
-html.nrs-setup .x3ck{width:22px;height:22px;flex:none;border-radius:50%;border:0;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:var(--ds-good);color:#fff}
-html.nrs-setup .x3ck svg{width:12px;height:12px}
-html.nrs-setup .x3ck.off{background:transparent;box-shadow:inset 0 0 0 1.5px var(--x3-ln)}
-html.nrs-setup .x3trow.out .x3tx b,html.nrs-setup .x3trow.out .x3fte,html.nrs-setup .x3trow.out .x3tx > span{color:var(--ds-text-3)}
-/* analyses grid */
-html.nrs-setup .x3leg{display:inline-flex;gap:14px;align-items:center;font:400 var(--ds-fs-label)/1 var(--ds-font);color:var(--ds-text-2)}
-html.nrs-setup .x3leg > span{display:inline-flex;align-items:center;gap:6px}
-html.nrs-setup .x3mx{margin:0 -10px;overflow-x:auto}
-html.nrs-setup .x3mxh,html.nrs-setup .x3mr{display:grid;grid-template-columns:minmax(170px,1.6fr) repeat(var(--n),minmax(80px,1fr));align-items:center;column-gap:4px;padding:0 10px;min-width:calc(190px + var(--n) * 84px)}
-html.nrs-setup .x3mxh{height:32px;font:600 var(--ds-fs-label)/1.2 var(--ds-font);color:var(--ds-text-2)}
-html.nrs-setup .x3mxh span{text-align:center}html.nrs-setup .x3mxh span:first-child{text-align:left}
-html.nrs-setup .x3mr{min-height:50px;position:relative}
-html.nrs-setup .x3mr + .x3mr::before{content:"";position:absolute;top:0;left:10px;right:10px;border-top:.5px solid var(--ds-fill-strong)}
-html.nrs-setup .x3mn{border:0;background:transparent;text-align:left;padding:6px 8px;margin-left:-8px;border-radius:8px;font:inherit;color:inherit;cursor:pointer;min-width:0}
-html.nrs-setup .x3mn:hover{background:var(--x3-hover)}
-html.nrs-setup .x3mn b{display:block;font-weight:600}
-html.nrs-setup .x3mn span{display:block;font:400 var(--ds-fs-label)/1.3 var(--ds-font);color:var(--ds-text-2)}
-html.nrs-setup .x3mc{display:flex;justify-content:center}
-html.nrs-setup .x3lvb{width:36px;height:30px;border:0;border-radius:8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+html.nrs-setup .x3tx b{display:block;font:600 var(--ds-fs-body)/1.3 var(--ds-font);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.nrs-setup .x3tx > span{display:block;font:400 var(--ds-fs-label)/1.35 var(--ds-font);color:var(--ds-text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.nrs-setup .x3fte{flex:none;min-width:28px;text-align:right;font:600 var(--ds-fs-body)/1 var(--ds-font)}
+html.nrs-setup .x3trow.out .x3tx b,html.nrs-setup .x3trow.out .x3fte{color:var(--ds-text-3)}
+/* analyses matrix */
+html.nrs-setup .x4mx .x4th span{white-space:normal;line-height:1.2}
+html.nrs-setup .x4mx .x4th{height:auto;min-height:30px;padding-top:6px;padding-bottom:6px}
+html.nrs-setup .x3leg{display:inline-flex;gap:12px;align-items:center;font:400 var(--ds-fs-label)/1 var(--ds-font);color:var(--ds-text-2);margin-right:4px}
+html.nrs-setup .x3leg > span{display:inline-flex;align-items:center;gap:5px}
+html.nrs-setup .x3lvb{width:32px;height:28px;border:0;border-radius:8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
 html.nrs-setup .x3lvb:hover{background:var(--ds-fill)}
-html.nrs-setup .x3lv{display:block;width:14px;height:14px;border-radius:50%;flex:none}
+html.nrs-setup .x3lv{display:block;width:12px;height:12px;border-radius:50%;flex:none}
 html.nrs-setup .x3lv.full{background:var(--ds-navy)}
 html.nrs-setup .x3lv.light{background:linear-gradient(90deg,var(--ds-navy) 50%,transparent 50%);box-shadow:inset 0 0 0 1.5px var(--ds-navy)}
-html.nrs-setup .x3lv.none{width:10px;height:2px;border-radius:2px;background:var(--x3-ln)}
+html.nrs-setup .x3lv.none{width:10px;height:2px;border-radius:2px;background:var(--x4-ln)}
 html.dark.nrs-setup .x3lv.full{background:var(--ds-info)}html.dark.nrs-setup .x3lv.light{background:linear-gradient(90deg,var(--ds-info) 50%,transparent 50%);box-shadow:inset 0 0 0 1.5px var(--ds-info)}
-/* key moments */
-html.nrs-setup .x3tl{margin:4px 6px 14px}
-html.nrs-setup .x3tlw{position:relative;height:16px;margin-bottom:6px;font:600 var(--ds-fs-label)/1 var(--ds-font);color:var(--ds-text-2)}
+/* key moments timeline */
+html.nrs-setup .x3tl{margin:0 6px 14px}
+html.nrs-setup .x3tlw{position:relative;height:14px;margin-bottom:6px;font:400 var(--ds-fs-label)/1 var(--ds-font);color:var(--ds-text-2)}
 html.nrs-setup .x3tlw span{position:absolute;top:0;white-space:nowrap}
 html.nrs-setup .x3tlw span.last{transform:translateX(-100%)}
 html.nrs-setup .x3trk{position:relative;height:48px}
@@ -3146,43 +3127,26 @@ html.nrs-setup .x3trk .ln{position:absolute;left:0;right:0;top:9px;height:2px;bo
 html.nrs-setup .x3trk .now{position:absolute;top:0;height:20px;width:2px;margin-left:-1px;background:var(--ds-accent);border-radius:2px}
 html.nrs-setup .x3mk{position:absolute;top:4px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:var(--ds-navy);box-shadow:0 0 0 2px var(--ds-card)}
 html.dark.nrs-setup .x3mk{background:var(--ds-info)}
-html.nrs-setup .x3mk.steer{background:var(--ds-accent)}html.nrs-setup .x3mk.past{opacity:.55}
+html.nrs-setup .x3mk.past{opacity:.55}
 html.nrs-setup .x3mkl{position:absolute;top:24px;font:600 var(--ds-fs-label)/1.2 var(--ds-font);white-space:nowrap;transform:translateX(-50%)}
-html.nrs-setup .x3mkl small{font-weight:400;font-size:var(--ds-fs-label);color:var(--ds-text-2);margin-left:5px}
-/* work streams: the plan */
-html.nrs-setup .x3pl{margin:0 -6px;overflow-x:auto}
-html.nrs-setup .x3pl-h,html.nrs-setup .x3pl-r{display:grid;grid-template-columns:200px repeat(var(--n),minmax(170px,1fr));min-width:calc(200px + var(--n) * 170px)}
-html.nrs-setup .x3pl-h > span{padding:6px 12px;font:400 var(--ds-fs-label)/1.3 var(--ds-font);color:var(--ds-text-2)}
-html.nrs-setup .x3pl-h b{display:block;font:700 var(--ds-fs-body)/1.3 var(--ds-font);color:var(--ds-text)}
-html.nrs-setup .x3phn{height:24px;font-weight:700;display:block}
-html.nrs-setup .x3pl-r{position:relative}
-html.nrs-setup .x3pl-r + .x3pl-r::before{content:"";position:absolute;top:0;left:6px;right:6px;border-top:.5px solid var(--ds-fill-strong)}
-html.nrs-setup .x3wsn{display:flex;align-items:center;gap:10px;padding:10px;margin:4px;border:0;border-radius:8px;background:transparent;text-align:left;font:inherit;color:inherit;cursor:pointer;align-self:start;min-width:0}
-html.nrs-setup .x3wsn:hover{background:var(--x3-hover)}
-html.nrs-setup .x3wsn b{display:block;font-weight:700}
-html.nrs-setup .x3wsn span span{display:block;margin-top:2px;font:400 var(--ds-fs-label)/1.3 var(--ds-font);color:var(--ds-text-2)}
-html.nrs-setup .x3pc{padding:10px 8px;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;border-left:.5px solid var(--ds-fill-strong);min-height:60px}
-html.nrs-setup .x3dlc{display:inline-flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:30px;padding:6px 10px;border:0;border-radius:8px;background:var(--ds-fill);font:600 12px/1.25 var(--ds-font);color:var(--ds-text);cursor:pointer;text-align:left;max-width:100%}
-html.nrs-setup .x3dlc:hover{background:var(--ds-fill-strong)}
-html.nrs-setup .x3dlc small{font-weight:400;font-size:var(--ds-fs-label);color:var(--ds-text-2)}
-html.nrs-setup .x3pa{width:30px;height:30px;border-radius:8px;border:0;background:transparent;color:var(--ds-text-3);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
-html.nrs-setup .x3pa:hover{background:var(--ds-fill);color:var(--ds-navy)}html.nrs-setup .x3pa svg{width:13px;height:13px}
-html.nrs-setup .x3dri{padding:10px 0}html.nrs-setup .x3dri b{display:block;font-weight:600}html.nrs-setup .x3dri small{display:block;margin-top:2px;font:400 var(--ds-fs-label)/1.4 var(--ds-font);color:var(--ds-text-2)}
-/* the side panel still used for pasting a list and choosing teams: centred like the sheet */
-html.nrs-setup .panel{left:50%;right:auto;top:8vh;height:auto;max-height:84vh;width:min(560px,calc(100vw - 32px));border-radius:16px;transform:translate(-50%,12px);opacity:0;pointer-events:none;transition:transform .2s ease,opacity .2s ease;box-shadow:0 24px 64px rgba(16,24,40,.24)}
+html.nrs-setup .x3mkl small{font:400 var(--ds-fs-label)/1.2 var(--ds-font);color:var(--ds-text-2);margin-left:5px}
+/* the window still used for pasting a list: centred, 480px */
+html.nrs-setup .panel{left:50%;right:auto;top:8vh;height:auto;max-height:84vh;width:min(480px,calc(100vw - 32px));border-radius:16px;transform:translate(-50%,12px) scale(.98);opacity:0;pointer-events:none;transition:transform .2s ease,opacity .2s ease;box-shadow:0 24px 64px rgba(16,24,40,.24)}
 html.nrs-setup .panel.open{transform:translate(-50%,0);opacity:1;pointer-events:auto}
-html.nrs-setup .panel-head{background:var(--ds-ground);color:var(--ds-text);padding:14px 18px;border-radius:16px 16px 0 0}
-html.nrs-setup .panel-head h3{font:700 var(--ds-fs-heading)/1.3 var(--ds-font);color:var(--ds-text)}
+html.nrs-setup .panel-head{background:var(--ds-card);color:var(--ds-text);padding:16px 18px;border-radius:16px 16px 0 0}
+html.nrs-setup .panel-head h3{font:700 var(--ds-fs-title)/1.25 var(--ds-font);color:var(--ds-text)}
 html.nrs-setup .panel-head .sub{color:var(--ds-text-2)}
 html.nrs-setup .panel-head button{background:var(--ds-fill);color:var(--ds-text)}
 html.nrs-setup .scrim{background:rgba(15,20,30,.28);backdrop-filter:none}
-@media (max-width:1000px){html.nrs-setup .x3g{grid-template-columns:minmax(0,1fr)}html.nrs-setup .x3k{grid-template-columns:repeat(2,minmax(0,1fr))}html.nrs-setup .x3l{flex-basis:130px}}
-
-html.dark.nrs-setup .x3shs{background:rgba(0,0,0,.55)}
 html.dark.nrs-setup .scrim{background:rgba(0,0,0,.55)}
-html.dark.nrs-setup .x3sh{box-shadow:0 0 0 1px rgba(255,255,255,.08),0 24px 64px rgba(0,0,0,.6)}
-html.dark.nrs-setup .x3mi[style*="#0F2B52"]{background:#34548A!important}
-html.dark.nrs-setup .x3mi[style*="#3A4250"]{background:#4A5468!important}
+@media (max-width:1100px){html.nrs-setup .x4g{grid-template-columns:minmax(0,1fr)}html.nrs-setup .x4figs{display:none}}
+html.nrs-setup .x4one{display:block!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.nrs-setup .x4grp .x4ced.strong{width:auto;flex:0 1 auto;field-sizing:content;min-width:140px}
+html.nrs-setup .x4n{white-space:nowrap}
+html.nrs-setup #page{padding-left:24px;padding-right:24px}
+html.nrs-setup .x4dt input,html.nrs-setup .x4dtc input{font:inherit}
+html.nrs-setup .x4links + .x4fg{margin-top:16px!important}
+html.nrs-setup .x4chips + .x4links{margin-top:14px}
 </style>
 <!-- @@NR-SHELL:BEGIN  The shared frame of the Cockpit, the Findings dashboard and Engagement setup.
      One definition: this block in NR OpEx Quickscan Builder/2 Toolkit/engagement-dashboard.html. Edit it there only;
@@ -5404,7 +5368,7 @@ table.tteams .tt-h2{display:none}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
 })();
 </script>
-<script>window.__NR_FOLDER_BUILD__={"id": "northwind", "builtAt": "2026-11-16 15:47"};</script>
+<script>window.__NR_FOLDER_BUILD__={"id": "northwind", "builtAt": "2026-11-16 17:22"};</script>
 <script>window.__NR_VIEW__='client';</script>
 </head>
 <body>
@@ -9708,12 +9672,11 @@ PAGES.s6=()=>{
     <p class="sf" id="hand-sent" ${handSent()?'':'hidden'} style="margin:10px 0 0;font-weight:600;color:var(--ds-good)">${esc(handSent())}</p></div>`;
 };
 /* ▼ setup3 */
-/* ── Engagement setup, tile redesign (16 Nov 2026) ─────────────────────────────────────────
-   Agreed on the "Engagement setup, redesign (15 Nov)" board. Every step is a grid of tiles in the
-   house style of the Training Companion: the title inside the tile (icon and green title, top left),
-   its actions top right, then the content. KPI tiles sit in their own row above the content. A
-   choice from a list is a custom menu with an icon per option; a person, a team or a work stream
-   opens in a centred sheet; a deliverable or an analysis cell opens a small popover where you click.
+/* ── Engagement setup, rebuilt on the design guide (16 Nov 2026, evening) ──────────────────
+   Every step follows the cockpit: one header row with the title, the step's figures beside it and one
+   "Next" button (no footer); the content uses the full width on a two-column grid whose cards share
+   their edges; card titles in heading size; fields with the label above; menus under their control,
+   aligned left; every list is the house table or an item list, edited in place, no pop-up windows.
    The data functions are the existing ones, so saving, checks and the hand-over work as before. */
 const X3P={
   building:'M4 20.5h16M6 20.5V5.5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v15M15 9.5h3a1 1 0 0 1 1 1v10M9 8.5h2M9 12h2M9 15.5h2',
@@ -9740,328 +9703,343 @@ const X3CK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wi
 const X3PLUS='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 6v12M6 12h12"/></svg>';
 const X3RCHEV='<svg class="x3chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
 
-/* ── building blocks ── */
-const x3tile=(icon,title,right,body,cls)=>`<section class="x3t${cls?' '+cls:''}"><div class="x3h"><h2>${x3svg(icon)}<span>${esc(title)}</span></h2>${right?`<span class="x3r">${right}</span>`:''}</div>${body}</section>`;
-const x3kpis=list=>`<div class="x3k">${list.map(k=>`<section class="x3t x3kt"><div class="x3h"><h2>${x3svg(k.i)}<span>${esc(k.t)}</span></h2></div>
-  <div class="x3kv"><b>${esc(String(k.v))}${k.s?`<small> ${esc(k.s)}</small>`:''}</b><span>${esc(k.d)}</span></div></section>`).join('')}</div>`;
-const x3row=(label,ctrl,cls)=>`<div class="x3row${cls?' '+cls:''}"><span class="x3l">${label}</span><span class="x3v">${ctrl}</span></div>`;
-const x3in=(path,o)=>{ o=o||{}; const v=get(E,path); return `<input class="x3in${o.left?'':' r'}" value="${esc(v==null?'':v)}" placeholder="${esc(o.ph||'')}" aria-label="${esc(o.aria||'')}" ${o.type?`type="${o.type}"`:''} oninput="upd('${path}',this.value)"${o.change?` onchange="${o.change}"`:''}>`; };
-const x3ico=x=>{ if(!x||(!x.i&&!x.g)) return ''; return `<span class="x3mi" style="background:${x.c||X3C.navy};color:${x.f||'#fff'}">${x.i?x3svg(x.i,2):esc(x.g)}</span>`; };
-const x3sw=(on,click,aria)=>`<button type="button" class="x3sw${on?' on':''}" role="switch" aria-checked="${!!on}" aria-label="${esc(aria)}" onclick="${click}"></button>`;
+
+/* ── shared pieces ── */
 const x3fmt=iso=>{ if(!iso) return ''; const d=new Date(iso+'T00:00:00'); return isNaN(d)?'':d.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]; };
 const x3long=iso=>{ if(!iso) return ''; const d=new Date(iso+'T00:00:00'); return isNaN(d)?'':['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]+' '+x3fmt(iso)+' '+d.getFullYear(); };
-/* a date reads as a date; the picker opens when you click it */
-const x3date=(val,change,aria)=>`<span class="x3dt${val?'':' none'}">${val?x3long(val):'Add a date'}<input type="date" value="${esc(val||'')}" aria-label="${esc(aria)}" onclick="try{this.showPicker()}catch(e){}" onchange="${change}"></span>`;
+const X3MORE='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>';
+const X3CAL='<svg class="x4cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5.5h14a1.5 1.5 0 0 1 1.5 1.5v12A1.5 1.5 0 0 1 19 20.5H5A1.5 1.5 0 0 1 3.5 19V7A1.5 1.5 0 0 1 5 5.5zM3.5 10h17M8 3.5v4M16 3.5v4"/></svg>';
+const x4q=s=>String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+/* a card: the title in heading size, a count beside it, its own actions top right */
+const x4card=(title,body,o)=>{ o=o||{}; return `<section class="x4c${o.span?' span':''}"${o.id?` id="${o.id}"`:''}><div class="x4ch"><h2>${esc(title)}</h2>${o.n!=null&&o.n!==''?`<span class="x4n">${esc(String(o.n))}</span>`:''}${o.right?`<span class="x4r">${o.right}</span>`:''}</div>${body}</section>`; };
+/* a field: its label above it */
+const x4f=(label,ctrl,cls)=>`<div class="x4fl${cls?' '+cls:''}"><label>${esc(label)}</label>${ctrl}</div>`;
+const x4in=(path,o)=>{ o=o||{}; const v=get(E,path); return `<input class="x4in${o.r?' r':''}" value="${esc(v==null?'':v)}" placeholder="${esc(o.ph||'')}" aria-label="${esc(o.aria||'')}"${o.num?' inputmode="decimal"':''} oninput="${o.input||`upd('${path}',this.value)`}"${o.change?` onchange="${o.change}"`:''}>`; };
+const x4ta=(path,o)=>{ o=o||{}; const v=get(E,path); return `<textarea class="x4in x4ta" rows="1" placeholder="${esc(o.ph||'')}" aria-label="${esc(o.aria||'')}" oninput="upd('${path}',this.value)">${esc(v==null?'':v)}</textarea>`; };
+const x4btn=(label,click,cls)=>`<button type="button" class="x4b${cls?' '+cls:''}" onclick="${click}">${label}</button>`;
+const x4add=(label,click,data)=>`<div class="x4addr"${data?` data-x4add="${data}"`:''}><button type="button" class="x4lnk" onclick="${click}">+ ${esc(label)}</button></div>`;
+const x3sw=(on,click,aria)=>`<button type="button" class="x4sw${on?' on':''}" role="switch" aria-checked="${!!on}" aria-label="${esc(aria)}" onclick="${click}"></button>`;
+const x3ico=x=>{ if(!x||(!x.i&&!x.g)) return ''; return `<span class="x3mi" style="background:${x.c||X3C.navy};color:${x.f||'#fff'}">${x.i?x3svg(x.i,2):esc(x.g)}</span>`; };
+const x4av=(name,side)=>`<span class="x4av ${side==='external'||side==='cl'?'cl':name?'nr':'no'}">${name?esc(initials(name)):'?'}</span>`;
+/* a date that reads as a date; the picker opens on click */
+const x4date=(val,change,aria,cell)=>`<span class="${cell?'x4cell x4dtc':'x4in x4dt'}${val?'':' none'}">${val?(cell?x3fmt(val):x3long(val)):'Add a date'}${cell?'':X3CAL}<input type="date" value="${esc(val||'')}" aria-label="${esc(aria)}" onclick="try{this.showPicker()}catch(e){}" onchange="${change}"></span>`;
 
-/* ── custom menu: an icon tile per option, optional filter chips, one menu open at a time ── */
+/* ── menus: under the control, aligned to its left edge, one open at a time ── */
 var X3DD={}, X3DDN=0, X3CUR=null, X3FIL={};
 function x3dd(value,items,pick,o){ o=o||{}; const id='d'+(++X3DDN); X3DD[id]={value,items,pick,o};
-  const cur=items.find(x=>x.v===value);
-  return `<button type="button" class="x3db${o.sm?' sm':''}" data-dd="${id}" onclick="x3open(this)" aria-haspopup="listbox" aria-label="${esc(o.aria||'')}">${x3ico(cur)}<span class="x3dv${cur?'':' ph'}">${esc(cur?cur.l:(o.ph||'Choose'))}</span>${X3CHEV}</button>`; }
-function x3open(btn){ const id=btn.dataset.dd; if(X3CUR&&X3CUR.id===id){ x3close(); return; } x3close(); const d=X3DD[id]; if(!d) return;
-  X3CUR={id,btn,d}; btn.classList.add('open'); x3drawMenu(); }
-function x3drawMenu(){ if(!X3CUR) return; const {btn,d}=X3CUR, o=d.o, fk=o.key&&X3FIL[o.key]||'all';
+  if(o.more) return `<button type="button" class="x4more" data-dd="${id}" onclick="event.stopPropagation();x3open(this)" aria-haspopup="menu" aria-label="${esc(o.aria||'More')}">${X3MORE}</button>`;
+  const multi=Array.isArray(value), cur=multi?null:items.find(x=>x.v===value);
+  const label=multi?(value.length?items.filter(x=>value.includes(x.v)).map(x=>x.l).join(', '):''):(cur?cur.l:'');
+  const cls=o.cell?'x4cell':'x4in x4dd';
+  return `<button type="button" class="${cls}${o.warn&&!label?' warn':''}" data-dd="${id}" onclick="x3open(this)" aria-haspopup="listbox" aria-label="${esc(o.aria||'')}" title="${esc(label)}">${o.cell?'':x3ico(cur)}<span class="x3dv${label?'':' ph'}">${esc(label||o.ph||'Choose')}</span>${X3CHEV}</button>`; }
+function x3open(btn){ const id=btn.dataset.dd; if(X3CUR&&X3CUR.id===id){ x3close(); return; } x3close(); x3popClose(); const d=X3DD[id]; if(!d) return;
+  X3CUR={id,btn,d,armed:-1}; btn.classList.add('open'); x3drawMenu(); }
+function x3drawMenu(){ if(!X3CUR) return; const {btn,d}=X3CUR, o=d.o, fk=o.key&&X3FIL[o.key]||'all', multi=Array.isArray(d.value);
   let m=document.getElementById('x3menu');
   if(!m){ const s=document.createElement('div'); s.id='x3scrim'; s.className='x3scrim'; s.onclick=x3close; document.body.appendChild(s);
-    m=document.createElement('div'); m.id='x3menu'; m.className='x3menu'; m.setAttribute('role','listbox'); document.body.appendChild(m); }
+    m=document.createElement('div'); m.id='x3menu'; m.className='x3menu'; document.body.appendChild(m); }
+  m.setAttribute('role',o.more?'menu':'listbox');
   const list=d.items.map((x,i)=>[x,i]).filter(([x])=>fk==='all'||!o.filters||x.grp===fk);
   let h='', last=null;
   if(o.filters) h+=`<div class="x3fil" role="group" aria-label="Filter">${o.filters.map(([k,l])=>{ const n=k==='all'?d.items.length:d.items.filter(x=>x.grp===k).length;
-    return `<button type="button" class="${fk===k?'on':''}" aria-pressed="${fk===k}" onclick="X3FIL['${o.key}']='${k}';x3drawMenu()">${esc(l)}<small>${n}</small></button>`; }).join('')}</div>`;
+    return `<button type="button" class="${fk===k?'on':''}" aria-pressed="${fk===k}" onclick="X3FIL['${o.key}']='${k}';x3drawMenu()">${esc(l)} <small>${n}</small></button>`; }).join('')}</div>`;
   list.forEach(([x,i])=>{ if(x.h&&x.h!==last){ h+=`<div class="x3mh">${esc(x.h)}</div>`; last=x.h; }
-    const on=x.v===d.value;
-    h+=`<button type="button" class="x3it${on?' on':''}" role="option" aria-selected="${on}" onclick="x3pick(${i})">${x3ico(x)}<span class="x3mt">${esc(x.l)}${x.s?`<small>${esc(x.s)}</small>`:''}</span><span class="x3mck">${on?X3CK:''}</span></button>`; });
-  m.innerHTML=h; m.classList.toggle('wide',!!o.wide); m.classList.add('open'); document.getElementById('x3scrim').classList.add('open');
-  const r=btn.getBoundingClientRect(), W=o.wide?440:Math.max(260,r.width+24), vw=innerWidth, vh=innerHeight;
-  m.style.width=W+'px'; let left=o.left?r.left-6:r.right-W+6; left=Math.max(8,Math.min(left,vw-W-8)); m.style.left=left+'px';
-  const below=vh-r.bottom-12, above=r.top-12, mh=Math.min(m.scrollHeight,Math.max(below,above),560);
-  m.style.maxHeight=mh+'px'; m.style.top=(below>=Math.min(m.scrollHeight,320)||below>=above?r.bottom+6:r.top-6-mh)+'px'; }
-function x3pick(i){ if(!X3CUR) return; const d=X3CUR.d, x=d.items[i]; x3close(); if(x) d.pick(x.v); }
+    const on=multi?d.value.includes(x.v):x.v===d.value, armed=X3CUR.armed===i;
+    h+=`<button type="button" class="x3it${on?' on':''}${x.danger?' danger':''}${x.link?' link':''}" role="${o.more?'menuitem':'option'}" aria-selected="${on}" onclick="x3pick(${i})">${o.more?'':`<span class="x3mck">${on?X3CK:''}</span>`}${x3ico(x)}<span class="x3mt">${esc(armed?'Click again to remove':x.l)}</span>${x.s?`<small>${esc(x.s)}</small>`:''}</button>`; });
+  m.innerHTML=h; m.classList.add('open'); document.getElementById('x3scrim').classList.add('open');
+  const r=btn.getBoundingClientRect(), vw=innerWidth, vh=innerHeight;
+  m.style.width='auto'; m.style.minWidth=Math.max(o.more?180:200,r.width)+'px'; m.style.maxWidth='480px'; if(o.wide) m.style.width='440px';
+  const W=m.offsetWidth; let left=o.more?r.right-W:r.left; left=Math.max(8,Math.min(left,vw-W-8)); m.style.left=left+'px';
+  const below=vh-r.bottom-14, above=r.top-14, full=m.scrollHeight, mh=Math.min(full,Math.max(below,above),520);
+  m.style.maxHeight=mh+'px'; m.style.top=(below>=Math.min(full,280)||below>=above?r.bottom+6:r.top-6-mh)+'px'; }
+function x3pick(i){ if(!X3CUR) return; const d=X3CUR.d, x=d.items[i]; if(!x) return;
+  if(x.ask&&X3CUR.armed!==i){ X3CUR.armed=i; x3drawMenu(); return; }
+  if(Array.isArray(d.value)){ const k=d.value.indexOf(x.v); k<0?d.value.push(x.v):d.value.splice(k,1); d.pick(x.v,d.value); x3drawMenu(); return; }
+  x3close(); d.pick(x.v); }
 function x3close(){ const m=document.getElementById('x3menu'), s=document.getElementById('x3scrim');
-  if(m) m.classList.remove('open'); if(s) s.classList.remove('open'); if(X3CUR&&X3CUR.btn) X3CUR.btn.classList.remove('open'); X3CUR=null; }
+  if(m) m.classList.remove('open'); if(s) s.classList.remove('open'); if(X3CUR&&X3CUR.btn) X3CUR.btn.classList.remove('open'); const was=X3CUR; X3CUR=null;
+  if(was&&was.d.o.onclose) was.d.o.onclose(); }
+const x4more=(items,aria)=>x3dd(null,items,v=>{ const x=items.find(y=>y.v===v); if(x&&x.run) x.run(); },{more:1,aria:aria||'More'});
+const x4rm=(run,label)=>({v:'rm',l:label||'Remove',danger:1,ask:1,run});
 
-/* ── popover next to what you clicked; redrawn after the page redraws ── */
+/* ── popover for a cell with several choices (analyses) ── */
 var X3POP=null;
 function x3pop(key,draw){ x3close(); if(X3POP&&X3POP.key===key){ x3popClose(); return; } X3POP={key,draw}; x3popDraw(); }
 function x3popDraw(){ if(!X3POP) return; const a=document.querySelector(`[data-pk="${X3POP.key}"]`); if(!a){ x3popClose(); return; }
   let p=document.getElementById('x3pop');
   if(!p){ const s=document.createElement('div'); s.id='x3pscrim'; s.className='x3scrim'; s.onclick=x3popClose; document.body.appendChild(s);
-    p=document.createElement('div'); p.id='x3pop'; p.className='x3pop'; p.setAttribute('role','dialog'); document.body.appendChild(p); }
+    p=document.createElement('div'); p.id='x3pop'; p.className='x3menu x3pop'; p.setAttribute('role','dialog'); document.body.appendChild(p); }
   p.innerHTML=X3POP.draw(); p.classList.add('open'); document.getElementById('x3pscrim').classList.add('open');
   document.querySelectorAll('.x3on-pop').forEach(e=>e.classList.remove('x3on-pop')); a.classList.add('x3on-pop');
-  const r=a.getBoundingClientRect(), W=340; let left=Math.max(8,Math.min(r.left+r.width/2-W/2,innerWidth-W-8));
-  p.style.left=left+'px'; const h=p.offsetHeight; p.style.top=(r.bottom+8+h<innerHeight-8||r.top-8-h<8?r.bottom+8:r.top-8-h)+'px'; }
+  const r=a.getBoundingClientRect(), W=p.offsetWidth, left=Math.max(8,Math.min(r.left,innerWidth-W-8)), h=p.offsetHeight;
+  p.style.left=left+'px'; p.style.top=(r.bottom+6+h<innerHeight-8||r.top-6-h<8?r.bottom+6:r.top-6-h)+'px'; }
 function x3popClose(){ const p=document.getElementById('x3pop'), s=document.getElementById('x3pscrim'); if(p) p.classList.remove('open'); if(s) s.classList.remove('open');
   document.querySelectorAll('.x3on-pop').forEach(e=>e.classList.remove('x3on-pop')); X3POP=null; }
-/* after a change inside a popover or sheet: redraw the page, then the open popover or sheet */
-function x3re(){ goKeep(PAGE); if(X3POP) x3popDraw(); if(X3SH) x3shDraw(); }
+function x3re(){ goKeep(PAGE); if(X3POP) x3popDraw(); }
+document.addEventListener('keydown',e=>{ if(e.key!=='Escape') return; if(X3CUR) x3close(); else if(X3POP) x3popClose(); });
 
-/* ── sheet: one object at a time, centred, changes save as you type ── */
-var X3SH=null;
-function x3sheet(title,draw){ x3close(); x3popClose(); X3SH={title,draw};
-  let w=document.getElementById('x3sheet');
-  if(!w){ w=document.createElement('div'); w.id='x3sheet'; w.className='x3shw'; w.innerHTML='<div class="x3shs" onclick="x3shClose()"></div><div class="x3sh" role="dialog" aria-modal="true"><div class="x3shh"><span></span><b id="x3sht"></b><button type="button" class="x3done" onclick="x3shClose()">Done</button></div><div class="x3shb" id="x3shb"></div></div>'; document.body.appendChild(w); }
-  x3shDraw(); w.classList.add('open'); setTimeout(()=>{ const f=w.querySelector('.x3shb input:not([type=date])'); if(f&&!f.value) f.focus(); },60); }
-function x3shDraw(){ if(!X3SH) return; const t=typeof X3SH.title==='function'?X3SH.title():X3SH.title; document.getElementById('x3sht').textContent=t; document.getElementById('x3shb').innerHTML=X3SH.draw(); }
-function x3shClose(){ const w=document.getElementById('x3sheet'); if(w) w.classList.remove('open'); X3SH=null; goKeep(PAGE); }
-document.addEventListener('keydown',e=>{ if(e.key!=='Escape') return; if(X3CUR) x3close(); else if(X3POP) x3popClose(); else if(X3SH) x3shClose(); });
+/* ── the header row: title, the step's figures beside it, one Next button; no footer ── */
+const X4FIGS={}, X4RIGHT={};
+const x4fig=(v,l,warn)=>({v,l,warn});
+function x4head(k){ const sub=document.getElementById('tb-sub'); if(sub) sub.hidden=true;
+  const std=document.getElementById('tb-std'); if(std){ const old=std.querySelector('.x4figs'); if(old) old.remove();
+    const F=X4FIGS[k]?X4FIGS[k]().filter(Boolean):[];
+    if(F.length) std.insertAdjacentHTML('beforeend',`<div class="x4figs">${F.map(f=>`<div class="x4fig${f.warn?' warn':''}"><b>${esc(String(f.v))}</b><span>${esc(f.l)}</span></div>`).join('')}</div>`); }
+  const right=document.getElementById('tb-right'); if(right){ const steps=setupSteps(), si=steps.findIndex(x=>x.k===k), nx=steps[si+1];
+    right.innerHTML=(X4RIGHT[k]?X4RIGHT[k]():'')+(nx?`<button type="button" class="x4b" onclick="go('${nx.k}')">Next: ${esc((TITLES[nx.k]||[nx.l||''])[0])} ›</button>`:''); } }
 const X3_GO=go;
-go=function(k){ x3close(); X3_GO(k); const pg=document.getElementById('page'); if(pg&&!pg._x3){ pg._x3=1; pg.addEventListener('scroll',()=>{ x3close(); if(X3POP) x3popDraw(); },{passive:true}); }
+go=function(k){ x3close(); X3_GO(k); if(MODE==='setup') x4head(PAGE);
+  const pg=document.getElementById('page'); if(pg&&!pg._x3){ pg._x3=1; pg.addEventListener('scroll',()=>{ if(X3CUR&&X3CUR.btn.isConnected) x3drawMenu(); else x3close(); if(X3POP) x3popDraw(); },{passive:true}); }
   if(X3POP) setTimeout(x3popDraw,0); };
 
-/* ── editable lists: one row per line, typed in place, Enter adds the next ── */
-function x3list(path,ph,o){ o=o||{}; const arr=Array.isArray(get(E,path))?get(E,path):(set(E,path,[]),get(E,path));
-  return `<div class="x3rows">${arr.map((v,i)=>String(v||'').trim()||o.keepEmpty?`<div class="x3row x3li">${o.num?`<span class="x3hn">${o.num}${i+1}</span>`:''}<textarea class="x3ta" rows="1" aria-label="${esc(o.aria||ph)}" oninput="blSet('${path}',${i},this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}">${esc(v)}</textarea><button type="button" class="x3x" onclick="sxBulDel('${path}',${i})" aria-label="Remove">${X3X}</button></div>`:'').join('')}
-    <div class="x3row x3li x3add" data-sxl="${path}">${o.num?`<span class="x3hn add">+</span>`:''}<input class="x3in" placeholder="${esc(ph)}" aria-label="${esc(ph)}"
-      onkeydown="if(event.key==='Enter'){event.preventDefault();const v=this.value;this.value='';sxPush('${path}',v)}" onblur="const v=this.value;this.value='';if(v.trim())sxPush('${path}',v)"></div></div>`; }
+/* ── a list edited in place: click a line to type, Enter keeps it, empty removes it ── */
+function x4list(path,addLabel,o){ o=o||{}; let arr=get(E,path); if(!Array.isArray(arr)){ set(E,path,[]); arr=get(E,path); }
+  const rows=arr.map((v,i)=>String(v||'').trim()?`<div class="x4li">${o.num?`<span class="x4hn">${o.num}${i+1}</span>`:''}<span class="x4tx" tabindex="0" title="${esc(v)}" onclick="x4edit(this,'${path}',${i})" onkeydown="if(event.key==='Enter'){event.preventDefault();x4edit(this,'${path}',${i})}">${esc(v)}</span>${x4more([x4rm(()=>sxBulDel(path,i))],'More')}</div>`:'').join('');
+  return `<div class="x4ls">${rows}${x4add(addLabel,`x4addItem(this,'${path}','${x4q(addLabel)}')`,path)}</div>`; }
+function x4edit(el,path,i){ const v=(get(E,path)||[])[i]; const ta=document.createElement('textarea'); ta.className='x4in x4ta x4edl'; ta.rows=1; ta.value=v==null?'':v;
+  el.replaceWith(ta); ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length);
+  ta.oninput=()=>blSet(path,i,ta.value);
+  ta.onkeydown=e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); ta.blur(); } if(e.key==='Escape'){ ta.blur(); } };
+  ta.onblur=()=>{ const a=get(E,path)||[]; if(!String(a[i]||'').trim()){ a.splice(i,1); save(); } goKeep(PAGE); }; }
+function x4addItem(btn,path,label){ const row=btn.parentElement, inp=document.createElement('textarea'); inp.className='x4in x4ta'; inp.rows=1; inp.placeholder=label;
+  row.innerHTML=''; row.appendChild(inp); inp.focus();
+  const commit=again=>{ const v=inp.value.trim(); if(v){ const a=get(E,path)||[]; a.push(v); set(E,path,a); save(); if(path==='handoff.questions'&&typeof drRefresh==='function') drRefresh(); }
+    goKeep(PAGE); if(again&&v) setTimeout(()=>{ const b=document.querySelector(`[data-x4add="${path}"] button`); if(b) b.click(); },20); };
+  inp.onkeydown=e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); inp.onblur=null; commit(true); } if(e.key==='Escape'){ inp.onblur=null; goKeep(PAGE); } };
+  inp.onblur=()=>commit(false); }
+
+/* ── the house table: grey header band, 40px rows, one line per cell ── */
+const x4tbl=(cols,head,rows,foot,cls)=>`<div class="x4t${cls?' '+cls:''}" style="--cols:${cols}"><div class="x4th">${head.map(h=>`<span${Array.isArray(h)?` class="${h[1]}"`:''}>${esc(Array.isArray(h)?h[0]:h)}</span>`).join('')}</div>${rows.join('')}${foot||''}</div>`;
+const x4ced=(val,input,o)=>{ o=o||{}; return `<input class="x4ced${o.r?' r':''}${o.strong?' strong':''}" value="${esc(val==null?'':val)}" placeholder="${esc(o.ph||'')}" aria-label="${esc(o.aria||'')}" title="${esc(val||'')}"${o.num?' inputmode="decimal"':''} oninput="${input}"${o.change?` onchange="${o.change}"`:''}>`; };
 
 /* ═════════════ 1 · Client and offering ═════════════ */
 const X3TIER={scan:X3C.navy,sprint:X3C.green,full:X3C.slate};
+const x4dur=g=>String(g&&g[2]||'').split(' · ')[0].replace(/^Typically /,'').replace(/^./,c=>c.toUpperCase());
 function x3offerItems(){ return Object.entries(M.types).filter(([k])=>OPEX_TYPES.includes(k)).map(([k,t])=>{ const g=TYPE_GROUPS.find(x=>x[0]===t.group)||[]; const c=TYPE_CARDS[k]||{};
-  return {v:k,l:t.label,s:c.get||'',i:c.i||'scan',c:X3TIER[t.group]||X3C.navy,grp:t.group,h:(g[1]||'')+(g[2]?' · '+String(g[2]).split(' · ')[0].replace(/^Typically /,''):'')}; }); }
+  return {v:k,l:t.label,s:x4dur(g),i:c.i||'scan',c:X3TIER[t.group]||X3C.navy,grp:t.group,h:g[1]||''}; }); }
+const x4weeks=()=>{ const a=E.assignment, d0=new Date(a.start+'T00:00:00'), d1=new Date(a.target+'T00:00:00'); return a.start&&a.target&&d1>d0?Math.ceil(((d1-d0)/864e5+1)/7):null; };
+X4FIGS.s1=()=>[x4fig(x4weeks()||'—','Weeks'),x4fig((E.nrMembers||[]).filter(m=>m.name).length,'People'),isOpex()?x4fig(inScopeTeams().length,'Teams in scope'):null];
 PAGES.s1=()=>{
   const a=E.assignment, opex=isOpex(), pr=practiceOf(a), t=M.types[a.type], c=TYPE_CARDS[a.type]||{};
-  const pracItems=PRACTICES.map(([k,l,ic])=>({v:k,l:k==='opex'?'Operational excellence':l,s:k==='opex'?'Scans, focused interventions and transformation journeys':k==='other'?'Name the offering yourself':'Offerings still to come',i:ic,c:k==='opex'?X3C.green:k==='other'?X3C.grey:X3C.navy}));
+  const pracItems=PRACTICES.map(([k,l,ic])=>({v:k,l:k==='opex'?'Operational excellence':l,s:k==='opex'||k==='other'?'':'Offerings to come',i:ic,c:k==='opex'?X3C.green:k==='other'?X3C.grey:X3C.navy}));
   const g=t?TYPE_GROUPS.find(x=>x[0]===t.group):null;
-  const offerFoot=opex&&t?`<b>${esc((g&&g[1]||'').replace(/s$/,'').replace(/^OpEx scan$/,'OpEx scan'))}</b> · ${esc(String(g&&g[2]||'').split(' · ')[0].replace(/^Typically /,'typically '))}. You get ${esc(String(c.get||'').replace(/^./,x=>x.toLowerCase()))}`
-    :opex?'Pick the offering the client bought.':pr==='other'?'Name the offering. The engagement runs on the cockpit and the findings screen.':pr?'The offerings of this practice are still to come. The engagement runs on the cockpit and the findings screen.':'Pick the practice first.';
-  const offering=x3tile('tag','Offering','',`<div class="x3rows">
-      ${x3row('Practice',x3dd(pr,pracItems,v=>pickPractice(v),{aria:'Practice',ph:'Pick the practice'}))}
-      ${opex?x3row('Offering',x3dd(a.type,x3offerItems(),v=>pickType(v),{aria:'Offering',ph:'Pick the offering',wide:1,key:'offer',filters:[['all','All'],['scan','Scans'],['sprint','Interventions'],['full','Journeys']]})):''}
-      ${opex&&c.pick?x3row(esc(c.pick.label),x3dd(a[c.pick.key]||c.pick.opts[0][0],c.pick.opts.map(([k,l])=>({v:k,l,i:c.i,c:X3C.slate})),v=>pickFocus(v),{aria:c.pick.label})):''}
-      ${pr==='other'?x3row('Offering',x3in('assignment.practiceName',{ph:'Commercial excellence',aria:'Offering'})):''}
-    </div><p class="x3f">${offerFoot}</p>`);
-  const engagement=x3tile('building','Engagement','',`<div class="x3rows">
-      ${x3row('Client',x3in('client',{ph:'ACME Group',aria:'Client',change:"goKeep('s1')"}))}
-      ${x3row('Engagement name',x3in('name',{ph:'Asset servicing OpEx diagnostic',aria:'Engagement name',change:"goKeep('s1')"}))}
-      ${x3row('Client sponsor',x3in('assignment.sponsor',{ph:'Who signs it off',aria:'Client sponsor'}))}
-    </div><p class="x3f">Folder and file name: <b id="f-id">${esc(E.id||'—')}</b></p>`);
-  const s=a.start, e=a.target, d0=new Date(s+'T00:00:00'), d1=new Date(e+'T00:00:00'), days=s&&e&&!isNaN(d0)&&!isNaN(d1)?Math.round((d1-d0)/864e5):0;
-  const timing=x3tile('cal','Timing','',`<div class="x3kv x3in-tile"><b>${days>0?Math.ceil((days+1)/7):'—'}<small> weeks</small></b><span>${s&&e?esc(x3fmt(s)+' – '+x3fmt(e)):'Set the start and the target date'}</span></div>
-    <div class="x3rows">${x3row('Start',x3date(s,"upd('assignment.start',this.value||null);goKeep('s1')",'Start'))}${x3row('Target completion',x3date(e,"upd('assignment.target',this.value||null);goKeep('s1')",'Target completion'))}</div>`);
+  const hint=opex&&t?`<p class="x4hint"><b>${esc(String(g&&g[1]||'').replace(/s$/,''))}</b>, ${esc(x4dur(g).toLowerCase())}. You get ${esc(String(c.get||'').replace(/^./,x=>x.toLowerCase()))}</p>`
+    :pr&&pr!=='opex'?'<p class="x4hint">The engagement runs on the cockpit and the findings pages.</p>':'';
+  const offering=x4card('Offering',`<div class="x4fg">
+      ${x4f('Practice',x3dd(pr,pracItems,v=>pickPractice(v),{aria:'Practice',ph:'Pick the practice'}),'w')}
+      ${opex?x4f('Offering',x3dd(a.type,x3offerItems(),v=>pickType(v),{aria:'Offering',ph:'Pick the offering',wide:1,key:'offer',filters:[['all','All'],['scan','Scans'],['sprint','Interventions'],['full','Journeys']]})+hint,'w'):''}
+      ${opex&&c.pick?x4f(c.pick.label,x3dd(a[c.pick.key]||c.pick.opts[0][0],c.pick.opts.map(([k,l])=>({v:k,l})),v=>pickFocus(v),{aria:c.pick.label}),'w'):''}
+      ${pr&&pr!=='opex'?x4f(pr==='other'?'Offering':'Name of the offering',x4in('assignment.practiceName',{ph:'Commercial excellence',aria:'Offering'}))+hint:''}
+    </div>`);
+  const engagement=x4card('Engagement',`<div class="x4fg">
+      ${x4f('Client',x4in('client',{ph:'ACME Group',aria:'Client',change:"goKeep('s1')"}))}
+      ${x4f('Client sponsor',x4in('assignment.sponsor',{ph:'Who signs it off',aria:'Client sponsor'}))}
+      ${x4f('Engagement name',x4in('name',{ph:'Asset servicing OpEx diagnostic',aria:'Engagement name',change:"goKeep('s1')"}),'w')}
+      ${x4f('Folder name',`<span class="x4in x4ro" id="f-id">${esc(E.id||'—')}</span>`,'w')}
+    </div>`);
+  const timing=x4card('Timing',`<div class="x4fg">
+      ${x4f('Start',x4date(a.start,"upd('assignment.start',this.value||null);goKeep('s1')",'Start'))}
+      ${x4f('Target completion',x4date(a.target,"upd('assignment.target',this.value||null);goKeep('s1')",'Target completion'))}
+    </div>`);
   const langs=[['en','English','EN'],['nl','Nederlands','NL'],['fr','Français','FR']].map(([k,l,g])=>({v:k,l,g,c:X3C.soft}));
   if(a.language&&!langs.some(x=>x.v===a.language)) langs.push({v:a.language,l:a.language,g:String(a.language).slice(0,2).toUpperCase(),c:X3C.soft});
-  const looks=[{v:'house',l:'Nova Reperta house look',s:'Our colours, font and logo',g:'NR',c:X3C.navy},{v:'client',l:'The client’s template',s:'Set up from one of their decks',i:'doc',c:X3C.sand}];
-  const way=x3tile('sliders','Way of working','',`<div class="x3rows">
-      ${x3row('Working language',x3dd(a.language||'en',langs,v=>{ upd('assignment.language',v); goKeep('s1'); },{aria:'Working language'}))}
-      ${x3row('Look of the deliverables',x3dd(lookUse(),looks,v=>pickLook(v),{aria:'Look of the deliverables'}))}
-      ${x3row('Excel copy of the daily whiteboard',x3sw(xlOn(),`setXl(${!xlOn()})`,'Excel copy of the daily whiteboard'))}
-      ${xlOn()?x3row('Link on SharePoint',x3in('links.checkin',{ph:'https://…sharepoint.com/…/Check-in.xlsx',aria:'Link on SharePoint'})):''}
-    </div><p class="x3f">${lookUse()==='client'?(E.look&&E.look.theme?'The client look is set up: every deck and deliverable uses it.':'Send to Claude with one of their decks and the look is set up from it.'):'Every deck and deliverable uses our own colours, font and logo.'}</p>`);
-  return `<div class="x3"><div class="x3g">${offering}${engagement}${timing}${way}</div></div>`;
+  const looks=[{v:'house',l:'Nova Reperta house look',g:'NR',c:X3C.navy},{v:'client',l:'The client’s template',i:'doc',c:X3C.sand}];
+  const way=x4card('Way of working',`<div class="x4fg">
+      ${x4f('Working language',x3dd(a.language||'en',langs,v=>{ upd('assignment.language',v); goKeep('s1'); },{aria:'Working language'}))}
+      ${x4f('Look of the deliverables',x3dd(lookUse(),looks,v=>pickLook(v),{aria:'Look of the deliverables'})+(lookUse()==='client'&&!(E.look&&E.look.theme)?'<p class="x4hint">Send one of their decks to Claude and the look is set up from it.</p>':''))}
+      <div class="x4fl w"><div class="x4swr">${x3sw(xlOn(),`setXl(${!xlOn()})`,'Keep an Excel copy of the daily whiteboard')}<span>Keep an Excel copy of the daily whiteboard</span></div></div>
+      ${xlOn()?x4f('Link to the Excel copy on SharePoint',x4in('links.checkin',{ph:'https://…sharepoint.com/…/Check-in.xlsx',aria:'Link on SharePoint'}),'w'):''}
+    </div>`);
+  return `<div class="x3"><div class="x4g">${offering}${engagement}${timing}${way}</div></div>`;
 };
 
 /* ═════════════ 2 · Our team ═════════════ */
-const X3FROM={internal:['Nova Reperta','Our own people','NR',X3C.navy],freelance:['Freelance','Working under our name','',X3C.soft],external:['The client','Their people in our team','',X3C.sand]};
-function x3people(){ return (E.nrMembers||[]); }
+const X3FROM={internal:['Nova Reperta',X3C.navy],freelance:['Freelance',X3C.soft],external:['The client',X3C.sand]};
+X4FIGS.s4=()=>{ const P=E.nrMembers||[], named=P.filter(m=>m.name), mails=named.filter(m=>m.email).length, unnamed=P.filter(m=>!m.name).length;
+  return [x4fig(P.length,'People'),x4fig(mails+' of '+named.length,'Emails',named.length&&mails<named.length),unnamed?x4fig(unnamed,unnamed>1?'Names to fill in':'Name to fill in',true):null]; };
 PAGES.s4=()=>{
-  const P=x3people(), named=P.filter(m=>m.name), mails=named.filter(m=>m.email).length;
-  const who=r=>{ const h=roleHolder(r); return h&&h.name?h.name:'Nobody yet'; };
+  const P=E.nrMembers||[];
   const rows=P.map((m,i)=>{ const k=m.affiliation||'internal';
-    return `<button type="button" class="x3tr" onclick="x3person(${i})"><span class="nm"><span class="x3av ${k==='external'?'cl':'nr'}">${esc(initials(m.name))}</span>${m.name?esc(m.name):'<span class="x3warn">No name yet</span>'}${m.standIn?'<span class="x3tag info">Stand-in</span>':''}</span>
-      <span>${m.role?esc(m.role==='Case Lead'?'Case lead':m.role):'<span class="x3warn">Role to confirm</span>'}</span><span>${esc(X3FROM[k][0])}</span><span class="${m.email?'':'x3mut'}">${m.email?esc(m.email):'No email yet'}</span></button>`; }).join('');
-  return `<div class="x3">${x3kpis([{i:'org',t:'People',v:P.length,d:'On the engagement'},{i:'star',t:'Partner',v:who('Partner'),d:'Owns the client relationship'},
-      {i:'usercheck',t:'Case lead',v:who('Case Lead'),d:'Runs the engagement day to day'},{i:'mail',t:'Emails',v:mails,s:'of '+named.length,d:'Needed to sign changes'}])}
-    ${x3tile('org','Our team',`<button type="button" class="x3btn" onclick="x3personAdd()">Add a person</button>`,
-      `<div class="x3tbl" style="--cols:minmax(0,2fr) minmax(0,1.2fr) minmax(0,1fr) minmax(0,1.6fr)"><div class="x3th"><span>Name</span><span>Role</span><span>From</span><span>Email</span></div>${rows||'<p class="x3empty">Nobody yet. Add the partner and the case lead first.</p>'}</div>
-      <p class="x3f">Click a person to change their role, email or who stands in for the case lead. Our people in blue, the client’s in sand.</p>`)}</div>`;
+    const roles=NR_ROLES.concat(m.role&&!NR_ROLES.includes(m.role)?[m.role]:[]).map(r=>({v:r,l:r==='Case Lead'?'Case lead':r}));
+    const froms=Object.entries(X3FROM).map(([v,[l]])=>({v,l}));
+    const sk=(m.skills||[]).slice();
+    return `<div class="x4tr">
+      <span class="x4nm">${x4av(m.name,k)}${x4ced(m.name,`mSet(${i},'name',this.value)`,{ph:'Full name',aria:'Name',strong:1,change:"goKeep('s4')"})}</span>
+      <span>${x3dd(m.role||'',roles,v=>{ if(v==='Partner'||v==='Case Lead') plRolePick(v,m.id); else { mSet(i,'role',v); goKeep('s4'); } },{cell:1,aria:'Role',ph:'Role to confirm',warn:1})}</span>
+      <span>${x3dd(k,froms,v=>{ mSet(i,'affiliation',v); goKeep('s4'); },{cell:1,aria:'From'})}</span>
+      <span>${x4ced(m.email,`mSet(${i},'email',this.value.trim())`,{ph:'Add an email',aria:'Email',change:"goKeep('s4')"})}</span>
+      <span>${x3dd(sk,NR_SKILLS.map(s=>({v:s,l:s})),(v,all)=>{ m.skills=all.slice(); save(); },{cell:1,aria:'Skills',ph:'Add skills',onclose:()=>goKeep('s4')})}</span>
+      <span class="c">${canStandIn(m)?x3sw(!!m.standIn,`plStandIn(${m.standIn?"''":`'${m.id}'`})`,'Stands in for the case lead'):''}</span>
+      <span class="r">${x4more([x4rm(()=>mDel(i),'Remove from the team')],'More for '+(m.name||'this person'))}</span></div>`; });
+  return `<div class="x3"><div class="x4g">${x4card('Our team',x4tbl('minmax(0,2.2fr) minmax(0,1.2fr) minmax(0,1.1fr) minmax(0,1.9fr) minmax(0,1.6fr) 96px 32px',
+      ['Name','Role','From','Email','Skills',['Stand-in','c'],''],rows,x4add('Add a person','x4personAdd()')),{span:1})}</div></div>`;
 };
-function x3personAdd(){ E.nrMembers=E.nrMembers||[]; E.nrMembers.push({id:mNewId(),name:'',role:'Consultant',affiliation:'internal',skills:[]}); save(); goKeep('s4'); x3person(E.nrMembers.length-1); }
-function x3person(i){ x3sheet(()=>{ const m=E.nrMembers[i]; return m&&m.name||'New person'; },()=>{ const m=E.nrMembers[i]; if(!m) return '';
-  const roles=NR_ROLES.concat(m.role&&!NR_ROLES.includes(m.role)?[m.role]:[]).map(r=>({v:r,l:r==='Case Lead'?'Case lead':r,
-    s:r==='Partner'?'Owns the client relationship':r==='Case Lead'?'Runs the engagement day to day':'',i:r==='Partner'?'star':r==='Case Lead'?'usercheck':'user',c:/Partner|Case Lead/.test(r)?X3C.navy:X3C.soft}));
-  const froms=Object.entries(X3FROM).map(([k,[l,s,g,c]])=>({v:k,l,s,g,i:g?'':k==='freelance'?'user':'building',c}));
-  const sk=m.skills||[];
-  return `<div class="x3rows x3grp">
-      ${x3row('Name',`<input class="x3in r" value="${esc(m.name||'')}" placeholder="Full name" aria-label="Name" oninput="mSet(${i},'name',this.value);x3shDraw0()">`)}
-      ${x3row('Role',x3dd(m.role||'',roles,v=>{ if(v==='Partner'||v==='Case Lead') plRolePick(v,m.id); else mSet(i,'role',v); x3re(); },{aria:'Role',ph:'Role to confirm'}))}
-      ${x3row('From',x3dd(m.affiliation||'internal',froms,v=>{ mSet(i,'affiliation',v); x3re(); },{aria:'From'}))}
-      ${x3row('Email',`<input class="x3in r" type="email" value="${esc(m.email||'')}" placeholder="name@novareperta.com" aria-label="Email" oninput="mSet(${i},'email',this.value.trim())">`)}
-    </div><p class="x3f">The email tells the engagement page who sent a change.</p>
-    ${canStandIn(m)?`<div class="x3rows x3grp">${x3row('Stands in for the case lead',x3sw(!!m.standIn,`plStandIn(${m.standIn?"''":`'${m.id}'`});x3re()`,'Stands in for the case lead'))}</div>`:''}
-    <div class="x3sub">Skills</div><div class="x3chips">${NR_SKILLS.map((s,j)=>`<button type="button" class="x3pill${sk.includes(s)?' on':''}" onclick="x3skill(${i},${j})">${sk.includes(s)?X3CK:''}${esc(s)}</button>`).join('')}</div>
-    <div class="x3rows x3grp"><button type="button" class="x3row x3danger" onclick="if(nrAsk('Remove ${esc(String(m.name||'this person').replace(/'/g,''))} from the team?')){x3shClose();mDel(${i});}">Remove from the team</button></div>`; }); }
-function x3shDraw0(){ if(X3SH){ const t=typeof X3SH.title==='function'?X3SH.title():X3SH.title; document.getElementById('x3sht').textContent=t; } }
-function x3skill(i,j){ const m=E.nrMembers[i], s=NR_SKILLS[j]; m.skills=m.skills||[]; const x=m.skills.indexOf(s); x<0?m.skills.push(s):m.skills.splice(x,1); save(); x3shDraw(); }
+function x4personAdd(){ E.nrMembers=E.nrMembers||[]; E.nrMembers.push({id:mNewId(),name:'',role:'Consultant',affiliation:'internal',skills:[]}); save(); goKeep('s4');
+  setTimeout(()=>{ const r=document.querySelectorAll('#page .x4t .x4tr'); const x=r[r.length-1]&&r[r.length-1].querySelector('input'); if(x) x.focus(); },30); }
 
 /* ═════════════ 3 · Scope ═════════════ */
 var X3STMT=false;
 function x3paras(txt){ return String(txt||'').split(/\n+/).filter(x=>x.trim()).map(line=>{ const m=line.match(/^([^:*]{2,24}):\s*(.*)$/), lead=m?m[1]:'', body=m?m[2]:line;
-  return `<p class="x3sp">${lead?`<span class="x3spl">${esc(lead)}</span>`:''}<span class="x3spt">${body.split('**').map((t,k)=>k%2?`<b>${esc(t)}</b>`:esc(t)).join('')}</span></p>`; }).join(''); }
-/* key deliverables: a short name and what it holds. Until someone names them, the objectives
-   written before show here, so nothing gets lost; the objectives follow every change. */
+  return `<p class="x4p">${lead?`<b>${esc(lead)}.</b> `:''}${body.split('**').map((t,k)=>k%2?`<b>${esc(t)}</b>`:esc(t)).join('')}</p>`; }).join(''); }
 function x3dels(){ const s=E.scope; if(Array.isArray(s.deliverables)&&s.deliverables.length) return s.deliverables;
   return (s.objectives||[]).filter(x=>String(x||'').trim()).map(x=>({name:'',desc:x,_fromObj:1})); }
 function x3delsSave(list){ E.scope.deliverables=list.map(d=>({name:String(d.name||'').trim(),desc:String(d.desc||'').trim()})).filter(d=>d.name||d.desc);
   E.scope.objectives=E.scope.deliverables.map(d=>d.name&&d.desc?d.name+': '+d.desc:(d.name||d.desc)); save(); }
 function x3delSet(i,k,v){ const L=x3dels().map(d=>Object.assign({},d)); if(!L[i]) return; L[i][k]=v; x3delsSave(L); }
 function x3delDel(i){ const L=x3dels().map(d=>Object.assign({},d)); L.splice(i,1); x3delsSave(L); goKeep('s2'); }
-function x3delAdd(v){ v=String(v||'').trim(); if(!v) return; const L=x3dels().map(d=>Object.assign({},d)); L.push({name:v,desc:''}); x3delsSave(L); goKeep('s2');
-  setTimeout(()=>{ const r=document.querySelectorAll('.x3dl .x3ta'); if(r.length) r[r.length-1].focus(); },40); }
-const X3BY=[['Value chain','flow','Stages in a fixed order'],['Customer journey','cc','The steps the customer goes through'],['Products and services','tag',''],['Business lines','layers',''],
-  ['Markets','globe',''],['Customer segments','team',''],['Business units','tom',''],['Functions','cols',''],['Companies','building',''],['Sites','pin',''],['Something else','more','A list of your own']];
+function x4delAdd(){ const L=x3dels().map(d=>Object.assign({},d)); L.push({name:'New deliverable',desc:''}); x3delsSave(L); goKeep('s2');
+  setTimeout(()=>{ const r=document.querySelectorAll('#x4dels .x4tr'); const x=r[r.length-1]&&r[r.length-1].querySelector('input'); if(x){ x.focus(); x.select(); } },30); }
+const X3BY=[['Value chain','flow','Stages in a fixed order'],['Customer journey','cc',''],['Products and services','tag',''],['Business lines','layers',''],
+  ['Markets','globe',''],['Customer segments','team',''],['Business units','tom',''],['Functions','cols',''],['Companies','building',''],['Sites','pin',''],['Something else','more','']];
+X4FIGS.s2=()=>{ const b=scBy(1), c=sxCount(), lab=b.type==='Value chain'?'Stages in scope':b.type==='Customer journey'?'Steps in scope':'In scope';
+  return [x4fig(c.all?c.on+' of '+c.all:'—',lab),x4fig((E.hypotheses||[]).filter(x=>String(x||'').trim()).length,'Hypotheses'),x4fig(x3dels().length,'Key deliverables'),x4fig((E.scope.constraints||[]).filter(x=>String(x||'').trim()).length,'Constraints')]; };
 PAGES.s2=()=>{
-  const sc=E.scope, opex=isOpex(), b=scBy(1), vc=b.type==='Value chain', cnt=sxCount(), dels=x3dels();
-  const byItems=X3BY.map(([v,i,s])=>({v,l:v,s,i,c:v==='Something else'?X3C.grey:X3C.navy}));
+  const sc=E.scope, opex=isOpex(), b=scBy(1), vc=b.type==='Value chain', dels=x3dels();
+  const byItems=X3BY.map(([v,i])=>({v,l:v,i,c:v==='Something else'?X3C.grey:X3C.navy}));
   let chips='';
   if(vc){ const C=vcArrC(); if(!C.length) C.push({id:vcNewId(),name:'',stages:[]});
     chips=C.map((c,ci)=>{ const empty=!(c.stages||[]).filter(Boolean).length;
-      return (C.length>1?`<div class="x3rows">${x3row('Chain '+(ci+1),`<input class="x3in r" value="${esc(c.name||'')}" placeholder="Name it, for example the product it delivers" oninput="vcName(${ci},this.value)">`)}</div>`:'')+
-        (empty?`<div class="x3sugg"><span>Start from a standard chain</span>${Object.keys(M.chains).map(k=>`<button type="button" class="x3pill" onclick="vcLoad(${ci},'${esc(k)}');sxTouch(1)">${esc(k)}</button>`).join('')}</div>`:'')+
+      return (C.length>1?`<div class="x4fg" style="margin-bottom:8px">${x4f('Value chain '+(ci+1),`<input class="x4in" value="${esc(c.name||'')}" placeholder="The product it delivers" oninput="vcName(${ci},this.value)">`,'w')}</div>`:'')+
+        (empty?`<div class="x4sugg"><span>Start from a standard chain</span>${Object.keys(M.chains).map(k=>`<button type="button" class="x4pill" onclick="vcLoad(${ci},'${x4q(k)}');sxTouch(1)">${esc(k)}</button>`).join('')}</div>`:'')+
         sxChips('vc',ci,true,SC_ADD['Value chain']); }).join('');
   } else chips=sxChips('it',1,scOrdered(b),SC_ADD[b.type]||'Add an item');
-  const custom=b.type==='Something else'?`<div class="x3rows">${x3row('Name of the list',`<input class="x3in r" value="${esc(b.custom||'')}" placeholder="Programmes" oninput="sxCustom(1,this.value)" onchange="goKeep('s2')">`)}${x3row('In a fixed order',x3sw(!!b.ordered,'sxOrd(1)','In a fixed order'))}</div>`:'';
+  const custom=b.type==='Something else'?`<div class="x4fg" style="margin-bottom:10px">${x4f('Name of the list',`<input class="x4in" value="${esc(b.custom||'')}" placeholder="Programmes" oninput="sxCustom(1,this.value)" onchange="goKeep('s2')">`)}<div class="x4fl"><label>Order</label><div class="x4swr">${x3sw(!!b.ordered,'sxOrd(1)','In a fixed order')}<span>In a fixed order</span></div></div></div>`:'';
   const second=sc.by2?sxList(2)+sxGrid():'';
-  const scopeTile=x3tile('layers','Our scope',`<span class="x3note">Scope by</span>${x3dd(b.type,byItems,v=>sxPickType(1,v),{aria:'Scope by',sm:1})}`,
-    `${custom}<div class="x3chipw">${chips}</div>
-     ${vc?`<div class="x3links"><button type="button" class="x3lnk" onclick="vcAddChain()">Add another value chain</button>${sc.by2?'':'<button type="button" class="x3lnk" onclick="sxAddSecond()">Cross with a second list</button>'}</div>`:sc.by2?'':'<div class="x3links"><button type="button" class="x3lnk" onclick="sxAddSecond()">Cross with a second list</button></div>'}
-     <div class="x3rows">${x3row('Perimeter',`<textarea class="x3ta r" rows="1" placeholder="Belgian P&amp;C entity" aria-label="Perimeter" oninput="upd('scope.entity',this.value)">${esc(sc.entity||'')}</textarea>`)}</div>
-     ${opex?`<div class="x3sub">Processes in scope</div>${x3list('scope.processes','Add a process, for example Motor claim, end to end')}`:''}
-     ${second?`<div class="x3second">${second}</div>`:''}
-     <p class="x3f">${cnt.all?cnt.on+' of '+cnt.all+' in scope. ':''}Drag to reorder, click the circle to take one out of scope, click a name to rename it. The perimeter is the organisational boundary, so the numbers stay honest.</p>`,'x3full');
-  const delRows=dels.map((d,i)=>`<div class="x3row x3li x3dl"><input class="x3pillin${d.name?'':' empty'}" value="${esc(d.name)}" placeholder="Name it" aria-label="Deliverable" oninput="x3delSet(${i},'name',this.value)" onchange="goKeep('s2')">
-      <textarea class="x3ta" rows="1" placeholder="What it holds" aria-label="What it holds" oninput="x3delSet(${i},'desc',this.value)">${esc(d.desc)}</textarea><button type="button" class="x3x" onclick="x3delDel(${i})" aria-label="Remove">${X3X}</button></div>`).join('');
-  const delTile=x3tile('doc','Key deliverables','<span class="x3note">What we hand over at the end</span>',`<div class="x3rows">${delRows}
-      <div class="x3row x3li x3add"><input class="x3in" placeholder="Add a deliverable, for example Process map, as-is" aria-label="Add a deliverable" onkeydown="if(event.key==='Enter'){event.preventDefault();const v=this.value;this.value='';x3delAdd(v)}" onblur="const v=this.value;this.value='';if(v.trim())x3delAdd(v)"></div></div>
-      ${dels.some(d=>d._fromObj)?'<p class="x3f">These come from the objectives written earlier: give each one a short name.</p>':''}`,'x3full');
+  const links=[vc?'<button type="button" class="x4lnk" onclick="vcAddChain()">+ Add another value chain</button>':'',sc.by2?'':'<button type="button" class="x4lnk" onclick="sxAddSecond()">+ Cross with a second list</button>'].filter(Boolean).join('');
+  const scope=x4card('Our scope',`${custom}<div class="x4chips">${chips}</div>${links?`<div class="x4links">${links}</div>`:''}
+     <div class="x4fg" style="margin-top:12px">${x4f('Perimeter',x4ta('scope.entity',{ph:'Belgian P&C entity',aria:'Perimeter'}),'w')}</div>
+     ${opex?`<div class="x4sub">Processes in scope</div>${x4list('scope.processes','Add a process')}`:''}
+     ${second?`<div class="x4second">${second}</div>`:''}`,
+    {span:1,right:`<span class="x4note">Scope by</span>${x3dd(b.type,byItems,v=>sxPickType(1,v),{aria:'Scope by',cell:1})}`});
+  const editing=X3STMT||!String(sc.statement||'').trim();
+  const problem=x4card('The problem',editing?`<textarea class="x4in x4ta x4stmt" aria-label="The problem" placeholder="Why now: …&#10;The pain: our claims teams are always behind and **nobody can say where the time goes**.&#10;This phase: …" oninput="upd('scope.statement',this.value)">${esc(sc.statement||'')}</textarea>
+      <p class="x4hint">One paragraph per line, starting with a short label and a colon. Put **two stars** around the words to show in bold.</p>`:x3paras(sc.statement),
+    {span:1,right:x4btn(editing?'Done':'Edit',"X3STMT=!X3STMT;goKeep('s2')")});
+  const delRows=dels.map((d,i)=>`<div class="x4tr">
+      <span><input class="x4pill-in${d.name?'':' empty'}" value="${esc(d.name)}" placeholder="Name it" aria-label="Deliverable" oninput="x3delSet(${i},'name',this.value)" onchange="goKeep('s2')" size="${Math.max(8,Math.min(30,(d.name||'Name it').length+1))}"></span>
+      <span>${x4ced(d.desc,`x3delSet(${i},'desc',this.value)`,{ph:'What it holds',aria:'What it holds'})}</span>
+      <span class="r">${x4more([x4rm(()=>x3delDel(i))],'More')}</span></div>`);
+  const deliv=x4card('Key deliverables',`<div id="x4dels">${x4tbl('minmax(0,.8fr) minmax(0,2fr) 32px',['Deliverable','What it holds',''],delRows,x4add('Add a deliverable','x4delAdd()'))}</div>`,{n:dels.length||''});
   let numbers;
   if(opex){ const v=E.valueInputs=E.valueInputs||{}; if(!v.currency) v.currency='EUR';
-    const curs=[['EUR','Euro','€'],['USD','US dollar','$'],['GBP','Pound sterling','£'],['CHF','Swiss franc','CHF']].map(([k,l,g])=>({v:k,l:k+' · '+l,g,c:X3C.soft}));
-    if(!curs.some(x=>x.v===v.currency)) curs.push({v:v.currency,l:v.currency,g:String(v.currency).slice(0,3),c:X3C.soft});
-    numbers=x3tile('coin','Numbers every analysis uses','',`<div class="x3rows">
-      ${x3row('Loaded cost of one FTE a year',`<input class="x3in r" inputmode="numeric" value="${v.costPerFte==null?'':esc(v.costPerFte)}" placeholder="Not set yet" aria-label="Loaded cost of one FTE a year" oninput="upd('valueInputs.costPerFte',this.value===''?null:+this.value)"><span class="x3unit">${esc(v.currency)}</span>`)}
-      ${x3row('Hours one FTE works a year',`<input class="x3in r" inputmode="numeric" value="${v.hoursPerFte==null?'':esc(v.hoursPerFte)}" placeholder="1,600 (standard)" aria-label="Hours one FTE works a year" oninput="upd('valueInputs.hoursPerFte',this.value===''?null:+this.value)">`)}
-      ${x3row('Currency',x3dd(v.currency,curs,k=>{ upd('valueInputs.currency',k); goKeep('s2'); },{aria:'Currency'}))}
-    </div><p class="x3f">Agree them once with the client. The hours stay on the standard 1,600 until someone sets them.</p>`);
+    const curs=[['EUR','Euro','€'],['USD','US dollar','$'],['GBP','Pound sterling','£'],['CHF','Swiss franc','F']].map(([k,l,g])=>({v:k,l:k+' · '+l,g,c:X3C.soft}));
+    if(!curs.some(x=>x.v===v.currency)) curs.push({v:v.currency,l:v.currency,g:String(v.currency).slice(0,1),c:X3C.soft});
+    numbers=x4card('Numbers every analysis uses',`<div class="x4fg">
+      ${x4f('Loaded cost of one FTE a year',`<input class="x4in r" inputmode="numeric" value="${v.costPerFte==null?'':esc(v.costPerFte)}" placeholder="Not set yet" aria-label="Loaded cost of one FTE a year" oninput="upd('valueInputs.costPerFte',this.value===''?null:+this.value)">`)}
+      ${x4f('Currency',x3dd(v.currency,curs,k=>{ upd('valueInputs.currency',k); goKeep('s2'); },{aria:'Currency'}))}
+      ${x4f('Hours one FTE works a year',`<input class="x4in r" inputmode="numeric" value="${v.hoursPerFte==null?'':esc(v.hoursPerFte)}" placeholder="1,600" aria-label="Hours one FTE works a year" oninput="upd('valueInputs.hoursPerFte',this.value===''?null:+this.value)">`)}
+    </div>`);
   } else { const N=sc.numbers=Array.isArray(sc.numbers)?sc.numbers:[];
-    numbers=x3tile('coin','Numbers we start from','',`<div class="x3rows">${N.map((x,i)=>`<div class="x3row x3li"><input class="x3in" value="${esc(x.label||'')}" placeholder="What it is" aria-label="Number" oninput="sxNum(${i},'label',this.value)"><input class="x3in r" value="${esc(x.value||'')}" placeholder="The figure" aria-label="Value" oninput="sxNum(${i},'value',this.value)"><button type="button" class="x3x" onclick="sxNumDel(${i})" aria-label="Remove">${X3X}</button></div>`).join('')}
-      <div class="x3row x3li x3add"><input class="x3in" placeholder="Add a number, such as revenue or EBITDA last year" aria-label="Add a number" onkeydown="if(event.key==='Enter'){event.preventDefault();const v=this.value;this.value='';sxNumAdd(v)}" onblur="const v=this.value;this.value='';if(v.trim())sxNumAdd(v)"></div></div><p class="x3f">The figures the engagement starts from, as the client gives them.</p>`); }
-  const byLower=vc?'Stages':b.type==='Customer journey'?'Steps':scName(b);
-  return `<div class="x3">${x3kpis([{i:'doc',t:'Key deliverables',v:dels.length,d:'What we hand over'},{i:'layers',t:'Scope',v:cnt.on,s:cnt.all?'of '+cnt.all:'',d:byLower+' in scope'},
-      {i:'bulb',t:'Hypotheses',v:(E.hypotheses||[]).filter(x=>String(x||'').trim()).length,d:'To test from day one'},{i:'lock',t:'Constraints',v:(sc.constraints||[]).filter(x=>String(x||'').trim()).length,d:'Dates, budget and rules'}])}
-    <div class="x3g">
-      ${x3tile('target','The problem',`<span class="x3note">In the client’s own words</span><button type="button" class="x3btn" onclick="X3STMT=!X3STMT;goKeep('s2')">${X3STMT||!String(sc.statement||'').trim()?'Done':'Edit'}</button>`,
-        X3STMT||!String(sc.statement||'').trim()?`<textarea class="x3stmt" aria-label="The problem" placeholder="The problem: our claims teams are always behind and nobody can say where the time goes.&#10;Why now: …&#10;This phase: …" oninput="upd('scope.statement',this.value)">${esc(sc.statement||'')}</textarea>
-          <p class="x3f">One paragraph per line: a short label, a colon, then the text. Put **two stars** around the words to show in bold.</p>`:`<div class="x3stv">${x3paras(sc.statement)}</div>`,'x3full')}
-      ${x3tile('bulb','Our day-one hypotheses','<span class="x3note">The start of the hypothesis tree</span>',x3list('hypotheses','Add a hypothesis',{num:'H',aria:'Hypothesis'}),'x3full')}
-      ${scopeTile}
-      ${delTile}
-      ${x3tile('minus','Out of scope','',x3list('scope.outOfScope','Add what stays out'))}
-      ${x3tile('lock','Constraints','',x3list('scope.constraints','Add a date, a system or a rule we must respect'))}
+    numbers=x4card('Numbers we start from',x4tbl('minmax(0,1.4fr) minmax(0,1fr) 32px',['What it is',['Figure','r'],''],N.map((x,i)=>`<div class="x4tr"><span>${x4ced(x.label,`sxNum(${i},'label',this.value)`,{ph:'Revenue last year',aria:'What it is',strong:1})}</span><span>${x4ced(x.value,`sxNum(${i},'value',this.value)`,{ph:'The figure',aria:'Figure',r:1})}</span><span class="r">${x4more([x4rm(()=>sxNumDel(i))],'More')}</span></div>`),
+      x4add('Add a number',"sxNumAdd('New number')"))); }
+  return `<div class="x3"><div class="x4g">
+      ${problem}${scope}
+      ${x4card('Our day-one hypotheses',x4list('hypotheses','Add a hypothesis',{num:'H'}),{span:1,n:(E.hypotheses||[]).filter(x=>String(x||'').trim()).length||''})}
+      ${deliv}
+      ${x4card('Constraints',x4list('scope.constraints','Add a constraint'),{n:(sc.constraints||[]).filter(x=>String(x||'').trim()).length||''})}
+      ${x4card('Out of scope',x4list('scope.outOfScope','Add what stays out'))}
       ${numbers}
     </div></div>`;
 };
 
 /* ═════════════ 4 · Teams in scope ═════════════ */
-var X3TV='org';
+var X3TV='list', X4NEWDIV=null;
+X4FIGS.s3=()=>{ const all=E.teams.filter(t=>t.name), ins=all.filter(t=>t.inScope!==false), fte=ins.filter(t=>t.fte!=null).reduce((a,t)=>a+(+t.fte||0),0);
+  return [x4fig(ins.length+' of '+all.length,'Teams in scope'),x4fig(plDivs(ins).length,'Divisions'),x4fig(fte?plFmt(fte):'—','FTE in scope'),x4fig(ins.filter(t=>t.lead).length+' of '+ins.length,'Leads known',ins.some(t=>!t.lead))]; };
+X4RIGHT.s3=()=>`<span class="x4seg" role="radiogroup" aria-label="View">${[['list','List'],['org','Org chart']].map(([k,l])=>`<button type="button" role="radio" aria-checked="${X3TV===k}" class="${X3TV===k?'on':''}" onclick="X3TV='${k}';goKeep('s3')">${l}</button>`).join('')}</span>`;
+function x4stageItems(t){ const out=[]; VCS().forEach(c=>(c.stages||[]).filter(Boolean).forEach((s,n)=>out.push({v:c.id+'|'+s,l:s,g:String(n+1),c:X3C.navy,h:VCS().length>1?(c.name||'Value chain'):''}))); return out; }
 PAGES.s3=()=>{
-  const all=E.teams.filter(t=>t.name||t._auto), ins=all.filter(t=>t.inScope!==false&&t.name), divs=plDivs(all);
-  const fte=ins.filter(t=>t.fte!=null).reduce((a,t)=>a+(+t.fte||0),0);
-  const seg=`<span class="x3seg" role="radiogroup" aria-label="View">${[['org','Org chart'],['list','List']].map(([k,l])=>`<button type="button" role="radio" aria-checked="${X3TV===k}" class="${X3TV===k?'on':''}" onclick="X3TV='${k}';goKeep('s3')">${l}</button>`).join('')}</span>`;
-  const right=`${seg}<button type="button" class="x3btn" onclick="pasteTeams()">Paste a list</button><button type="button" class="x3btn" onclick="x3teamAdd()">Add a team</button>`;
+  const all=E.teams.filter(t=>t.name||t._auto), divs=plDivs(all), stages=VCS().some(c=>(c.stages||[]).filter(Boolean).length);
+  const foot=`<div class="x4addr">${'<button type="button" class="x4lnk" onclick="x4teamAdd()">+ Add a team</button><button type="button" class="x4lnk" onclick="pasteTeams()">Paste a list</button>'}</div>`;
   let body;
-  if(!all.length) body=`<p class="x3empty">No teams yet. Paste the client’s list, add them one by one, or start from an example and change what does not fit.</p><div class="x3chips">${Object.keys(TEAM_EXAMPLES).map(k=>`<button type="button" class="x3pill" onclick="loadExampleTeams('${k}')">${esc(k)} · ${TEAM_EXAMPLES[k].length} teams</button>`).join('')}</div>`;
-  else if(X3TV==='list') body=`<div class="x3tbl" style="--cols:minmax(0,1.6fr) minmax(0,1.3fr) minmax(0,1.2fr) minmax(0,1.2fr) 64px 72px"><div class="x3th"><span>Team</span><span>Division</span><span>Lead</span><span>Stage</span><span class="r">FTE</span><span class="r">In scope</span></div>
-      ${all.map(t=>{ const i=E.teams.indexOf(t); return `<button type="button" class="x3tr" onclick="x3team(${i})"><span class="nm">${esc(t.name||'New team')}</span><span>${esc(t.division||'—')}</span><span class="${t.lead?'':'x3warn'}">${t.lead?esc(t.lead):'No lead yet'}</span><span>${(placementText(t)||'—')}</span><span class="r">${t.fte==null?'—':plFmt(t.fte)}</span><span class="r">${t.inScope===false?'No':'Yes'}</span></button>`; }).join('')}</div>`;
-  else { OG_DIVS=divs; body=`<div class="x3org">${divs.map((d,di)=>{ const L=all.filter(t=>String(t.division||'').trim()===d), on=L.filter(t=>t.inScope!==false&&t.name);
+  if(!all.length) body=`<p class="x4empty">No teams yet. Paste the client’s list, add them one by one, or start from an example.</p><div class="x4sugg">${Object.keys(TEAM_EXAMPLES).map(k=>`<button type="button" class="x4pill" onclick="loadExampleTeams('${x4q(k)}')">${esc(k)} · ${TEAM_EXAMPLES[k].length} teams</button>`).join('')}</div>${foot}`;
+  else if(X3TV==='list'){
+    const divNames=[...new Set(E.teams.map(x=>String(x.division||'').trim()).filter(Boolean))];
+    const rows=all.map(t=>{ const i=E.teams.indexOf(t), inn=t.inScope!==false, d=String(t.division||'').trim();
+      const divCell=X4NEWDIV===i?`<input class="x4ced" placeholder="New division" aria-label="New division" onblur="X4NEWDIV=null;if(this.value.trim())plTSet(${i},'division',this.value.trim());goKeep('s3')" onkeydown="if(event.key==='Enter')this.blur()">`
+        :x3dd(d,divNames.map(n=>({v:n,l:n})).concat([{v:'__new',l:'New division…',link:1}]),v=>{ if(v==='__new'){ X4NEWDIV=i; goKeep('s3'); setTimeout(()=>{ const x=document.querySelector('#page .x4tr input[placeholder="New division"]'); if(x) x.focus(); },20); } else { plTSet(i,'division',v); goKeep('s3'); } },{cell:1,aria:'Division',ph:'Pick a division',warn:1});
+      const placed=VCS().map(c=>placedOn(t,c.id)?c.id+'|'+placedOn(t,c.id):'').filter(Boolean);
+      const stageCell=stages?x3dd(placed,x4stageItems(t),(v)=>{ const [cid,st]=v.split('|'); setPlacement(t,cid,placedOn(t,cid)===st?'':st); save(); },{cell:1,aria:'Stage',ph:'Not placed',onclose:()=>goKeep('s3')}):'';
+      return `<div class="x4tr${inn?'':' out'}" data-team="${i}">
+        <span>${x4ced(t.name,`tName(${i},this.value)`,{ph:'Team name',aria:'Team',strong:1})}</span>
+        <span>${divCell}</span>
+        <span>${x4ced(t.lead,`plTSet(${i},'lead',this.value)`,{ph:'Not known yet',aria:'Team lead'})}</span>
+        ${stages?`<span>${stageCell}</span>`:''}
+        <span>${x4ced(t.fte==null?'':t.fte,`plTSet(${i},'fte',plNum(this.value))`,{ph:'—',aria:'FTE',num:1,r:1})}</span>
+        <span>${x4ced(t.hc==null?'':t.hc,`plTSet(${i},'hc',plNum(this.value))`,{ph:'—',aria:'Headcount',num:1,r:1})}</span>
+        <span class="c"><button type="button" class="x4ck${inn?'':' off'}" role="checkbox" aria-checked="${inn}" aria-label="In scope" onclick="ogIn(${i},${!inn})">${inn?X3CK:''}</button></span>
+        <span class="r">${x4more([x4rm(()=>tDel(i),'Remove this team')],'More')}</span></div>`; });
+    const cols='minmax(0,1.8fr) minmax(0,1.4fr) minmax(0,1.3fr)'+(stages?' minmax(0,1.5fr)':'')+' 72px 88px 72px 32px';
+    body=x4tbl(cols,['Team','Division','Lead'].concat(stages?['Stage']:[]).concat([['FTE','r'],['Headcount','r'],['In scope','c'],'']),rows,foot);
+  } else { OG_DIVS=divs; body=`<div class="x3org">${divs.map((d,di)=>{ const L=all.filter(t=>String(t.division||'').trim()===d), on=L.filter(t=>t.inScope!==false&&t.name);
       const f=on.filter(t=>t.fte!=null).reduce((a,t)=>a+(+t.fte||0),0);
       return `<div class="x3oc" ondragover="if(TDRAG!==null){event.preventDefault();this.classList.add('over')}" ondragleave="if(!this.contains(event.relatedTarget))this.classList.remove('over')" ondrop="event.preventDefault();ogDiv(${di})">
-        <div class="x3dh"><b>${esc(d||'No division yet')}</b><span>${on.length?(f?plFmt(f)+' FTE':on.length+' in scope · FTE to come'):'Not in scope'}</span></div>
-        ${L.map(t=>{ const i=E.teams.indexOf(t), inn=t.inScope!==false, sub=[t.lead?esc(t.lead):'<span class="x3warn">No lead yet</span>',VCS().length?(placementText(t)||'Not on the chain'):''].filter(Boolean).join(' · ');
+        <div class="x3dh"><b>${esc(d||'No division yet')}</b><span>${on.length?(f?plFmt(f)+' FTE':on.length+' in scope'):'Not in scope'}</span></div>
+        ${L.map(t=>{ const i=E.teams.indexOf(t), inn=t.inScope!==false;
           return `<div class="x3trow${inn?'':' out'}" draggable="true" ondragstart="TDRAG=${i};this.classList.add('dragging')" ondragend="tdEnd(this)">
-            <button type="button" class="x3tmain" onclick="x3team(${i})"><span class="x3tx"><b>${esc(t.name||'New team')}</b><span>${sub}</span></span><span class="x3fte">${t.fte==null?'—':plFmt(t.fte)}<small>FTE</small></span></button>
-            <button type="button" class="x3ck${inn?'':' off'}" role="switch" aria-checked="${inn}" aria-label="${inn?'Take '+esc(t.name)+' out of scope':'Put '+esc(t.name)+' in scope'}" onclick="ogIn(${i},${!inn})">${inn?X3CK:''}</button></div>`; }).join('')}
-      </div>`; }).join('')}</div>`; }
-  return `<div class="x3">${x3kpis([{i:'org',t:'In scope',v:ins.length,s:'of '+all.filter(t=>t.name).length,d:'Teams'},{i:'layers',t:'Divisions',v:plDivs(ins).length,d:'With a team in scope'},
-      {i:'grid',t:'FTE',v:fte?plFmt(fte):'—',d:fte?'In scope':'From the data request'},{i:'user',t:'Leads',v:ins.filter(t=>t.lead).length,s:'of '+ins.length,d:'Known for the teams in scope'}])}
-    ${x3tile('org','Teams in scope',right,body+(all.length?'<p class="x3f">Click a team to change it. The circle takes a team in or out of scope; a team out of scope stays in its division, greyed out. Drag a team to another division.</p>':''))}</div>`;
+            <button type="button" class="x3tmain" onclick="x4goTeam(${i})" title="${esc(t.name)}${t.lead?' · '+esc(t.lead):''}"><span class="x3tx"><b>${esc(t.name||'New team')}</b><span>${t.lead?esc(t.lead):'<span class="x4warn">No lead yet</span>'}</span></span><span class="x3fte">${t.fte==null?'—':plFmt(t.fte)}</span></button>
+            <button type="button" class="x4ck${inn?'':' off'}" role="checkbox" aria-checked="${inn}" aria-label="In scope" onclick="ogIn(${i},${!inn})">${inn?X3CK:''}</button></div>`; }).join('')}
+      </div>`; }).join('')}</div>${foot}`; }
+  return `<div class="x3"><div class="x4g">${x4card('Teams',body,{span:1})}</div></div>`;
 };
-function x3teamAdd(){ addTeam(true); const i=E.teams.length-1; save(); goKeep('s3'); x3team(i); }
-function x3team(i){ x3sheet(()=>{ const t=E.teams[i]; return t&&t.name||'New team'; },()=>{ const t=E.teams[i]; if(!t) return ''; const inh=E.assignment.depth;
-  const divs=[...new Set(E.teams.map(x=>String(x.division||'').trim()).filter(Boolean))];
-  const divItems=divs.map(d=>({v:d,l:d,s:E.teams.filter(x=>String(x.division||'').trim()===d).length+' teams',i:'tom',c:X3C.slate}));
-  const depthItems=Object.keys(M.approaches).map(k=>({v:k,l:k===inh?'As the offering ('+M.approaches[k].label+')':M.approaches[k].label,i:k==='redesign'?'spark':k==='full-diagnostic'?'stack':'bars',c:k===inh?X3C.slate:X3C.navy}));
-  return `<div class="x3rows x3grp">
-      ${x3row('Team',`<input class="x3in r" value="${esc(t.name||'')}" placeholder="The name the client uses" aria-label="Team" oninput="tName(${i},this.value);x3shDraw0()">`)}
-      ${x3row('Division',divItems.length?x3dd(String(t.division||'').trim(),divItems,v=>{ plTSet(i,'division',v); x3re(); },{aria:'Division',ph:'Pick a division'}):'')}
-      ${x3row(divItems.length?'Or a new division':'Division',`<input class="x3in r" value="" placeholder="Type a new division" aria-label="New division" onchange="if(this.value.trim()){plTSet(${i},'division',this.value.trim());x3re()}">`)}
-      ${VCS().map(c=>x3row(VCS().length>1?esc(c.name||'Value chain'):'Stage on the value chain',x3dd(placedOn(t,c.id)||'',[{v:'',l:'Not on the chain',i:'minus',c:X3C.grey}].concat((c.stages||[]).filter(Boolean).map((s,n)=>({v:s,l:s,g:String(n+1),c:X3C.navy}))),v=>{ setPlacement(E.teams[i],c.id,v); save(); x3re(); },{aria:'Stage'}))).join('')}
-    </div>
-    <div class="x3rows x3grp">
-      ${x3row('Team lead',`<input class="x3in r" value="${esc(t.lead||'')}" placeholder="Not known yet" aria-label="Team lead" oninput="plTSet(${i},'lead',this.value)">`)}
-      ${x3row('Lead’s email',`<input class="x3in r" type="email" value="${esc(t.email||'')}" placeholder="Add" aria-label="Lead’s email" oninput="plTSet(${i},'email',this.value.trim())">`)}
-      ${x3row('FTE',`<input class="x3in r" inputmode="decimal" value="${t.fte==null?'':t.fte}" placeholder="From the data request" aria-label="FTE" oninput="plTSet(${i},'fte',plNum(this.value))">`)}
-      ${x3row('Headcount',`<input class="x3in r" inputmode="numeric" value="${t.hc==null?'':t.hc}" placeholder="Not known yet" aria-label="Headcount" oninput="plTSet(${i},'hc',plNum(this.value))">`)}
-      ${x3row('Depth',x3dd(t.depth||inh,depthItems,v=>{ tDepthQ(i,v); x3re(); },{aria:'Depth'}))}
-      ${x3row('In scope',x3sw(t.inScope!==false,`plTSet(${i},'inScope',${t.inScope===false});x3re()`,'In scope'))}
-    </div><p class="x3f">Leave the FTE empty if nobody gave it yet: the org baseline sets the real number.</p>
-    <div class="x3rows x3grp">${x3row('Note',`<textarea class="x3ta" rows="1" placeholder="Anything we should know about this team" aria-label="Note" oninput="plTSet(${i},'note',this.value)">${esc(t.note||'')}</textarea>`,'x3top')}</div>
-    <div class="x3rows x3grp"><button type="button" class="x3row x3danger" onclick="if(nrAsk('Remove ${esc(String(t.name||'this team').replace(/'/g,''))}?')){x3shClose();tDel(${i});}">Remove this team</button></div>`; }); }
+function x4teamAdd(){ X3TV='list'; addTeam(true); save(); goKeep('s3'); setTimeout(()=>{ const r=document.querySelectorAll('#page .x4t .x4tr'); const x=r[r.length-1]&&r[r.length-1].querySelector('input'); if(x) x.focus(); },30); }
+function x4goTeam(i){ X3TV='list'; goKeep('s3'); setTimeout(()=>{ const r=document.querySelector(`#page .x4tr[data-team="${i}"]`); if(r){ r.scrollIntoView({block:'center'}); r.classList.add('flash'); const x=r.querySelector('input'); if(x) x.focus(); setTimeout(()=>r.classList.remove('flash'),1400); } },30); }
 
 /* ═════════════ 5 · Analyses per team ═════════════ */
 function x3anItems(t,k){ return k==='base'?BASELINE_CHOSEN.slice():(M.offers[k]||[]).filter(i=>plCanRun(i)||plHas(t,k,i)); }
+X4FIGS.s5=()=>{ const T=inScopeTeams(), on=M.dims.filter(d=>T.some(t=>x3anItems(t,d.k).some(i=>plHas(t,d.k,i)))).length; return [x4fig(planCount(),'Analyses planned'),x4fig(T.length,'Teams'),x4fig(on+' of '+M.dims.length,'Dimensions covered')]; };
 PAGES.s5=()=>{
-  const T=inScopeTeams();
+  const T=inScopeTeams(), inh=E.assignment.depth;
   const cols=[{k:'base',label:'Baseline'}].concat(M.dims.map(d=>({k:d.k,label:d.label})));
   const lvl=(t,k)=>{ const L=x3anItems(t,k), n=L.filter(i=>plHas(t,k,i)).length; return k==='base'?(n===L.length?'full':'light'):!n?'none':n>=L.length?'full':'light'; };
-  const dimsOn=M.dims.filter(d=>T.some(t=>x3anItems(t,d.k).some(i=>plHas(t,d.k,i)))).length;
-  const legend=`<span class="x3leg"><span><i class="x3lv full"></i>Full</span><span><i class="x3lv light"></i>Some</span><span><i class="x3lv none"></i>Not run</span></span><button type="button" class="x3btn" onclick="if(nrAsk('Put every team back on the standard package?'))resetDefault()">Back to the standard package</button>`;
-  const body=T.length?`<div class="x3mx" style="--n:${cols.length}"><div class="x3mxh"><span>Team</span>${cols.map(c=>`<span>${esc(c.label)}</span>`).join('')}</div>
-    ${T.map(t=>{ const own=t.depth&&t.depth!==E.assignment.depth;
-      return `<div class="x3mr"><button type="button" class="x3mn" data-pk="tn:${esc(t.id)}" onclick="x3anTeam('${esc(t.id)}')"><b>${esc(t.name)}</b><span>${esc(t.division||'')}${own?' · '+esc((M.approaches[t.depth]||{}).label||t.depth):''}</span></button>
-        ${cols.map(c=>`<span class="x3mc"><button type="button" class="x3lvb" data-pk="an:${esc(t.id)}:${c.k}" onclick="x3anPop('${esc(t.id)}','${c.k}')" aria-label="${esc(c.label)} for ${esc(t.name)}"><i class="x3lv ${lvl(t,c.k)}"></i></button></span>`).join('')}</div>`; }).join('')}</div>
-    <p class="x3f">Every team always gets the org baseline and the registers. Click a dot to choose the analyses for that team and dimension, or a team’s name to change its depth.</p>`
-    :'<p class="x3empty">No teams in scope yet. Add them under Teams in scope and they appear here.</p>';
-  return `<div class="x3">${x3kpis([{i:'grid',t:'Analyses',v:planCount(),d:'Planned across the teams'},{i:'org',t:'Teams',v:T.length,d:'In scope'},{i:'layers',t:'Dimensions',v:dimsOn,s:'of '+M.dims.length,d:'With at least one analysis'},{i:'ok',t:'Baseline',v:BASELINE_ALWAYS.length+BASELINE_CHOSEN.length,d:'Analyses every team can get'}])}
-    ${x3tile('grid','Analyses per team',T.length?legend:'',body)}</div>`;
+  const depthItems=[{v:inh,l:'As the offering',s:(M.approaches[inh]||{}).label||''}].concat(Object.keys(M.approaches).filter(k=>k!==inh).map(k=>({v:k,l:M.approaches[k].label})));
+  const rows=T.map(t=>{ const i=E.teams.indexOf(t);
+    return `<div class="x4tr"><span class="x4strong x4one" title="${esc(t.name)}${t.division?' · '+esc(t.division):''}">${esc(t.name)}</span>
+      <span>${x3dd(t.depth||inh,depthItems,v=>tDepthQ(i,v),{cell:1,aria:'Depth for '+t.name})}</span>
+      ${cols.map(c=>`<span class="c"><button type="button" class="x3lvb" data-pk="an:${esc(t.id)}:${c.k}" onclick="x3anPop('${x4q(t.id)}','${c.k}')" aria-label="${esc(c.label)} for ${esc(t.name)}"><i class="x3lv ${lvl(t,c.k)}"></i></button></span>`).join('')}</div>`; });
+  const legend=`<span class="x3leg"><span><i class="x3lv full"></i>All</span><span><i class="x3lv light"></i>Some</span><span><i class="x3lv none"></i>None</span></span>${x4btn('Back to the standard package',"if(nrAsk('Put every team back on the standard package?'))resetDefault()")}`;
+  const body=T.length?x4tbl(`minmax(190px,2fr) minmax(200px,1.7fr) repeat(${cols.length},minmax(64px,1fr))`,['Team','Depth'].concat(cols.map(c=>[c.label,'c'])),rows,'','x4mx')
+    :'<p class="x4empty">No teams in scope yet. Add them under Teams in scope and they show here.</p>';
+  return `<div class="x3"><div class="x4g">${x4card('Analyses per team',body,{span:1,right:T.length?legend:''})}</div></div>`;
 };
 function x3anPop(tid,k){ x3pop('an:'+tid+':'+k,()=>{ const t=inScopeTeams().find(x=>x.id===tid); if(!t) return '';
-  const L=x3anItems(t,k), title=(k==='base'?'Baseline':dimOf(k).label)+' · '+t.name;
-  const lock=k==='base'?BASELINE_ALWAYS.concat(REGISTERS_ALWAYS).map(i=>`<div class="x3row x3pr"><span>${esc((M.inst[i]||{}).label||INSTRUMENT_NAMES[i]||i)}</span><span class="x3note">Always</span></div>`).join(''):'';
-  return `<div class="x3ph">${esc(title)}</div><div class="x3rows">${lock}${L.map((ik,j)=>{ const on=plHas(t,k,ik);
-    return `<button type="button" class="x3row x3pr" onclick="x3anSet('${esc(tid)}','${k}',${j},${!on})"><span>${esc(plLabel(ik))}</span><span class="x3cb${on?' on':''}" role="checkbox" aria-checked="${on}">${on?X3CK:''}</span></button>`; }).join('')}</div>
-    <div class="x3pf">${L.length>1?`<button type="button" class="x3btn" onclick="x3anAll('${esc(tid)}','${k}')">All</button>`:''}<span style="flex:1"></span><button type="button" class="x3btn primary" onclick="x3popClose()">Done</button></div>`; }); }
+  const L=x3anItems(t,k);
+  const lock=k==='base'?BASELINE_ALWAYS.concat(REGISTERS_ALWAYS).map(i=>`<div class="x3it dis"><span class="x3mck">${X3CK}</span><span class="x3mt">${esc((M.inst&&M.inst[i]||{}).label||(typeof INSTRUMENT_NAMES!=='undefined'&&INSTRUMENT_NAMES[i])||plLabel(i))}</span><small>Always</small></div>`).join(''):'';
+  return `<div class="x3mh">${esc(k==='base'?'Baseline':dimOf(k).label)} · ${esc(t.name)}</div>${lock}${L.map((ik,j)=>{ const on=plHas(t,k,ik);
+    return `<button type="button" class="x3it${on?' on':''}" role="menuitemcheckbox" aria-checked="${on}" onclick="x3anSet('${x4q(tid)}','${k}',${j},${!on})"><span class="x3mck">${on?X3CK:''}</span><span class="x3mt">${esc(plLabel(ik))}</span></button>`; }).join('')}
+    ${L.length>1?`<button type="button" class="x3it link" onclick="x3anAll('${x4q(tid)}','${k}')"><span class="x3mck"></span><span class="x3mt">Select all</span></button>`:''}`; }); }
 function x3anSet(tid,k,j,on){ const t=inScopeTeams().find(x=>x.id===tid); if(!t) return; const ik=x3anItems(t,k)[j]; if(!ik) return; plSetOne(t,k,ik,on); derivePlan(); save(); x3re(); }
 function x3anAll(tid,k){ const t=inScopeTeams().find(x=>x.id===tid); if(!t) return; x3anItems(t,k).forEach(ik=>{ if(!plHas(t,k,ik)) plSetOne(t,k,ik,true); }); derivePlan(); save(); x3re(); }
-function x3anTeam(tid){ x3pop('tn:'+tid,()=>{ const t=E.teams.find(x=>x.id===tid); if(!t) return ''; const i=E.teams.indexOf(t), inh=E.assignment.depth;
-  const items=Object.keys(M.approaches).map(k=>({v:k,l:k===inh?'As the offering ('+M.approaches[k].label+')':M.approaches[k].label,i:k==='redesign'?'spark':k==='full-diagnostic'?'stack':'bars',c:k===inh?X3C.slate:X3C.navy}));
-  return `<div class="x3ph">${esc(t.name)}</div><div class="x3rows">${x3row('Depth',x3dd(t.depth||inh,items,v=>{ tDepthQ(i,v); x3re(); },{aria:'Depth',sm:1}))}</div>
-    <div class="x3pf"><button type="button" class="x3btn" onclick="x3anStd('${esc(tid)}')">Back to the standard package</button><span style="flex:1"></span><button type="button" class="x3btn primary" onclick="x3popClose()">Done</button></div>`; }); }
-function x3anStd(tid){ const t=E.teams.find(x=>x.id===tid); if(!t) return; t.depth=null; const m=E.methodology;
-  if(m.overrides) delete m.overrides[tid]; if(m.teamBaseline){ delete m.teamBaseline[tid]; if(!Object.keys(m.teamBaseline).length) delete m.teamBaseline; }
-  if(E._planSig){ E._planSig=null; adoptFilePlan(); if(m.overrides) delete m.overrides[tid]; } derivePlan(); save(); x3re(); }
 
 /* ═════════════ 6 · Key moments ═════════════ */
+X4FIGS.moments=()=>{ msEnsure(); const n=E.milestones.length, d=E.milestones.filter(m=>m.date).length; return [x4fig(n,'Moments'),x4fig(d+' of '+n,'With a date',d<n),x4fig(x4weeks()||'—','Weeks')]; };
 PAGES.moments=()=>{
   msEnsure();
   const a=E.assignment, s=a.start, e=a.target, D=x=>new Date(x+'T00:00:00'), ok=x=>x&&!isNaN(D(x));
   const all=E.milestones.map(m=>m.date).filter(ok).concat([s,e].filter(ok)).sort();
   const t0=all.length?D(all[0]):null, t1=all.length?D(all[all.length-1]):null, span=t0&&t1&&t1>t0?t1-t0:0;
-  const weeks=ok(s)&&ok(e)&&D(e)>D(s)?Math.max(1,Math.ceil(((D(e)-D(s))/864e5+1)/7)):0, today=new Date(); today.setHours(0,0,0,0);
+  const weeks=x4weeks()||0, today=new Date(); today.setHours(0,0,0,0);
   const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
   const pct=d=>{ const x=D(d); return span&&!isNaN(x)?Math.max(0,Math.min(1,(x-t0)/span))*100:null; };
-  const dated=E.milestones.map((m,i)=>({m,i})).filter(x=>ok(x.m.date)).sort((x,y)=>x.m.date<y.m.date?-1:1);
+  const dated=E.milestones.filter(m=>ok(m.date)).slice().sort((x,y)=>x.date<y.date?-1:1);
   const now=span&&today>=t0&&today<=t1?(today-t0)/span*100:null;
+  const label=m=>m.kind==='steerco'?(m.name||STEER):(m.name||msLabel(m.kind)||'Moment');
   const wk=weeks&&span?Array.from({length:weeks},(_,w)=>{ const d=iso(new Date(D(s).getTime()+w*7*864e5)), p=pct(d); return `<span style="left:${p}%" class="${p>94?'last':''}">W${w+1} · ${x3fmt(d)}</span>`; }).join(''):'';
-  const marks=dated.map(({m})=>{ const p=pct(m.date), name=m.kind==='steerco'?(m.name||STEER):(m.name||msLabel(m.kind)||'Moment');
-    return `<span class="x3mk${m.kind==='steerco'?' steer':''}${D(m.date)<today?' past':''}" style="left:${p}%"></span><span class="x3mkl" data-p="${p}" style="left:${p}%">${esc(name)}<small>${esc(x3fmt(m.date))}</small></span>`; }).join('');
+  const marks=dated.map(m=>{ const p=pct(m.date); return `<span class="x3mk${m.kind==='steerco'?' steer':''}${D(m.date)<today?' past':''}" style="left:${p}%"></span><span class="x3mkl" data-p="${p}" style="left:${p}%">${esc(label(m))}<small>${esc(x3fmt(m.date))}</small></span>`; }).join('');
   if(span) setTimeout(x3tlLay,0);
-  const kinds=m=>MS_NAMED.map(n=>({v:'n:'+n,l:n,i:n==='Intake call'?'mail':'doc',c:X3C.soft})).concat(MS_KINDS.filter(x=>MS_OFFER.includes(x[0])||x[0]===m.kind).map(([k,l])=>({v:k,l:k==='other'?'Other moment':l,i:k==='kickoff'?'flag':k==='steerco'?'star':k==='other'?'more':'ok',c:k==='steerco'?X3C.green:k==='other'?X3C.grey:X3C.navy})));
   const always=msAlways();
-  const rows=E.milestones.map((m,i)=>`<div class="x3tr x3ms">
-      <span class="x3msk">${x3dd(msVal(m),kinds(m),v=>msKind(i,v),{aria:'Moment',sm:1})}${m.kind==='steerco'?`<input class="x3in" value="${esc(steerOwn(m))}" placeholder="Name it (optional)" aria-label="SteerCo name" oninput="msSteer(${i},this.value)">`:msNamed(m)?`<input class="x3in" value="${esc(m.name||'')}" placeholder="Name this moment" aria-label="Moment name" oninput="msSet(${i},'name',this.value)">`:''}</span>
-      <span>${x3date(m.date,`msSet(${i},'date',this.value||null)`,'Date')}</span>
-      <span><input class="x3in" value="${esc(m.note||'')}" placeholder="Add a note" aria-label="Note" oninput="E.milestones[${i}].note=this.value;save()"></span>
-      <span>${always.includes(m.kind)&&E.milestones.filter(x=>x.kind===m.kind).length===1?'':`<button type="button" class="x3x" onclick="msDel(${i})" aria-label="Remove this moment">${X3X}</button>`}</span></div>`).join('');
-  const nd=E.milestones.filter(m=>m.date).length;
-  return `<div class="x3">${x3kpis([{i:'flag',t:'Moments',v:E.milestones.length,d:'Planned'},{i:'cal',t:'Dated',v:nd,s:'of '+E.milestones.length,d:'With an agreed date'},{i:'clock',t:'Length',v:weeks||'—',s:weeks?'weeks':'',d:s&&e?x3fmt(s)+' – '+x3fmt(e):'Set the dates under Client and offering'}])}
-    ${x3tile('flag','Key moments',`<button type="button" class="x3btn" onclick="msAdd('steerco')">Add a SteerCo</button><button type="button" class="x3btn" onclick="msAdd()">Add a moment</button>`,
-      `${span?`<div class="x3tl"><div class="x3tlw">${wk}</div><div class="x3trk"><span class="ln"></span>${now!=null?`<span class="now" style="left:${now}%"></span>`:''}${marks}</div></div>`:''}
-      <div class="x3tbl" style="--cols:minmax(0,1.5fr) 170px minmax(0,1.8fr) 26px"><div class="x3th"><span>Moment</span><span>Date</span><span>Note</span><span></span></div>${rows}</div>
-      <p class="x3f">A date stays empty until it is agreed. Dated moments show on the timeline and on the cockpit’s plan${now!=null?'; the green line is today':''}.</p>`)}</div>`;
+  const kinds=m=>MS_NAMED.map(n=>({v:'n:'+n,l:n})).concat(MS_KINDS.filter(x=>MS_OFFER.includes(x[0])||x[0]===m.kind).map(([k,l])=>({v:k,l:k==='other'?'Other moment':l})));
+  const rows=E.milestones.map((m,i)=>{ const named=m.kind==='steerco'||msNamed(m), keep=always.includes(m.kind)&&E.milestones.filter(x=>x.kind===m.kind).length===1;
+    return `<div class="x4tr">
+      <span>${x3dd(msVal(m),kinds(m),v=>msKind(i,v),{cell:1,aria:'Moment'})}</span>
+      <span>${named?(m.kind==='steerco'?x4ced(steerOwn(m),`msSteer(${i},this.value)`,{ph:'Name it (optional)',aria:'SteerCo name'}):x4ced(m.name,`E.milestones[${i}].name=this.value;save()`,{ph:'Name this moment',aria:'Moment name'})):'<span class="x4mut">—</span>'}</span>
+      <span>${x4date(m.date,`msSet(${i},'date',this.value||null)`,'Date',1)}</span>
+      <span>${x4ced(m.note,`E.milestones[${i}].note=this.value;save()`,{ph:'Add a note',aria:'Note'})}</span>
+      <span class="r">${keep?'':x4more([x4rm(()=>msDel(i),'Remove this moment')],'More')}</span></div>`; });
+  const foot=`<div class="x4addr"><button type="button" class="x4lnk" onclick="msAdd()">+ Add a moment</button><button type="button" class="x4lnk" onclick="msAdd('steerco')">+ Add a SteerCo</button></div>`;
+  return `<div class="x3"><div class="x4g">${x4card('Key moments',`${span?`<div class="x3tl"><div class="x3tlw">${wk}</div><div class="x3trk"><span class="ln"></span>${now!=null?`<span class="now" style="left:${now}%"></span>`:''}${marks}</div></div>`:''}
+    ${x4tbl('minmax(0,1.2fr) minmax(0,1.4fr) 120px minmax(0,2fr) 32px',['Moment','Name','Date','Note',''],rows,foot)}`,{span:1})}</div></div>`;
 };
-
-/* names under the line, each on the first row where it fits */
 function x3tlLay(){ const tk=document.querySelector('.x3trk'); if(!tk) return; const W=tk.clientWidth, rows=[]; let n=0;
   [...tk.querySelectorAll('.x3mkl')].sort((a,b)=>a.dataset.p-b.dataset.p).forEach(l=>{ const w=l.offsetWidth, c=+l.dataset.p/100*W;
     let x0=Math.max(0,Math.min(c-w/2,W-w)); l.style.left=x0+'px'; l.style.transform='none';
@@ -10069,7 +10047,7 @@ function x3tlLay(){ const tk=document.querySelector('.x3trk'); if(!tk) return; c
   tk.style.height=(24+n*20+4)+'px'; }
 addEventListener('resize',()=>{ if(PAGE==='moments') x3tlLay(); });
 
-/* ═════════════ 7 · Work streams: one row per stream, one column per phase ═════════════ */
+/* ═════════════ 7 · Work streams: grouped like the to-dos, one group per work stream ═════════════ */
 const x3wkey=w=>String(w.name||'').trim().toLowerCase()||('#'+w.id);
 function x3wsRows(){ const st=wsS(), keys=[], rows={};
   st.phases.forEach((p,pi)=>p.workStreams.forEach((w,wi)=>{ const k=x3wkey(w); if(!rows[k]){ rows[k]={key:k,name:w.name,owner:w.owner,at:[]}; keys.push(k); } rows[k].at.push([pi,wi]); if(!rows[k].owner&&w.owner) rows[k].owner=w.owner; }));
@@ -10077,83 +10055,68 @@ function x3wsRows(){ const st=wsS(), keys=[], rows={};
 function x3wsIn(key,pi,make){ const st=wsS(), ph=st.phases[pi]; let wi=ph.workStreams.findIndex(w=>x3wkey(w)===key);
   if(wi<0&&make){ const src=x3wsRows().find(r=>r.key===key)||{}; ph.workStreams.push({id:wsNewId('ws-'),name:src.name||'',kind:'custom',owner:src.owner||null,deliverables:[]}); wi=ph.workStreams.length-1; }
   return wi; }
-PAGES.ws=()=>{
-  const st=wsS(), opex=isOpex(), rows=x3wsRows(), agreed=st.status==='agreed', nD=allStreams().reduce((a,w)=>a+(w.deliverables||[]).length,0), noOwn=rows.filter(r=>!r.owner).length;
-  const when=(p,pi)=>pi===0&&E.assignment.start&&E.assignment.target?x3fmt(E.assignment.start)+' – '+x3fmt(E.assignment.target):pi===0?'Now':'Later';
-  const right=`${rows.length?`<button type="button" class="x3btn" onclick="wsAgree(${!agreed});goKeep('ws')">${agreed?'Back to proposal':'Mark as agreed'}</button>`:''}
-    ${opex?`<button type="button" class="x3btn" id="ws-suggest" onclick="wsSuggest()">Suggest from the analyses</button>`:''}
-    ${opex?'':`<button type="button" class="x3btn" onclick="wsPhAdd()">Add a phase</button>`}
-    <button type="button" class="x3btn" onclick="x3wsAdd()">Add a work stream</button>`;
-  const head=`<div class="x3pl-h"><span>Work stream</span>${st.phases.map((p,pi)=>`<span>${opex?`<b>${esc(p.name||'Phase '+(pi+1))}</b>`:`<input class="x3in x3phn" value="${esc(p.name||'')}" placeholder="Phase ${pi+1}" aria-label="Phase name" oninput="wsPhName(${pi},this.value)">`}${esc(when(p,pi))}</span>`).join('')}</div>`;
-  const body=rows.length?`<div class="x3pl" style="--n:${st.phases.length}">${head}${rows.map((r,ri)=>`<div class="x3pl-r">
-      <button type="button" class="x3wsn" onclick="x3ws(${ri})"><span class="x3av ${r.owner?'nr':'cl'}">${r.owner?esc(initials(memberName(r.owner))):'?'}</span><span><b>${r.name?esc(r.name):'<span class="x3warn">Unnamed work stream</span>'}</b><span class="${r.owner?'':'x3warn'}">${r.owner?esc(memberName(r.owner)):'No owner yet'}</span></span></button>
-      ${st.phases.map((p,pi)=>{ const wi=p.workStreams.findIndex(w=>x3wkey(w)===r.key), w=wi>=0?p.workStreams[wi]:null;
-        return `<div class="x3pc">${w?(w.deliverables||[]).map((d,di)=>{ const own=d.owner?memberName(d.owner):'', note=[own,d.scope==='engagement'?'whole engagement':''].filter(Boolean).join(' · ');
-          return `<button type="button" class="x3dlc" data-pk="dl:${esc(d.id)}" onclick="x3dl('${esc(d.id)}')">${d.name?esc(d.name):'<span class="x3warn">Unnamed</span>'}${note?`<small>${esc(note)}</small>`:''}</button>`; }).join(''):''}
-          <button type="button" class="x3pa" onclick="x3dlAdd(${ri},${pi})" aria-label="Add a deliverable in ${esc(p.name||'this phase')}">${X3PLUS}</button></div>`; }).join('')}</div>`).join('')}</div>
-    <p class="x3f">One row per work stream, one column per phase. A deliverable sits in the phase it lands in and belongs to its stream’s owner unless it names its own. Click a deliverable to change it, the plus to add one.${ownerMembers().length?'':' Add people under Our team first, so each work stream can get an owner.'}</p>`
-    :`<p class="x3empty">Work streams are usually agreed with the team after the kick-off. You don’t need them to set up the engagement.</p>`;
-  return `<div class="x3">${x3kpis([{i:'kanban',t:'Work streams',v:rows.length,d:'In the plan'},{i:'doc',t:'Deliverables',v:nD,d:'Across the phases'},{i:'user',t:'Owners',v:rows.length-noOwn,s:'of '+rows.length,d:'Work streams with an owner'},
-      {i:'ok',t:'Status',v:agreed?'Agreed':'Proposal',d:agreed?(st.agreedBy?'By '+st.agreedBy:'With the team'):'Not agreed with the team yet'}])}
-    ${x3tile('kanban','Work streams',right,body)}</div>`;
-};
-function x3wsAdd(){ const ph=wsS().phases[0]; ph.workStreams.push({id:wsNewId('ws-'),name:'',kind:'custom',owner:null,deliverables:[]}); save(); goKeep('ws');
-  x3ws(x3wsRows().findIndex(r=>r.key==='#'+ph.workStreams[ph.workStreams.length-1].id)); }
-function x3ws(ri){ const key0=(x3wsRows()[ri]||{}).key; if(!key0) return; let key=key0;
-  const find=()=>x3wsRows().find(r=>r.key===key);
-  x3sheet(()=>{ const r=find(); return r&&r.name||'New work stream'; },()=>{ const r=find(); if(!r) return '';
-    const owners=[{v:'',l:'No owner yet',i:'user',c:X3C.grey}].concat(ownerMembers().map(m=>({v:m.id,l:m.name,s:m.role||'',g:initials(m.name),c:(m.affiliation==='external')?'#EDE7DA':'#DDE5F0',f:(m.affiliation==='external')?'#6B5320':X3C.navy})));
-    return `<div class="x3rows x3grp">
-      ${x3row('Work stream',`<input class="x3in r" value="${esc(r.name||'')}" placeholder="Name it" aria-label="Work stream" oninput="x3wsName(this.value)">`)}
-      ${x3row('Owner',x3dd(r.owner||'',owners,v=>{ x3wsRows().find(x=>x.key===key).at.forEach(([pi,wi])=>{ wsS().phases[pi].workStreams[wi].owner=v||null; }); save(); x3re(); },{aria:'Owner'}))}
-    </div><p class="x3f">The owner answers for every deliverable in the stream, unless a deliverable names its own owner.</p>
-    <div class="x3rows x3grp"><button type="button" class="x3row x3danger" onclick="if(nrAsk('Remove this work stream and its deliverables?')){x3wsDel()}">Remove this work stream</button></div>`; });
-  window.x3wsName=v=>{ const r=find(); if(!r) return; r.at.forEach(([pi,wi])=>{ wsS().phases[pi].workStreams[wi].name=v; }); key=String(v||'').trim().toLowerCase()||('#'+wsS().phases[r.at[0][0]].workStreams[r.at[0][1]].id); save(); x3shDraw0(); };
-  window.x3wsDel=()=>{ const r=find(); if(!r) return; r.at.slice().sort((a,b)=>b[1]-a[1]).forEach(([pi,wi])=>wsS().phases[pi].workStreams.splice(wi,1)); save(); x3shClose(); };
-}
 function x3dlFind(id){ const st=wsS(); for(let pi=0;pi<st.phases.length;pi++){ const ph=st.phases[pi]; for(let wi=0;wi<ph.workStreams.length;wi++){ const di=(ph.workStreams[wi].deliverables||[]).findIndex(d=>d.id===id); if(di>=0) return {pi,wi,di,ph,w:ph.workStreams[wi],d:ph.workStreams[wi].deliverables[di]}; } } return null; }
-function x3dlAdd(ri,pi){ const r=x3wsRows()[ri]; if(!r) return; const wi=x3wsIn(r.key,pi,true), w=wsS().phases[pi].workStreams[wi], id=wsNewId('d-');
-  w.deliverables.push({id,name:'',instrument:null,scope:'per-team',owner:null,teamOwners:{}}); save(); goKeep('ws'); x3dl(id); }
-function x3dl(id){ x3pop('dl:'+id,()=>{ const f=x3dlFind(id); if(!f) return ''; const {d,w}=f, opex=isOpex(), st=wsS();
-  const owners=[{v:'',l:'Stream owner'+(w.owner?' ('+memberName(w.owner)+')':''),i:'user',c:X3C.grey}].concat(ownerMembers().map(m=>({v:m.id,l:m.name,s:m.role||'',g:initials(m.name),c:(m.affiliation==='external')?'#EDE7DA':'#DDE5F0',f:(m.affiliation==='external')?'#6B5320':X3C.navy})));
-  const phases=st.phases.map((p,pi)=>({v:String(pi),l:p.name||'Phase '+(pi+1),g:String(pi+1),c:[X3C.navy,X3C.green,X3C.slate][pi%3]}));
-  return `<div class="x3rows">
-      <div class="x3row"><input class="x3in x3dln" value="${esc(d.name||'')}" placeholder="Name the deliverable" aria-label="Deliverable" oninput="x3dlSet('${esc(id)}','name',this.value)" onchange="goKeep('ws')"></div>
-      ${x3row('Owner',x3dd(d.owner||'',owners,v=>{ x3dlSet(id,'owner',v||null); const g=x3dlFind(id); if(g) g.d.teamOwners={}; save(); x3re(); },{aria:'Owner',sm:1}))}
-      ${opex?x3row('Covers',x3dd(d.scope==='engagement'?'engagement':'per-team',[{v:'per-team',l:'Every team in scope',i:'team',c:X3C.slate},{v:'engagement',l:'The whole engagement',i:'building',c:X3C.navy}],v=>{ x3dlSet(id,'scope',v); x3re(); },{aria:'Covers',sm:1})):''}
-      ${x3row('Phase',x3dd(String(f.pi),phases,v=>x3dlMove(id,+v),{aria:'Phase',sm:1}))}
-    </div><div class="x3pf"><button type="button" class="x3btn x3dangerb" onclick="x3dlDel('${esc(id)}')">Remove</button><span style="flex:1"></span><button type="button" class="x3btn primary" onclick="x3popClose();goKeep('ws')">Done</button></div>`; });
-  setTimeout(()=>{ const x=document.querySelector('#x3pop .x3dln'); if(x&&!x.value) x.focus(); },40); }
+const x4people=blank=>[{v:'',l:blank,c:X3C.grey}].concat(ownerMembers().map(m=>({v:m.id,l:m.name,s:m.role==='Case Lead'?'Case lead':(m.role||''),h:m.affiliation==='external'?'The client':'Our team'})));
+X4FIGS.ws=()=>{ const R=x3wsRows(), nD=allStreams().reduce((a,w)=>a+(w.deliverables||[]).length,0), own=R.filter(r=>r.owner).length; return [x4fig(R.length,R.length===1?'Work stream':'Work streams'),x4fig(nD,'Deliverables'),x4fig(own+' of '+R.length,'With an owner',R.length&&own<R.length)]; };
+PAGES.ws=()=>{
+  const st=wsS(), opex=isOpex(), R=x3wsRows(), agreed=st.status==='agreed';
+  const phases=st.phases.map((p,pi)=>({v:String(pi),l:p.name||'Phase '+(pi+1),g:String(pi+1),c:[X3C.navy,X3C.green,X3C.slate][pi%3],s:pi===0&&E.assignment.start&&E.assignment.target?x3fmt(E.assignment.start)+' – '+x3fmt(E.assignment.target):''}));
+  const cols='minmax(0,2.2fr) minmax(0,1.1fr)'+(opex?' minmax(0,1.3fr)':'')+' minmax(0,1.5fr) 32px';
+  const head=['Deliverable','Phase'].concat(opex?['Covers']:[]).concat(['Owner','']);
+  const rows=[];
+  R.forEach((r,ri)=>{ const n=r.at.reduce((a,[pi,wi])=>a+(st.phases[pi].workStreams[wi].deliverables||[]).length,0);
+    rows.push(`<div class="x4tr x4grp">
+      <span class="x4nm">${x4av(r.owner?memberName(r.owner):'',(E.nrMembers||[]).find(m=>m.id===r.owner)?.affiliation)}${x4ced(r.name,`x4wsName('${x4q(r.key)}',this.value)`,{ph:'Name the work stream',aria:'Work stream',strong:1,change:"goKeep('ws')"})}<span class="x4n">${n} ${n===1?'deliverable':'deliverables'}</span></span>
+      <span></span>${opex?'<span></span>':''}
+      <span>${x3dd(r.owner||'',x4people('No owner yet'),v=>{ x3wsRows().find(x=>x.key===r.key).at.forEach(([pi,wi])=>{ wsS().phases[pi].workStreams[wi].owner=v||null; }); save(); goKeep('ws'); },{cell:1,aria:'Owner of '+(r.name||'the work stream'),ph:'No owner yet',warn:1})}</span>
+      <span class="r">${x4more([x4rm(()=>x4wsDel(r.key),'Remove this work stream')],'More')}</span></div>`);
+    r.at.forEach(([pi,wi])=>{ const w=st.phases[pi].workStreams[wi]; (w.deliverables||[]).forEach(d=>{
+      rows.push(`<div class="x4tr x4sub2">
+        <span>${x4ced(d.name,`x3dlSet('${x4q(d.id)}','name',this.value)`,{ph:'Name the deliverable',aria:'Deliverable',strong:1})}</span>
+        <span>${x3dd(String(pi),phases,v=>x3dlMove(d.id,+v),{cell:1,aria:'Phase'})}</span>
+        ${opex?`<span>${x3dd(d.scope==='engagement'?'engagement':'per-team',[{v:'per-team',l:'Every team in scope'},{v:'engagement',l:'The whole engagement'}],v=>{ x3dlSet(d.id,'scope',v); goKeep('ws'); },{cell:1,aria:'Covers'})}</span>`:''}
+        <span>${x3dd(d.owner||'',x4people('Stream owner'),v=>{ const f=x3dlFind(d.id); if(f){ f.d.owner=v||null; f.d.teamOwners={}; save(); } goKeep('ws'); },{cell:1,aria:'Owner'})}</span>
+        <span class="r">${x4more([x4rm(()=>x3dlDel(d.id))],'More')}</span></div>`); }); });
+    rows.push(`<div class="x4addr in"><button type="button" class="x4lnk" onclick="x3dlAdd(${ri})">+ Add a deliverable</button></div>`); });
+  const phaseLine=opex?'':`<div class="x4phases"><span class="x4note">Phases</span>${st.phases.map((p,pi)=>`<input class="x4in x4phn" value="${esc(p.name||'')}" placeholder="Phase ${pi+1}" aria-label="Phase name" oninput="wsPhName(${pi},this.value)" size="${Math.max(8,(p.name||'').length+1)}">`).join('')}<button type="button" class="x4lnk" onclick="wsPhAdd()">+ Add a phase</button></div>`;
+  const right=`<span class="x4tag ${agreed?'good':'warn'}">${agreed?'Agreed':'Proposal'}</span>${R.length?x4btn(agreed?'Back to proposal':'Mark as agreed',`wsAgree(${!agreed});goKeep('ws')`):''}${opex?`<button type="button" class="x4b" id="ws-suggest" onclick="wsSuggest()">Suggest from the analyses</button>`:''}`;
+  const body=R.length?phaseLine+x4tbl(cols,head,rows,x4add('Add a work stream','x3wsAdd()'),'x4ws'):`${phaseLine}<p class="x4empty">Work streams are usually agreed with the team after the kick-off.</p>${x4add('Add a work stream','x3wsAdd()')}`;
+  return `<div class="x3"><div class="x4g">${x4card('Work streams',body,{span:1,right})}</div></div>`;
+};
+function x4wsName(key,v){ const r=x3wsRows().find(x=>x.key===key); if(!r) return; r.at.forEach(([pi,wi])=>{ wsS().phases[pi].workStreams[wi].name=v; }); save(); }
+function x4wsDel(key){ const r=x3wsRows().find(x=>x.key===key); if(!r) return; r.at.slice().sort((a,b)=>b[1]-a[1]).forEach(([pi,wi])=>wsS().phases[pi].workStreams.splice(wi,1)); save(); goKeep('ws'); }
+function x3wsAdd(){ const ph=wsS().phases[0]; ph.workStreams.push({id:wsNewId('ws-'),name:'',kind:'custom',owner:null,deliverables:[]}); save(); goKeep('ws');
+  setTimeout(()=>{ const g=document.querySelectorAll('#page .x4grp input'); if(g.length) g[g.length-1].focus(); },30); }
+function x3dlAdd(ri){ const r=x3wsRows()[ri]; if(!r) return; const pi=r.at[0][0], wi=x3wsIn(r.key,pi,true), w=wsS().phases[pi].workStreams[wi], id=wsNewId('d-');
+  w.deliverables.push({id,name:'',instrument:null,scope:'per-team',owner:null,teamOwners:{}}); save(); goKeep('ws');
+  setTimeout(()=>{ const x=[...document.querySelectorAll('#page .x4sub2 input')].find(i=>!i.value); if(x) x.focus(); },30); }
 function x3dlSet(id,k,v){ const f=x3dlFind(id); if(!f) return; f.d[k]=v; save(); }
-function x3dlDel(id){ const f=x3dlFind(id); if(!f) return; f.w.deliverables.splice(f.di,1); save(); x3popClose(); goKeep('ws'); }
+function x3dlDel(id){ const f=x3dlFind(id); if(!f) return; f.w.deliverables.splice(f.di,1); save(); goKeep('ws'); }
 function x3dlMove(id,pj){ const f=x3dlFind(id); if(!f||f.pi===pj) return; const key=x3wkey(f.w), d=f.w.deliverables.splice(f.di,1)[0];
-  const wj=x3wsIn(key,pj,true); wsS().phases[pj].workStreams[wj].deliverables.push(d); save(); x3re(); }
+  const wj=x3wsIn(key,pj,true); wsS().phases[pj].workStreams[wj].deliverables.push(d); save(); goKeep('ws'); }
 
 /* ═════════════ 8 · Hand over ═════════════ */
-PAGES.s6=()=>{
-  buildExport(); const steps=setupSteps().filter(x=>x.k!=='s6'), done=steps.filter(x=>stepDone(x.k)).length;
-  const iss=issues(), hard=iss.filter(i=>!i.soft), soft=iss.filter(i=>i.soft);
-  const open=hard.map(i=>({i,cls:'warn',tag:'Fix first'})).concat(soft.map(i=>({i,cls:'none',tag:'Can wait'})));
-  /* the data request: what this setup still misses, one row per item, the reason under it */
 const X3_DR=drCard;
 drCard=function(){ if(!document.documentElement.classList.contains('nrs-setup')) return X3_DR(); const rows=drRows(true);
-  return `<section class="x3t" id="dr-card"><div class="x3h"><h2>${x3svg('mail')}<span>Data request</span></h2>${rows.length?`<span class="x3r"><button type="button" class="x3btn" id="dr-draft" onclick="draftDataRequest()">Draft the data request</button></span>`:''}</div>
-    ${rows.length?`<div class="x3rows">${rows.map(r=>`<div class="x3row x3dri"><span class="x3grow"><b>${esc(r[0])}</b><small>${esc(r[1])}</small></span></div>`).join('')}</div>
-    <p class="x3f">What to ask the client before the kick-off. It shrinks as you fill in the setup. Claude drafts the mail, you send it.</p>`:'<p class="x3empty">Nothing to ask the client right now.</p>'}</section>`; };
-const X3K={client:'s1',id:'s1',practice:'s1',offer:'s1',name:'s1',nr:'s4',partner:'s4',lead:'s4',scope:'s2',cost:'s2',teams:'s3',unnamed:'s3',dup:'s3',fte:'s3',mix:'s3',off:'s5'};
-  const go2=i=>{ const k=X3K[i.k]||'s1'; return setupSteps().some(x=>x.k===k)?k:'s1'; };
-  const stepName=k=>(steps.find(x=>x.k===k)||{}).l||'';
-  return `<div class="x3">${x3kpis([{i:'ok',t:'Steps',v:done,s:'of '+steps.length,d:'Filled in'},{i:'alert',t:'Still open',v:iss.length,d:hard.length?hard.length+' to fix before you hand over':'None stops the hand-over'},
-      {i:'mail',t:'Questions',v:((E.handoff||{}).questions||[]).filter(x=>String(x||'').trim()).length,d:'Still to ask the client'},{i:'cal',t:'Start',v:E.assignment.start?x3fmt(E.assignment.start):'—',d:'Kick-off of the engagement'}])}
-    <div class="x3g">
-      ${x3tile('alert','Still open',open.length?`<span class="x3note">${hard.length?'Fix the first ones before you hand over':'None of these stops the hand-over'}</span>`:'',
-        open.length?`<div class="x3rows">${open.map(({i,cls,tag})=>{ const k=go2(i); return `<button type="button" class="x3row x3link" onclick="go('${k}')"><span class="x3grow">${esc(i.s)}</span><span class="x3tag ${cls}">${tag}</span><span class="x3note">${esc(stepName(k))}</span>${X3RCHEV}</button>`; }).join('')}</div>`
-        :'<p class="x3empty">Nothing open: every step is filled in.</p>','x3full')}
-      ${x3tile('help','Still to ask the client','',x3list('handoff.questions','Add a question'))}
-      ${x3tile('info','What we assume','',x3list('handoff.assumptions','Add an assumption'))}
-      ${drCard()}
-      ${x3tile('send','Hand it to Claude','',`<p class="x3p" id="hand-say">${esc(handSay())}</p><div class="x3links"><button type="button" class="x3btn primary" id="hand-claude" onclick="handToClaude()">${handLabel()}</button></div>
-        <p class="x3f" id="hand-sent" ${handSent()?'':'hidden'} style="font-weight:600;color:var(--ds-good)">${esc(handSent())}</p>`)}
+  return `<section class="x4c" id="dr-card"><div class="x4ch"><h2>Data request</h2>${rows.length?`<span class="x4n">${rows.length}</span><span class="x4r"><button type="button" class="x4b" id="dr-draft" onclick="draftDataRequest()">Draft the data request</button></span>`:''}</div>
+    ${rows.length?`<div class="x4ls">${rows.map(r=>`<div class="x4li" title="${esc(r[1])}"><span class="x4tx"><b>${esc(r[0])}</b><span class="x4mut"> · ${esc(r[1])}</span></span></div>`).join('')}</div>`:'<p class="x4empty">Nothing to ask the client right now.</p>'}</section>`; };
+const X3K={client:'s1',id:'s1',practice:'s1',offer:'s1',name:'s1',nr:'s4',partner:'s4',lead:'s4',scope:'s2',cost:'s2',teams:'s3',unnamed:'s3',dup:'s3',fte:'s3',mix:'s3',off:'s5',ms:'moments',ms0:'moments',wsa:'ws',wso:'ws',wsp:'ws'};
+/* the hand-over list says what to do in the words of this screen */
+const X3_ISS=issues; issues=function(){ return X3_ISS().map(i=>i.k==='wsa'?Object.assign({},i,{s:'The work streams are still a proposal. Mark them as agreed once the team agrees.'}):i); };
+X4FIGS.s6=()=>{ const steps=setupSteps().filter(x=>x.k!=='s6'), done=steps.filter(x=>stepDone(x.k)).length, iss=issues(), hard=iss.filter(i=>!i.soft).length;
+  return [x4fig(done+' of '+steps.length,'Steps filled in',done<steps.length),x4fig(iss.length,hard?'Still open, '+hard+' to fix first':'Still open',hard>0),x4fig(((E.handoff||{}).questions||[]).filter(x=>String(x||'').trim()).length,'Questions for the client')]; };
+PAGES.s6=()=>{
+  buildExport(); const steps=setupSteps(), iss=issues(), hard=iss.filter(i=>!i.soft), soft=iss.filter(i=>i.soft);
+  const go2=i=>{ const k=X3K[i.k]||'s1'; return steps.some(x=>x.k===k)?k:'s1'; };
+  const stepName=k=>(TITLES[k]||[''])[0];
+  const open=hard.map(i=>({i,cls:'warn',tag:'Fix first'})).concat(soft.map(i=>({i,cls:'none',tag:'Can wait'})));
+  const openCard=x4card('Still open',open.length?`<div class="x4ls">${open.map(({i,cls,tag})=>{ const k=go2(i); return `<button type="button" class="x4li x4link" onclick="go('${k}')"><span class="x4tag ${cls}">${tag}</span><span class="x4tx">${esc(i.s)}</span><span class="x4mut">${esc(stepName(k))}</span>${X3RCHEV}</button>`; }).join('')}</div>`:'<p class="x4empty">Nothing open: every step is filled in.</p>',{span:1});
+  const hand=x4card('Hand it to Claude',`<p class="x4p" id="hand-say">${esc(handSay())}</p><div><button type="button" class="x4b primary" id="hand-claude" onclick="handToClaude()">${handLabel()}</button></div>
+      <p class="x4hint" id="hand-sent" ${handSent()?'':'hidden'} style="font-weight:600;color:var(--ds-good)">${esc(handSent())}</p>`);
+  return `<div class="x3"><div class="x4g">${openCard}
+      ${x4card('Still to ask the client',x4list('handoff.questions','Add a question'))}
+      ${x4card('What we assume',x4list('handoff.assumptions','Add an assumption'))}
+      ${drCard()}${hand}
     </div></div>`;
 };
 /* ▲ setup3 */
@@ -11175,7 +11138,7 @@ function analysesPage(t){
   const totalCnt=rows.length+baseInstr.length;
   const prodCnt=prod+baseInstr.filter(r=>r.status==='produced').length;
   return `<div class="dd-section"><div class="eyebrow">Analyses · evidence</div>
-    <div class="artf-head">The specific instruments run on each dimension, the evidence behind the readiness scores. <b>${prodCnt}</b> of ${totalCnt} produced. Each dimension links up to its <button class="artf-inline-link" onclick="QS.setTeamSub('diagnostic')">Lean maturity overview</button>; produced analyses open as a standalone view.</div>
+    <div class="artf-head qs-note">The specific instruments run on each dimension, the evidence behind the readiness scores. <b>${prodCnt}</b> of ${totalCnt} produced. Each dimension links up to its <button class="artf-inline-link" onclick="QS.setTeamSub('diagnostic')">Lean maturity overview</button>; produced analyses open as a standalone view.</div>
     ${groups}${twGroup}</div>`;
 }
 const DEPTH=[
@@ -12320,7 +12283,7 @@ function renderLevers(){
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(134px,1fr));gap:12px;">${HLEVER_ORDER.map(leverTile).join('')}</div>
     </div>
     <div class="dd-section" style="padding-bottom:6px;">
-      <div class="eyebrow">How to read this</div>
+      <div class="eyebrow qs-note">How to read this</div>
       <div style="font-size:var(--ds-fs-body);color:var(--muted);line-height:1.6;">Every scored team is placed under the <b style="color:var(--text);">one lever that activates its potential</b>, derived from the diagnostic, not asserted. Read the lanes top-to-bottom as the strategic order: fix the operating basics (ExOp) and the data foundation before reaching for automation or AI. The team-by-team initiatives on the <b style="color:var(--text);">Roadmap</b> sit one level below this, this view is the lever-level case for the ExCom. Click any team to open its profile.</div>
     </div>
     ${HLEVER_ORDER.map(lane).join('')}
@@ -12464,8 +12427,8 @@ function renderValueStake(){
   </div>
 
   <div class="dd-section">
-    <div class="eyebrow">How to read this</div>
-    <div style="font-size:var(--ds-fs-body);color:var(--muted);line-height:1.6;">
+    <div class="eyebrow qs-note">How to read this</div>
+    <div class="qs-note" style="font-size:var(--ds-fs-body);color:var(--muted);line-height:1.6;">
       Pure cost-out basis, all optimisable capacity is valued as gross saving at the fully-loaded cost per FTE agreed for this engagement.
       The phased chart maps when each initiative becomes executable: H1/H2 2026 contains opportunities that teams can act on immediately or within 12 months;
       H1/H2 2027 captures work that requires a data-foundation fix or deeper transformation first.
@@ -12880,7 +12843,7 @@ function renderTeamContent(){
         <div class="card span4" style="padding:0;overflow:hidden;display:flex;flex-direction:column;">
           <div style="padding:14px 16px 4px;display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;">
             <span class="ct">Opportunity backlog · this team</span>
-            <span style="font-size:var(--fs-10);color:var(--muted-2);">${t.opps.length} opportunities · ${aiC} AI candidate${aiC===1?'':'s'} · bottom-up ~${oppSum.toFixed(1)} FTE (triangulates the ~${totalOpt.toFixed(1)} FTE top-down baseline potential)</span>
+            <span class="qs-note" style="font-size:var(--fs-10);color:var(--muted-2);">${t.opps.length} opportunities · ${aiC} AI candidate${aiC===1?'':'s'} · bottom-up ~${oppSum.toFixed(1)} FTE (triangulates the ~${totalOpt.toFixed(1)} FTE top-down baseline potential)</span>
           </div>
           <div class="filterbar" id="team-opp-filters" style="padding:4px 16px 12px;margin:0;border-bottom:1px solid var(--divider);">
             <span class="flabel">Lever</span>
@@ -12903,7 +12866,7 @@ function renderTeamContent(){
       <div class="card" style="padding:0;overflow:hidden;">
         <div style="padding:14px 18px;border-bottom:1px solid var(--divider);display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;">
           <div><span class="ct">Activity map</span>
-            <span style="font-size:var(--fs-105);color:var(--muted);margin-left:8px;">workload · tasks · tools · data · inefficiencies, per activity; the avoidable share is indicative</span></div>
+            <span class="qs-note" style="font-size:var(--fs-105);color:var(--muted);margin-left:8px;">workload · tasks · tools · data · inefficiencies, per activity; the avoidable share is indicative</span></div>
           <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
             <button class="fchip" onclick="QS.resetOpt()" style="font-size:var(--fs-10);padding:4px 10px;">↺ Reset optimisation</button>
             <span style="font-size:var(--fs-95);color:var(--muted-2);">Nature: <b style="color:#3B6FBF;">R</b> rule-based → automation · <b style="color:var(--green-2);">S</b> semi-structured → AI acceleration · <b style="color:var(--purple);">K</b> knowledge-driven → AI enhancement</span>
@@ -13016,7 +12979,7 @@ function renderTeamContent(){
   const waterfallCard=`<div class="card span3" style="display:flex;flex-direction:column;height:clamp(300px, calc((100vh - 300px) / 2), 560px);">
       <div class="ch"><div class="ct">Value waterfall</div><div style="display:flex;align-items:center;gap:10px;"><span class="ov-chip-kpi" style="color:var(--green);">${WF.cov}%<small>of scope identified</small></span><button class="ov-gobtn" onclick="QS.setTeamSub('potential')">Improvement potential →</button></div></div>
       <div id="ov-wf" style="flex:1;position:relative;min-height:0;display:flex;align-items:center;justify-content:center;">${WF.svg}</div>
-      <div style="font-size:var(--fs-9);color:var(--muted-2);text-align:center;line-height:1.4;padding:2px 6px 0;">The potential comes off in three steps: <span style="color:var(--green);font-weight:700;">addressable now</span>, <span style="color:var(--amber);font-weight:700;">after the enablers</span>, and not yet identified, leaving ~${+WF.wfEnd.toFixed(0)} FTE of the ${+WF.totActFte.toFixed(0)} FTE scope.</div>
+      <div class="qs-note" style="font-size:var(--fs-9);color:var(--muted-2);text-align:center;line-height:1.4;padding:2px 6px 0;">The potential comes off in three steps: <span style="color:var(--green);font-weight:700;">addressable now</span>, <span style="color:var(--amber);font-weight:700;">after the enablers</span>, and not yet identified, leaving ~${+WF.wfEnd.toFixed(0)} FTE of the ${+WF.totActFte.toFixed(0)} FTE scope.</div>
     </div>`;
   const radarCard=NRD?`<div class="card span3 ov-clickcard" onclick="QS.setTeamSub('findings')" title="Open Findings by dimension" style="display:flex;flex-direction:column;height:clamp(300px, calc((100vh - 300px) / 2), 560px);">
       <div class="ch"><div class="ct">Potential by dimension</div><button class="ov-gobtn" onclick="event.stopPropagation();setTeamSub('findings')">Findings by dimension →</button></div>
@@ -13640,7 +13603,7 @@ function teamRoadmapHTML(t){
     </div>
     <div class="dd-section">
       <div class="eyebrow">Two-year transformation roadmap · ${t.name}</div>
-      <p style="font-size:var(--fs-115);color:var(--muted);margin:-2px 0 12px;max-width:880px;">Rows are <b style="color:var(--text);">transformation types</b>, columns are the half-years of 2026–2027. Each initiative sits in the half-year it starts, sequenced so the data foundation lands before the technology levers that depend on it, and a transformation track can run in parallel with an enabler track.</p>
+      <p class="qs-note" style="font-size:var(--fs-115);color:var(--muted);margin:-2px 0 12px;max-width:880px;">Rows are <b style="color:var(--text);">transformation types</b>, columns are the half-years of 2026–2027. Each initiative sits in the half-year it starts, sequenced so the data foundation lands before the technology levers that depend on it, and a transformation track can run in parallel with an enabler track.</p>
       ${body}
     </div>`;
 }
@@ -14487,7 +14450,7 @@ function renderValueStake__deprecated(){
       </div>
     </div>
     <div class="dd-section">
-      <div class="eyebrow">How to read this</div>
+      <div class="eyebrow qs-note">How to read this</div>
       <div style="font-size:var(--ds-fs-body);color:var(--muted);line-height:1.6;">Capacity is released on the roadmap's sequencing logic: foundational and ready-now levers land in <b>Stabilise</b>, the rest follows as readiness is built. The cumulative line is the annual run-rate once each horizon completes; the 3-year cumulative figure integrates the ramp. All numbers are indicative and meant to be set with the business, they are a basis for the conversation, not a committed business case.</div>
     </div>`;
   vsRecalc();
@@ -15966,6 +15929,222 @@ html.nr-client .qsx .tsub-nav .tsub::after{display:none!important}
   new MutationObserver(function(){ clearTimeout(all.t); all.t=setTimeout(function(){ all(); setTimeout(all,400); },30); }).observe(document.documentElement,{childList:true,subtree:true});
   setInterval(function(){ if(phone()) all(); },800);
   window.addEventListener('resize',function(){ clearTimeout(all.t); all.t=setTimeout(all,60); }); })();
+</script>
+<style id="qs-phone-css">
+/* qs-phone-css (Gilles, 16 Nov 2026): the client view shows numbers and visuals, not text. On the laptop the callout
+   boxes and the lines that explain a page go; on a phone the roadmap, a team's overview and the initiatives get screens
+   of their own, in the Training Companion's idiom: figures in one card, a chart under them, lists of rows with an icon. */
+html.nr-client .qsx .dd-verdict,html.nr-client .qsx .qs-note,html.nr-client .qsx .dd-section:has(> .qs-note),html.nr-client .qsx .vc-head>p,html.nr-client #page-roadmap .dd-section p,
+html.nr-client #opp-tbody td.dg-ins,html.nr-client #team-opp-tbody td.dg-ins,html.nr-client table:has(#opp-tbody) thead th:last-child,
+html.nr-client table:has(#team-opp-tbody) thead th:last-child,html.nr-client #page-roadmap .pos-leg>span:last-child{display:none!important}
+.qsp-on>:not(.qsp){display:none!important}
+.qsp{letter-spacing:normal;font-family:var(--ds-font);color:var(--ds-text);font-variant-numeric:tabular-nums;display:flex;flex-direction:column;gap:10px;padding-bottom:12px}
+.qsp *{box-sizing:border-box}
+.qsp-card{background:var(--ds-card);border-radius:14px;padding:14px 16px;position:relative}
+.qsp-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.qsp-lb{font-size:var(--ds-fs-body);color:var(--ds-text-2)}
+.qsp-figs{display:flex;gap:28px;margin:6px 0 4px}
+.qsp-big{font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.05;white-space:nowrap}
+.qsp-big small{font-size:var(--ds-fs-heading);font-weight:400;color:var(--ds-text-2);margin-left:3px;letter-spacing:0}
+.qsp-tag{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:10px;font-size:var(--ds-fs-label);font-weight:600;white-space:nowrap;background:var(--ds-fill);color:var(--ds-text-2)}
+.qsp-tag.good{background:var(--ds-accent-soft);color:var(--ds-accent)}.qsp-tag.warn{background:color-mix(in srgb,var(--ds-warn) 13%,transparent);color:var(--ds-warn)}
+.qsp-hd{display:flex;justify-content:space-between;align-items:baseline;margin:14px 2px 0}
+.qsp-hd b{font-size:var(--ds-fs-title);font-weight:700}.qsp-hd span{font-size:var(--ds-fs-label);color:var(--ds-text-2)}
+.qsp-link{background:none;border:0;padding:0;font:inherit;font-size:var(--ds-fs-body)!important;color:var(--ds-accent)!important;display:inline-flex;align-items:center;gap:2px;cursor:pointer}
+.qsp-link svg{width:14px;height:14px}
+.qsp-list{background:var(--ds-card);border-radius:14px;overflow:hidden}
+.qsp-it{display:flex;align-items:center;gap:11px;min-height:56px;padding:6px 12px 6px 14px;position:relative;cursor:pointer}
+.qsp-it:active{background:var(--ds-fill)}
+.qsp-it+.qsp-it:before{content:"";position:absolute;top:0;right:0;left:55px;border-top:.5px solid var(--ds-line)}
+.qsp-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;flex:none}
+.qsp-ic svg{width:17px;height:17px}
+.qsp-tx{flex:1;min-width:0}
+.qsp-t1{font-size:var(--ds-fs-heading);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qsp-t2{font-size:var(--ds-fs-label);color:var(--ds-text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:4px}
+.qsp-t2 span{min-width:0;overflow:hidden;text-overflow:ellipsis}.qsp-t2 svg{width:12px;height:12px;flex:none;color:var(--ds-warn)}
+.qsp-vl{font-size:var(--ds-fs-heading);font-weight:600;white-space:nowrap}.qsp-vl small{font-size:var(--ds-fs-label);color:var(--ds-text-2);font-weight:400;margin-left:2px}
+.qsp-chv{width:16px;height:16px;color:var(--ds-text-3);flex:none}
+.qsp-chip{width:40px;height:40px;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;background:var(--ds-fill);line-height:1.1}
+.qsp-chip span{font-size:var(--ds-fs-label);color:var(--ds-text-2);font-weight:600}.qsp-chip b{font-size:var(--ds-fs-heading);font-weight:700}
+.qsp-chip.cur{background:var(--ds-accent)}.qsp-chip.cur span,.qsp-chip.cur b{color:#fff}
+.qsp-bub{position:absolute;background:var(--ds-card);border-radius:8px;box-shadow:0 4px 16px rgba(15,43,82,.16);padding:6px 9px;font-size:var(--ds-fs-body);font-weight:600;white-space:nowrap;pointer-events:none;z-index:3}
+html .qsx .qsp .qsp-bub{box-shadow:0 4px 16px rgba(15,43,82,.16)!important}
+.qsp-bub div{font-size:var(--ds-fs-label);color:var(--ds-text-2);font-weight:400;display:flex;align-items:center;gap:5px}
+.qsp-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.qsp-lg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:var(--ds-fs-label);color:var(--ds-text-2);margin-bottom:10px}
+.qsp-lg span{display:flex;align-items:center;gap:5px}
+.qsp-grid{display:grid;grid-template-columns:96px repeat(4,minmax(0,1fr));gap:4px;align-items:center}
+.qsp-grid .n{font-size:var(--ds-fs-label);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qsp-cell{height:26px;border-radius:6px;cursor:pointer}.qsp-cell.e{border:1px dashed var(--ds-fill-strong)}
+.qsp-gx{font-size:var(--ds-fs-label);color:var(--ds-text-3);text-align:center;margin-top:4px;cursor:pointer}.qsp-gx.on{color:var(--ds-text);font-weight:600}
+.qsp-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qsp-tl{background:var(--ds-card);border-radius:14px;padding:12px 13px 11px;display:flex;flex-direction:column;gap:5px;min-width:0}
+.qsp-tl .nm{font-size:var(--ds-fs-body);font-weight:600;color:var(--ds-text-2);display:flex;align-items:center;gap:6px}
+.qsp-tl .nm svg{width:15px;height:15px}
+.qsp-tl .ft{display:flex;align-items:center;gap:6px;font-size:var(--ds-fs-label);color:var(--ds-text-2);white-space:nowrap;overflow:hidden}
+.qsp-bar{flex:1;height:6px;border-radius:3px;background:var(--ds-fill);overflow:hidden}.qsp-bar i{display:block;height:100%;border-radius:3px}
+.qsp-seg{display:flex;background:var(--ds-fill-strong);border-radius:10px;padding:3px}
+.qsp-seg button{flex:1;height:30px;border:0;background:none;border-radius:7px;font:inherit;font-size:var(--ds-fs-body);color:var(--ds-text-2);cursor:pointer}
+.qsp-seg button.on{background:var(--ds-card);color:var(--ds-text);font-weight:600}
+.qsp-split{display:flex;gap:2px;height:10px;border-radius:5px;overflow:hidden;margin-bottom:12px}
+.qsp-splg{display:grid;grid-template-columns:1fr 1fr;gap:7px 18px}
+.qsp-row{display:flex;align-items:center;gap:8px;font-size:var(--ds-fs-body)}.qsp-row span{flex:1;color:var(--ds-text-2)}.qsp-row b{font-weight:600}
+.qsp-ring{display:flex;gap:16px;align-items:center}
+.qsp svg text{font-family:var(--ds-font)}
+</style>
+<script id="qs-phone">
+/* qs-phone (Gilles, 16 Nov 2026): on a phone the client view's roadmap, a team's overview and the initiatives are
+   screens built for the phone, from the same numbers as the laptop pages (QS.teamPeriods, QS.valueWaterfall,
+   QS.readinessModel, the benefit assumptions). The laptop pages stay as they are underneath and come back above 760px. */
+(function(){
+if(!window.QS) return;
+var TT={opex:['OpEx','#2A4D8F'],e2e:['End-to-end','#C0392B'],mining:['Process mining','#2A8C82'],auto:['Automation','#5B8ACB'],ai:['AI','#1D7044'],data:['Data','#B8620A']};
+var ORDER=['opex','e2e','mining','auto','ai','data'];
+var OF={process:'opex',lean:'opex',change:'opex',journey:'e2e',org:'e2e',data:'data',auto:'auto',aiacc:'ai',aienh:'ai'};
+var S='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
+var IC={opex:S+'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/></svg>',
+  e2e:S+'<circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h8.5a3.5 3.5 0 0 0 0-7h-9a3.5 3.5 0 0 1 0-7H16"/></svg>',
+  mining:S+'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg>',
+  auto:S+'<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>',
+  ai:S+'<path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"/></svg>',
+  data:S+'<ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></svg>',
+  lock:S+'<rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+  chev:S+'<path d="M9 6l6 6-6 6"/></svg>',
+  stairs:S+'<path d="M4 20h5v-5h5v-5h6"/></svg>', spark:S+'<path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"/></svg>',
+  euro:S+'<path d="M17 6.5A7 7 0 1 0 17 17.5"/><path d="M4 10h9M4 14h9"/></svg>', cal:S+'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>'};
+var HL=['H1 2026','H2 2026','H1 2027','H2 2027'], HS=[['H1','’26'],['H2','’26'],['H1','’27'],['H2','’27']];
+function phone(){ return window.matchMedia('(max-width:760px)').matches; }
+function esc(x){ return String(x==null?'':x).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function mid(r){ return Array.isArray(r)?(r[0]+r[1])/2:(+r||0); }
+function hi(r){ return Array.isArray(r)?r[1]:(+r||0); }
+function f1(v){ return (Math.round(v*10)/10).toFixed(1); }
+function f0(v){ return String(Math.round(v)); }
+function eur(v){ return v>=1e6?'€'+(v/1e6).toFixed(1)+'M':'€'+Math.round(v/1e3)+'k'; }
+function money(fte){ var A=QS.getAssumptions?QS.getAssumptions():{}; return fte*(A.costPerFte||80000)*((A.realisationRate||100)/100); }
+function ok(o,t){ try{ return QS.readinessModel(o,t).verdict==='act'; }catch(e){ return true; } }
+function items(only){ var out=[]; (QS.TEAMS||[]).forEach(function(t){ if(only&&t.id!==only) return; if(!t.opps||!t.opps.length) return;
+  QS.teamPeriods(t).forEach(function(arr,p){ arr.forEach(function(o){ out.push({o:o,t:t,p:p,k:OF[o.lever]||'opex',f:mid(o.fte),h:hi(o.fte),ok:ok(o,t)}); }); }); }); return out; }
+function sum(a,k){ return a.reduce(function(s,x){ return s+x[k]; },0); }
+function dom(list){ var m={}; list.forEach(function(x){ m[x.k]=(m[x.k]||0)+x.f; }); var b=null; Object.keys(m).forEach(function(k){ if(b===null||m[k]>m[b]) b=k; }); return b; }
+var REG=[];
+function row(x,lead,sub){ var i=REG.push(x.o)-1;
+  return '<div class="qsp-it" data-o="'+i+'">'+(lead||'<div class="qsp-ic" style="background:'+TT[x.k][1]+'">'+IC[x.k]+'</div>')
+    +'<div class="qsp-tx"><div class="qsp-t1">'+esc(x.o.activity)+'</div><div class="qsp-t2"><span>'+esc(sub)+'</span>'+(x.ok?'':IC.lock)+'</div></div>'
+    +'<div class="qsp-vl">'+f1(x.f)+'<small>FTE</small></div>'+IC.chev.replace('<svg','<svg class="qsp-chv"')+'</div>'; }
+function wireRows(el){ el.querySelectorAll('.qsp-it[data-o]').forEach(function(r){ r.onclick=function(){ try{ QS.oppDetail(REG[+r.getAttribute('data-o')]); }catch(e){} }; }); }
+function arc(cx,cy,r,a0,a1){ var p=function(a){ return [cx+r*Math.sin(a*2*Math.PI),cy-r*Math.cos(a*2*Math.PI)]; }, s=p(a0), e=p(a1);
+  return 'M'+s[0].toFixed(2)+' '+s[1].toFixed(2)+' A'+r+' '+r+' 0 '+(a1-a0>.5?1:0)+' 1 '+e[0].toFixed(2)+' '+e[1].toFixed(2); }
+function ring(size,stroke,parts,total,center,unit){ var c=size/2, r=c-stroke/2-1, a=0, g=parts.length>1?.005:0,
+  s='<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" style="flex:none"><circle cx="'+c+'" cy="'+c+'" r="'+r+'" fill="none" stroke="var(--ds-fill)" stroke-width="'+stroke+'"/>';
+  parts.forEach(function(p,i){ var b=a+p[1]/total; if(b-a>.002) s+='<path data-r="'+i+'" d="'+arc(c,c,r,a+g,Math.min(b-g,.9999))+'" fill="none" stroke="'+p[2]+'" stroke-width="'+stroke+'" style="cursor:pointer"/>'; a=b; });
+  return s+'<text x="'+c+'" y="'+(c+(size>110?6:4))+'" text-anchor="middle" style="font-size:'+(size>110?'28px':'var(--ds-fs-title)')+'" font-weight="600" fill="var(--ds-text)">'+center+'</text>'
+    +'<text x="'+c+'" y="'+(c+(size>110?24:19))+'" text-anchor="middle" style="font-size:var(--ds-fs-label)" fill="var(--ds-text-2)">'+unit+'</text></svg>'; }
+function bubble(card,html,x,y){ var b=card.querySelector(':scope > .qsp-bub'); if(!b){ b=document.createElement('div'); b.className='qsp-bub'; card.appendChild(b); }
+  b.innerHTML=html; b.style.display='block'; var w=b.offsetWidth, cw=card.clientWidth; b.style.left=Math.max(6,Math.min(cw-w-6,x-w/2))+'px'; b.style.top=(y-b.offsetHeight-8)+'px'; }
+
+/* ---------------- Roadmap ---------------- */
+var selP=null;
+function road(el){ REG=[]; var all=items(); var P=[0,1,2,3].map(function(p){ var a=all.filter(function(x){ return x.p===p; }); return {p:p,a:a,f:sum(a,'f')}; });
+  if(selP===null){ selP=0; for(var i=0;i<4;i++){ if(P[i].a.length){ selP=i; break; } } }
+  var tot=sum(all,'f'), y26=tot?Math.round((P[0].f+P[1].f)/tot*100):0;
+  var teams=(QS.TEAMS||[]).filter(function(t){ return t.opps&&t.opps.length; });
+  var used=ORDER.filter(function(k){ return all.some(function(x){ return x.k===k; }); });
+  var sel=P[selP], list=sel.a.slice().sort(function(a,b){ return b.f-a.f; });
+  el.innerHTML='<div class="qsp-card" data-c="bars"><div class="qsp-top"><span class="qsp-lb">Potential</span><span class="qsp-tag good">'+y26+'% in 2026</span></div>'
+    +'<div class="qsp-figs"><div class="qsp-big">'+f0(tot)+'<small>FTE</small></div><div class="qsp-big">'+eur(money(sum(all,'h')))+'<small>a year</small></div></div><div class="qsp-bars"></div></div>'
+    +'<div class="qsp-hd"><b>By team</b></div><div class="qsp-card"><div class="qsp-lg">'+used.map(function(k){ return '<span><i class="qsp-dot" style="background:'+TT[k][1]+'"></i>'+TT[k][0]+'</span>'; }).join('')+'</div>'
+    +'<div class="qsp-grid">'+teams.map(function(t){ return '<div class="n">'+esc(t.name)+'</div>'+[0,1,2,3].map(function(p){ var a=all.filter(function(x){ return x.t===t&&x.p===p; });
+        return a.length?'<div class="qsp-cell" data-p="'+p+'" style="background:'+TT[dom(a)][1]+'"></div>':'<div class="qsp-cell e" data-p="'+p+'"></div>'; }).join(''); }).join('')
+    +'<div></div>'+HS.map(function(h,p){ return '<div class="qsp-gx'+(p===selP?' on':'')+'" data-p="'+p+'">'+h[0]+' '+h[1]+'</div>'; }).join('')+'</div></div>'
+    +'<div class="qsp-hd"><b>'+HL[selP]+'</b><span>'+list.length+' initiative'+(list.length===1?'':'s')+' · '+f1(sel.f)+' FTE</span></div>'
+    +(list.length?'<div class="qsp-list">'+list.map(function(x){ return row(x,null,x.t.name); }).join('')+'</div>':'');
+  var card=el.querySelector('[data-c="bars"]'), box=card.querySelector('.qsp-bars'), W=Math.max(200,box.clientWidth), H=150, base=128, mx=Math.max(.1,Math.max.apply(null,P.map(function(x){ return x.f; })));
+  var slot=W/4, bw=Math.min(56,slot-18), s='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" style="display:block">';
+  P.forEach(function(x,p){ var h=Math.max(3,x.f/mx*(base-58)), bx=p*slot+(slot-bw)/2;
+    s+='<rect x="'+bx.toFixed(1)+'" y="'+(base-h).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="4" fill="'+(p===selP?'var(--ds-accent)':'var(--ds-fill-strong)')+'"/>'
+      +'<text x="'+(p*slot+slot/2).toFixed(1)+'" y="'+(H-4)+'" text-anchor="middle" style="font-size:var(--ds-fs-label)" font-weight="'+(p===selP?600:400)+'" fill="'+(p===selP?'var(--ds-text)':'var(--ds-text-3)')+'">'+HS[p][0]+' '+HS[p][1]+'</text>'
+      +'<rect data-p="'+p+'" x="'+(p*slot).toFixed(1)+'" y="0" width="'+slot.toFixed(1)+'" height="'+H+'" fill="transparent" style="cursor:pointer"/>'; });
+  box.innerHTML=s+'<line x1="0" x2="'+W+'" y1="'+(base+.5)+'" y2="'+(base+.5)+'" stroke="var(--ds-line)"/></svg>';
+  var sh=Math.max(3,sel.f/mx*(base-58)); bubble(card,'<div>'+HL[selP]+'</div>'+f1(sel.f)+' FTE',box.offsetLeft+selP*slot+slot/2,box.offsetTop+base-sh);
+  el.querySelectorAll('[data-p]').forEach(function(n){ n.addEventListener('click',function(){ selP=+n.getAttribute('data-p'); road(el); }); });
+  wireRows(el); }
+
+/* ---------------- Initiatives ---------------- */
+var flt='all';
+function opps(el){ REG=[]; var all=items(), nR=all.filter(function(x){ return x.ok; }).length;
+  var list=all.filter(function(x){ return flt==='all'||(flt==='act'?x.ok:!x.ok); }).sort(function(a,b){ return b.f-a.f; });
+  var by=ORDER.map(function(k){ return [k,sum(list.filter(function(x){ return x.k===k; }),'f')]; }).filter(function(x){ return x[1]>.001; }).sort(function(a,b){ return b[1]-a[1]; });
+  el.innerHTML='<div class="qsp-seg">'+[['all','All '+all.length],['act','Ready '+nR],['fix','Waiting '+(all.length-nR)]].map(function(s){ return '<button data-f="'+s[0]+'" class="'+(flt===s[0]?'on':'')+'">'+s[1]+'</button>'; }).join('')+'</div>'
+    +'<div class="qsp-card"><span class="qsp-lb">By type of change</span><div class="qsp-figs"><div class="qsp-big">'+f0(sum(list,'f'))+'<small>FTE</small></div><div class="qsp-big">'+eur(money(sum(list,'h')))+'<small>a year</small></div></div>'
+    +'<div class="qsp-split">'+by.map(function(x){ return '<i style="flex:'+x[1]+';background:'+TT[x[0]][1]+'"></i>'; }).join('')+'</div>'
+    +'<div class="qsp-splg">'+by.map(function(x){ return '<div class="qsp-row"><i class="qsp-dot" style="background:'+TT[x[0]][1]+'"></i><span>'+TT[x[0]][0]+'</span><b>'+f1(x[1])+'</b></div>'; }).join('')+'</div></div>'
+    +'<div class="qsp-hd"><b>Biggest first</b></div>'
+    +(list.length?'<div class="qsp-list">'+list.map(function(x){ return row(x,null,HS[x.p][0]+' '+HS[x.p][1]+' · '+x.t.name); }).join('')+'</div>':'');
+  el.querySelectorAll('.qsp-seg button').forEach(function(b){ b.onclick=function(){ flt=b.getAttribute('data-f'); opps(el); }; });
+  wireRows(el); }
+
+/* ---------------- A team's overview ---------------- */
+function team(el,t){ REG=[]; var WF=QS.valueWaterfall(t), scope=WF.totActFte||t.fte||0, pot=WF.nowFte+WF.laterFte+WF.notYet;
+  var R=[['Addressable now',WF.nowFte,'var(--ds-accent)'],['After the enablers',WF.laterFte,'#B8620A'],['Not yet identified',WF.notYet,'var(--ds-fill-strong)']];
+  var mine=items(t.id), all=items(), first=mine.length?Math.min.apply(null,mine.map(function(x){ return x.p; })):0;
+  var scored=(QS.TEAMS||[]).filter(function(x){ return x.scores&&Object.keys(x.scores).every(function(k){ return x.scores[k]!=null; }); });
+  var wo=function(x){ try{ return QS.weightedOverall(x); }catch(e){ return NaN; } }, mt=wo(t), ws=scored.map(wo).filter(function(v){ return !isNaN(v)&&v>0; });
+  var avg=ws.length?ws.reduce(function(a,b){ return a+b; },0)/ws.length:mt, lo=ws.length?Math.min.apply(null,ws):mt, hiW=ws.length?Math.max.apply(null,ws):mt;
+  var mtag=isNaN(mt)?['','—']:mt>avg+.25?['good','Above average']:mt<avg-.25?['warn','Below average']:['','Average'];
+  var keys=Object.keys(t.scores||{}).filter(function(k){ return t.scores[k]!=null; }), minS=Math.min.apply(null,keys.map(function(k){ return t.scores[k]; })), nMin=keys.filter(function(k){ return t.scores[k]===minS; }).length;
+  var mb='<svg width="100%" height="22" viewBox="0 0 '+(keys.length*22)+' 22" preserveAspectRatio="none">'+keys.map(function(k,i){ var v=t.scores[k], h=Math.max(3,v/5*22);
+    return '<rect x="'+(i*22)+'" y="'+(22-h)+'" width="18" height="'+h+'" rx="2" fill="'+(v===minS&&nMin===1?'#B8620A':'var(--ds-navy)')+'"/>'; }).join('')+'</svg>';
+  var rs=+t.readinessScore||0, ready=rs>=50, sc=t.scores||{}, mn=function(a){ return Math.min.apply(null,a.map(function(k){ return sc[k]==null?5:sc[k]; })); };
+  var gates=[['Data',mn(['data'])],['Organisation',mn(['org','mgmt'])],['Process',mn(['proc','mind'])]].sort(function(a,b){ return a[1]-b[1]; });
+  var th=sum(mine,'h'), ah=sum(all,'h'), share=ah?Math.round(th/ah*100):0;
+  var per=[0,1,2,3].map(function(p){ return sum(mine.filter(function(x){ return x.p===p; }),'f'); }), tf=sum(mine,'f'), p26=tf?Math.round((per[0]+per[1])/tf*100):0, yr=p26>=50?'2026':'2027';
+  var pm=Math.max(.1,Math.max.apply(null,per));
+  var tb='<svg width="100%" height="22" viewBox="0 0 130 22" preserveAspectRatio="none">'+per.map(function(v,p){ var h=v>0?Math.max(3,v/pm*22):2;
+    return '<rect x="'+(p*34)+'" y="'+(22-h)+'" width="28" height="'+h+'" rx="2" fill="'+((p<2)===(yr==='2026')&&v>0?'var(--ds-accent)':'var(--ds-fill-strong)')+'"/>'; }).join('')+'</svg>';
+  var tile=function(ic,col,nm,v,u,viz,ft){ return '<div class="qsp-tl"><div class="nm"><span style="color:'+col+';display:flex">'+ic+'</span>'+nm+'</div><div class="qsp-big">'+v+(u?'<small>'+u+'</small>':'')+'</div><div style="height:22px;display:flex;align-items:center">'+viz+'</div><div class="ft">'+ft+'</div></div>'; };
+  var by=ORDER.map(function(k){ return [k,sum(mine.filter(function(x){ return x.k===k; }),'f')]; }).filter(function(x){ return x[1]>.001; }).sort(function(a,b){ return b[1]-a[1]; });
+  var kl=mine.slice().sort(function(a,b){ return a.p-b.p||b.f-a.f; });
+  var kpis=by.length<=3
+    ? '<div class="qsp-card qsp-ring">'+ring(96,11,by.map(function(x){ return [TT[x[0]][0],x[1],TT[x[0]][1]]; }),Math.max(.01,tf),f1(tf),'FTE')
+      +'<div style="flex:1;display:flex;flex-direction:column;gap:9px">'+by.map(function(x){ return '<div class="qsp-row"><i class="qsp-dot" style="background:'+TT[x[0]][1]+'"></i><span>'+TT[x[0]][0]+'</span><b>'+f1(x[1])+'</b></div>'; }).join('')+'</div></div>'
+    : '<div class="qsp-card"><div class="qsp-split">'+by.map(function(x){ return '<i style="flex:'+x[1]+';background:'+TT[x[0]][1]+'"></i>'; }).join('')+'</div><div class="qsp-splg">'
+      +by.map(function(x){ return '<div class="qsp-row"><i class="qsp-dot" style="background:'+TT[x[0]][1]+'"></i><span>'+TT[x[0]][0]+'</span><b>'+f1(x[1])+'</b></div>'; }).join('')+'</div></div>';
+  el.innerHTML='<div class="qsp-card qsp-ring" data-c="ring">'+ring(124,13,R,Math.max(.01,scope),f1(pot),'FTE')
+      +'<div><div class="qsp-lb">Improvement potential</div><div class="qsp-big" style="margin:4px 0 2px">'+(scope?Math.round(pot/scope*100):0)+'%</div><div class="qsp-lb">of the team\'s '+f0(scope)+' FTE</div>'
+      +'<button class="qsp-link" data-sub="potential" style="margin-top:10px">Potential'+IC.chev+'</button></div></div>'
+    +'<div class="qsp-tiles">'
+      +tile(IC.stairs,'var(--ds-navy)','Maturity',isNaN(mt)?'—':mt.toFixed(1),'/ 5',mb,(mtag[0]||mtag[1]!=='—'?'<span class="qsp-tag '+mtag[0]+'">'+mtag[1]+'</span>':'')+(ws.length>1?'teams '+lo.toFixed(1)+'–'+hiW.toFixed(1):''))
+      +tile(IC.spark,'var(--ds-accent)','AI readiness',f0(rs),'/ 100','<div class="qsp-bar"><i style="width:'+Math.min(100,rs)+'%;background:'+(ready?'var(--ds-accent)':'#B8620A')+'"></i></div>','<span class="qsp-tag '+(ready?'good':'warn')+'">'+(ready?'Ready':'Not ready')+'</span>'+(ready?'':gates[0][0].toLowerCase()+' first'))
+      +tile(IC.euro,'var(--ds-accent)','Value',eur(money(th)),'a year','<div class="qsp-bar"><i style="width:'+share+'%;background:var(--ds-accent)"></i></div>',share+'% of the total')
+      +tile(IC.cal,'var(--ds-navy)','Timing',tf?yr:'—','',tb,tf?p26+'% in 2026':'')
+    +'</div>'
+    +(mine.length?'<div class="qsp-hd"><b>Key initiatives</b><button class="qsp-link" data-sub="potential">All '+mine.length+IC.chev+'</button></div>'+kpis
+      +'<div class="qsp-list">'+kl.map(function(x){ return row(x,'<div class="qsp-chip'+(x.p===first?' cur':'')+'"><span>'+HS[x.p][0]+'</span><b>'+HS[x.p][1]+'</b></div>',TT[x.k][0]); }).join('')+'</div>':'');
+  el.querySelectorAll('[data-sub]').forEach(function(b){ b.onclick=function(){ QS.setTeamSub(b.getAttribute('data-sub')); }; });
+  var card=el.querySelector('[data-c="ring"]'), svg=card.querySelector('svg');
+  var show=function(e){ var i=e.target.getAttribute&&e.target.getAttribute('data-r'); var b=card.querySelector(':scope > .qsp-bub'); if(i===null||i===undefined){ if(b) b.style.display='none'; return; }
+    var x=R[+i], cr=card.getBoundingClientRect(); bubble(card,'<div><i class="qsp-dot" style="background:'+x[2]+'"></i>'+x[0]+'</div>'+f1(x[1])+' FTE',e.clientX-cr.left,e.clientY-cr.top); };
+  svg.addEventListener('pointermove',show); svg.addEventListener('click',show); svg.addEventListener('pointerleave',function(){ var b=card.querySelector(':scope > .qsp-bub'); if(b) b.style.display='none'; });
+  wireRows(el); }
+
+/* ---------------- mounting ---------------- */
+function host(id){ var n=document.getElementById(id); return n&&n.parentElement; }
+function place(h,id,draw,key){ if(!h) return; var m=h.querySelector(':scope > #'+id);
+  if(!phone()){ if(m) m.remove(); h.classList.remove('qsp-on'); return; }
+  if(m&&m.getAttribute('data-k')===key) return;
+  if(!m){ m=document.createElement('div'); m.className='qsp'; m.id=id; h.insertBefore(m,h.firstChild); }
+  m.setAttribute('data-k',key); h.classList.add('qsp-on'); try{ draw(m); }catch(e){ m.remove(); h.classList.remove('qsp-on'); } }
+function run(){ if(!window.NR_CLIENT_VIEW) return;
+  if(typeof PAGE!=='undefined'&&PAGE==='croad') place(host('page-roadmap'),'qsp-road',road,'r');
+  if(typeof PAGE!=='undefined'&&PAGE==='copps') place(host('page-opportunities'),'qsp-opps',opps,'o');
+  var tc=document.getElementById('team-sub-content'), act=document.querySelector('.tsub-nav .tsub.active');
+  if(tc){ var ov=!!(act&&/'overview'/.test(act.getAttribute('onclick')||'')), t=(QS.TEAMS||[]).filter(function(x){ return x.id===QS.activeTeamId; })[0];
+    if(ov&&t) place(tc,'qsp-team',function(m){ team(m,t); },t.id); else { var m=tc.querySelector(':scope > #qsp-team'); if(m) m.remove(); tc.classList.remove('qsp-on'); } } }
+var tm; function soon(){ clearTimeout(tm); tm=setTimeout(run,40); }
+new MutationObserver(soon).observe(document.documentElement,{childList:true,subtree:true});
+var lastPh=phone(); window.addEventListener('resize',function(){ var p=phone(); if(p!==lastPh){ lastPh=p; ['qsp-road','qsp-opps','qsp-team'].forEach(function(id){ var m=document.getElementById(id); if(m) m.setAttribute('data-k',''); }); } soon(); });
+window.NRPhone={run:run};
+})();
 </script>
 <script id="find-client">
 /* find-client (Gilles, 16 Nov 2026): the client view. The dashboard a client gets, the way our first client demo showed it:
