@@ -1,0 +1,2425 @@
+<!doctype html>
+<!-- ============================================================================
+  SERVICE BLUEPRINT  ·  the customer axis over the operating baseline
+  Lanes come from task.visibility, columns from journey.stages (baseline/2026.9).
+  Replace ONLY the /* DATA */ block. Three views: Blueprint / Journey / Pain points.
+  <style> inlined from templates/brand.css (canonical). Logo inlined.
+============================================================================ -->
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Service Blueprint</title>
+<style>
+/* Type scale — one place, not case by case. Every size below 12px is a token; the
+   whole small end lifts on a narrow screen so nothing drops under 11px on a phone. */
+:root{
+  --fs-65:6.5px; --fs-7:7px; --fs-75:7.5px; --fs-8:8px; --fs-85:8.5px; --fs-9:9px;
+  --fs-95:9.5px; --fs-10:10px; --fs-105:10.5px; --fs-11:11px; --fs-115:11.5px;
+}
+@media (max-width:760px){
+  :root{
+    --fs-65:11px; --fs-7:11px; --fs-75:11px; --fs-8:11px; --fs-85:11px; --fs-9:11px;
+    --fs-95:11px; --fs-10:11.5px; --fs-105:12px; --fs-11:12px; --fs-115:12.5px;
+  }
+}
+</style>
+<style>
+  *{box-sizing:border-box}
+  :root{--page:#FFF}
+  html,body{margin:0;height:100vh;overflow:hidden}
+  body{background:var(--page);font-family:'Aptos','Segoe UI',system-ui,sans-serif}
+  #art{--navy:#0B2347;--slate:#364156;--green:#1C7A4A;--accent:#6EB1D1;--navy2:#16315B;--rag-green:#2F8F6B;--rag-amber:#D49A3A;--rag-red:#D2645A;--rag-na:#9AA4B0;--rag-green-text:#2F8F6B;--rag-amber-text:#B97F22;--rag-red-text:#C2483D;--rag-na-text:#6B7480;--tint-green:rgba(47,143,107,.12);--tint-amber:rgba(212,154,58,.16);--tint-red:rgba(210,100,90,.13);--tint-na:rgba(154,164,176,.16);--navy-fill:#0B2347;
+      --slate-10:rgba(54,65,86,.09);--navy-10:rgba(11,35,71,.10);--green-10:rgba(28,122,74,.10);
+      --soft:#F5F7FB;--muted:#7A838F;--ink:#15243A;--txt:#46505C;--mut:#7A838F;--line:#E1E6EE;--card:#FFF;--bg:#FFF;
+      --sh:0 1px 2px rgba(20,30,50,.04),0 14px 32px -24px rgba(20,30,50,.30);
+      width:100%;max-width:2200px;margin:0 auto;height:100vh;overflow:hidden;position:relative;
+      display:flex;flex-direction:column;background:var(--bg);color:var(--ink);padding:76px 40px 12px 98px}
+  #art[data-t="dark"]{--soft:#141E2A;--muted:#94A1B2;--bg:#16202C;--card:#1E2937;--ink:#EAEFF5;--txt:#C4CEDA;--mut:#94A1B2;--line:#2A3744;--navy-fill:#243246;--accent:#8FC7E8;--steel:#93A9C4;--rag-green:#5FBF94;--rag-amber:#E8B96A;--rag-red:#F0968C;--rag-na:#9AA8B8;--rag-green-text:#5FBF94;--rag-amber-text:#E8B96A;--rag-red-text:#F0968C;--rag-na-text:#9AA8B8;--tint-green:rgba(95,191,148,.15);--tint-amber:rgba(232,185,106,.15);--tint-red:rgba(240,150,140,.14);--tint-na:rgba(148,161,178,.15);--sh:0 1px 2px rgba(0,0,0,.4),0 14px 32px -24px rgba(0,0,0,.6)}
+  body:has(#art[data-t="dark"]){--page:#0E1620}
+  .nr-rail{position:absolute;left:0;top:0;bottom:0;width:52px;background:var(--navy-fill)}
+  .toprow{position:absolute;top:22px;left:0;right:40px;display:flex;justify-content:space-between;align-items:center;gap:14px;z-index:3}
+  .tags{display:flex;align-items:center;gap:11px}
+  .nr-pill{display:inline-flex;align-items:center;gap:11px;background:var(--green);padding:10px 22px 10px 14px;border-radius:0 9px 9px 0}
+  .nr-pill img{height:21px;filter:brightness(0) invert(1)} .nr-pill b{color:#fff;font-size:13px;font-weight:700;letter-spacing:.3px}
+  .nr-track{background:#E3E8EF;color:var(--navy);font-weight:700;font-size:var(--fs-115);letter-spacing:.8px;padding:9px 16px;border-radius:8px}
+  #art[data-t="dark"] .nr-track{background:#243246;color:#EAEFF5}
+  .seg{display:flex;background:var(--slate-10);border-radius:999px;padding:3px}
+  .seg button{font-size:12px;font-weight:600;border:none;background:transparent;color:var(--mut);padding:6px 14px;border-radius:999px;cursor:pointer}
+  .seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--sh)}
+  h1{font-size:clamp(20px,1.85vw,28px);font-weight:700;color:var(--navy);letter-spacing:-.2px;line-height:1.24;margin:0 0 16px;max-width:1300px}
+  #art[data-t="dark"] h1{color:#EAEFF5} h1 .hl{color:var(--green)}
+  #view{flex:1;min-height:0;position:relative;overflow:auto}
+  .board{display:grid;gap:10px}
+  .colhead{display:grid;gap:10px;margin-bottom:6px}
+  .stage{background:var(--navy2);color:#fff;font-size:12px;font-weight:700;letter-spacing:.4px;padding:9px 12px;border-radius:8px;text-align:center}
+  .lane{display:grid;gap:10px;align-items:stretch}
+  .lanelabel{display:flex;align-items:center;font-size:12px;font-weight:700;color:var(--navy);background:var(--slate-10);border-radius:8px;padding:0 12px}
+  #art[data-t="dark"] .lanelabel{color:#EAEFF5}
+  .cell{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh);padding:11px 13px;font-size:12.5px;color:var(--txt);line-height:1.4}
+  .cell b{color:var(--ink);display:block;margin-bottom:3px;font-size:13px}
+  .cell.empty{background:transparent;border:1px dashed var(--line);box-shadow:none}
+  #ft{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:var(--fs-11);color:var(--mut)}
+  .conf{font-size:0.88em;letter-spacing:.5px;font-weight:600}
+  /* ── service blueprint ── */
+  #art{--steel:#7991AD}   /* the dark palette defines it; the light one does not */
+  .ctrls{display:flex;gap:9px;flex:none}
+  .subrow{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:6px 0 14px}
+  .subt{font-size:15px;font-weight:600;color:var(--accent)}
+  .stamp{font-size:var(--fs-11);color:var(--mut)}
+  #view{flex:1;min-height:0;position:relative;overflow:hidden}
+  #vinner{position:absolute;top:0;left:0;width:100%;transform-origin:top left;padding-bottom:20px}
+  /* on the canvas the inner box is a flex column that fills the frame and scrolls inside itself */
+  #art.canvasview #vinner{position:absolute;inset:0;padding-bottom:0;display:flex;flex-direction:column}
+  #art.canvasview #view{overflow:hidden}
+
+  .bp{display:grid;gap:1px;align-content:stretch;background:var(--line);
+      border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .bp>*{background:var(--card)}
+
+  /* the column heads: a stage, its number, and the work that maps to it */
+  .hd{background:var(--navy2);color:#fff;font-size:12px;font-weight:700;letter-spacing:.2px;
+      padding:9px 11px;line-height:1.3}
+  .hd .n{opacity:.6;font-weight:800;margin-right:5px}
+  .hd small{display:block;font-weight:400;opacity:.68;font-size:var(--fs-95);margin-top:3px;
+      letter-spacing:.1px;line-height:1.35}
+  .hd.off{background:#8A7B58}
+
+  /* the rail: what each row is, and what it answers */
+  .lbl{background:var(--slate-10);display:flex;align-items:flex-start;gap:8px;padding:9px 11px;
+       font-size:var(--fs-11);font-weight:700;color:var(--navy);line-height:1.25}
+  #art[data-t="dark"] .lbl{color:#EAEFF5}
+  .lbl .ic{flex:none;width:15px;height:15px;margin-top:1px;color:var(--accent)}
+  .lbl .ic svg{width:15px;height:15px;display:block}
+  .lbl em{display:block;font-style:normal;font-weight:400;font-size:var(--fs-95);color:var(--mut);
+          margin-top:2px;letter-spacing:.1px;line-height:1.35}
+  .lbl.acc{--nr-tc:var(--l-col);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
+
+  .cell{padding:9px 11px;font-size:12px;color:var(--txt);line-height:1.4}
+  .cell.none{background:var(--soft)}
+  .cell.off{background:rgba(180,150,70,.05)}
+
+  /* a lane cell groups its steps by the team that performs them - but only names the team when
+     the row actually holds more than one, or the name would repeat in every cell and say nothing */
+  .grp{display:block;font-size:var(--fs-11);font-weight:700;color:var(--ink);margin-bottom:3px}
+  .grp+.stp{margin-top:0}
+  .stp{position:relative;padding-left:9px;font-size:var(--fs-115);color:var(--txt);line-height:1.4}
+  .stp:before{content:'';position:absolute;left:0;top:6px;width:3px;height:3px;border-radius:50%;
+              background:var(--mut)}
+  .stp+.stp{margin-top:3px}
+  .stp b{display:inline;font-weight:600;color:var(--txt);font-size:var(--fs-115)}
+  .stp .sys{display:block;font-size:var(--fs-95);color:var(--mut);letter-spacing:.1px}
+  .grp2{margin-top:8px}
+
+  /* what the customer does: chips, read left to right, with the flow between them */
+  .jstep{display:inline-flex;align-items:center;gap:6px;background:var(--card);
+         border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:var(--fs-11);
+         font-weight:600;color:var(--ink);line-height:1.3}
+  .jwrap{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .jarr{color:var(--rag-green);flex:none}
+  .jarr svg{width:15px;height:9px;display:block}
+  .cell.jrow{background:rgba(47,143,107,.04);position:relative}
+  .jnext{position:absolute;right:-10px;top:15px;z-index:2;
+         background:var(--card);border-radius:50%;padding:3px 2px;line-height:0}
+
+  /* how they feel: a track, not a rating. The dot says good or bad, the note says their word. */
+  .cell.feelrow{position:relative;overflow:visible}
+  .feel{position:relative;display:flex;align-items:center;gap:8px;height:20px}
+  .feel:before{content:'';position:absolute;left:-11px;right:-12px;top:10px;height:1px;
+               background:var(--mut);opacity:.3;z-index:0}
+  .feel i{position:relative;z-index:1;width:9px;height:9px;border-radius:50%;flex:none;
+          font-style:normal;box-shadow:0 0 0 3px var(--card)}
+  .feel .ft{position:relative;z-index:1;font-size:var(--fs-105);line-height:1.35;color:var(--txt);
+            background:var(--card);padding-right:4px}
+  .feel .ft b{display:block;font-size:var(--fs-11);font-weight:700;color:var(--ink)}
+  .feel.pos i{background:var(--rag-green)} .feel.neu i{background:var(--rag-na)}
+  .feel.neg i{background:var(--rag-red)}
+  .feel.non i{background:transparent;border:1.5px dashed var(--rag-na)}
+  .cell.feelrow{padding-top:14px}
+
+  /* touchpoints: what they meet it through. A channel is not a system. */
+  .chs{display:flex;gap:6px;flex-wrap:wrap}
+  .ch{display:inline-flex;align-items:center;gap:5px;background:var(--slate-10);border-radius:7px;
+      padding:4px 8px;font-size:var(--fs-105);font-weight:600;color:var(--ink)}
+  .ch svg{width:12px;height:12px;display:block;color:var(--mut);flex:none}
+  .ch.non{background:transparent;border:1px dashed var(--line);color:var(--mut);font-weight:400;font-style:italic}
+
+  .sysc{display:flex;gap:6px;flex-wrap:wrap}
+  .sysc span{background:var(--navy-10);border-radius:6px;padding:3px 8px;font-size:var(--fs-105);
+             font-weight:600;color:var(--navy)}
+  #art[data-t="dark"] .sysc span{background:#243246;color:#EAEFF5}
+
+  .pncell{background:rgba(210,100,90,.055)}
+  .pn{position:relative;padding-left:13px;font-size:var(--fs-11);color:var(--rag-red-text);line-height:1.4}
+  .pn:before{content:'\25B4';position:absolute;left:0;top:-1px;font-size:var(--fs-11)}
+  .pn+.pn{margin-top:4px}
+  .pn b{font-weight:700}
+  .pn.nq{color:var(--mut);font-style:italic}
+
+  .divider{grid-column:1/-1;background:var(--navy-fill);height:2px;padding:0}
+  .dlbl{grid-column:1/-1;background:var(--card);padding:3px 11px 5px;font-size:var(--fs-95);letter-spacing:.9px;
+        text-transform:uppercase;color:var(--navy);font-weight:700}
+  #art[data-t="dark"] .dlbl{color:var(--accent)}
+
+  /* journey view */
+  .jgrid{display:grid;gap:13px}
+  .jcard{background:var(--card);border:1px solid var(--line);border-radius:13px;box-shadow:var(--sh);padding:13px 15px;
+         display:flex;flex-direction:column}
+  .jcard.hot{border-color:var(--rag-red);border-width:1.5px}
+  .jcard.hot h3::after{content:' · nobody meets them';font-size:var(--fs-105);font-weight:600;color:var(--rag-red-text)}
+  .jcard h3{margin:0 0 3px;font-size:13.5px;color:var(--navy);font-weight:700}
+  #art[data-t="dark"] .jcard h3{color:#EAEFF5}
+  .want{font-size:12px;color:var(--txt);font-style:italic;line-height:1.4;margin:0 0 9px}
+  .jrow{font-size:var(--fs-115);color:var(--txt);padding:6px 0;border-top:1px solid var(--line);line-height:1.4}
+  .jrow i{font-style:normal;display:block;font-size:var(--fs-9);letter-spacing:.7px;text-transform:uppercase;color:var(--mut);margin-bottom:1px}
+  .jrow.brk{color:var(--rag-red-text)} .jrow.brk i{color:var(--rag-red-text);opacity:.8}
+  .behind{margin-top:auto;padding-top:9px;font-size:var(--fs-10);color:var(--steel);letter-spacing:.2px}
+
+  /* painpoints view */
+  table{border-collapse:collapse;width:100%}
+  th{text-align:left;font-size:var(--fs-10);letter-spacing:.6px;text-transform:uppercase;color:var(--mut);font-weight:700;
+     padding:0 18px 8px 0;border-bottom:2px solid var(--line)}
+  td{font-size:12.5px;color:var(--txt);padding:10px 18px 10px 0;border-bottom:1px solid var(--line);vertical-align:top}
+  td b{color:var(--ink)}
+  .stagetag{font-size:var(--fs-10);font-weight:700;padding:2px 8px;border-radius:999px;background:var(--navy-10);color:var(--navy);white-space:nowrap}
+  #art[data-t="dark"] .stagetag{background:#243246;color:#EAEFF5}
+
+  #ft{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:10px;font-size:var(--fs-11);color:var(--mut)}
+  #ft .l{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .legend{display:flex;gap:9px;flex-wrap:wrap}
+  .lp{font-size:.95em;font-weight:600;padding:.2em .8em;border-radius:999px;display:inline-flex;align-items:center;gap:5px}
+  .lp i{width:8px;height:8px;border-radius:50%;font-style:normal}
+  .conf{font-size:.88em;letter-spacing:.5px;font-weight:600}
+  @media (max-width:760px){
+    #art{padding:14px 18px 10px 42px}
+    .nr-rail{width:24px}
+  }
+
+
+
+
+
+
+
+  /* ── responsive chrome ──────────────────────────────────────────────────────
+     The toprow stacks when it does not fit, and the switch is DETECTED, not
+     guessed: fitChrome() below measures the one-row layout and adds .stacked to
+     the artifact root. Never hard-code a breakpoint for the chrome — see
+     brand-guide.html, "Responsive chrome". Stacked order is brand row, then
+     navigation, then working controls: where am I, what am I looking at, what
+     can I change. ── */
+  #art.stacked .toprow,#pm.stacked .toprow,#pw.stacked .toprow{
+    position:static;top:auto;left:auto;right:auto;margin:0 0 12px;
+    display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:center;gap:10px 12px}
+  #art.stacked .tags,#pm.stacked .tags,#pw.stacked .tags{display:contents}
+  /* only the brand pill bleeds out onto the navy rail — that is why it is
+     border-radius:0 9px 9px 0. The negative margin is given back as padding, so
+     its right edge does not move and no sibling shifts. */
+  #art.stacked .nr-pill,#pm.stacked .nr-pill,#pw.stacked .nr-pill{
+    order:1;margin-left:calc(-1 * var(--padl,0px));padding-left:calc(14px + var(--padl,0px))}
+  /* no text in an artifact is ever cut to make it fit: the lens badge wraps, it
+     does not ellipsise. An instrument that truncates it looks fine to a gate and
+     wrong to a client. */
+  #art.stacked .nr-track,#pm.stacked .nr-track,#pw.stacked .nr-track{
+    order:2;max-width:none;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+  #art.stacked .ctrls,#pm.stacked .ctrls,#pw.stacked .ctrls{
+    order:3;flex:1 1 100%;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:8px}
+  /* a shell whose view switch sits straight in the toprow, with no .ctrls group */
+  #art.stacked .toprow>.seg,#pm.stacked .toprow>.seg,#pw.stacked .toprow>.seg{order:3;flex:1 1 100%}
+  #art.stacked .seg,#pm.stacked .seg,#pw.stacked .seg{flex-wrap:wrap;max-width:100%}
+  #art.stacked .wgrp,#pm.stacked .wgrp,#pw.stacked .wgrp{
+    order:4;flex:1 1 100%;flex-wrap:wrap;gap:8px}
+  #art.stacked #save,#art.stacked #lock,#pm.stacked #save,#pm.stacked #lock,
+  #pw.stacked #save,#pw.stacked #lock{order:4}
+  /* the narrow-screen media query keeps only what it was really for: padding and
+     rail width on a phone. Chrome layout is no longer its business. */
+  @media (max-width:760px){
+    #art.stacked,#pm.stacked,#pw.stacked{padding:14px 18px 10px 42px}
+    #art.stacked .nr-rail,#pm.stacked .nr-rail,#pw.stacked .nr-rail{width:24px}
+  }
+</style>
+
+<style id="nr-cards">
+  /* ── cards: every step is one, and every card opens its detail ── */
+  #art{--agent:#0A84B8}
+  #art[data-t="dark"]{--agent:#5BB8E0}
+  .bpc{display:block;position:relative;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:5px 22px 5px 8px;
+        cursor:pointer;transition:transform .12s,box-shadow .12s;--nr-tc:var(--l-col,var(--line));background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
+  .bpc:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(11,35,71,.13)}
+  .bpc+.bpc{margin-top:5px}
+  #art .bpc{border-radius:8px}
+  .grp+.bpc{margin-top:0}
+  .bpc b{display:block;font-size:var(--fs-115);font-weight:600;color:var(--ink);line-height:1.35}
+  .bpc .sys{display:block;font-size:var(--fs-95);color:var(--mut);letter-spacing:.1px;margin-top:1px}
+  .bpc.ai{background:linear-gradient(0deg,rgba(10,132,184,.07),rgba(10,132,184,.07)),var(--card);
+           border-style:dashed;border-left-style:solid}
+  .bpc.rm{opacity:.55}
+  .bpc.rm{padding-top:3px;padding-bottom:3px}
+  .bpc.rm b{text-decoration:line-through;font-weight:500;font-size:var(--fs-105);color:var(--mut)}
+  .bpc.rm .sys{display:none}
+  #ft .conf{white-space:nowrap}
+  .aitag{display:inline-block;font-size:var(--fs-85);font-weight:800;letter-spacing:.5px;color:#fff;
+         background:var(--agent);border-radius:3px;padding:1px 4px;margin-right:5px;vertical-align:1px}
+  .newtag{position:absolute;right:7px;bottom:5px;font-size:var(--fs-85);font-weight:800;letter-spacing:.4px;
+          color:var(--agent);text-transform:uppercase}
+  .pd{position:absolute;right:5px;top:5px;width:14px;height:14px;border-radius:50%;background:var(--rag-red);
+      color:#fff;font-size:var(--fs-95);font-weight:800;line-height:14px;text-align:center;font-style:normal}
+  .pd.ok{background:var(--rag-green)}
+  .pd+.pd{right:22px}
+  .jstep{position:relative;cursor:pointer;transition:transform .12s,box-shadow .12s}
+  .jstep:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(11,35,71,.13)}
+  .jstep .pd{position:static;margin-left:2px}
+  .jstep.rm{opacity:.55;text-decoration:line-through}
+  .pn{cursor:pointer}
+  .pn.ok{color:var(--rag-green-text)}
+  .pn.ok:before{content:'\2713'}
+  .pn s{color:var(--mut)}
+  .pn .by{display:block;font-size:var(--fs-10);color:var(--mut);font-style:normal}
+  .pn .by.open{color:var(--rag-red-text)}
+  .jcard a[data-card]{cursor:pointer;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:2px}
+  .jcard a[data-card]:hover{text-decoration-color:var(--accent)}
+  tr[data-pain]{cursor:pointer}
+  tr[data-pain]:hover td{background:var(--soft)}
+  .st{font-size:var(--fs-11);font-weight:600}
+  .st.ok{color:var(--rag-green-text)} .st.open{color:var(--rag-red-text)}
+  /* the detail window: outside the scaled view, so it is always full size */
+  #dlg{position:absolute;inset:0;z-index:20;display:none;align-items:center;justify-content:center;
+       background:rgba(11,20,34,.42)}
+  #dlg.on{display:flex}
+  .dbox{width:min(560px,86%);max-height:84%;overflow:auto;background:var(--card);border-radius:12px;
+        box-shadow:0 22px 60px rgba(0,0,0,.28)}
+  .dh{display:flex;justify-content:space-between;gap:12px;padding:16px 20px 12px;border-bottom:1px solid var(--line);border-radius:12px 12px 0 0;--nr-tc:var(--l-col,var(--navy));background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
+  .dk{font-size:var(--fs-10);font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--mut)}
+  .dh h2{margin:5px 0 0;font-size:18px;line-height:1.25;color:var(--ink)}
+  .dx{border:0;background:none;font-size:22px;line-height:1;color:var(--mut);cursor:pointer;align-self:flex-start}
+  .db{padding:14px 20px 18px;display:grid;gap:10px}
+  .dfacts{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .dfacts div{background:var(--soft);border-radius:7px;padding:8px 10px}
+  .dfacts i,.dblk i{display:block;font-style:normal;font-size:var(--fs-9);font-weight:800;letter-spacing:.7px;
+                    text-transform:uppercase;color:var(--mut);margin-bottom:4px}
+  .dfacts span{font-size:12.5px;font-weight:600;color:var(--ink)}
+  .dblk p{margin:0;font-size:12.5px;line-height:1.45;color:var(--txt)}
+  .dblk ol{margin:0;padding-left:18px;font-size:12px;color:var(--txt)}
+  .dblk.pn,.dblk.ok,.dblk.ag{border-radius:8px;padding:9px 12px}
+  .dblk.pn{border:1px solid rgba(210,100,90,.4);background:rgba(210,100,90,.07);cursor:default;color:inherit}
+  .dblk.pn:before{content:none}
+  .dblk.ok{border:1px solid rgba(47,143,107,.4);background:rgba(47,143,107,.07)}
+  .dblk.ag{border:1px dashed var(--agent);background:rgba(10,132,184,.07)}
+</style>
+<style id="nr-journey">
+  /* ── the blueprint as a journey: arrows across the top, the customer's card under each stage,
+     then open rows of our work. No boxes in boxes: rows are separated by a hairline, nothing else. */
+  .jb{display:grid;column-gap:10px;row-gap:0;align-content:stretch}
+  .jhd{position:relative;background:var(--navy2);color:#fff;font-size:13px;font-weight:800;line-height:1.2;
+       padding:8px 26px 9px 28px;margin-right:-22px;min-height:46px;display:flex;flex-direction:column;justify-content:center;
+       clip-path:polygon(0 0,calc(100% - 15px) 0,100% 50%,calc(100% - 15px) 100%,0 100%,15px 50%)}
+  .jhd.first{padding-left:14px;clip-path:polygon(0 0,calc(100% - 15px) 0,100% 50%,calc(100% - 15px) 100%,0 100%)}
+  .jhd.last{margin-right:0}
+  .jhd .n{font-size:var(--fs-105);font-weight:800;color:var(--accent);margin-bottom:1px;letter-spacing:.3px}
+  .jhd.off{background:#8A7B58}
+  .jhd.off .n{color:rgba(255,255,255,.6)}
+  .jlb{padding:10px 8px 9px 0;border-top:1px solid var(--line)}
+  .jlb b{display:block;font-size:12.5px;font-weight:800;color:var(--l-col);line-height:1.25}
+  .jlb em{display:block;font-style:normal;font-size:var(--fs-105);color:var(--mut);line-height:1.3;margin-top:2px}
+  .jcell{position:relative;padding:8px 0;border-top:1px solid var(--line);display:flex;flex-direction:column;
+         gap:5px;align-items:stretch;min-width:0}
+  .jcell.off{background:rgba(180,150,70,.05);padding-left:6px;padding-right:6px}
+  /* the customer's card: what they do on top, how it leaves them at the bottom */
+  .jcu{border-top:0;padding:10px 0 12px;align-items:stretch}
+  .jcc{position:relative;flex:1;background:var(--card);border:1px solid var(--line);
+       border-radius:10px;padding:8px 10px 7px;display:flex;flex-direction:column;gap:5px;
+       box-shadow:0 1px 2px rgba(11,35,71,.05);--nr-tc:var(--line);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
+  .jcc.pos{--nr-tc:var(--rag-green)} .jcc.neu{--nr-tc:var(--rag-na)} .jcc.neg{--nr-tc:var(--rag-red)}
+  .jcc .jp{background:none;padding:0;border-radius:0;font-size:12.5px;font-weight:700;color:var(--navy);box-shadow:none}
+  #art[data-t="dark"] .jcc .jp{color:var(--ink)}
+  .jcc .jp:hover{transform:none;box-shadow:none;text-decoration:underline;text-decoration-color:var(--line)}
+  .jnone{font-size:12px;color:var(--mut);font-style:italic}
+  .jfeel{margin-top:auto;padding-top:6px;border-top:1px dashed var(--line);font-size:var(--fs-115);font-style:italic;
+         color:var(--txt);display:flex;gap:6px;align-items:baseline;line-height:1.3}
+  .jfeel i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--rag-na);transform:translateY(-1px)}
+  .jcc.pos .jfeel i{background:var(--rag-green)} .jcc.neg .jfeel i{background:var(--rag-red)}
+  .jcc.non .jfeel i{background:transparent;border:1.5px dashed var(--rag-na)}
+  /* the two lines */
+  .jdiv{grid-column:1/-1;display:flex;align-items:center;gap:10px;font-size:var(--fs-95);font-weight:800;letter-spacing:1.2px;
+        text-transform:uppercase;color:var(--navy);padding:9px 0 3px}
+  .jdiv:after{content:"";flex:1;border-top:1.5px dashed var(--navy)}
+  #art[data-t="dark"] .jdiv{color:var(--accent)} #art[data-t="dark"] .jdiv:after{border-color:var(--accent)}
+  .jlb.nd,.jcell.nd{border-top-color:transparent}
+  /* a step: a soft pill, tinted by its row */
+  /* every step fills its column, so steps line up as equal rectangles down each stage */
+  .jp{display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box;padding:6px 10px;border-radius:10px;
+      font-size:var(--fs-115);font-weight:600;line-height:1.3;cursor:pointer;background:var(--p-bg);color:var(--p-fg);
+      transition:transform .12s,box-shadow .12s}
+  .jp:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(11,35,71,.13)}
+  .jp .tx{min-width:0;flex:1}
+  .jp .tm{display:block;font-size:var(--fs-95);font-weight:500;opacity:.72;margin-top:1px;letter-spacing:.1px}
+  .jp.t-ag{--p-bg:rgba(10,132,184,.10);--p-fg:#0B5E84}
+  .jp.t-hu,.jp.t-fr{--p-bg:rgba(47,143,107,.10);--p-fg:#1D6A4E}
+  .jp.t-bk{--p-bg:rgba(121,145,173,.16);--p-fg:#34506F}
+  .jp.t-su{--p-bg:rgba(154,164,176,.15);--p-fg:var(--slate);font-weight:500}
+  .jp.t-un{--p-bg:rgba(212,154,58,.15);--p-fg:#8A5A12}
+  #art[data-t="dark"] .jp.t-ag{--p-bg:rgba(91,184,224,.16);--p-fg:#CFEAF6}
+  #art[data-t="dark"] .jp.t-hu,#art[data-t="dark"] .jp.t-fr{--p-bg:rgba(47,143,107,.24);--p-fg:#CDEBDD}
+  #art[data-t="dark"] .jp.t-bk{--p-bg:rgba(121,145,173,.24);--p-fg:#DCE4EE}
+  #art[data-t="dark"] .jp.t-su{--p-bg:rgba(154,164,176,.18);--p-fg:#C9D1DA}
+  #art[data-t="dark"] .jp.t-un{--p-bg:rgba(212,154,58,.2);--p-fg:#F1D6A6}
+  .jp .aitag{margin-right:0;flex:none}
+  .chi{display:inline-flex;color:var(--mut);flex:none}
+  .chi svg{width:12px;height:12px}
+  .mk{flex:none;width:15px;height:15px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+      font-size:var(--fs-10);font-weight:800;color:#fff;line-height:1;font-style:normal}
+  .mk.bad{background:var(--rag-red)} .mk.open{background:var(--rag-amber)} .mk.ok{background:var(--rag-green)}
+  .mk svg{width:10px;height:10px}
+  .lp .mk,.lp .aitag{margin-right:5px}
+  /* the working copy: the + to add a customer step sits in the customer's card */
+  .jcc .cellplus{top:4px;right:4px}
+  #art.editing .jcu:hover .cellplus{opacity:1}
+</style>
+<style id="nr-finish">
+/* == THE DECK FINISH (patch_finish.py) == one look across the toolkit: the same base size as a deck
+   in the same window, the quiet subtitle, light grey cards for ideas, icons from the house set.
+   Written with an html prefix so it wins over the template's own rules wherever they sit. */
+html{--srf:#F7F9FB;--srf-line:#E4E9EF;--sh-soft:0 1px 2px rgba(16,24,40,.05);--subt:#5E718B}
+html [data-t="dark"]{--srf:#1E2937;--srf-line:#2C3947;--sh-soft:0 1px 2px rgba(0,0,0,.35);--subt:#9FB1C8}
+html .subt{font-size:max(15px,calc(var(--nr-t,14px) * 1.22));font-weight:400;color:var(--subt)}
+/* the title follows the deck where the deck's title is the larger one (a window above about 1615 x 909);
+   below that every instrument keeps its own title, including the ones that shrink it to fit */
+@media (min-width:1615px) and (min-height:909px){html h1{font-size:calc(var(--nr-t,15.14px) * 1.85)}}
+html :is(.card,.kpi,#pw .tcard,.plan,.findings,.acard,.t-dept .nc,.t-team.in .nc,.blk.boxed,.conc-so,.node.l3){background:var(--srf);border-color:var(--srf-line);border-radius:14px;box-shadow:var(--sh-soft)}
+/* the templates paint their dark cards from #art[data-t="dark"] rules; the finish wins over those */
+html [data-t="dark"]:is(#art,#pw,#pm) :is(.card,.kpi,#pw .tcard,.plan,.findings,.acard,.t-dept .nc,.t-team.in .nc,.blk.boxed,.conc-so,.node.l3){background:var(--srf);border-color:var(--srf-line)}
+html :is(.blk.boxed,.conc-so){border:1px solid var(--srf-line)}
+html .ic{width:1.2em;height:1.2em;fill:var(--navy);flex:none;vertical-align:-.24em;margin-right:.4em}
+html [data-t="dark"] .ic{fill:#93A9C4}
+@media print{html{--sh-soft:0 0 0 transparent}}
+</style>
+<script id="nr-finish-js">
+/* == ONE TYPE SIZE PER WINDOW (patch_finish.py) == the deck's base size for this window, published
+   on <html> before any fit runs, and nrZ() for the fit caps. Never below the instrument's own 14px. */
+(function(){
+  function deck(){var W=window.innerWidth||1600,H=window.innerHeight||900;
+    return Math.max(11,Math.min(20,H/60,(W-138)/97.5));}
+  function ui(){return Math.max(14,deck());}
+  function put(){var d=document.documentElement.style;d.setProperty('--nr-t',deck().toFixed(2)+'px');
+    d.setProperty('--nr-ui',ui().toFixed(2)+'px');}
+  window.nrZ=function(){return ui()/14;};
+  put(); window.addEventListener('resize',put);
+  /* icons from the house set on the fixed vocabularies, re-applied whenever a view re-renders */
+  var I={"alt_route":"M450-80v-200q0-48-16-79t-49-64l43-43q13 11 27.5 30t24.5 35q17-26 33.5-45t31.5-32q58-47 83.5-113.5T648-766l-90 90-42-42 162-162 162 162-42 42-90-90q5 126-24.5 198.5T585-432q-44 40-59.5 73T510-280v200h-60ZM258-636q-4-18-6.5-52.5T251-765l-89 89-42-42 162-162 162 162-42 42-90-90q-2 38-1 66.5t5 49.5l-58 14Zm84 171q-17-18-37.5-47.5T273-577l59-15q9 25 24 48t28 37l-42 42Z","badge":"M140-80q-24 0-42-18t-18-42v-480q0-24 18-42t42-18h250v-140q0-24 18-42t42-18h60q24 0 42 18t18 42v140h250q24 0 42 18t18 42v480q0 24-18 42t-42 18H140Zm0-60h680v-480H570v30q0 28-18 44t-42 16h-60q-24 0-42-16t-18-44v-30H140v480Zm92-107h239v-14q0-18-9-32t-23-19q-32-11-50-14.5t-35-3.5q-19 0-40.5 4.5T265-312q-15 5-24 19t-9 32v14Zm336-67h170v-50H568v50Zm-175.5-65.5Q408-395 408-418t-15.5-38.5Q377-472 354-472t-38.5 15.5Q300-441 300-418t15.5 38.5Q331-364 354-364t38.5-15.5ZM568-427h170v-50H568v50ZM450-590h60v-230h-60v230Zm30 210Z","build":"M705-128 447-388q-23 8-46 13t-47 5q-97.08 0-165.04-67.67Q121-505.33 121-602q0-31 8.16-60.39T152-718l145 145 92-86-149-149q25.91-15.16 54.96-23.58Q324-840 354-840q99.17 0 168.58 69.42Q592-701.17 592-602q0 24-5 47t-13 46l259 258q11 10.96 11 26.48T833-198l-76 70q-10.7 11-25.85 11Q716-117 705-128Zm28-57 40-40-273-273q16-21 24-49.5t8-54.5q0-75-55.5-127T350-782l102 104q9 9 8.5 21.5T451-635L318-510q-9.27 8-21.64 8-12.36 0-20.36-8l-98-97q3 77 54.67 127T354-430q25 0 53-8t49-24l277 277ZM476-484Z","checklist":"M222-214 80-356l42-42 100 99 179-179 42 43-221 221Zm0-320L80-676l42-42 100 99 179-179 42 43-221 221Zm298 244v-60h360v60H520Zm0-320v-60h360v60H520Z","description":"M319-250h322v-60H319v60Zm0-170h322v-60H319v60ZM220-80q-24 0-42-18t-18-42v-680q0-24 18-42t42-18h361l219 219v521q0 24-18 42t-42 18H220Zm331-554v-186H220v680h520v-494H551ZM220-820v186-186 680-680Z","flag":"M200-120v-680h343l19 86h238v370H544l-18.93-85H260v309h-60Zm300-452Zm95 168h145v-250H511l-19-86H260v251h316l19 85Z","forum":"M880-81 721-240H300q-24.75 0-42.37-17.63Q240-275.25 240-300v-80h440q24.75 0 42.38-17.63Q740-415.25 740-440v-280h80q24.75 0 42.38 17.62Q880-684.75 880-660v579ZM140-425l75-75h405v-320H140v395ZM80-280v-540q0-24.75 17.63-42.38Q115.25-880 140-880h480q24.75 0 42.38 17.62Q680-844.75 680-820v320q0 24.75-17.62 42.37Q644.75-440 620-440H240L80-280Zm60-220v-320 320Z","groups":"M0-240v-53q0-38.57 41.5-62.78Q83-380 150.38-380q12.16 0 23.39.5t22.23 2.15q-8 17.35-12 35.17-4 17.81-4 37.18v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Zm540 0v-65q0-19.86-3.5-37.43T765-377.27q11-1.73 22.17-2.23 11.17-.5 22.83-.5 67.5 0 108.75 23.77T960-293v53H780Zm-480-60h360v-6q0-37-50.5-60.5T480-390q-79 0-129.5 23.5T300-305v5ZM149.57-410q-28.57 0-49.07-20.56Q80-451.13 80-480q0-29 20.56-49.5Q121.13-550 150-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T149.57-410Zm660 0q-28.57 0-49.07-20.56Q740-451.13 740-480q0-29 20.56-49.5Q781.13-550 810-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T809.57-410ZM480-480q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T600-600q0 50-34.5 85T480-480Zm.35-60Q506-540 523-557.35t17-43Q540-626 522.85-643t-42.5-17q-25.35 0-42.85 17.15t-17.5 42.5q0 25.35 17.35 42.85t43 17.5ZM480-300Zm0-300Z","monitoring":"M120-120v-76l60-60v136h-60Zm165 0v-236l60-60v296h-60Zm165 0v-296l60 61v235h-60Zm165 0v-235l60-60v295h-60Zm165 0v-396l60-60v456h-60ZM120-356v-85l280-278 160 160 280-281v85L560-474 400-634 120-356Z","psychology":"M240-80v-172q-57-52-88.5-121.5T120-520q0-150 105-255t255-105q125 0 221.5 73.5T827-615l55 218q4 14-5 25.5T853-360h-93v140q0 24.75-17.62 42.37Q724.75-160 700-160H600v80h-60v-140h160v-200h114l-45-180q-24-97-105-158.5T480-820q-125 0-212.5 86.5T180-522.46q0 64.42 26.32 122.39Q232.65-342.09 281-297l19 18v199h-60Zm257-370Zm-48 76h60l3-44q12-2 22.47-8.46Q544.94-432.92 553-441l42 14 28-48-30-24q5-14 5-29t-5-29l30-24-28-48-42 14q-8.33-7.69-19.17-13.85Q523-635 512-638l-3-44h-60l-3 44q-11 3-21.83 9.15Q413.33-622.69 405-615l-42-14-28 48 30 24q-5 14-5 29t5 29l-30 24 28 48 42-14q8.06 8.08 18.53 14.54Q434-420 446-418l3 44Zm-19.5-104.38q-20.5-20.38-20.5-49.5t20.38-49.62q20.38-20.5 49.5-20.5t49.62 20.38q20.5 20.38 20.5 49.5t-20.38 49.62q-20.38 20.5-49.5 20.5t-49.62-20.38Z","school":"M479-120 189-279v-240L40-600l439-240 441 240v317h-60v-282l-91 46v240L479-120Zm0-308 315-172-315-169-313 169 313 172Zm0 240 230-127v-168L479-360 249-485v170l230 127Zm1-240Zm-1 74Zm0 0Z","speed":"M473.5-303.5Q517-305 537-336l216-339-335 219q-30 20-32 64t21 67q23 23 66.5 21.5ZM478-799q57 0 119 18.5T716-717l-52 37q-45-30-96.5-44.5T477.98-739q-140.47 0-239.23 100.22Q140-538.57 140-396.02 140-351 152.5-305q12.5 46 35.5 85h579q22-36 35-84t13-94q0-42-12.5-90.5T758-578l39-52q38 56 57 112.5T875-404q2 60-12 113t-41 98q-12 23-25.5 28t-33.5 5H192q-17 0-33.5-8.5T134-193q-26-48-40-97.5T80-396q0-83 31.5-156.5t85.5-128Q251-735 323.68-767T478-799Zm-9 331Z","supervisor_account":"M617.5-408.5Q590-436 590-475t27.5-66.5Q645-569 684-569t66.5 27.5Q778-514 778-475t-27.5 66.5Q723-381 684-381t-66.5-27.5ZM488-160v-51q0-26 11-44.5t31-28.5q37-19 75-28t79-9q41 0 79 8.5t75 28.5q20 9 31 28t11 45v51H488ZM292-523q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42Zm108-108ZM80-160v-94q0-34 17-62.5t51-43.5q67-30 128.5-45T400-420q32 0 57 3t54 9l-25.5 25.5L460-357q-13-2-28-2.5t-32-.5q-57 0-111 11.5T172-306q-14 7-23 22t-9 30v34h288v60H80Zm348-60Zm36.5-346.5Q490-592 490-631t-25.5-64.5Q439-721 400-721t-64.5 25.5Q310-670 310-631t25.5 64.5Q361-541 400-541t64.5-25.5Z","track_changes":"M324-111.5Q251-143 197-197t-85.5-127Q80-397 80-480t31.5-156Q143-709 197-763t127-85.5Q397-880 480-880h30v326q22 9 36 29t14 45q0 33-23.5 56.5T480-400q-33 0-56.5-23.5T400-480q0-25 14-45t36-29v-104q-65 11-107.5 60.5T300-480q0 75 52.5 127.5T480-300q75 0 127.5-52.5T660-480q0-41-16-75t-44-59l43-43q35 33 56 78.5t21 98.5q0 100-70 170t-170 70q-100 0-170-70t-70-170q0-93 60-160.5T450-719v-100q-131 11-220.5 108T140-480q0 142 99 241t241 99q142 0 241-99t99-241q0-74-28.5-137T713-727l43-43q57 55 90.5 129.5T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80q-83 0-156-31.5Z","update":"M483-120q-75 0-141-28.5T226.5-226q-49.5-49-78-115T120-482q0-75 28.5-140t78-113.5Q276-784 342-812t141-28q80 0 151.5 35T758-709v-106h60v208H609v-60h105q-44-51-103.5-82T483-780q-125 0-214 85.5T180-485q0 127 88 216t215 89q125 0 211-88t86-213h60q0 150-104 255.5T483-120Zm122-197L451-469v-214h60v189l137 134-43 43Z","verified":"m346-60-76-130-151-31 17-147-96-112 96-111-17-147 151-31 76-131 134 62 134-62 77 131 150 31-17 147 96 111-96 112 17 147-150 31-77 130-134-62-134 62Zm27-79 107-45 110 45 67-100 117-30-12-119 81-92-81-94 12-119-117-28-69-100-108 45-110-45-67 100-117 28 12 119-81 94 81 92-12 121 117 28 70 100Zm107-341Zm-43 133 227-225-45-41-182 180-95-99-46 45 141 140Z","work":"M140-120q-24 0-42-18t-18-42v-480q0-24 18-42t42-18h180v-100q0-24 18-42t42-18h200q24 0 42 18t18 42v100h180q24 0 42 18t18 42v480q0 24-18 42t-42 18H140Zm0-60h680v-480H140v480Zm240-540h200v-100H380v100ZM140-180v-480 480Z"}, M={"mission & vision":"flag","metrics & objectives":"track_changes","performance tracking":"monitoring","performance dialogues":"forum","consequences & recognition":"verified","mission & target condition":"flag","roles & skills":"badge","objectives & development plans":"school","skill building & review":"psychology","existence & design":"description","adoption & usage":"checklist","deviation management":"alt_route","maintenance & update":"update","work & role":"work","team & atmosphere":"groups","workload":"speed","enablement":"build","leadership":"supervisor_account"}, SEL='.cnm,.dgrp';
+  function dec(){var n=0,els=document.querySelectorAll(SEL);for(var i=0;i<els.length;i++){var e=els[i];
+    if(e.querySelector('svg.ic'))continue;var t='';for(var j=0;j<e.childNodes.length;j++){if(e.childNodes[j].nodeType===3)t+=e.childNodes[j].textContent;}
+    var k=M[t.trim().toLowerCase()];if(!k||!I[k])continue;
+    e.insertAdjacentHTML('afterbegin','<svg class="ic" viewBox="0 -960 960 960" aria-hidden="true"><path d="'+I[k]+'"/></svg>');n++;}
+    /* an icon can move a line: let every fit measure again */
+    if(n)requestAnimationFrame(function(){window.dispatchEvent(new Event('resize'));});}
+  function start(){dec();new MutationObserver(dec).observe(document.body,{childList:true,subtree:true});}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+</script>
+<style id="nr-topbar">
+  /* patch_topbar.py: one theme button and the way home. See the script of the same
+     name at the end of the body. The doubled id outranks the stacked-chrome rules. */
+  :is(#theme,#tseg):is(#theme,#tseg).seg{padding:3px}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button.on{display:none}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button{font-size:0;line-height:0;width:34px;height:28px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button::before{content:"";width:16px;height:16px;background:currentColor;-webkit-mask:var(--nr-ico) center/16px 16px no-repeat;mask:var(--nr-ico) center/16px 16px no-repeat}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button[data-s="dark"]{--nr-ico:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M12%203a6%206%200%200%200%209%209a9%209%200%201%201-9-9z'/%3E%3C/svg%3E")}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button[data-s="light"]{--nr-ico:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Ccircle%20cx='12'%20cy='12'%20r='4'/%3E%3Cpath%20d='M12%202v2M12%2020v2M4.9%204.9l1.4%201.4M17.7%2017.7l1.4%201.4M2%2012h2M20%2012h2M4.9%2019.1l1.4-1.4M17.7%206.3l1.4-1.4'/%3E%3C/svg%3E")}
+  .nr-crumb{display:inline-flex;align-items:center;gap:8px}
+  .nr-crumb>.nr-track{background:transparent!important;padding:0!important;border-radius:0!important;color:inherit!important;margin:0!important}
+  .nr-crumb .nr-home{color:inherit;opacity:.6;text-decoration:none;text-transform:uppercase;white-space:nowrap}
+  .nr-crumb .nr-home:hover{opacity:1;text-decoration:underline}
+  .nr-crumb .nr-sep{opacity:.4}
+</style>
+</head>
+<body>
+<div id="art" data-t="light">
+  <div class="nr-rail"></div>
+  <div class="toprow">
+    <div class="tags">
+      <div class="nr-pill"><img alt="Nova Reperta" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEkAAAAvCAYAAACv3uebAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFxEAABcRAcom8z8AAAzdSURBVGhD7VoL9KVTFfdINXlNBnmOZzRUXolMnomIjEYpkhiP8mZFHsWEVnqoaJWKUIkQSS9KL1lSxptVaDBFXiPTPN3v27/faf0+e1/7nvmPaVXKX/Zad917z9lnn/Pt75z9+O2zwAIvYCqlvIbkBAAXm9ldZvYYgEcB3A7g2yT3Jvnqetz/BZHcEsAlAP5e5kNm9gSAC0huUst5QVIp5RUATgUws1LE/QCuA/AjfczsegBTMg+AJ0keX0p5aS33BUOllFcCuKh68O+b2ftIrlHzk1zLzPYG8JNqzNdLKYvV/MOe9PYBXJge9H4z2+Of2RUkR5jZvmb21zT+nFLKwjXvsKZSysR4QDO7heS6qW9hktuR/CiALwI408yOJ7l1KWXB4GuaZiMAdyU5R/UnGO5EclMA0/3B/iSPlvpkwK8GMCsePkhjAPwgG+xSihT1F5c1leTr+hMNVyqlLBLHDEBLcrfoI/leAE9UinkwHyuRmT3Stu0uMU5HL/Gf059suFIpZf3wZAC+V0pZSO1t224DYEZ6WLn4t5Ic0+v11iW5I4BLk6KebJpmY42dNGmSFH+Ntz9KcqV63mFFJI9yJTRt23a7iOSicvHRTvKIepxICpXLNzM478/C0JPcC0DXbma712OHFfnu0QPeS3IZtZEcHw8I4MvBS3J5M9vfzPYJXpdxgfMaye2dd42Io4b1kZM9MrM/+oNcHe0AzvA2Rdvrq02pB4Cb0/G6Po6RDDeAno85zWUvBOBa5705TTu8SMGjmXVeTXmYt71ECvO2W0spI9UeissEYKKPWRrAHd52YcgHcLnaZJcUH7wxzT1AJF9FcjOSY0muWff/L8kj7CvM7KaIaUi+DMBnAdwE4PNhY+JYVko6z+WMBPBbb7ss5AP4jrf9TX8ebtt2hzR/n0opByShF9T9w4VI7pMV5PQu9c2ePXtlAA+pIdsf5XhqM7MHpIju/ErQgOSnhe8fEgF8s+5/vhDJJbTT58yZswbJ1Uopq/r36mr3o3mimd2ngJPkhyPtIPn+eEYzO9LbFg8bJq/XKcn/NKWUY3OoTnK/1P+NvDBtZZI7k/wYgNNJfoTkFql/W5KHkDy4TjB7vd6G3n5wKWW02jyHejeAUwB8spQyTm+Z5J7Ot1GWkYnkYSZfDswBMNvM+h95OpI7Od8IHck0bhUzu8ef77HAlpqmeVOCWSb2lRSkB5YBdCFDKklvSCG95q/GKtSXkVQM8sHU3jeIbjd+qXYP/VeYNWvWSgB+mGV5/+9jDikuZNRE8oR6bCaFBZlfG0G21sxuDB69nOgHcHIaO3YuJYk8Ql1UoX1q65TkmM0vUvujpZRJOT8KV5qCOkW/nTtu2/btSiHUbmaHasEymGmsUolJZjaQb5E8KT3nAGnXCuJQ8qrjYWYDL4/kO8WnpJbkcQLkzKyPObn96TyhdheAP6tdyXIHmyTGbuHp/0W+9eNNdkoys/4Z1oL86Ixq23Y7AN3WNbNpsglt2+6UeM/U+FAIgD88/vjjizdNs0Wa4wYlrHLLTdMoOe3HNs+mpCAFiQB+HmPS2E5JpZTz6z49p7x4yADQ59FL7BoT8z3aZmb2eGLSGR9QUopQZ5Fc75klDnrDcAQAfu38U8zs4MjYZUfUT/JE75dNHJflKSWIlzc/JfkO+F1a+xQAT/nYTkkAPiebBeABAD8l+Z7I91yGkMkYf51OU9cRjQAmS6N6g3J70Z76Q0nhGh/T0Xtmmd0kmwe/PIi37eYK0Jhui3ukPBDoAZgLmtAuFazq8uapJO1a2a+01vOUf5nZgJJIrt22rRLdtarxI/zUmI9/mOQb+gxJ8P0yyGprmkah+m3R5/2hpK/4/6fatt06zaXJjgt+HUuXryi4M9RB8nppTGd0tUAz27OSt28sfF5KktHXWw/ZAK6Uc5CdSlN2MVFNpZSXkxRicFUwKopv23bA0A8oKUfV+m1m3VHx/k5JJHdIAm/zMGCMPKEbcfE+qO2fZO2cju3t06dPXzrNv1UcKdkpZfMk1yG5h3Z3zDWUkhQXmdlvggfAj8O+NE2zuSJpt2tb+Vyr63fbtrua2bFeFOiSYR8/WY6lnicraUqdepBcSp7A+zs3riAsG0AdpYhYg0genuU4OCYoQn0HDdEn8D3kKd4ZAMaculwrjVu48opX5eze47hRJJdN6cmnZRO1ZbNgt1MX6jjmOfqUGPX25yrUucs/1xHAzsh5vvMF1ayqySab2YCCgmSbHH9eaoi+UQDOUvCXZM1QLJaS2JOHGLeTHI12k+Ktur8m2aq8XkXgAL7Vtu2ONe8AlVLeLCxYhmpe1QV/K+ofqCD0er3Xy0OQ/JCMY9i0ocjjrjE5oq9JybZXVScowlZ60DTNpo4q9o9vpqZplIAP2VcTybcpQ/B0a1sd15rnBU/a6Tq+2a3/R0hnufqouiAIQp5quZr/+Uwkj1YwKZhjqGP9L1M+ozUBuLGOKZ7PpIsRvu7p2Yj/25QUouj6BjOT25yT2i+vx7h92cQz/bmMvUMXq4QxFVQhuyf7p981fyaHOd6iBLSUsmTVJ8+6nGRHnwODG+q3HIyv+RG3aSv4OkZUckY6kLjltGnTuh0nDNx5l8i8MSCUMaXX662nyVUiDk/jkXCnCBldr5/f5t5H7l/XWeQ+VwuZJA+VGwdwZynlNDO7U6Ufd78C7Y8IpCGNWcGT1Edc7iwAdztMEtjP8gpMXfZnBOpr3Xq5jkuf7WsW6YqN+B4h2cU+mtPMDjGzux2x0Jru8Gj7FvGrApPX1VFS0n3pzWvCe719RgcXPL3I/SLGUHBoZn9L42+KQE4eJNrnRQLB0hqWLqX8KvqUiphZl8qIoixEcsVYl5k9lKoiCjr7ShqCuohbmFfdUVOGTPqUOh8g+VpBA4p6IxHVThIwNmPGjGUjyPMoVtt5WeHLdRLq4F1HniSf5m78pBT3CA3tjkmkM56CTPQjNAZAF0171XW0B7fanbHmVjyOgUlJuuig9ieUu7nLFxKh47VOVHTNTKfg47ojAOATCiZD5lCRfVaSkLxr5R0kJLVf6g+ijDnaztIDSlFt224bpWPlUM7bf2PK8vN8UVD0vsM9t+vgDclp2/YdurzQ6/U2UNaeePWwi4WSZDcjPwyKYFGBcW3PdMySrGOqvv7Of1Yl1eTpgepTnT1SCSb6zGwAewrSkXXU72j/P5PkQDWm1+upNN1BowA+pV2jq3r+XztjADALInmgjGoq/1yT5YqSkpQmDYQvsmHqMzPNPQAFK1CONT2rktxQyniFzZmdqygZInU+gXJX+Odi4UwBscZOcqRgIOT3mx6xvaX4kWZ2u/PLmF6p3etyL1NNzYExRdZKX0JJ52a5osgpPcUalft0rLxvpuCg3CdvGsjq/JQ0Wd6tugx1WQDnOt+pXZcNFqnkrBptGTLxxHNF2Yzp06cLOewnpVFnT+VqwRS7Zrkebqzsv4WFx3Hr6maZAHzVRQsZ7ZzN1KlTl/Bq7+4xbynlEq1Fa5o5c+ZyeiHRMT8lCSpZxkvCfa8lQF98WmyGRh2kl/HT5ajL/QZGF3hmJYkc9dQN2G4XeNvN4Q119SV2sIA5wTLajV5olLs+2+XKu8VFq/OrR1G/bFxHCjWkSDO71W+9LSkPnPoVlugEdKXyoPkpSfFEB5XIPUe7zjDJDXwRwpj6+E0mDw26BDd5K0EQc8EefsFhs7wOufl53ZYF8DXn0U7SRS21daXtSoYKjf3bakHxopumGSvl1f26o5TMzKm1XG3Rc/TmFPTFm/US8ulqVx6keljwezQtgO27UpgqJwC+5NfrohQVSlL4ME7ewz2neE+ZF1pAcmPfPdfIU+piqJSnIFL9vq6TPTebq5gqEiaka3+aT6ChfssUpP7V/IauvLjWpNMw1ue9QN51UOJzROm4yTYMFAteJKdKSd0NshepogTuK6Xp4iQFggHq+W9VeeV5hAEJkNdx7R9DbwvP2pWnhZKqXd5KpWgH8UY6r0riXQlI/QLskiyNW1KBrwOFgnTVtqDmFNin4kftsZ9TivqVpx7dThLA7pcTFjOzE9y176rCghZNcnev+8eNtQ3M7DBXkL7XFojvCOhoL5KO83F7tW27fUqEJftQH6P0SfcOdlHhU/clfR6hAOuZmZDV/aT0+jmeU9IDqmxUSvmAFKA2r9TKSE4ws2N011oGXS7Xqy0TVMrRFWOP2tdUAKiykmp4nv4c7jI2l8fSTVmvxJzhChihHeNKUt+RrmB99tU6tJNcueP9auDGLmcd35UD6cx/lYQ/6ejJjXtNfrwXCrcxMylTO2G0AkLn0fER9r6SH62DtJMc8xZ8IixLl9jHS6GCQzzNOdCPsPolR1dwtAO3VzLucoQ6rO/lMSW/Rygz8IsSB9Rr/wcS5txQy6GnOwAAAABJRU5ErkJggg=="><b id="ctx">OPEX QUICKSCAN</b></div>
+      <div class="nr-track" id="lens">CLIENTS · SERVICE BLUEPRINT</div>
+    
+    
+    </div>
+    <div class="ctrls">
+      <div class="seg" id="moment" style="display:none"></div>
+      <div class="seg" id="views"></div>
+      <div class="seg" id="theme"><button data-s="light" class="on">Light</button><button data-s="dark">Dark</button></div>
+    </div>
+  </div>
+  <h1 id="title"></h1>
+  <div class="subrow"><div class="subt" id="subt"></div><div class="stamp" id="stamp"></div></div>
+  <div id="view"><div id="vinner"></div></div>
+
+
+  <div id="dlg"></div>
+
+  <div id="ft">
+    <div class="l"><span id="src"></span><div class="legend" id="lg"></div></div>
+    <span class="conf">Sample data · Northwind Assurance is fictional</span>
+  </div>
+</div>
+<!-- NRSRC:BEGIN - the sources panel (operating-baseline/assets/source-panel.html, filled by
+     scripts/source_panel.py). The same block in every instrument and slide: a small (i) next to a
+     score or figure opens what it rests on. Do not edit a copy in a page: change this file and render
+     again. -->
+<style>
+  .nrsrc-i{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;flex:none;border-radius:50%;border:1px solid var(--mut,#7A838F);background:none;color:var(--mut,#7A838F);font:italic 700 10px/1 Georgia,"Times New Roman",serif;padding:0;margin:0 0 0 5px;cursor:pointer;vertical-align:1px}
+  /* the (i) is faint at rest and full where you point; it always keeps its place, so nothing moves */
+  .nrsrc-i{opacity:.38;transition:opacity .18s ease,background-color .15s,color .15s}
+  .nrsrc-row:hover .nrsrc-i,.nrsrc-i:hover,.nrsrc-i:focus-visible,.nrsrc-i[aria-expanded="true"],.nrsrc-i.miss{opacity:1}
+  @media (hover:none){.nrsrc-i{opacity:.75}}
+  .nrsrc-i:hover,.nrsrc-i[aria-expanded="true"]{background:var(--navy,#0B2347);border-color:var(--navy,#0B2347);color:#fff}
+  .nrsrc-i.miss{border:1px dashed var(--rag-red-text,#C2483D);color:var(--rag-red-text,#C2483D);font-style:normal}
+  .nrsrc-i:focus-visible{outline:2px solid var(--accent,#6EB1D1);outline-offset:2px}
+  .nrsrc-pop{position:fixed;z-index:1200;width:360px;max-width:calc(100vw - 24px);max-height:calc(100vh - 24px);overflow:auto;background:var(--card,#fff);color:var(--txt,#46505C);border:1px solid var(--line,#E1E6EE);border-radius:16px;box-shadow:0 12px 34px rgba(11,35,71,.20);font:400 13px/1.45 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;text-align:left;display:none}
+  .nrsrc-pop.on{display:block;animation:nrsrcOpen .26s cubic-bezier(.2,.9,.25,1.15)}
+  @keyframes nrsrcOpen{from{opacity:0;transform:scale(.95) translateY(-4px)}to{opacity:1;transform:none}}
+  .nrsrc-hx{position:relative;padding:12px 40px 10px 16px;border-bottom:1px solid rgba(120,135,155,.25)}
+  .nrsrc-ey{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13.5px;font-weight:700;color:var(--ink,#15243A)}
+  .nrsrc-sc{font-size:12px;font-weight:700;letter-spacing:0;text-transform:none;border-radius:8px;padding:0 8px;white-space:nowrap}
+  .nrsrc-x{position:absolute;top:8px;right:10px;width:24px;height:24px;border:0;background:none;color:var(--mut,#7A838F);font-size:17px;line-height:1;cursor:pointer;border-radius:6px}
+  .nrsrc-bd{padding:12px 16px 14px}
+  .nrsrc-sum{margin:0 0 12px}
+  .nrsrc-qt{background:rgba(255,255,255,.45);box-shadow:inset 0 0 0 .5px rgba(120,135,155,.25);border-radius:10px;padding:10px 12px;margin:0 0 12px}
+  [data-t="dark"] .nrsrc-qt,[data-t="dark"] .nrsrc-how{background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.1)}
+  .nrsrc-qt p{margin:0;color:var(--ink,#15243A);font-size:14px;line-height:1.45}
+  .nrsrc-by{margin-top:4px;font-size:12px;color:var(--mut,#7A838F)}
+  .nrsrc-how{background:rgba(255,255,255,.45);box-shadow:inset 0 0 0 .5px rgba(120,135,155,.25);border-radius:10px;padding:9px 12px;margin:0 0 12px;color:var(--ink,#15243A)}
+  .nrsrc-how b,.nrsrc-gh{display:block;font-size:var(--fs-11);font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mut,#7A838F);margin-bottom:3px}
+  .nrsrc-g{margin:0 0 10px}.nrsrc-g:last-child{margin-bottom:0}
+  .nrsrc-it{padding:2px 0 2px 12px;color:var(--ink,#15243A)}
+  .nrsrc-d{color:var(--mut,#7A838F);font-size:12px}
+  .nrsrc-id{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:var(--fs-11);color:var(--mut,#7A838F)}
+  .nrsrc-it a,.nrsrc-how a{color:var(--accent-text,#1F5FA8);font-size:12px;text-decoration:none}
+  .nrsrc-o{display:inline-block;font-size:var(--fs-105);font-weight:650;border-radius:10px;padding:0 7px;margin-left:4px;vertical-align:1px}
+  .nrsrc-o.thirdparty{color:#0E6B66;background:#DFF2F0}.nrsrc-o.internet{color:#8A5A00;background:#FBF0DA}
+  [data-t="dark"] .nrsrc-o.thirdparty{color:#7FD4CB;background:#163330}[data-t="dark"] .nrsrc-o.internet{color:#F0C56E;background:#3A2E15}
+  [data-t="dark"] .nrsrc-it a,[data-t="dark"] .nrsrc-how a{color:#9CC4F2}
+  .nrsrc-ft{border-top:1px solid var(--line,#E1E6EE);margin-top:10px;padding-top:8px;font-size:12px;color:var(--mut,#7A838F)}
+  .nrsrc-warn{color:var(--rag-red-text,#C2483D);font-size:12.5px}
+  .nrsrc-pick .chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+  .nrsrc-pick .chip{display:inline-flex;align-items:center;gap:5px;font-size:var(--fs-115);background:var(--slate-10,rgba(54,65,86,.08));color:var(--ink,#15243A);border-radius:8px;padding:2px 4px 2px 8px}
+  .nrsrc-pick .chip button{border:0;background:none;color:var(--mut,#7A838F);cursor:pointer;font-size:14px;line-height:1;padding:0 3px}
+  .nrsrc-hint{position:fixed;z-index:1201;display:flex;align-items:center;gap:10px;max-width:min(420px,calc(100vw - 24px));padding:9px 10px 9px 14px;border-radius:14px;
+    font:500 13px/1.4 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;color:var(--ink,#15243A);background:var(--card,#fff);box-shadow:0 14px 34px -10px rgba(11,35,71,.28);
+    opacity:0;transform:translateY(6px) scale(.97);transition:opacity .28s ease,transform .32s cubic-bezier(.2,.9,.25,1.15);pointer-events:none}
+  .nrsrc-hint.on{opacity:1;transform:none;pointer-events:auto}
+  .nrsrc-hint .nrsrc-ic{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;margin:0 1px;vertical-align:-2px;border-radius:50%;border:1px solid currentColor;font:italic 700 10px/1 Georgia,serif}
+  .nrsrc-hint button{border:0;background:none;color:var(--mut,#7A838F);font-size:16px;line-height:1;cursor:pointer;padding:2px 4px;border-radius:6px}
+  @media (prefers-reduced-motion:reduce){.nrsrc-pop.on{animation:none}.nrsrc-hint{transition:opacity .2s}}
+  .nrsrc-print{display:none}
+  @media print{
+    .nrsrc-i,.nrsrc-pop,.nrsrc-hint{display:none!important}
+    .nrsrc-print{display:block;break-before:page;page-break-before:always;padding:24px 32px;font:12px/1.5 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;color:#15243A}
+    .nrsrc-print h2{font-size:16px;margin:0 0 10px}.nrsrc-print h3{font-size:var(--fs-11);text-transform:uppercase;letter-spacing:.05em;color:#7A838F;margin:12px 0 4px}
+    .nrsrc-print ol{margin:0;padding-left:22px}
+  }
+</style>
+<script>
+(function(){
+  var GROUPS=[['interviews','Interviews'],['observations','Observations'],['documents','Documents'],['data','Data'],['external','External sources'],['internal','Internal discussions']];
+  var NOUN={interviews:['interview','interviews'],observations:['observation','observations'],documents:['document','documents'],data:['data extract','data extracts'],external:['external source','external sources']};
+  var SPECS={}, pop=null, cur=null;
+  function P(){ try{ return (typeof DATA!=='undefined'&&DATA&&DATA.sourcePanel)||null; }catch(e){ return null; } }
+  function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function low(t){ t=String(t||''); return /^[A-Z][a-z]*(?=[\s,.;:-]|$)/.test(t)?t.charAt(0).toLowerCase()+t.slice(1):t; }   /* EventHub stays EventHub */
+  function plain(t){ return String(t||'').replace(/\*\*/g,'').replace(/<[^>]+>/g,''); }
+  function working(){ var p=P(); return !!(p&&p.build==='working'); }
+  function root(){ return document.querySelector('#art,#pm,#pw')||document.body; }
+  function href(e){ var p=P(); if(e.url) return e.url; if(e.file&&p&&p.rootRel!=null) return (p.rootRel?p.rootRel+'/':'')+e.file.split('/').map(encodeURIComponent).join('/'); return ''; }
+  function badge(s){ if(s.badge==null&&s.score==null) return '';
+    var r=s.rag||'na', txt=s.badge!=null?s.badge:(s.score+' out of 5');
+    return '<span class="nrsrc-sc" style="color:var(--rag-'+r+'-text);background:var(--tint-'+r+')">'+esc(txt)+'</span>'; }
+  /* every source an item rests on: an analysis gives its method and what it was built from */
+  function expand(ids){ var p=P(), S=p.src, pool=[], how=[], seen={};
+    (function walk(list,top){ (list||[]).forEach(function(k){ var e=S[k]; if(!e||seen[k]) return; seen[k]=1;
+      if(e.group==='analysis'){ how.push({k:k,e:e}); walk(e.builtFrom,false); } else pool.push({k:k,e:e}); }); })(ids,true);
+    return {pool:pool,how:how}; }
+  function summary(pool){ var n={}, one={}; pool.forEach(function(x){ var g=x.e.group; if(g==='internal') return; n[g]=(n[g]||0)+1; one[g]=x.e; });
+    var parts=[]; ['interviews','observations','documents','data','external'].forEach(function(g){ if(!n[g]) return;
+      if(n[g]===1&&(g==='documents'||g==='data')) parts.push('the '+low(one[g].label)); else parts.push(n[g]+' '+NOUN[g][n[g]===1?0:1]); });
+    if(!parts.length) return '';
+    return 'Based on '+(parts.length>1?parts.slice(0,-1).join(', ')+' and '+parts[parts.length-1]:parts[0])+'.'; }
+  function who(e){ var w=working(); if(w&&e.people&&e.label.indexOf(e.people.split(/[;,]/)[0].trim())<0) return e.people; return ''; }
+  function item(x){ var e=x.e, w=working(), h=w?href(e):(e.url||'');
+    return '<div class="nrsrc-it">'+esc(e.label)+(who(e)?' <span class="nrsrc-d">· '+esc(who(e))+'</span>':'')+(e.date?' <span class="nrsrc-d">· '+esc(e.date)+'</span>':'')+
+      (w&&e.group==='external'&&e.origins&&e.origins.length?e.origins.map(function(o){return o==='thirdparty'||o==='internet'?'<span class="nrsrc-o '+o+'">'+(o==='thirdparty'?'Third party':'Internet')+'</span>':'';}).join(''):'')+
+      (w?' <span class="nrsrc-id">'+esc(x.k)+'</span>':'')+(h?' <a href="'+esc(h)+'" target="_blank" rel="noopener">open</a>':'')+'</div>'; }
+  function body(s){ var p=P(), w=working(), ids=s.ids||[], h='';
+    h+='<div class="nrsrc-hx"><div class="nrsrc-ey"><span>'+esc(s.eyebrow||'')+'</span>'+badge(s)+'</div>'+
+       '<button type="button" class="nrsrc-x" aria-label="Close">&times;</button></div><div class="nrsrc-bd">';
+    if(!ids.length){ return h+'<div class="nrsrc-warn">No source yet. Unlock the page and pick one where you score it. Without a source this score cannot go into the client build.</div></div>'; }
+    var x=expand(ids), sm=summary(x.pool);
+    if(sm) h+='<p class="nrsrc-sum">'+esc(sm)+'</p>';
+    x.how.forEach(function(a){ var e=a.e; h+='<div class="nrsrc-how"><b>Method</b>'+esc(e.method||e.label)+(w?' <span class="nrsrc-id">'+esc(a.k)+'</span>'+(href(e)?' <a href="'+esc(href(e))+'" target="_blank" rel="noopener">open</a>':''):'')+'</div>'; });
+    var q=s.quote; if(q&&q.text&&(!q.sourceId||p.src[q.sourceId])){ var qe=p.src[q.sourceId]||{};
+      var by=w?[qe.label||'',who(qe)].filter(Boolean).join(' · '):(qe.label||'');
+      h+='<div class="nrsrc-qt"><p>“'+esc(String(q.text).replace(/^[“"]|[”"]$/g,''))+'”</p>'+(by||qe.date?'<div class="nrsrc-by">'+esc([by,qe.date].filter(Boolean).join(' · '))+'</div>':'')+'</div>'; }
+    GROUPS.forEach(function(g){ if(g[0]==='internal'&&!w) return; var its=x.pool.filter(function(y){return y.e.group===g[0];}); if(!its.length) return;
+      h+='<div class="nrsrc-g"><span class="nrsrc-gh">'+g[1]+'</span>'+its.map(item).join('')+'</div>'; });
+    if(!w&&(s.scoredBy||p.scoredBy)) h+='<div class="nrsrc-ft">'+esc(s.scoredBy||p.scoredBy)+'</div>';
+    return h+'</div>'; }
+  function spec(k){ var f=SPECS[k]; return typeof f==='function'?f():f; }
+  function close(){ if(pop) pop.classList.remove('on'); if(cur) cur.setAttribute('aria-expanded','false'); cur=null; }
+  function open(btn){ var s=spec(btn.getAttribute('data-nrsrc')); if(!s) return;
+    if(!pop||!pop.isConnected){ pop=document.createElement('div'); pop.className='nrsrc-pop'; pop.setAttribute('role','dialog'); pop.setAttribute('aria-label','Sources'); root().appendChild(pop); }
+    close(); cur=btn; btn.setAttribute('aria-expanded','true'); pop.innerHTML=body(s); pop.classList.add('on');
+    var r=btn.getBoundingClientRect(), W=window.innerWidth, H=window.innerHeight, pw=pop.offsetWidth, ph=pop.offsetHeight;
+    var x=Math.min(Math.max(12,r.left+r.width/2-pw/2),W-pw-12), y=r.bottom+8;
+    if(y+ph>H-12){ y=r.top-ph-8; if(y<12) y=Math.max(12,H-ph-12); }
+    pop.style.left=x+'px'; pop.style.top=y+'px'; var c=pop.querySelector('.nrsrc-x'); if(c) c.focus({preventScroll:true}); }
+  document.addEventListener('click',function(ev){ var b=ev.target.closest&&ev.target.closest('.nrsrc-i');
+    if(b){ ev.preventDefault(); ev.stopPropagation(); if(cur===b){ close(); return; } open(b); return; }
+    if(pop&&pop.classList.contains('on')&&(ev.target.closest('.nrsrc-x')||!ev.target.closest('.nrsrc-pop'))){ var back=cur; close(); if(back&&ev.target.closest('.nrsrc-x')) back.focus(); } },true);
+  document.addEventListener('keydown',function(ev){ if(ev.key==='Escape'&&cur){ var back=cur; close(); back.focus(); } });
+  window.addEventListener('resize',close);
+  function printList(){ var p=P(); if(!p||p.build!=='client'||document.querySelector('.nrsrc-print')) return;
+    var keys=Object.keys(p.src); if(!keys.length) return; var h='<h2>Sources</h2>';
+    GROUPS.concat([['analysis','Analyses']]).forEach(function(g){ var ks=keys.filter(function(k){return p.src[k].group===g[0];}); if(!ks.length) return;
+      h+='<h3>'+g[1]+'</h3><ol>'+ks.map(function(k){var e=p.src[k];return '<li>'+esc(e.label)+(e.date?', '+esc(e.date):'')+(e.method?'. '+esc(e.method):'')+'</li>';}).join('')+'</ol>'; });
+    if(p.scoredBy) h+='<p>'+esc(p.scoredBy)+'</p>';
+    var d=document.createElement('section'); d.className='nrsrc-print'; d.innerHTML=h; document.body.appendChild(d); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',printList); else setTimeout(printList,0);
+  /* every page: an (i) on its Source line for everything the page cites, when the page draws none itself */
+  function allIds(){ var p=P(), o=[], seen=[]; if(!p) return o; (function w(x,d){ if(!x||typeof x!=='object'||d>40||seen.indexOf(x)>=0) return; seen.push(x);
+      if(Array.isArray(x)){ x.forEach(function(y){ w(y,d+1); }); return; }
+      for(var k in x){ if(k==='sourcePanel'||k.slice(0,2)==='__'||!Object.prototype.hasOwnProperty.call(x,k)) continue; var v=x[k];
+        if(k==='sourceIds'||k==='sourceId'||k==='source_ids'||k==='source_id'){ (Array.isArray(v)?v:[v]).forEach(function(i){ if(typeof i==='string'&&p.src[i]&&o.indexOf(i)<0) o.push(i); }); }
+        else w(v,d+1); } })(typeof DATA!=='undefined'?DATA:null,0); return o; }
+  function autoSrc(){ var p=P(), el=document.getElementById('src'); if(!p||!el||document.querySelector('.nrsrc-i[data-nrsrc="slide"]:not([data-nrsrc-auto])')) return;
+    if(!allIds().length||el.querySelector('[data-nrsrc-auto]')) return;
+    if(el.parentNode&&el.parentNode.classList) el.parentNode.classList.add('nrsrc-row');
+    el.insertAdjacentHTML('beforeend', NRSRC.icon('slide', function(){ return {eyebrow:'All sources on this page', ids:allIds()}; }).replace('<button ','<button data-nrsrc-auto ')); }
+  function watchSrc(){ autoSrc(); var el=document.getElementById('src'); if(el&&window.MutationObserver) new MutationObserver(function(){ if(!el.querySelector('.nrsrc-i')) autoSrc(); }).observe(el,{childList:true}); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',watchSrc); else setTimeout(watchSrc,0);
+  /* the hint, once per viewer: a client does not go looking for an (i) by pointing around */
+  var HINT='nr-src-hint-seen';
+  /* the first one on screen (a deck shows one slide at a time) */
+  function vis(sel){ var l=document.querySelectorAll(sel); for(var i=0;i<l.length;i++){ var r=l[i].getBoundingClientRect(); if(r.width&&r.height) return l[i]; } return null; }
+  function hint(){ var p=P(); if(!p||document.querySelector('.nrsrc-hint')) return; var seen=false; try{ seen=localStorage.getItem(HINT)==='1'; }catch(e){}
+    if(seen) return; var anchor=vis('.nrsrc-i[data-nrsrc^="slide"]')||vis('.nrsrc-i');
+    if(!anchor){ if(document.querySelector('.nrsrc-i')&&(hint.n=(hint.n||0)+1)<240) setTimeout(hint,1500); return; }   /* a deck: wait for a slide that has one */
+    var h=document.createElement('div'); h.className='nrsrc-hint nr-glass'; h.setAttribute('role','status');
+    var perItem=document.querySelectorAll('.nrsrc-i:not([data-nrsrc^="slide"])').length;
+    h.innerHTML='<span>'+(perItem?(document.querySelector('.nrsrc-i[data-nrsrc^="seg:"]')?'Every score shows where it comes from.':'Every finding shows where it comes from.')+' Click the <span class="nrsrc-ic">i</span> next to it.':'See what this page rests on: click the <span class="nrsrc-ic">i</span> next to the source.')+'</span><button type="button" aria-label="Got it">&times;</button>';
+    root().appendChild(h);
+    function place(){ var a=(vis('.nrsrc-i[data-nrsrc^="slide"]')||vis('.nrsrc-i')||anchor).getBoundingClientRect(), w=h.offsetWidth, hh=h.offsetHeight;
+      h.style.left=Math.max(12,Math.min(a.left-24,window.innerWidth-w-12))+'px'; h.style.top=Math.max(12,a.top-hh-12)+'px'; }
+    function done(){ h.classList.remove('on'); try{ localStorage.setItem(HINT,'1'); }catch(e){} }
+    h.querySelector('button').onclick=done;
+    document.addEventListener('click',function(e){ if(e.target.closest&&e.target.closest('.nrsrc-i')) done(); },true);
+    window.addEventListener('resize',function(){ if(h.classList.contains('on')) place(); });
+    setTimeout(function(){ place(); h.classList.add('on'); },700); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){ setTimeout(hint,30); }); else setTimeout(hint,30);
+  window.NRSRC={
+    on:function(){ return !!P(); },
+    /* the (i) for one item; spec is an object or a function returning
+       {eyebrow, score|badge, rag, headline, ids:[...], quote:{text,sourceId}, scoredBy} */
+    icon:function(key,s){ if(!P()) return ''; SPECS[key]=s; var v=spec(key)||{}, miss=!(v.ids&&v.ids.length);
+      if(miss&&!working()) return '';
+      return '<button type="button" class="nrsrc-i'+(miss?' miss':'')+'" data-nrsrc="'+esc(key)+'" aria-expanded="false" aria-label="'+(miss?'No source yet':'Where this comes from')+'" title="'+(miss?'No source yet':'Where this comes from')+'">'+(miss?'!':'i')+'</button>'; },
+    close:close,
+    /* the (i) for any record that carries sourceIds (or one sourceId) and, optionally, a quote:
+       NRSRC.item(record, 'Its title', {k:'unique key', score:3, badge:'2.4 FTE', rag:'red', optional:true})
+       optional: no (i) at all for a record without a sourceIds or sourceId field (an insight block that
+       does not cite); with the field but nothing in it, the working copy shows a red ! */
+    item:function(o,eyebrow,opt){ var p=P(); if(!p||!o) return ''; opt=opt||{};
+      if(opt.optional&&!('sourceIds' in o)&&!('sourceId' in o)) return '';      /* a record that does not cite (yet) */
+      var ids=[]; (Array.isArray(o.sourceIds)?o.sourceIds:[]).concat(o.sourceId?[o.sourceId]:[]).forEach(function(i){ if(typeof i==='string'&&p.src[i]&&ids.indexOf(i)<0) ids.push(i); });
+      var q=o.quote&&o.quote.text&&(!o.quote.sourceId||p.src[o.quote.sourceId])?o.quote:null;
+      return this.icon('it:'+(opt.k||eyebrow), {eyebrow:eyebrow, score:opt.score, badge:opt.badge, rag:opt.rag, ids:ids, quote:q}); },
+    /* the source picker where a score is set: chips for what is cited, a list to add one */
+    picker:function(ids){ var p=P(); if(!p) return ''; ids=ids||[];
+      var opts=Object.keys(p.src).filter(function(k){return ids.indexOf(k)<0;}).map(function(k){var e=p.src[k];return '<option value="'+esc(k)+'">'+esc(k+' · '+e.label+(e.date?' · '+e.date:''))+'</option>';}).join('');
+      return '<div class="nrsrc-pick" data-ids="'+esc(ids.join(','))+'"><div class="chips">'+ids.map(function(k){var e=p.src[k]||{label:'not in the register'};return '<span class="chip" title="'+esc(e.label)+'">'+esc(k)+' · '+esc(String(e.label).slice(0,34))+'<button type="button" data-rm="'+esc(k)+'" aria-label="Remove">&times;</button></span>';}).join('')+'</div>'+
+        '<select><option value="">Add a source…</option>'+opts+'</select></div>'; },
+    bindPicker:function(el,onChange){ if(!el) return; var self=this;
+      function ids(){ return (el.getAttribute('data-ids')||'').split(',').filter(Boolean); }
+      function redraw(list){ var tmp=document.createElement('div'); tmp.innerHTML=self.picker(list); var nw=tmp.firstChild; el.innerHTML=nw.innerHTML; el.setAttribute('data-ids',list.join(',')); wire(); if(onChange) onChange(list); }
+      function wire(){ el.querySelectorAll('[data-rm]').forEach(function(b){ b.onclick=function(){ redraw(ids().filter(function(k){return k!==b.getAttribute('data-rm');})); }; });
+        var sel=el.querySelector('select'); if(sel) sel.onchange=function(){ if(sel.value){ var l=ids(); l.push(sel.value); redraw(l); } }; }
+      wire(); },
+    readPicker:function(el){ return el?(el.getAttribute('data-ids')||'').split(',').filter(Boolean):[]; },
+    label:function(k){ var p=P(), e=p&&p.src[k]; return e?e.label:k; }
+  };
+})();
+</script>
+<!-- NRSRC:END -->
+
+<script>
+/* ============ ONLY THIS BLOCK CHANGES PER TEAM ============ */
+const DATA = /* DATA */ {
+ "context": "OPEX QUICKSCAN",
+ "lens": "CLIENTS · SERVICE BLUEPRINT",
+ "moment": "as-is",
+ "teamName": "CA Entitlements & Payments · a voluntary corporate action",
+ "teamId": "ent",
+ "teamActorId": "ent",
+ "engagement": "Northwind Securities Services",
+ "source": "Service walkthrough with the voluntary events team lead and two senior specialists, 29 Oct 2026 · Client Queries call reason log, Jun-Aug 2026 · EventHub and SWIFT report pack, Jan-Aug 2026",
+ "baselineVersion": "baseline/2026.14",
+ "baselineStamp": "fe5cd46739ff0fae",
+ "baselinePath": "data/baseline.json",
+ "generatedAt": "2026-11-09",
+ "keyMessage": "Nothing tells the client where its election or its payment stands, so **38 status calls come in for every 100 events**",
+ "mappingUnit": "key process",
+ "coverage": {},
+ "stages": [
+  {
+   "id": "s1",
+   "name": "Event announced",
+   "order": 1,
+   "want": "We want to hear about the event early, with the right terms",
+   "sentiment": "neutral",
+   "sentimentNote": "The notice arrives, by SWIFT or by email"
+  },
+  {
+   "id": "s2",
+   "name": "Election sent",
+   "order": 2,
+   "want": "We want to send our choice once and know it has arrived",
+   "sentiment": "negative",
+   "sentimentNote": "Sends it and hears nothing back"
+  },
+  {
+   "id": "s3",
+   "name": "Deadline closes",
+   "order": 3,
+   "want": "We want to be sure our election counts",
+   "sentiment": "negative",
+   "sentimentNote": "Gets a call in the last two days"
+  },
+  {
+   "id": "s4",
+   "name": "Waiting for payment",
+   "order": 4,
+   "want": "We want to know what we will get, and when",
+   "sentiment": "negative",
+   "sentimentNote": "Rings to ask where it stands"
+  },
+  {
+   "id": "s5",
+   "name": "Payment received and reconciled",
+   "order": 5,
+   "want": "We want the cash on time, and an amount that agrees with our books",
+   "sentiment": "neutral",
+   "sentimentNote": "Paid on time, then checks the amount alone"
+  }
+ ],
+ "actors": {
+  "ent": {
+   "name": "CA Entitlements & Payments",
+   "kind": "team"
+  },
+  "clients": {
+   "name": "The client",
+   "kind": "customer"
+  }
+ },
+ "sources": [
+  {
+   "id": "src-01",
+   "label": "Team lead interview, CA Entitlements & Payments",
+   "role": "CA Entitlements & Payments"
+  },
+  {
+   "id": "src-02",
+   "label": "Senior specialist interviews",
+   "role": "CA Entitlements & Payments"
+  },
+  {
+   "id": "src-03",
+   "label": "Specialist interviews across tenure",
+   "role": "CA Entitlements & Payments"
+  },
+  {
+   "id": "src-04",
+   "label": "EventHub and SWIFT report pack, Jan-Aug 2026",
+   "role": ""
+  },
+  {
+   "id": "src-05",
+   "label": "Team lead interview, CA Announcements",
+   "role": "CA Announcements"
+  },
+  {
+   "id": "src-06",
+   "label": "Client Queries call reason log, Jun-Aug 2026",
+   "role": "Client Queries"
+  }
+ ],
+ "steps": [
+  {
+   "id": "c-01",
+   "stageId": "s1",
+   "visibility": "customer-action",
+   "actorId": "clients",
+   "name": "Reads the event notice and the options",
+   "system": "SWIFT gateway",
+   "channel": "email",
+   "unitName": null,
+   "pains": [],
+   "blockId": null,
+   "processId": null,
+   "tasks": []
+  },
+  {
+   "id": "t-01",
+   "stageId": "s1",
+   "visibility": "backstage",
+   "actorId": "ent",
+   "name": "Compare the event across the three vendor feeds",
+   "system": "Excel",
+   "channel": null,
+   "sees": null,
+   "does": null,
+   "blockId": "act-01",
+   "processId": "capture",
+   "unitName": "Capture the event",
+   "pains": [
+    {
+     "id": "p-01",
+     "theme": "Every event is compared by hand across three vendor feeds",
+     "magnitude": {
+      "value": 1.0,
+      "unit": "fte"
+     },
+     "magnitudeNote": "Measured from the comparison sheets kept for August",
+     "dimension": "data",
+     "sourceId": "s1"
+    }
+   ],
+   "tasks": []
+  },
+  {
+   "id": "t-02",
+   "stageId": "s1",
+   "visibility": "backstage",
+   "actorId": "ent",
+   "name": "Validate the event terms against the issuer notice",
+   "system": "Email",
+   "channel": null,
+   "sees": null,
+   "does": null,
+   "blockId": "act-01",
+   "processId": "capture",
+   "unitName": "Capture the event",
+   "pains": [],
+   "tasks": []
+  },
+  {
+   "id": "t-03",
+   "stageId": "s1",
+   "visibility": "backstage",
+   "actorId": "ent",
+   "name": "Release the event for entitlement",
+   "system": "EventHub",
+   "channel": null,
+   "sees": null,
+   "does": null,
+   "blockId": "act-01",
+   "processId": "capture",
+   "unitName": "Capture the event",
+   "pains": [],
+   "tasks": []
+  },
+  {
+   "id": "t-09",
+   "stageId": "s1",
+   "visibility": "frontstage",
+   "actorId": "ent",
+   "name": "Send the event notice to clients",
+   "system": "SWIFT gateway",
+   "channel": "email",
+   "sees": null,
+   "does": null,
+   "blockId": "act-03",
+   "processId": "elect",
+   "unitName": "Client elections",
+   "pains": [],
+   "tasks": []
+  },
+  {
+   "id": "c-02",
+   "stageId": "s2",
+   "visibility": "customer-action",
+   "actorId": "clients",
+   "name": "Sends the election as SWIFT free text or by email",
+   "system": "SWIFT gateway",
+   "channel": "email",
+   "unitName": null,
+   "pains": [],
+   "blockId": null,
+   "processId": null,
+   "tasks": []
+  },
+  {
+   "id": "t-10",
+   "stageId": "s2",
+   "visibility": "backstage",
+   "actorId": "ent",
+   "name": "Read elections arriving by SWIFT free text and email",
+   "system": "SWIFT gateway",
+   "channel": null,
+   "sees": null,
+   "does": null,
+   "blockId": "act-03",
+   "processId": "elect",
+   "unitName": "Client elections",
+   "pains": [],
+   "tasks": [
+    {
+     "id": "T0001",
+     "name": "Open the SWIFT free-format message or the email",
+     "order": 1
+    },
+    {
+     "id": "T0002",
+     "name": "Find the event reference and the account in the text",
+     "order": 2
+    },
+    {
+     "id": "T0003",
+     "name": "Work out the option and the quantity the client means",
+     "order": 3
+    },
+    {
+     "id": "T0004",
+     "name": "Ask the client to confirm when the text is unclear",
+     "order": 4
+    }
+   ]
+  },
+  {
+   "id": "t-11",
+   "stageId": "s2",
+   "visibility": "backstage",
+   "actorId": "ent",
+   "name": "Re-key each election into EventHub",
+   "system": "EventHub",
+   "channel": null,
+   "sees": null,
+   "does": null,
+   "blockId": "act-03",
+   "processId": "elect",
+   "unitName": "Client elections",
+   "pains": [
+    {
+     "id": "p-03",
+     "theme": "Client elections arrive as free text and are re-keyed into EventHub",
+     "magnitude": {
+      "value": 3.0,
+      "unit": "fte"
+     },
+     "magnitudeNote": "Measured: 62% of elections arrived as SWIFT free text or email in Jan-Aug",
+     "dimension": "proc",
+     "sourceId": "s2"
+    }
+   ],
+   "tasks": []
+  },
+  {
+   "id": "c-03",
+   "stageId": "s3",
+   "visibility": "customer-action",
+   "actorId": "clients",
+   "name": "Answers the chase and sends the missing election",
+   "system": null,
+   "channel": "phone",
+   "unitName": null,
+   "pains": [],
+   "blockId": null,
+   "processId": null,
+   "tasks": []
+  },
+  {
+   "id": "t-12",
+   "stageId": "s3",
+   "visibility": "frontstage",
+   "actorId": "ent",
+   "name": "Chase missing elections before the deadline",
+   "system": "Phone",
+   "channel": "phone",
+   "sees": null,
+   "does": null,
+   "blockId": "act-03",
+   "processId": "elect",
+   "unitName": "Client elections",
+   "pains": [
+    {
+     "id": "p-04",
+     "theme": "Missing elections are chased by phone in the two days before the deadline",
+     "magnitude": {
+      "value": 1.2,
+      "unit": "fte"
+     },
+     "magnitudeNote": "Estimated with the specialists from the chase lists of three voluntary events",
+     "dimension": "proc",
+     "sourceId": "s3"
+    }
+   ],
+   "tasks": []
+  },
+  {
+   "id": "t-13",
+   "stageId": "s3",
+   "visibility": "backstage",
+   "actorId": "ent",
+   "name": "Apply the default option to accounts with no election",
+   "system": "EventHub",
+   "channel": null,
+   "sees": null,
+   "does": null,
+   "blockId": "act-03",
+   "processId": "elect",
+   "unitName": "Client elections",
+   "pains": [],
+   "tasks": []
+  },
+  {
+   "id": "c-04",
+   "stageId": "s4",
+   "visibility": "customer-action",
+   "actorId": "clients",
+   "name": "Looks in the client portal and finds no event status",
+   "system": "Client portal",
+   "channel": "portal",
+   "unitName": null,
+   "pains": [],
+   "blockId": null,
+   "processId": null,
+   "tasks": []
+  },
+  {
+   "id": "c-05",
+   "stageId": "s4",
+   "visibility": "customer-action",
+   "actorId": "clients",
+   "name": "Calls to ask where the event and the payment stand",
+   "system": null,
+   "channel": "phone",
+   "unitName": null,
+   "pains": [],
+   "blockId": null,
+   "processId": null,
+   "tasks": []
+  },
+  {
+   "id": "t-21",
+   "stageId": "s4",
+   "visibility": "frontstage",
+   "actorId": "ent",
+   "name": "Answer client and colleague questions on open events",
+   "system": "Phone",
+   "channel": "phone",
+   "sees": null,
+   "does": null,
+   "blockId": "act-06",
+   "processId": "pay",
+   "unitName": "Pay and settle",
+   "pains": [
+    {
+     "id": "p-06",
+     "theme": "Clients call to ask whether a payment was made",
+     "magnitude": {
+      "value": 1.0,
+      "unit": "fte"
+     },
+     "magnitudeNote": "Measured from the call reason log: 38 status calls per 100 events",
+     "dimension": "cust",
+     "sourceId": "s4"
+    }
+   ],
+   "tasks": []
+  },
+  {
+   "id": "t-04",
+   "stageId": "s4",
+   "visibility": "backstage",
+   "actorId": "ent",
+   "name": "Load and check holdings at record date",
+   "system": "Custody ledger",
+   "channel": null,
+   "sees": null,
+   "does": null,
+   "blockId": "act-02",
+   "processId": "entitle",
+   "unitName": "Calculate entitlements",
+   "pains": [],
+   "tasks": []
+  },
+  {
+   "id": "t-05",
+   "stageId": "s4",
+   "visibility": "backstage",
+   "actorId": "ent",
+   "name": "Calculate the entitlement per account",
+   "system": "EventHub",
+   "channel": null,
+   "sees": null,
+   "does": null,
+   "blockId": "act-02",
+   "processId": "entitle",
+   "unitName": "Calculate entitlements",
+   "pains": [],
+   "tasks": []
+  },
+  {
+   "id": "t-06",
+   "stageId": "s4",
+   "visibility": "backstage",
+   "actorId": "ent",
+   "name": "Recalculate disputed entitlements in Excel",
+   "system": "Excel",
+   "channel": null,
+   "sees": null,
+   "does": null,
+   "blockId": "act-02",
+   "processId": "entitle",
+   "unitName": "Calculate entitlements",
+   "pains": [
+    {
+     "id": "p-02",
+     "theme": "Disputed entitlements are recalculated in a spreadsheet outside EventHub",
+     "magnitude": {
+      "value": 1.5,
+      "unit": "fte"
+     },
+     "magnitudeNote": "Estimated with the senior specialists from the number of disputes per month",
+     "dimension": "data",
+     "sourceId": "s5"
+    }
+   ],
+   "tasks": []
+  },
+  {
+   "id": "t-07",
+   "stageId": "s4",
+   "visibility": "backstage",
+   "actorId": "ent",
+   "name": "Apply fractions and rounding rules",
+   "system": "EventHub",
+   "channel": null,
+   "sees": null,
+   "does": null,
+   "blockId": "act-02",
+   "processId": "entitle",
+   "unitName": "Calculate entitlements",
+   "pains": [],
+   "tasks": []
+  },
+  {
+   "id": "t-08",
+   "stageId": "s4",
+   "visibility": "support",
+   "actorId": "ent",
+   "name": "Get a second check above the threshold",
+   "system": "Email",
+   "channel": null,
+   "sees": null,
+   "does": null,
+   "blockId": "act-02",
+   "processId": "entitle",
+   "unitName": "Calculate entitlements",
+   "pains": [
+    {
+     "id": "p-07",
+     "theme": "A disputed entitlement goes to whoever is free, not to someone who owns it",
+     "magnitude": null,
+     "magnitudeNote": "Not quantified this round",
+     "dimension": "org",
+     "sourceId": "s5"
+    }
+   ],
+   "tasks": []
+  },
+  {
+   "id": "t-14",
+   "stageId": "s5",
+   "visibility": "backstage",
+   "actorId": "ent",
+   "name": "Prepare the payment file",
+   "system": "EventHub",
+   "channel": null,
+   "sees": null,
+   "does": null,
+   "blockId": "act-04",
+   "processId": "pay",
+   "unitName": "Pay and settle",
+   "pains": [],
+   "tasks": []
+  },
+  {
+   "id": "t-15",
+   "stageId": "s5",
+   "visibility": "backstage",
+   "actorId": "ent",
+   "name": "Check the payment file before release",
+   "system": "Custody ledger",
+   "channel": null,
+   "sees": null,
+   "does": null,
+   "blockId": "act-04",
+   "processId": "pay",
+   "unitName": "Pay and settle",
+   "pains": [],
+   "tasks": []
+  },
+  {
+   "id": "t-16",
+   "stageId": "s5",
+   "visibility": "backstage",
+   "actorId": "ent",
+   "name": "Release payments to client accounts",
+   "system": "Custody ledger",
+   "channel": null,
+   "sees": null,
+   "does": null,
+   "blockId": "act-04",
+   "processId": "pay",
+   "unitName": "Pay and settle",
+   "pains": [],
+   "tasks": []
+  },
+  {
+   "id": "t-17",
+   "stageId": "s5",
+   "visibility": "backstage",
+   "actorId": "ent",
+   "name": "Handle payment exceptions and returns",
+   "system": "Email",
+   "channel": null,
+   "sees": null,
+   "does": null,
+   "blockId": "act-04",
+   "processId": "pay",
+   "unitName": "Pay and settle",
+   "pains": [
+    {
+     "id": "p-08",
+     "theme": "Peak days around payment dates are covered with overtime",
+     "magnitude": null,
+     "magnitudeNote": "Not quantified this round",
+     "dimension": "mgmt",
+     "sourceId": "s1"
+    }
+   ],
+   "tasks": []
+  },
+  {
+   "id": "c-06",
+   "stageId": "s5",
+   "visibility": "customer-action",
+   "actorId": "clients",
+   "name": "Sees the cash or the new shares on the custody account",
+   "system": "Custody ledger",
+   "channel": null,
+   "unitName": null,
+   "pains": [],
+   "blockId": null,
+   "processId": null,
+   "tasks": []
+  },
+  {
+   "id": "t-18",
+   "stageId": "s5",
+   "visibility": "backstage",
+   "actorId": "ent",
+   "name": "Reconcile entitlements against the depository report",
+   "system": "Depository reports",
+   "channel": null,
+   "sees": null,
+   "does": null,
+   "blockId": "act-05",
+   "processId": "close",
+   "unitName": "Reconcile and close",
+   "pains": [
+    {
+     "id": "p-05",
+     "theme": "Entitlements are reconciled against the depository report line by line",
+     "magnitude": {
+      "value": 2.0,
+      "unit": "fte"
+     },
+     "magnitudeNote": "Measured from the reconciliation workbooks for June to August",
+     "dimension": "proc",
+     "sourceId": "s2"
+    }
+   ],
+   "tasks": [
+    {
+     "id": "T0005",
+     "name": "Download the depository report for the event",
+     "order": 1
+    },
+    {
+     "id": "T0006",
+     "name": "Paste it next to the EventHub extract in the workbook",
+     "order": 2
+    },
+    {
+     "id": "T0007",
+     "name": "Match position by position and mark the differences",
+     "order": 3
+    },
+    {
+     "id": "T0008",
+     "name": "Log each break and assign it for investigation",
+     "order": 4
+    }
+   ]
+  },
+  {
+   "id": "t-19",
+   "stageId": "s5",
+   "visibility": "backstage",
+   "actorId": "ent",
+   "name": "Investigate and clear reconciliation breaks",
+   "system": "Email",
+   "channel": null,
+   "sees": null,
+   "does": null,
+   "blockId": "act-05",
+   "processId": "close",
+   "unitName": "Reconcile and close",
+   "pains": [],
+   "tasks": []
+  },
+  {
+   "id": "t-20",
+   "stageId": "s5",
+   "visibility": "backstage",
+   "actorId": "ent",
+   "name": "Close the event and archive the file",
+   "system": "EventHub",
+   "channel": null,
+   "sees": null,
+   "does": null,
+   "blockId": "act-05",
+   "processId": "close",
+   "unitName": "Reconcile and close",
+   "pains": [],
+   "tasks": []
+  },
+  {
+   "id": "c-07",
+   "stageId": "s5",
+   "visibility": "customer-action",
+   "actorId": "clients",
+   "name": "Checks the amount against its own records",
+   "system": null,
+   "channel": null,
+   "unitName": null,
+   "pains": [],
+   "blockId": null,
+   "processId": null,
+   "tasks": []
+  }
+ ],
+ "vocab": {
+  "magnitudeUnits": [
+   {
+    "key": "fte",
+    "label": "FTE"
+   },
+   {
+    "key": "pct-time",
+    "label": "% of team time"
+   },
+   {
+    "key": "hours-week",
+    "label": "hours / week"
+   },
+   {
+    "key": "days-month",
+    "label": "days / month"
+   },
+   {
+    "key": "minutes-case",
+    "label": "minutes / case"
+   },
+   {
+    "key": "days-lead",
+    "label": "days of lead time"
+   },
+   {
+    "key": "pct-rework",
+    "label": "% rework / error rate"
+   },
+   {
+    "key": "pct-volume",
+    "label": "% of volume"
+   },
+   {
+    "key": "count-month",
+    "label": "cases / month"
+   },
+   {
+    "key": "eur-year",
+    "label": "€ / year"
+   }
+  ],
+  "channels": [
+   {
+    "key": "phone",
+    "label": "Phone"
+   },
+   {
+    "key": "email",
+    "label": "Email"
+   },
+   {
+    "key": "letter",
+    "label": "Letter"
+   },
+   {
+    "key": "portal",
+    "label": "Portal"
+   },
+   {
+    "key": "app",
+    "label": "App"
+   },
+   {
+    "key": "sms",
+    "label": "SMS"
+   },
+   {
+    "key": "chat",
+    "label": "Chat"
+   },
+   {
+    "key": "in-person",
+    "label": "In person"
+   }
+  ],
+  "sentiments": [
+   {
+    "key": "positive",
+    "label": "It goes well for them"
+   },
+   {
+    "key": "neutral",
+    "label": "Neither here nor there"
+   },
+   {
+    "key": "negative",
+    "label": "It goes badly for them"
+   }
+  ],
+  "dimensions": [
+   {
+    "key": "cust",
+    "label": "The customer"
+   },
+   {
+    "key": "proc",
+    "label": "Only the operation"
+   }
+  ]
+ },
+ "editable": false,
+ "sourceIds": [],
+ "sourcePanel": {
+  "build": "client",
+  "scoredBy": "Prepared by Nova Reperta, Oct 2026.",
+  "src": {
+   "s1": {
+    "label": "Team manager, CA Entitlements & Payments",
+    "group": "interviews",
+    "date": "Sep 2026"
+   },
+   "s2": {
+    "label": "EventHub and SWIFT report pack, Jan-Aug 2026",
+    "group": "data",
+    "date": "Sep 2026"
+   },
+   "s3": {
+    "label": "Specialist",
+    "group": "interviews",
+    "date": "Sep 2026"
+   },
+   "s4": {
+    "label": "Client Queries call reason log, Jun-Aug 2026",
+    "group": "data",
+    "date": "Sep 2026"
+   },
+   "s5": {
+    "label": "Senior specialist",
+    "group": "interviews",
+    "date": "Sep 2026"
+   }
+  }
+ }
+};
+/* ========================================================= */
+(function(){
+  /* The four lanes are the visibility vocabulary of baseline/2026.9, in the order a blueprint is
+     read: down from the customer, across the line of visibility, into the back office. A lane with
+     no steps is not drawn — an absent lane is information, an empty one is noise. */
+  var LANES_CLASSIC = [
+    {k:"customer-action", label:"Customer",        sub:"What they do and how they feel",         col:"var(--navy)"},
+    {k:"frontstage",      label:"Frontstage",      sub:"Our work the customer sees",             col:"var(--rag-green)"},
+    {k:"backstage",       label:"Backstage",       sub:"Our work the customer does not see",     col:"var(--steel)"},
+    {k:"support",         label:"Support",         sub:"Other teams and systems behind it",      col:"var(--rag-na)"},
+    {k:"",                label:"Not yet placed",  sub:"Nobody has asked if the customer sees it", col:"var(--rag-amber)"}
+  ];
+  /* When agents do part of the work, our people sit in the middle: a frontstage agent above them
+     (the AI the customer deals with), a backstage agent below them (the AI working behind the
+     scenes). The middle row holds all our people's work, seen or not. Same renderer, same data:
+     the rows follow the actors. */
+  var LANES_AGENT = [
+    LANES_CLASSIC[0],
+    {k:"fagent",          label:"Frontstage agent", sub:"AI the customer deals with",           col:"var(--agent)"},
+    {k:"human",           label:"Our people",       sub:"Staff who take the decisions",         col:"var(--rag-green)"},
+    {k:"bagent",          label:"Backstage agent",  sub:"AI working behind the scenes",         col:"var(--agent)"},
+    LANES_CLASSIC[3], LANES_CLASSIC[4]
+  ];
+  var LANES = LANES_CLASSIC;
+  /* the two lines a blueprint is defined by; a third would be noise */
+  var DIVIDERS_CLASSIC = { "frontstage":"line of interaction", "backstage":"line of visibility" };
+  var DIVIDERS_AGENT   = { "fagent":"line of interaction", "bagent":"line of visibility" };
+  var DIVIDERS = DIVIDERS_CLASSIC;
+  var OFF = "__off";
+
+  /* Hoisted so the render path below is byte-identical in the client build and the
+     working copy. In the client build the whole edit layer is stripped and these stay
+     inert: EA() adds no attributes, PLUSBTN() draws nothing, BINDEDITS() does nothing. */
+  var EDIT=false;   /* is the edit layer present at all?  */
+  var ON=false;     /* is editing active right now?       */
+  function EA(s){ return EDIT ? (" "+s) : ""; }
+  var PLUSBTN=function(){ return ""; };
+  var BINDEDITS=function(){};
+  var GEAR_SVG_I='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
+  var UNLOCK_SVG_I='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>';
+  var LOCK_SVG=GEAR_SVG_I;                     /* the trailing "not on the journey" column */
+
+  function esc(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function hl(t){return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1</span>');}
+
+  /* A magnitude is a number and a unit KEY; the key is a database value, not something a client
+     should ever read. model.json owns the labels and travels with the capture. */
+  var V = DATA.vocab || {};
+  function unitLabel(k){
+    var u=(V.magnitudeUnits||[]).filter(function(x){return x.key===k;})[0];
+    return (u&&u.label)||k||'';
+  }
+  function magText(m){
+    if(!m||m.value==null) return '';
+    var lb=unitLabel(m.unit);
+    return m.value+(String(lb).charAt(0)==='%'?'':' ')+lb;
+  }
+  /* the channel's label, from the same vocabulary the gate enforces */
+  function chLabel(k){
+    var c=(V.channels||[]).filter(function(x){return x.key===k;})[0];
+    return (c&&c.label)||(CH[k]&&CH[k][0])||k||'';
+  }
+
+  /* THE SLIDE SELECTION. The one-pager is not the canvas shrunk; it is the part of it that
+     carries the argument, picked in the working copy. An absent selection means everything, so a
+     capture written before the picker existed still renders exactly as it did. */
+  var SEL = DATA.slide || null;
+  function onSlideRow(k){
+    if(!SEL || !SEL.rows) return true;
+    if(SEL.rows.indexOf(k)>=0) return true;
+    /* a pick made on the classic rows carries over to the agent rows that replace them */
+    var from={fagent:'frontstage', human:'frontstage', bagent:'backstage'}[k];
+    return !!from && SEL.rows.indexOf(from)>=0;
+  }
+  function onSlideCol(c){ return !SEL || !SEL.cols || SEL.cols.indexOf(c)>=0; }
+
+  /* ── TWO MOMENTS, ONE RENDERER ──────────────────────────────────────────────────────────────
+     A to-be capture may carry the as-is it was designed from (DATA.asis). The page then shows
+     both, with a switch. Nothing is typed twice: a step kept from the as-is keeps its id, so what
+     disappeared, what is new and which pain a step removes are all worked out from the two lists. */
+  var ASIS = (DATA.asis && (DATA.asis.steps||[]).length) ? DATA.asis : null;
+  var MOMENT = ASIS ? 'tobe' : (DATA.moment==='to-be' ? 'tobe' : 'asis');
+  var WORLD = DATA;
+
+  var stages, steps, actors, offSteps, cols, allCols, AGENTS, FIXED, ASPAIN;
+  function isAgent(s){ return (actors[s.actorId]||{}).kind==='agent'; }
+  /* which row a step sits on. Classic rows ARE the visibility; with agents in the work the
+     visible and invisible human work share the middle row, and each agent takes its own row. */
+  function laneOf(s){
+    var v=s.visibility||'';
+    if(!AGENTS) return v;
+    if(isAgent(s)) return v==='frontstage' ? 'fagent' : (v==='backstage'||v==='support') ? 'bagent' : v;
+    if(v==='frontstage'||v==='backstage') return 'human';
+    return v;
+  }
+  function setWorld(w){
+    WORLD = w;
+    actors = w.actors||{};
+    var own = (w.steps||[]).slice();
+    FIXED = {}; ASPAIN = [];
+    if(w===DATA && ASIS){
+      /* steps the to-be drops are drawn where they were, struck through; steps it adds say so */
+      var keep={}; own.forEach(function(s){ keep[s.id]=1; });
+      var was={};  (ASIS.steps||[]).forEach(function(s){ was[s.id]=1; });
+      own = own.map(function(s){ return was[s.id] ? s : Object.assign({}, s, {_new:true}); });
+      (ASIS.steps||[]).forEach(function(s){
+        if(!keep[s.id]){
+          Object.keys(ASIS.actors||{}).forEach(function(k){ if(!actors[k]) actors[k]=ASIS.actors[k]; });
+          own.push(Object.assign({}, s, {_rm:true, _was:s.pains||[], pains:[]}));
+        }
+      });
+      own.forEach(function(s){ (s.fixes||[]).forEach(function(pid){ (FIXED[pid]=FIXED[pid]||[]).push(s); }); });
+      (ASIS.steps||[]).forEach(function(s){ (s.pains||[]).forEach(function(p){ ASPAIN.push({p:p, s:s}); }); });
+    }
+    steps = own;
+    stages = ((w===DATA && ASIS && !(w.stages||[]).length ? ASIS.stages : w.stages)||[])
+               .slice().sort(function(a,b){return (a.order||0)-(b.order||0);});
+    AGENTS = steps.some(isAgent);
+    LANES = AGENTS ? LANES_AGENT : LANES_CLASSIC;
+    DIVIDERS = AGENTS ? DIVIDERS_AGENT : DIVIDERS_CLASSIC;
+    offSteps = steps.filter(function(s){return !s.stageId;});
+    cols = stages.map(function(s){return s.id;});
+    if(offSteps.length) cols.push(OFF);
+    allCols = cols.slice();                 /* the canvas shows everything; the slide shows the pick */
+    cols = cols.filter(onSlideCol);
+    stages = stages.filter(function(s){ return onSlideCol(s.id); });
+  }
+  setWorld(DATA);
+
+  /* by VISIBILITY: the question the baseline asks of every step. The edit layer and the gates
+     read the blueprint this way, so this one keeps its meaning whatever rows are drawn. */
+  function at(stageId, vis){
+    return steps.filter(function(s){
+      return (stageId===OFF ? !s.stageId : s.stageId===stageId) && (s.visibility||"")===vis;
+    });
+  }
+  /* by ROW: what is drawn where */
+  function atLane(stageId, lane){
+    return steps.filter(function(s){
+      return (stageId===OFF ? !s.stageId : s.stageId===stageId) && laneOf(s)===lane;
+    });
+  }
+  function inCol(stageId){
+    return steps.filter(function(s){ return stageId===OFF ? !s.stageId : s.stageId===stageId; });
+  }
+  function painsOf(s){ return s.pains||[]; }
+  function seenBy(s){ var v=s.visibility||''; return v==='customer-action'||v==='frontstage'; }
+
+  /* ── the card: every step is one, and every card opens ────────────────────────────────── */
+  /* a to-be drawn against its as-is: the as-is pains it leaves open, on the step that carried them */
+  function openPainsOn(s){
+    if(!(WORLD===DATA && ASIS)) return [];
+    return ASPAIN.filter(function(o){ return o.s.id===s.id && !FIXED[o.p.id]; });
+  }
+  var TONE = {"customer-action":"cu", frontstage:"fr", backstage:"bk", support:"su", "":"un",
+              fagent:"ag", bagent:"ag", human:"hu"};
+  var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" '+
+              'stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  function chSvg(k){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" '+
+           'stroke-linecap="round" stroke-linejoin="round">'+((CH[k]||[])[1]||'')+'</svg>';
+  }
+  function marks(s){
+    return (painsOf(s).length   ? '<span class="mk bad" title="Pain point">!</span>' : '') +
+           (openPainsOn(s).length ? '<span class="mk open" title="Pain point not fixed yet">!</span>' : '') +
+           ((s.fixes||[]).length ? '<span class="mk ok" title="Fixes a pain point">'+CHECK+'</span>' : '');
+  }
+  /* `named`: the row holds more than one team or agent, so each step says which one does it */
+  function card(s, lane, named){
+    var ai=isAgent(s);
+    var who = named ? '<span class="tm">'+esc(actorName(s.actorId))+'</span>' : '';
+    var ch = (s.channel && CH[s.channel]) ? '<span class="chi" title="'+esc(chLabel(s.channel))+'">'+chSvg(s.channel)+'</span>' : '';
+    return '<div class="jp t-'+(TONE[lane]||'un')+'" data-card="'+esc(s.id)+'"'+EA('data-step="'+s.id+'"')+'>'+
+      (ai?'<span class="aitag">AI</span>':'')+'<span class="tx">'+esc(s.name)+who+'</span>'+ch+marks(s)+'</div>';
+  }
+
+  /* ── view 1: the blueprint ───────────────────────────────────────────────────────────────
+     The journey runs across the top as arrows. Under each stage, one card holds what the customer
+     does there and how it leaves them, the colour on its top edge saying good, neutral or bad.
+     Then the line of interaction, the work they see, the line of visibility, and the work they
+     never see. A row with nothing in it is not drawn: an absent row is information, an empty one
+     is noise. Channels sit on the cards as icons; systems and numbers sit in each card's detail. */
+
+  var IC = {
+    agent:'<rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 4v4"/><circle cx="12" cy="3.5" r="1"/><path d="M9.5 13h.01M14.5 13h.01"/><path d="M9.5 16.2h5"/>'
+  };
+  var CH = {
+    phone:['Phone','<path d="M6 3.5h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a1.5 1.5 0 0 1-1.6 1.5C10.2 17.6 6.4 13.8 4.5 5.1A1.5 1.5 0 0 1 6 3.5z"/>'],
+    email:['Email','<rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.6 6.6 12 12.5l8.4-5.9"/>'],
+    letter:['Letter','<rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="M7 9h10M7 12.5h10M7 16h6"/>'],
+    portal:['Portal','<rect x="2.5" y="4.5" width="19" height="13" rx="2"/><path d="M2.5 8.5h19"/><path d="M8 20.5h8"/>'],
+    app:['App','<rect x="7" y="2.5" width="10" height="19" rx="2.4"/><path d="M10.8 18.6h2.4"/>'],
+    sms:['SMS','<path d="M20.5 12a7.5 7.5 0 0 1-11 6.7L4 20l1.4-4.2A7.5 7.5 0 1 1 20.5 12z"/>'],
+    chat:['Chat','<path d="M20.5 12a7.5 7.5 0 0 1-11 6.7L4 20l1.4-4.2A7.5 7.5 0 1 1 20.5 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/>'],
+    'in-person':['In person','<circle cx="12" cy="7.5" r="3"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/>']
+  };
+
+  function actorName(id){ return (actors[id]||{}).name || id || ''; }
+
+  function rail(label, sub, col, cls){
+    return '<div class="jlb'+(cls?' '+cls:'')+'" style="--l-col:'+(col||'var(--mut)')+'"><b>'+esc(label)+'</b>'+
+      (sub?'<em>'+esc(sub)+'</em>':'')+'</div>';
+  }
+
+  var FEELW = {positive:'good', neutral:'neutral', negative:'bad'};
+  var FEELC = {positive:'pos', neutral:'neu', negative:'neg'};
+  /* the customer's card: what they do here and how it leaves them, in one */
+  function custCell(c){
+    var st = c===OFF ? null : stages.filter(function(x){ return x.id===c; })[0];
+    var d  = at(c,'customer-action').filter(function(s){ return !s._rm; });
+    var doIt = onSlideRow('customer-action'),
+        feel = onSlideRow('feel') && st && (st.sentiment || st.sentimentNote);
+    if(c===OFF && !d.length) return '<div class="jcell jcu off"></div>';
+    var acts = doIt ? (d.length ? d.map(function(s){ return card(s,'customer-action'); }).join('')
+                                : '<span class="jnone">The customer does nothing here</span>') : '';
+    return '<div class="jcell jcu'+(c===OFF?' off':'')+'"><div class="jcc '+(st&&FEELC[st.sentiment]||'non')+'">'+
+      acts+PLUSBTN(c)+
+      (feel ? '<div class="jfeel"><i></i><span>'+esc(st.sentimentNote||FEELW[st.sentiment]||'')+'</span></div>' : '')+
+      '</div></div>';
+  }
+
+  var PEND=[];   /* a line whose own row was not drawn is drawn above the next row that is */
+  function laneRow(L, out, ROWS){
+    if(DIVIDERS[L.k]) PEND.push(DIVIDERS[L.k]);
+    if(!onSlideRow(L.k)) return out;                                  /* left off the slide */
+    var lists = cols.map(function(c){ return atLane(c,L.k).filter(function(s){ return !s._rm; }); });
+    if(!lists.some(function(x){ return x.length; })) return out;       /* the row says nothing */
+    var nd = PEND.length ? ' nd' : '';            /* under a line, the hairline would double it */
+    PEND.forEach(function(t){ ROWS.push('min-content'); out += '<div class="jdiv"><span>'+esc(t)+'</span></div>'; });
+    PEND=[];
+    ROWS.push('auto');            /* a lane holds the steps, so a lane takes the slack */
+    out += rail(L.label, L.sub, L.col, nd.trim());
+    /* who does it: named only when the row holds more than one performer, otherwise the row label
+       already says it */
+    var who={}; lists.forEach(function(l){ l.forEach(function(s){ who[s.actorId||'']=1; }); });
+    var named = Object.keys(who).length > 1;
+    lists.forEach(function(l,x){
+      out += '<div class="jcell'+nd+(cols[x]===OFF?' off':'')+'">'+l.map(function(s){ return card(s,L.k,named); }).join('')+'</div>';
+    });
+    return out;
+  }
+
+  function pad2(n){ n=String(n||''); return n.length===1 ? '0'+n : n; }
+
+  function vBlueprint(){
+    if(!stages.length) return '<p style="color:var(--mut)">No journey stages captured yet. The columns of a blueprint are the customer’s journey, so there is nothing to draw.</p>';
+    var grid = 'minmax(118px,142px) repeat('+cols.length+',minmax(128px,1fr))';
+    var ROWS=[], out='';
+    PEND=[];
+
+    /* --- the journey, as arrows --- */
+    ROWS.push('min-content');
+    out += '<div class="jcorner"></div>';
+    cols.forEach(function(c,i){
+      var last = i===cols.length-1, first = i===0;
+      if(c===OFF){
+        out += '<div class="jhd off'+(first?' first':'')+(last?' last':'')+'"'+EA('data-lock="off"')+'><span class="n">&nbsp;</span>Not on the journey</div>';
+        return;
+      }
+      var s=stages.filter(function(x){ return x.id===c; })[0]||{};
+      out += '<div class="jhd'+(first?' first':'')+(last?' last':'')+'"'+EA('data-stage="'+s.id+'"')+'><span class="n">'+
+             pad2(s.order||i+1)+'</span>'+esc(s.name)+'</div>';
+    });
+
+    /* --- the customer: what they do, and how it leaves them --- */
+    if(onSlideRow('customer-action') || onSlideRow('feel')){
+      ROWS.push('min-content');
+      out += rail('Customer', 'What they do and how they feel', 'var(--ink)', 'nd');
+      cols.forEach(function(c){ out += custCell(c); });
+    }
+
+    /* --- the rows of our own work --- */
+    LANES.forEach(function(L){
+      if(L.k==='customer-action') return;
+      out = laneRow(L, out, ROWS);
+    });
+
+    return '<div class="jb" style="grid-template-columns:'+grid+
+           ';grid-template-rows:'+ROWS.join(' ')+'">'+out+'</div>';
+  }
+
+  /* ── the small derivations the rows above read from ─────────────────────────────────────── */
+  // the unit a column maps at: a KEY PROCESS where the team's work is sequenced into them,
+  // otherwise the ACTIVITY BLOCK itself. ('phase'/'activity' are the pre-taxonomy spellings.)
+  function atProcess(){ var u=WORLD.mappingUnit||DATA.mappingUnit; return u==='key process'||u==='phase'; }
+  function unitWord(pl){ return atProcess() ? (pl?'Key processes':'Key process')
+                                            : (pl?'Activity blocks':'Activity block'); }
+  function unitsFor(stageId){
+    var seen={}, out=[];
+    steps.forEach(function(s){
+      if((stageId===null ? !!s.stageId : s.stageId!==stageId)) return;
+      if(s._rm) return;
+      var n=s.unitName||s.blockId; if(!n||seen[n]) return;
+      seen[n]=1; out.push(n);
+    });
+    return out;
+  }
+  function channelsAt(c){
+    var seen={}, out=[];
+    inCol(c).forEach(function(s){
+      if(s._rm || !seenBy(s)) return;
+      if(s.channel&&!seen[s.channel]){seen[s.channel]=1;out.push(s.channel);}
+    });
+    return out;
+  }
+  function systemsAt(c){
+    var seen={}, out=[];
+    inCol(c).forEach(function(s){
+      if(s._rm) return;
+      if(s.system&&!seen[s.system]){seen[s.system]=1;out.push(s.system);}
+    });
+    return out;
+  }
+  function painsAt(c){
+    var out=[];
+    inCol(c).forEach(function(s){ (s.pains||[]).forEach(function(p){ out.push(p); }); });
+    return out;
+  }
+  /* the as-is pains, placed in the column their step sat in */
+  function asPainsAt(c){
+    return ASPAIN.filter(function(o){ return c===OFF ? !o.s.stageId : o.s.stageId===c; });
+  }
+
+  /* ── the detail window: what a card holds that the grid has no room for ──────────────────── */
+  function stepById(id){ return steps.filter(function(s){ return s.id===id; })[0]; }
+  function laneLabel(s){ var L=LANES.filter(function(x){ return x.k===laneOf(s); })[0]; return L?L.label:'Unclassified'; }
+  function laneCol(s){ var L=LANES.filter(function(x){ return x.k===laneOf(s); })[0]; return L?L.col:'var(--line)'; }
+  function painBlock(p, cls, head){
+    var q=p.magnitude&&p.magnitude.value!=null;
+    return '<div class="dblk '+cls+'"><i>'+head+'</i><p><b>'+esc(p.theme)+'</b>'+
+      (q?' · '+esc(magText(p.magnitude)):' · not quantified')+
+      (p.magnitudeNote && p.magnitudeNote!==String(p.magnitude&&p.magnitude.value)?'. '+esc(p.magnitudeNote):'')+
+      (p.rootCause?'<br>'+esc(p.rootCause):'')+'</p></div>';
+  }
+  function openCard(id){
+    var s=stepById(id); if(!s) return;
+    var st=stages.filter(function(x){return x.id===s.stageId;})[0];
+    var ai=isAgent(s), h='';
+    h+='<div class="dh" style="--l-col:'+laneCol(s)+'"><div><div class="dk">'+esc(laneLabel(s))+(ai?' · AI':'')+
+       (s._new?' · new in the to-be':'')+'</div><h2>'+esc(s.name)+'</h2></div>'+
+       '<button class="dx" id="dlgx" aria-label="Close">&times;</button></div><div class="db">';
+    h+='<div class="dfacts">'+
+       '<div><i>Journey stage</i><span>'+esc(st?st.name:'Not on the journey')+'</span></div>'+
+       '<div><i>'+esc(unitWord())+'</i><span>'+esc(s.unitName||s.blockId||'not recorded')+'</span></div>'+
+       '<div><i>'+(ai?'Agent':'Performed by')+'</i><span>'+esc(actorName(s.actorId)||'not recorded')+'</span></div>'+
+       '<div><i>'+(seenBy(s)?'Channel':'System')+'</i><span>'+
+         esc(seenBy(s) ? (s.channel?chLabel(s.channel):'not recorded') : (s.system||'not recorded'))+'</span></div>'+
+       '</div>';
+    if(seenBy(s) && s.system) h+='<div class="dblk"><i>System that carries it</i><p>'+esc(s.system)+'</p></div>';
+    if(s.sees) h+='<div class="dblk ag"><i>What the customer sees</i><p>'+esc(s.sees)+'</p></div>';
+    if(s.does) h+='<div class="dblk"><i>'+(ai?'What the agent does':'What happens here')+'</i><p>'+esc(s.does)+'</p></div>';
+    if(AGENTS && !ai && s.visibility==='backstage') h+='<div class="dblk"><i>Visibility</i><p>Our people do this out of the customer’s sight.</p></div>';
+    painsOf(s).forEach(function(p){ h+=painBlock(p,'pn','Pain point'); });
+    (s.fixes||[]).forEach(function(pid){
+      var o=ASPAIN.filter(function(x){ return x.p.id===pid; })[0];
+      if(o) h+=painBlock(o.p,'ok','Fixes this pain point from the as-is');
+    });
+    if(s._rm){
+      h+='<div class="dblk"><i>In the to-be</i><p>This step is removed.</p></div>';
+      (s._was||[]).forEach(function(p){ h+=painBlock(p,'ok','Its pain point goes with it'); });
+    }
+    if(s.tasks && s.tasks.length)
+      h+='<div class="dblk"><i>Tasks inside it</i><ol>'+s.tasks.map(function(k){ return '<li>'+esc(k.name||'')+'</li>'; }).join('')+'</ol></div>';
+    h+='</div>';
+    var d=document.getElementById('dlg'); if(!d) return;
+    d.innerHTML='<div class="dbox" role="dialog" aria-modal="true">'+h+'</div>';
+    d.classList.add('on');
+    document.getElementById('dlgx').onclick=closeCard;
+  }
+  function openPainRow(pid){
+    var hit=steps.filter(function(s){ return (s.pains||[]).some(function(p){ return p.id===pid; }); })[0];
+    if(hit){ openCard(hit.id); return; }
+    var fx=(FIXED[pid]||[])[0]; if(fx){ openCard(fx.id); return; }
+    var o=ASPAIN.filter(function(x){ return x.p.id===pid; })[0];
+    if(o){ var gone=steps.filter(function(s){ return s.id===o.s.id; })[0]; if(gone) openCard(gone.id); }
+  }
+  function closeCard(){ var d=document.getElementById('dlg'); if(d){ d.classList.remove('on'); d.innerHTML=''; } }
+  (function(){
+    var d=document.getElementById('dlg');
+    if(d) d.addEventListener('click',function(e){ if(e.target===d) closeCard(); });
+    window.addEventListener('keydown',function(e){ if(e.key==='Escape') closeCard(); });
+  })();
+  /* cards open their detail whenever editing is off. With editing on, the edit layer binds the
+     same elements after this and its panel wins. */
+  function bindCards(){
+    document.querySelectorAll('#vinner [data-card]').forEach(function(el){
+      el.onclick=function(e){ e.stopPropagation(); openCard(el.getAttribute('data-card')); };
+    });
+    document.querySelectorAll('#vinner [data-pain]').forEach(function(el){
+      el.onclick=function(e){ e.stopPropagation(); openPainRow(el.getAttribute('data-pain')); };
+    });
+  }
+
+  /* ── view 2: the journey ─────────────────────────────────────────── */
+  function vJourney(){
+    if(!stages.length) return '<p style="color:var(--mut)">No journey stages captured yet.</p>';
+    var cards = stages.map(function(s){
+      var live  = inCol(s.id).filter(function(x){ return !x._rm; });
+      var does  = live.filter(function(x){ return (x.visibility||'')==='customer-action'; }),
+          meets = live.filter(function(x){ return (x.visibility||'')==='frontstage'; }),
+          back  = live.filter(function(x){ var v=x.visibility||''; return v==='backstage'||v==='support'; });
+      var breaks = [];
+      live.forEach(function(st){ painsOf(st).forEach(function(p){ breaks.push(p); }); });
+      var sys = {};
+      back.forEach(function(b){ if(b.system) sys[b.system]=1; });
+      var sysList = Object.keys(sys);
+      var alone = !meets.length;      /* nobody frontstage: the customer is on their own here */
+      var agentsHere = live.filter(isAgent);
+      function names(l){ return l.map(function(d){ return '<a data-card="'+esc(d.id)+'">'+(isAgent(d)?'<span class="aitag">AI</span>':'')+esc(d.name)+'</a>'; }).join(', '); }
+      return '<div class="jcard'+(alone?' hot':'')+'">'+
+        '<h3>'+(s.order||'')+' · '+esc(s.name)+'</h3>'+
+        (s.want?'<p class="want">“'+esc(s.want)+'”</p>':'') +
+        '<div class="jrow"><i>They do</i>'+(does.length?names(does):'nothing, they wait')+'</div>'+
+        '<div class="jrow"><i>They meet</i>'+(meets.length?names(meets):'nobody')+'</div>'+
+        (breaks.length?'<div class="jrow brk"><i>Goes wrong</i>'+breaks.map(function(p){
+            return esc(p.theme)+(p.magnitude&&p.magnitude.value!=null?' ('+esc(magText(p.magnitude))+')':'');
+          }).join(' · ')+'</div>':'')+
+        '<div class="behind">'+back.length+' step'+(back.length===1?'':'s')+' they do not see'+
+          (agentsHere.length?' · '+agentsHere.length+' by AI':'')+
+          (sysList.length?' · '+esc(sysList.join(' · ')):'')+'</div>'+
+      '</div>';
+    }).join('');
+    return '<div class="jgrid"'+EA('data-lock="journey"')+' data-stretch style="grid-template-columns:repeat('+Math.min(stages.length,5)+',1fr)">'+cards+'</div>';
+  }
+
+  /* ── view 3: the pain points, ordered by journey stage ───────────── */
+  function vPains(){
+    var rows=[], cmp=(WORLD===DATA && ASIS);
+    function stageName(id){ var st=id ? stages.filter(function(x){return x.id===id;})[0] : null;
+                            return st ? st.name : 'Not on the journey'; }
+    if(cmp){
+      ASPAIN.forEach(function(o){
+        rows.push({stage:stageName(o.s.stageId), step:o.s.name, lane:'as-is',
+                   actor:(ASIS.actors&&ASIS.actors[o.s.actorId]||{}).name||'', p:o.p,
+                   after:(FIXED[o.p.id]||[]).map(function(s){return s.name;}).join(', ')});
+      });
+    }
+    cols.forEach(function(c){
+      var st = c===OFF ? {name:'Not on the journey'} : stages.filter(function(x){return x.id===c;})[0]||{};
+      LANES.forEach(function(L){
+        atLane(c,L.k).forEach(function(s){
+          painsOf(s).forEach(function(p){
+            rows.push({stage:st.name||'', step:s.name, lane:L.label,
+                       actor:(actors[s.actorId]||{}).name||'', p:p, after:cmp?'new in the to-be':null});
+          });
+        });
+      });
+    });
+    if(!rows.length) return '<p style="color:var(--mut)">No pain points on this service yet.</p>';
+    return '<table'+EA('data-lock="pains"')+'><thead><tr><th>Journey stage</th><th>Step</th>'+(cmp?'':'<th>Where</th>')+'<th>What hurts</th><th>How much</th>'+(cmp?'<th>In the to-be</th>':'')+'</tr></thead><tbody>'+
+      rows.map(function(r){
+        var q = r.p.magnitude && r.p.magnitude.value!=null;
+        return '<tr data-pain="'+esc(r.p.id)+'"><td><span class="stagetag">'+esc(r.stage)+'</span></td>'+
+          '<td><b>'+esc(r.step)+'</b>'+(r.actor?'<br><span style="color:var(--mut);font-size:var(--fs-11)">'+esc(r.actor)+'</span>':'')+'</td>'+
+          (cmp?'':'<td>'+esc(r.lane)+'</td>')+
+          '<td class="nrsrc-row">'+esc(r.p.theme)+(window.NRSRC?NRSRC.item(r.p,r.p.theme||'Pain point',{k:'pain:'+r.p.id}):'')+(r.p.rootCause?'<br><b style="font-size:var(--fs-115)">'+esc(r.p.rootCause)+'</b>':'')+'</td>'+
+          '<td>'+(q?'<b>'+esc(magText(r.p.magnitude))+'</b>':'<span style="color:var(--mut);font-style:italic">not quantified</span>')+'</td>'+
+          (cmp?'<td>'+(r.after==='new in the to-be'?'<span class="st open">new in the to-be</span>'
+                       : r.after?'<span class="st ok">&#10003; '+esc(r.after)+'</span>':'<span class="st open">not fixed yet</span>')+'</td>':'')+
+          '</tr>';
+      }).join('')+'</tbody></table>';
+  }
+
+  var edp=document.getElementById('ed');
+  function closeEd(){ if(edp) edp.classList.remove('on'); }
+  function fld(l,id,v,ph,cls){ return '<div class="f"><label>'+esc(l)+'</label><input id="'+id+'" class="'+(cls||'')+
+    '" value="'+esc(v==null?'':v)+'" placeholder="'+esc(ph||'')+'"></div>'; }
+    function fldT(l,id,v,ph){ return '<div class="f"><label>'+esc(l)+'</label><textarea id="'+id+'" rows="3" placeholder="'+esc(ph||'')+'">'+esc(v==null?'':v)+'</textarea></div>'; }
+  var CHEVS='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+  var CHKS='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  function enhanceSelects(root){
+    (root||document).querySelectorAll('select:not([data-enh])').forEach(function(sel){
+      sel.setAttribute('data-enh','1');
+      var wrap=document.createElement('div'); wrap.className='cselwrap';
+      sel.parentNode.insertBefore(wrap, sel); wrap.appendChild(sel);
+      var trg=document.createElement('button'); trg.type='button'; trg.className='cseltrg';
+      var menu=document.createElement('div'); menu.className='cselmenu'; wrap.appendChild(trg); wrap.appendChild(menu);
+      function dot(o){ var d=o.getAttribute('data-dot'); return d?'<span class="cdot '+d+'"></span>':''; }
+      function tag(o){ var t=o.getAttribute('data-tag'); return t?'<span class="ctag">'+esc(t)+'</span>':''; }
+      function row(o){ return '<div class="cselopt'+(o.selected?' sel':'')+'" data-i="'+o.index+'">'+
+        '<span class="clab">'+dot(o)+esc(o.textContent)+'</span>'+(o.selected?CHKS:tag(o))+'</div>'; }
+      function draw(){
+        var o=sel.options[sel.selectedIndex];
+        trg.innerHTML='<span class="clab">'+(o?dot(o)+esc(o.textContent):'')+'</span>'+CHEVS;
+        var h='';
+        Array.prototype.forEach.call(sel.children,function(c){
+          if(c.tagName==='OPTION') h+=row(c);
+          else if(c.tagName==='OPTGROUP'){ h+='<div class="cselgrp">'+esc(c.label)+'</div>';
+            Array.prototype.forEach.call(c.children,function(x){ h+=row(x); }); } });
+        menu.innerHTML=h;
+        menu.querySelectorAll('.cselopt').forEach(function(r){ r.onclick=function(e){ e.stopPropagation();
+          sel.selectedIndex=+r.getAttribute('data-i'); sel.dispatchEvent(new Event('change',{bubbles:true}));
+          wrap.classList.remove('on'); draw(); }; });
+      }
+      trg.onclick=function(e){ e.stopPropagation();
+        var isOpen=wrap.classList.contains('on');
+        document.querySelectorAll('.cselwrap.on').forEach(function(w){ w.classList.remove('on'); });
+        if(!isOpen){ wrap.classList.add('on');
+          var edb=wrap.closest('.edb');
+          if(edb){ var tr=trg.getBoundingClientRect(), er=edb.getBoundingClientRect();
+            menu.classList.toggle('up', (er.bottom-tr.bottom)<200 && (tr.top-er.top)>(er.bottom-tr.bottom)); } } };
+      sel.addEventListener('change', draw); draw();
+    });
+  }
+  document.addEventListener('click',function(){ document.querySelectorAll('.cselwrap.on').forEach(function(w){ w.classList.remove('on'); }); });
+
+  function panelShell(kind,title,sub,body,foot,menu){
+    var mb = (menu&&menu.length)
+      ? '<button class="edmenu" id="edmenu" title="More">&#8943;</button>'+
+        '<div class="edmenupop" id="edmenupop">'+menu.map(function(m){
+           return '<button class="'+(m.danger?'danger':'')+'" id="'+m.id+'">'+esc(m.label)+'</button>';}).join('')+'</div>'
+      : '';
+    edp.innerHTML =
+      '<div class="edh"><button class="close" id="edx">&times;</button>'+mb+
+        '<div class="edrow"><span class="edkind '+esc(kind.cls)+'">'+esc(kind.label)+'</span>'+
+          '<h3>'+esc(title)+'</h3></div>'+
+        (sub?'<div class="sub">'+sub+'</div>':'')+'</div>'+
+      '<div class="edb">'+body+'</div>'+
+      '<div class="edf">'+foot+'</div>';
+    edp.classList.add('on');
+    edp.querySelector('#edx').onclick=closeEd;
+    if(menu&&menu.length){ var g=edp.querySelector('#edmenu'), pop=edp.querySelector('#edmenupop');
+      g.onclick=function(e){ e.stopPropagation(); pop.classList.toggle('on'); };
+      pop.onclick=function(e){ e.stopPropagation(); };
+      document.addEventListener('click',function(){ pop.classList.remove('on'); }); }
+    edp.querySelectorAll('textarea').forEach(function(t){    // 1. auto-grow every textarea
+      function g(){ t.style.height='auto'; t.style.height=Math.max(84,t.scrollHeight+2)+'px'; }
+      t.addEventListener('input',g); requestAnimationFrame(g);
+    });
+    enhanceSelects(edp);                          // 2. styled custom dropdowns over the native selects
+  }
+
+  var edp=document.getElementById('ed');
+  function closeEd(){ if(edp) edp.classList.remove('on'); }
+  function fld(l,id,v,ph,cls){ return '<div class="f"><label>'+esc(l)+'</label><input id="'+id+'" class="'+(cls||'')+
+    '" value="'+esc(v==null?'':v)+'" placeholder="'+esc(ph||'')+'"></div>'; }
+    function fldT(l,id,v,ph){ return '<div class="f"><label>'+esc(l)+'</label><textarea id="'+id+'" rows="3" placeholder="'+esc(ph||'')+'">'+esc(v==null?'':v)+'</textarea></div>'; }
+  var CHEVS='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+  var CHKS='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  function enhanceSelects(root){
+    (root||document).querySelectorAll('select:not([data-enh])').forEach(function(sel){
+      sel.setAttribute('data-enh','1');
+      var wrap=document.createElement('div'); wrap.className='cselwrap';
+      sel.parentNode.insertBefore(wrap, sel); wrap.appendChild(sel);
+      var trg=document.createElement('button'); trg.type='button'; trg.className='cseltrg';
+      var menu=document.createElement('div'); menu.className='cselmenu'; wrap.appendChild(trg); wrap.appendChild(menu);
+      function dot(o){ var d=o.getAttribute('data-dot'); return d?'<span class="cdot '+d+'"></span>':''; }
+      function tag(o){ var t=o.getAttribute('data-tag'); return t?'<span class="ctag">'+esc(t)+'</span>':''; }
+      function row(o){ return '<div class="cselopt'+(o.selected?' sel':'')+'" data-i="'+o.index+'">'+
+        '<span class="clab">'+dot(o)+esc(o.textContent)+'</span>'+(o.selected?CHKS:tag(o))+'</div>'; }
+      function draw(){
+        var o=sel.options[sel.selectedIndex];
+        trg.innerHTML='<span class="clab">'+(o?dot(o)+esc(o.textContent):'')+'</span>'+CHEVS;
+        var h='';
+        Array.prototype.forEach.call(sel.children,function(c){
+          if(c.tagName==='OPTION') h+=row(c);
+          else if(c.tagName==='OPTGROUP'){ h+='<div class="cselgrp">'+esc(c.label)+'</div>';
+            Array.prototype.forEach.call(c.children,function(x){ h+=row(x); }); } });
+        menu.innerHTML=h;
+        menu.querySelectorAll('.cselopt').forEach(function(r){ r.onclick=function(e){ e.stopPropagation();
+          sel.selectedIndex=+r.getAttribute('data-i'); sel.dispatchEvent(new Event('change',{bubbles:true}));
+          wrap.classList.remove('on'); draw(); }; });
+      }
+      trg.onclick=function(e){ e.stopPropagation();
+        var isOpen=wrap.classList.contains('on');
+        document.querySelectorAll('.cselwrap.on').forEach(function(w){ w.classList.remove('on'); });
+        if(!isOpen){ wrap.classList.add('on');
+          var edb=wrap.closest('.edb');
+          if(edb){ var tr=trg.getBoundingClientRect(), er=edb.getBoundingClientRect();
+            menu.classList.toggle('up', (er.bottom-tr.bottom)<200 && (tr.top-er.top)>(er.bottom-tr.bottom)); } } };
+      sel.addEventListener('change', draw); draw();
+    });
+  }
+  document.addEventListener('click',function(){ document.querySelectorAll('.cselwrap.on').forEach(function(w){ w.classList.remove('on'); }); });
+
+  function panelShell(kind,title,sub,body,foot,menu){
+    var mb = (menu&&menu.length)
+      ? '<button class="edmenu" id="edmenu" title="More">&#8943;</button>'+
+        '<div class="edmenupop" id="edmenupop">'+menu.map(function(m){
+           return '<button class="'+(m.danger?'danger':'')+'" id="'+m.id+'">'+esc(m.label)+'</button>';}).join('')+'</div>'
+      : '';
+    edp.innerHTML =
+      '<div class="edh"><button class="close" id="edx">&times;</button>'+mb+
+        '<div class="edrow"><span class="edkind '+esc(kind.cls)+'">'+esc(kind.label)+'</span>'+
+          '<h3>'+esc(title)+'</h3></div>'+
+        (sub?'<div class="sub">'+sub+'</div>':'')+'</div>'+
+      '<div class="edb">'+body+'</div>'+
+      '<div class="edf">'+foot+'</div>';
+    edp.classList.add('on');
+    edp.querySelector('#edx').onclick=closeEd;
+    if(menu&&menu.length){ var g=edp.querySelector('#edmenu'), pop=edp.querySelector('#edmenupop');
+      g.onclick=function(e){ e.stopPropagation(); pop.classList.toggle('on'); };
+      pop.onclick=function(e){ e.stopPropagation(); };
+      document.addEventListener('click',function(){ pop.classList.remove('on'); }); }
+    edp.querySelectorAll('textarea').forEach(function(t){    // 1. auto-grow every textarea
+      function g(){ t.style.height='auto'; t.style.height=Math.max(84,t.scrollHeight+2)+'px'; }
+      t.addEventListener('input',g); requestAnimationFrame(g);
+    });
+    enhanceSelects(edp);                          // 2. styled custom dropdowns over the native selects
+  }
+
+
+
+
+
+  var VIEWS=[['bp','Blueprint',vBlueprint],['journey','Journey',vJourney],['pains','Pain points',vPains]];
+  var cur='bp';
+
+  document.getElementById('ctx').textContent  = DATA.context||'OPEX QUICKSCAN';
+  document.getElementById('lens').textContent = DATA.lens||'CLIENTS · SERVICE BLUEPRINT';
+  function drawHead(){
+    document.getElementById('title').innerHTML  = hl(WORLD.keyMessage||DATA.keyMessage||'');
+    document.getElementById('subt').textContent = WORLD.teamName||DATA.teamName||'';
+  }
+  document.getElementById('views').innerHTML  = VIEWS.map(function(v,i){
+    return '<button data-v="'+v[0]+'"'+(i===0?' class="on"':'')+'>'+v[1]+'</button>';}).join('');
+
+  function drawMeta(){
+    var c = WORLD.coverage||{}, src = WORLD.source||(WORLD===DATA?'':DATA.source);
+    document.getElementById('src').innerHTML = src
+      ? '<b style="color:var(--txt)">Source:</b> '+esc(src) : '';
+    var bits=[], unit=unitWord().toLowerCase();
+    if(MOMENT==='tobe' && WORLD===DATA){
+      /* a target service has no baseline stamp: it says what it changes */
+      var nAg=steps.filter(function(s){ return isAgent(s) && !s._rm; }).length,
+          nRm=steps.filter(function(s){ return s._rm; }).length,
+          nFx=ASPAIN.filter(function(o){ return FIXED[o.p.id]; }).length;
+      bits.push('To-be');
+      if(nAg) bits.push(nAg+' step'+(nAg>1?'s':'')+' done by AI');
+      if(nRm) bits.push(nRm+' step'+(nRm>1?'s':'')+' removed');
+      if(ASPAIN.length) bits.push(nFx+' of '+ASPAIN.length+' pain points fixed');
+    } else {
+    if(WORLD.baselineVersion) bits.push(WORLD.baselineVersion);
+    if(c.tasksTotal) bits.push(c.classified===c.tasksTotal ? c.tasksTotal+' steps mapped'
+                                : (c.tasksTotal-c.classified)+' of '+c.tasksTotal+' steps not yet placed');
+    if(c.unitsUnmapped) bits.push(c.unitsUnmapped+' '+unit+(c.unitsUnmapped>1?'s':'')+' not on the journey');
+    }
+    if(SEL && SEL.cols && SEL.cols.length < allCols.length)
+      bits.push(SEL.cols.length+' of '+allCols.length+' stages shown');
+    var stel=document.getElementById('stamp');
+    stel.textContent = bits.join(' · ');
+    if(EDIT) stel.setAttribute('data-lock','stamp');
+    /* the legend belongs to the blueprint; the other views carry their own meaning */
+    var anyPain=steps.some(function(x){ return !x._rm && painsOf(x).length; }),
+        anyOpen=steps.some(function(x){ return !x._rm && openPainsOn(x).length; });
+    document.getElementById('lg').innerHTML = (cur==='bp')
+      ? (stages.some(function(s){return s.sentiment;})
+          ? '<span class="lp">Customer feels</span>'+
+            '<span class="lp"><i style="background:var(--rag-green)"></i>good</span>'+
+            '<span class="lp"><i style="background:var(--rag-na)"></i>neutral</span>'+
+            '<span class="lp"><i style="background:var(--rag-red)"></i>bad</span>' : '')+
+        (AGENTS ? '<span class="lp"><span class="aitag">AI</span>done by an AI agent</span>' : '')+
+        (anyPain ? '<span class="lp"><span class="mk bad">!</span>pain point</span>' : '')+
+        (Object.keys(FIXED).length ? '<span class="lp"><span class="mk ok">'+CHECK+'</span>fixes a pain point</span>' : '')+
+        (anyOpen ? '<span class="lp"><span class="mk open">!</span>pain point not fixed yet</span>' : '')+
+        '<span class="lp">Click a card for more detail</span>'
+      : '';
+  }
+
+  /* Monotonic binary-search fit: the largest scale whose content still fits the frame, capped at
+     1.0 so a short view fills rather than magnifies. Same fit every instrument uses. */
+  function fit(){
+    var view=document.getElementById('view'), inner=document.getElementById('vinner');
+    inner.style.transform='scale(1)'; inner.style.width='100%';
+    var prev=inner.querySelector('[data-stretch]');
+    if(prev) prev.style.minHeight='';          /* measure unstretched, or it only ever grows */
+    var availH=view.clientHeight, availW=view.clientWidth;
+    if(!availH||!availW) return;
+    var lo=0.4, hi=1.0*nrZ(), best=0.4;
+    for(var i=0;i<18;i++){
+      var mid=(lo+hi)/2;
+      inner.style.width=(100/mid)+'%';
+      inner.style.transform='scale('+mid+')';
+      var fits = inner.scrollHeight*mid <= availH+0.5;
+      if(fits){ best=mid; lo=mid; } else { hi=mid; }
+    }
+    inner.style.width=(100/best)+'%';
+    inner.style.transform='scale('+best+')';
+    /* the fit is capped at 1.0 so a short view never magnifies - so a short view also never
+       fills the slide. Let the marked element take the slack instead. */
+    var grow=inner.querySelector('[data-stretch]');
+    if(grow && best>=0.999){
+      var slack = availH/best - inner.scrollHeight;
+      if(slack > 6) grow.style.minHeight = (grow.offsetHeight + slack) + 'px';
+    }
+  }
+  function draw(){
+    var v=VIEWS.filter(function(x){return x[0]===cur;})[0];
+    document.getElementById('art').classList.toggle('canvasview', cur==='canvas');
+    document.getElementById('vinner').innerHTML = v ? v[2]() : '';
+    drawHead(); drawMeta(); bindCards(); BINDEDITS();
+    /* the canvas SCROLLS; scaling it to fit the frame is exactly the thing it exists to stop */
+    if(cur!=='canvas'){ fit(); }
+    else { var vi=document.getElementById('vinner');
+           vi.style.transform='none'; vi.style.width='100%'; }
+  }
+  function seg(id,attr,cb){
+    var box=document.getElementById(id);
+    box.querySelectorAll('button').forEach(function(b){
+      b.onclick=function(){
+        box.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});
+        b.classList.add('on'); cb(b.getAttribute(attr));
+      };
+    });
+  }
+  seg('views','data-v',function(v){ cur=v; draw(); });
+  (function(){
+    var box=document.getElementById('moment');
+    if(!ASIS || EDIT || !box) return;
+    box.innerHTML='<button data-m="asis">As-is</button><button data-m="tobe" class="on">To-be</button>';
+    box.style.display='';
+    seg('moment','data-m',function(m){ MOMENT=m; setWorld(m==='asis'?ASIS:DATA); draw(); });
+  })();
+  seg('theme','data-s',function(t){ document.getElementById('art').setAttribute('data-t',t); fit(); });
+  window.addEventListener('resize',fit);
+  draw();
+
+
+})();
+</script>
+<script>
+/* ── fitChrome() — the chrome stacks when it does not fit ────────────────────
+   Measures the one-row layout and adds .stacked to the artifact root when any of
+   six things is true: the two groups are closer than 12px · a control runs past
+   either edge · a label has been squeezed narrower than its own text · the
+   toprow wraps · the toprow comes within 6px of the action title · the viewport
+   is at or below 760px (the floor). Exposed as window.fitChrome() so a render
+   pass can call it after it changes a label. ── */
+(function(){
+  var busy=false,lastW=-1;
+  function root(){return document.querySelector('#art,#pm,#pw');}
+  function skip(e){
+    if(!e) return true;
+    if(e.id==='wpop'||(e.closest&&e.closest('#wpop'))) return true;
+    var cs=getComputedStyle(e);
+    if(cs.visibility==='hidden'||cs.display==='none') return true;
+    return false;
+  }
+  function fitChrome(){
+    if(busy) return; busy=true;
+    try{
+      var R=root(); if(!R) return;
+      var tr=R.querySelector('.toprow'); if(!tr) return;
+      R.classList.remove('stacked');
+      void tr.offsetWidth;                                  /* force the reflow we measure */
+      var need=window.innerWidth<=760, i, r, e;
+      var trb=tr.getBoundingClientRect();
+      /* 1. the two groups are closer than 12px */
+      var tags=R.querySelector('.tags'), ctrls=R.querySelector('.ctrls');
+      if(!need&&tags&&ctrls&&!skip(tags)&&!skip(ctrls)){
+        var a=tags.getBoundingClientRect(), b=ctrls.getBoundingClientRect();
+        if(b.left-a.right<12) need=true;
+      }
+      /* 2. a control runs past either edge */
+      if(!need){
+        var kids=tr.querySelectorAll('.nr-pill,.nr-track,.seg,.wgrp,button,#wnote');
+        for(i=0;i<kids.length;i++){
+          e=kids[i]; if(skip(e)) continue;
+          r=e.getBoundingClientRect(); if(!r.width&&!r.height) continue;
+          if(r.right>trb.right+0.5||r.left<trb.left-0.5){need=true;break;}
+        }
+      }
+      /* 3. a label has been squeezed narrower than its own text */
+      if(!need){
+        var ls=tr.querySelectorAll('.nr-pill b,.nr-track,.seg button,button,#wnote,span');
+        for(i=0;i<ls.length;i++){
+          e=ls[i]; if(skip(e)) continue;
+          if(!e.textContent||!e.textContent.trim()) continue;
+          if(e.scrollWidth>e.clientWidth+1){need=true;break;}
+        }
+      }
+      /* 4. the toprow wraps — a floating row that wraps grows downwards into the
+         title without pushing anything down */
+      if(!need){
+        var tall=0,ch=tr.children;
+        for(i=0;i<ch.length;i++){var h=ch[i].getBoundingClientRect().height;if(h>tall)tall=h;}
+        if(trb.height>tall+2) need=true;
+      }
+      /* 5. the toprow sits on, or within 6px of, the action title */
+      if(!need){
+        var t=R.querySelector('.nr-strip'); if(!t||skip(t)) t=R.querySelector('h1');
+        if(t&&!skip(t)){var tb=t.getBoundingClientRect(); if(tb.top-trb.bottom<6) need=true;}
+      }
+      if(need) R.classList.add('stacked');
+      /* --padl is read AFTER the class lands: the class itself changes the padding */
+      R.style.setProperty('--padl',(parseFloat(getComputedStyle(R).paddingLeft)||0)+'px');
+    } finally { busy=false; }
+  }
+  window.fitChrome=fitChrome;
+  function kick(){requestAnimationFrame(fitChrome);}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',kick); else kick();
+  window.addEventListener('load',kick);
+  window.addEventListener('resize',function(){lastW=-1;kick();});
+  if(window.ResizeObserver){
+    var ro=new ResizeObserver(function(en){
+      var w=en&&en[0]?Math.round(en[0].contentRect.width):-1;
+      if(w===lastW) return;                                 /* stacking must not re-trigger us */
+      lastW=w; kick();
+    });
+    var r0=root(); if(r0) ro.observe(r0);
+  }
+})();
+</script>
+<script id="nr-topbar-js">
+/* patch_topbar.py: one theme switch and the way home, the same in every instrument.
+   Theme: the choice is kept under the cockpit's key, nr_dark, so every page of an
+   engagement opens the same way. Home: a page that carries
+   <meta name="nr-home" content="index.html"> (the engagement artifact adds it) gets
+   "< Cockpit /" in front of its section tag. */
+(function(){
+  var K='nr_dark', box=document.getElementById('theme')||document.getElementById('tseg');
+  if(box){
+    box.querySelectorAll('button').forEach(function(b){ var d=b.getAttribute('data-s')==='dark';
+      b.title=d?'Dark mode':'Light mode'; b.setAttribute('aria-label',b.title);
+      b.addEventListener('click',function(){ try{ localStorage.setItem(K,d?'1':'0'); }catch(e){} }); });
+    var v=null; try{ v=localStorage.getItem(K); }catch(e){}
+    var dk=box.querySelector('button[data-s="dark"]');
+    if(v==='1'&&dk&&!dk.classList.contains('on')) dk.click();
+  }
+  var m=document.querySelector('meta[name="nr-home"]'), lens=document.getElementById('lens')||document.querySelector('.toprow .nr-track');
+  if(m&&lens&&!document.querySelector('.nr-crumb')){
+    var c=document.createElement('div'); c.className='nr-track nr-crumb';
+    var a=document.createElement('a'); a.className='nr-home'; a.href=m.getAttribute('content')||'index.html';
+    a.textContent='\u2039 '+(m.getAttribute('data-label')||'Cockpit'); a.title='Back to the engagement cockpit';
+    /* opened in a window of the findings dashboard (a frame of our own page): go back in that page, not in the frame */
+    try{ if(window.parent!==window&&window.parent.document) a.target='_parent'; }catch(e){}
+    var s=document.createElement('span'); s.className='nr-sep'; s.textContent='/';
+    lens.parentNode.insertBefore(c,lens); c.appendChild(a); c.appendChild(s); c.appendChild(lens);
+    if(window.fitChrome) requestAnimationFrame(window.fitChrome);
+  }
+})();
+</script>
+<!-- NR-GLASS:BEGIN — the glass layer (diagnostic-skill-builder/templates/glass-layer.html, put in by
+     scripts/patch_glass.py). Everything that floats above the page is glass; the page itself stays solid
+     (cards, tables, charts, slides). Small things get liquid glass: a lens at the edges, a light rim and a
+     highlight that follows the pointer. Large things (the edit sidebar, big pop-ups) get calmer frosted glass.
+     Hooks: .nr-glass (small), .nr-glass-lg (large), .nr-glass-tint (a dark tinted message), .nr-glass-night (with
+     .nr-glass: small glass that always sits on a dark surface, like the canvas twin), plus the shared
+     pieces every instrument has. Do not edit a copy in a page: change this file and run patch_glass.py. -->
+<style id="nr-glass">
+  :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu){
+    background-color:rgba(255,255,255,.55)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.34),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(14px) saturate(185%) brightness(1.06);backdrop-filter:blur(14px) var(--nr-lens,) saturate(185%) brightness(1.06);
+    border-color:transparent!important;
+    box-shadow:0 22px 50px -12px rgba(11,35,71,.28),0 2px 6px rgba(11,35,71,.08),inset 0 0 0 .5px rgba(255,255,255,.6),inset 1.5px 1.5px 0 -.5px rgba(255,255,255,.95),inset -1px -1px 0 -.5px rgba(255,255,255,.5)!important}
+  :is(#ed,.nr-glass-lg){
+    background-color:rgba(255,255,255,.74)!important;-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);
+    box-shadow:-24px 0 60px -28px rgba(11,35,71,.38),inset 1px 0 0 rgba(255,255,255,.85)!important;border-color:rgba(255,255,255,.6)!important}
+  :is(.nr-toast,#nr-ask-msg,.nr-glass-tint){
+    background:rgba(11,35,71,.72)!important;-webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);
+    box-shadow:0 16px 36px -12px rgba(11,35,71,.45),inset 0 0 0 .5px rgba(255,255,255,.18),inset 1px 1px 0 -.5px rgba(255,255,255,.45)!important}
+  /* what sits on glass: light fills, never glass on glass */
+  :is(#ed,.nr-glass-lg) :is(.edh,.edf){background:rgba(255,255,255,.35)!important}
+  /* dark */
+  :is([data-t="dark"],html.dark) :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu){
+    background-color:rgba(20,30,44,.56)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.08),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(14px) saturate(170%) brightness(.9);backdrop-filter:blur(14px) var(--nr-lens,) saturate(170%) brightness(.9);
+    box-shadow:0 22px 50px -12px rgba(0,0,0,.6),inset 0 0 0 .5px rgba(255,255,255,.16),inset 1.5px 1.5px 0 -.5px rgba(255,255,255,.35),inset -1px -1px 0 -.5px rgba(255,255,255,.12)!important}
+  :is([data-t="dark"],html.dark) :is(#ed,.nr-glass-lg){background-color:rgba(22,32,44,.78)!important;box-shadow:-24px 0 60px -28px rgba(0,0,0,.7),inset 1px 0 0 rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.1)!important}
+  :is([data-t="dark"],html.dark) :is(#ed,.nr-glass-lg) :is(.edh,.edf){background:rgba(255,255,255,.05)!important}
+  /* glass that always sits on a dark surface (the canvas twin): the dark values in both themes */
+  .nr-glass.nr-glass-night{background-color:rgba(12,21,38,.58)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.07),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(12px) saturate(160%) brightness(.9);backdrop-filter:blur(12px) var(--nr-lens,) saturate(160%) brightness(.9);
+    box-shadow:0 18px 44px -14px rgba(0,0,0,.65),inset 0 0 0 .5px rgba(143,168,206,.22),inset 1.5px 1.5px 0 -.5px rgba(175,198,246,.35),inset -1px -1px 0 -.5px rgba(175,198,246,.12)!important}
+  /* when glass cannot be glass: solid, as before */
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg){background-color:var(--card,#fff)!important;background-image:none!important}}
+  @media (prefers-reduced-transparency:reduce){
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg){background-color:var(--card,#fff)!important;background-image:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+    :is(.nr-toast,#nr-ask-msg,.nr-glass-tint){background:var(--navy-fill,#0B2347)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}}
+  @media print{
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg,.nr-toast,#nr-ask-msg,.nr-glass-tint){-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:#fff!important;box-shadow:none!important}}
+</style>
+<svg id="nr-glass-defs" width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false"></svg>
+<script id="nr-glass-js">
+(function(){
+  /* the lens: only where a browser can put an SVG filter inside backdrop-filter (Chrome, Edge, the Claude desktop
+     app). Safari and Firefox would draw nothing at all, so they keep the plain frosted glass. */
+  var ua=navigator.userAgent, lens=/Chrome\/|Chromium\/|Edg\//.test(ua)&&!/Firefox\//.test(ua);
+  var calm=window.matchMedia&&(matchMedia('(prefers-reduced-transparency: reduce)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var SMALL='.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu', R=16, BEZEL=22, MAXA=700*800, n=0;
+  var defs=document.getElementById('nr-glass-defs'), NS='http://www.w3.org/2000/svg';
+  function lensMap(w,h,r){ var c=document.createElement('canvas'); c.width=w; c.height=h; var x=c.getContext('2d'), im=x.createImageData(w,h), d=im.data;
+    for(var j=0;j<h;j++) for(var i=0;i<w;i++){
+      var cx=Math.min(Math.max(i,r),w-r), cy=Math.min(Math.max(j,r),h-r), dx=i-cx, dy=j-cy, nx=0, ny=0, dist;
+      if((i<r||i>w-r)&&(j<r||j>h-r)){ var l=Math.sqrt(dx*dx+dy*dy)||1; dist=r-l; nx=dx/l; ny=dy/l; }
+      else { var a=i, b=w-1-i, t=j, u=h-1-j, m=Math.min(a,b,t,u); dist=m; if(m===a)nx=-1; else if(m===b)nx=1; else if(m===t)ny=-1; else ny=1; }
+      var k=Math.pow(Math.max(0,1-dist/BEZEL),3), o=(j*w+i)*4; d[o]=128+nx*k*127; d[o+1]=128+ny*k*127; d[o+2]=128; d[o+3]=255; }
+    x.putImageData(im,0,0); return c.toDataURL(); }
+  function filterFor(el){ if(!el.__nrg){ var id='nr-lens-'+(++n), f=document.createElementNS(NS,'filter');
+      f.setAttribute('id',id); f.setAttribute('filterUnits','userSpaceOnUse'); f.setAttribute('primitiveUnits','userSpaceOnUse'); f.setAttribute('x','0'); f.setAttribute('y','0'); f.setAttribute('color-interpolation-filters','sRGB');
+      var im=document.createElementNS(NS,'feImage'); im.setAttribute('x','0'); im.setAttribute('y','0'); im.setAttribute('preserveAspectRatio','none'); im.setAttribute('result','map');
+      var dm=document.createElementNS(NS,'feDisplacementMap'); dm.setAttribute('in','SourceGraphic'); dm.setAttribute('in2','map'); dm.setAttribute('scale','0'); dm.setAttribute('xChannelSelector','R'); dm.setAttribute('yChannelSelector','G');
+      f.appendChild(im); f.appendChild(dm); defs.appendChild(f); el.__nrg={id:id,f:f,im:im,dm:dm,key:''}; }
+    return el.__nrg; }
+  function grow(g){ if(calm){ g.dm.setAttribute('scale','40'); return; } var t0=performance.now();   /* the glass materialises by bending more */
+    (function step(t){ var p=Math.min(1,(t-t0)/260); g.dm.setAttribute('scale',(40*(1-Math.pow(1-p,3))).toFixed(1)); if(p<1) requestAnimationFrame(step); })(t0); }
+  function scan(){ q=0; if(!lens||calm&&matchMedia('(prefers-reduced-transparency: reduce)').matches) return;
+    document.querySelectorAll(SMALL).forEach(function(el){
+      var w=Math.round(el.offsetWidth), h=Math.round(el.offsetHeight), shown=w>0&&h>0&&getComputedStyle(el).visibility!=='hidden';
+      var g=el.__nrg; if(!shown){ if(g) g.key=''; return; } if(w*h>MAXA) return;
+      g=filterFor(el); var key=w+'x'+h; if(g.key===key) return; var fresh=!g.key; g.key=key;
+      var r=parseFloat(getComputedStyle(el).borderTopLeftRadius)||R;
+      g.f.setAttribute('width',w); g.f.setAttribute('height',h); g.im.setAttribute('width',w); g.im.setAttribute('height',h); g.im.setAttribute('href',lensMap(w,h,Math.min(r,w/2,h/2)));
+      el.style.setProperty('--nr-lens','url(#'+g.id+')'); if(fresh) grow(g); }); }
+  var q=0; function soon(){ if(!q) q=requestAnimationFrame(scan); }
+  function start(){ scan(); new MutationObserver(soon).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style','hidden','open']}); window.addEventListener('resize',soon); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
+  /* the highlight follows the pointer across a small piece of glass */
+  document.addEventListener('pointermove',function(e){ var el=e.target.closest&&e.target.closest(SMALL); if(!el) return; var r=el.getBoundingClientRect();
+    el.style.setProperty('--lx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%'); el.style.setProperty('--ly',((e.clientY-r.top)/r.height*100).toFixed(1)+'%'); },{passive:true});
+})();
+</script>
+<!-- NR-GLASS:END -->
+<!-- NR-REFIT:BEGIN — fit again when the space changes (diagnostic-skill-builder/templates/refit-layer.html,
+     put in by scripts/patch_refit.py). Every page fits its view on a window resize. The space a page has can
+     also change without one: fonts that arrive late, the header stacking, a preview pane or iframe that grows
+     after the first paint. Then the page used to keep its first fit until you switched tabs. This watches the
+     view and the window, and replays the page's own resize handling once that space has really changed
+     (a change in the page's content alone does not count). -->
+<script>(function(){
+  var last = '', t = 0;
+  function box(){ var v = document.getElementById('view'); return (v ? v.clientWidth + 'x' + v.clientHeight + '/' : '') + innerWidth + 'x' + innerHeight; }
+  function kick(){ var k = box(); if(k === last) return; last = k; window.dispatchEvent(new Event('resize')); }
+  function soon(){ cancelAnimationFrame(t); t = requestAnimationFrame(kick); }
+  function again(){ last = ''; soon(); }
+  function watch(){ if(!window.ResizeObserver) return; var ro = new ResizeObserver(soon), v = document.getElementById('view');
+    if(v) ro.observe(v); ro.observe(document.documentElement); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watch); else watch();
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(again);
+  window.addEventListener('load', again);
+})();</script>
+<!-- NR-REFIT:END -->
+<style>
+/* ── READ MODE · narrow screens ──────────────────────────────────────────────
+   This artifact normally scales its whole body down so the page fits one screen.
+   On a phone that turns 13px type into 4px. Below 760px the scaling is switched
+   off and the page simply flows and scrolls at its real size. Desktop is
+   untouched — every rule here lives inside the media query. */
+@media (max-width:760px){
+  html,body{height:auto!important;overflow:auto!important}
+  #art,#pw,#pm{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;padding:12px 14px 22px 34px!important}
+  #view{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;flex:none!important;position:static!important}
+  #vinner{position:static!important;transform:none!important;width:100%!important;
+    padding-bottom:14px!important}
+  .nr-rail{width:22px!important}
+  .toprow{position:static!important;top:auto!important;right:auto!important;left:auto!important;
+    margin:0 0 10px!important;flex-wrap:wrap!important;gap:8px 10px!important;justify-content:flex-start!important}
+  .tags{flex-wrap:wrap!important;gap:8px!important;margin-left:-34px!important}
+  .ctrls{flex-wrap:wrap!important;gap:8px!important;flex:1 1 100%!important}
+  #ft{position:static!important;flex-wrap:wrap!important;row-gap:6px!important;margin-top:14px!important}
+  h1{font-size:19px!important;max-width:none!important}
+  .grid,.classic,.cols-grid{grid-template-columns:1fr!important}
+  table{min-width:0!important}
+  .tbl-wrap,.wrap-x{overflow-x:auto!important}
+}
+</style>
+<style>/* READ-MODE TYPE FLOOR — nothing under 11px once the page stops scaling */
+
+@media (max-width:760px){
+  #ft{font-size:11px!important}
+  .conf,.lp,.li,.nr-track,.nr-foot,.lbl,.note{font-size:11px!important}
+  .inum,.chip,.inev,.num,.wf-num,.vnum{font-size:11px!important}
+  #ft b,.legend b,.l b{font-size:11px!important}
+  /* a row label truncated to '…' is worse than a wrapped one once the page flows */
+  [style*="ellipsis"]{white-space:normal!important;text-overflow:clip!important;overflow:visible!important}
+}
+</style>
+</body></html>

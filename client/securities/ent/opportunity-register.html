@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Opportunity Register</title>
+<style>
+/* Type scale — one place, not case by case. Every size below 12px is a token; the
+   whole small end lifts on a narrow screen so nothing drops under 11px on a phone. */
+:root{
+  --fs-65:6.5px; --fs-7:7px; --fs-75:7.5px; --fs-8:8px; --fs-85:8.5px; --fs-9:9px;
+  --fs-95:9.5px; --fs-10:10px; --fs-105:10.5px; --fs-11:11px; --fs-115:11.5px;
+}
+@media (max-width:760px){
+  :root{
+    --fs-65:11px; --fs-7:11px; --fs-75:11px; --fs-8:11px; --fs-85:11px; --fs-9:11px;
+    --fs-95:11px; --fs-10:11.5px; --fs-105:12px; --fs-11:12px; --fs-115:12.5px;
+  }
+}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#1B2A4A;--green:#1D7044;--border:#D4DBE8;--muted:#7A8CAA;
+  --opt0-bg:#F0F2F5;--opt0-c:#9CA3AF;--opt0-bc:#E5E7EB;
+  --opt1-bg:#DCFCE7;--opt1-c:#166534;--opt1-bc:#BBF7D0;
+  --opt2-bg:#86EFAC;--opt2-c:#14532D;--opt2-bc:#4ADE80;
+  --opt3-bg:#1D7044;--opt3-c:#ffffff;--opt3-bc:#166534;
+  --lv-process:#F59E0B;--lv-auto:#6366F1;--lv-acc:#2563EB;--lv-enh:#7C3AED;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;background:#C2C8D6;font-family:'Inter',sans-serif;}
+body{display:flex;align-items:center;justify-content:center;}
+.frame{width:min(1340px,99vw);height:min(760px,98vh);background:#fff;border-radius:10px;
+  box-shadow:0 10px 50px rgba(0,0,0,0.24);display:flex;flex-direction:column;overflow:hidden;position:relative;}
+.title-bar{background:var(--navy);height:34px;flex-shrink:0;display:flex;align-items:center;padding:0 16px;gap:10px;}
+.dots{display:flex;gap:6px;}.dot{width:11px;height:11px;border-radius:50%;}
+.dot-r{background:#FF5F57;}.dot-y{background:#FEBC2E;}.dot-g{background:#28C840;}
+.bar-t{color:rgba(255,255,255,0.55);font-size:var(--fs-11);font-weight:500;margin-left:8px;}
+.bar-c{margin-left:auto;color:rgba(255,255,255,0.35);font-size:var(--fs-85);font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
+.action-bar{flex-shrink:0;background:#F8F9FB;border-bottom:2px solid var(--border);padding:7px 18px;display:flex;align-items:center;gap:10px;}
+.action-title{font-size:12px;font-weight:700;color:var(--navy);line-height:1.4;flex:1;}
+.action-title strong{color:var(--green);}
+.ameta{flex-shrink:0;display:flex;gap:5px;}
+.ameta-pill{padding:2px 9px;border-radius:20px;font-size:var(--fs-75);font-weight:700;background:var(--navy);color:rgba(255,255,255,.65);}
+.phase-hdr{display:grid;grid-template-columns:repeat(5,1fr);flex-shrink:0;border-bottom:1px solid var(--border);}
+.ph-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 8px;gap:2px;border-right:1px solid rgba(255,255,255,0.12);background:var(--navy);}
+.ph-cell:last-child{border-right:none;}
+.ph-name{font-size:var(--fs-85);font-weight:800;color:rgba(255,255,255,.88);text-align:center;text-transform:uppercase;letter-spacing:.4px;line-height:1.25;}
+.ph-fte{font-size:var(--fs-75);font-weight:600;color:rgba(255,255,255,.4);}
+.cols-grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(5,1fr);overflow:hidden;}
+.phase-col{border-right:1px solid var(--border);display:flex;flex-direction:column;gap:5px;padding:8px 6px;overflow-y:auto;}
+.phase-col:last-child{border-right:none;}
+.act-card{border-radius:6px;padding:7px 8px;border:1px solid;cursor:pointer;display:flex;flex-direction:column;gap:3px;transition:filter .15s,transform .1s;flex-shrink:0;}
+.act-card:hover{filter:brightness(0.94);transform:translateY(-1px);}
+.act-card.opt0{background:var(--opt0-bg);border-color:var(--opt0-bc);}
+.act-card.opt1{background:var(--opt1-bg);border-color:var(--opt1-bc);}
+.act-card.opt2{background:var(--opt2-bg);border-color:var(--opt2-bc);}
+.act-card.opt3{background:var(--opt3-bg);border-color:var(--opt3-bc);}
+.act-name{font-size:var(--fs-95);font-weight:700;line-height:1.3;}
+.act-card.opt0 .act-name,.act-card.opt1 .act-name,.act-card.opt2 .act-name{color:var(--navy);}
+.act-card.opt3 .act-name{color:#fff;}
+.act-sdesc{font-size:var(--fs-8);line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.act-card.opt0 .act-sdesc,.act-card.opt1 .act-sdesc,.act-card.opt2 .act-sdesc{color:var(--muted);}
+.act-card.opt3 .act-sdesc{color:rgba(255,255,255,0.6);}
+.act-foot{display:flex;align-items:center;justify-content:space-between;margin-top:2px;}
+.fte-badge{font-size:var(--fs-8);font-weight:800;padding:1px 6px;border-radius:3px;background:rgba(0,0,0,0.08);}
+.act-card.opt0 .fte-badge,.act-card.opt1 .fte-badge,.act-card.opt2 .fte-badge{color:var(--navy);}
+.act-card.opt3 .fte-badge{background:rgba(255,255,255,0.18);color:#fff;}
+.lever-dots{display:flex;gap:3px;align-items:center;}
+.ldot{width:7px;height:7px;border-radius:50%;}
+.ldot-process{background:var(--lv-process);}.ldot-auto{background:var(--lv-auto);}
+.ldot-acc{background:var(--lv-acc);}.ldot-enh{background:var(--lv-enh);}
+.legend-bar{flex-shrink:0;height:26px;border-top:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;}
+.leg-grp{display:flex;align-items:center;gap:4px;}
+.leg-label{font-size:var(--fs-7);font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-right:2px;}
+.leg-sw{width:11px;height:11px;border-radius:2px;border:1px solid rgba(0,0,0,0.1);}
+.leg-txt{font-size:var(--fs-75);color:var(--muted);}
+.leg-sep{width:1px;height:14px;background:var(--border);margin:0 2px;}
+.leg-dot{width:8px;height:8px;border-radius:50%;}
+.nr-tag{display:flex;align-items:center;gap:4px;margin-left:auto;}
+.nr-dot{width:6px;height:6px;border-radius:50%;background:var(--green);}
+.nr-lbl{font-size:var(--fs-75);color:var(--muted);}
+.modal-overlay{position:absolute;inset:0;background:rgba(10,20,40,0.55);display:none;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(2px);border-radius:10px;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:10px;width:min(520px,90%);max-height:82%;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.3);}
+.modal-hd{padding:14px 16px 12px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;align-items:flex-start;gap:10px;}
+.modal-hd-left{flex:1;min-width:0;}
+.modal-phase-tag{font-size:var(--fs-75);font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px;}
+.modal-title{font-size:14px;font-weight:800;color:var(--navy);line-height:1.3;margin-bottom:6px;}
+.modal-chips{display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
+.modal-fte{font-size:var(--fs-9);font-weight:800;padding:2px 8px;border-radius:4px;background:var(--navy);color:#fff;}
+.modal-opt{font-size:var(--fs-8);font-weight:700;padding:2px 8px;border-radius:4px;}
+.close-btn{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border);background:#F8F9FB;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted);flex-shrink:0;transition:background .15s;}
+.close-btn:hover{background:#F0F2F5;}
+.modal-body{overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:14px;}
+.m-sec-title{font-size:var(--fs-8);font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:6px;}
+.m-desc{font-size:var(--fs-11);color:#374151;line-height:1.6;}
+.pain-list{display:flex;flex-direction:column;gap:5px;}
+.pain-item{display:flex;align-items:flex-start;gap:8px;background:#FFF7F0;border:1px solid #FED7AA;border-radius:5px;padding:6px 9px;}
+.pain-fte{flex-shrink:0;font-size:var(--fs-85);font-weight:800;color:#92400E;background:#FEF3C7;border-radius:3px;padding:1px 6px;margin-top:1px;white-space:nowrap;}
+.pain-text{font-size:var(--fs-10);color:#374151;line-height:1.45;}
+.opp-list{display:flex;flex-direction:column;gap:5px;}
+.opp-item{display:flex;align-items:flex-start;gap:8px;border-radius:5px;padding:6px 9px;border:1px solid;}
+.opp-badge{flex-shrink:0;font-size:var(--fs-75);font-weight:800;padding:1px 6px;border-radius:3px;margin-top:2px;white-space:nowrap;}
+.opp-text{font-size:var(--fs-10);color:#374151;line-height:1.45;}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="title-bar">
+    <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+    <span class="bar-t">Northwind Securities Services &middot; CA Entitlements &amp; Payments &middot; AI Opportunity Heatmap</span>
+    <span class="bar-c">Sample data</span>
+  </div>
+  <div class="action-bar">
+    <div class="action-title">Elections and reconciliation hold <strong>5.8 of the 10.4 FTE</strong> lost today, and five opportunities size 6.2 FTE, most of it data read and matched by hand</div>
+    <div class="ameta"><span class="ameta-pill">26.0 FTE in CA Entitlements &amp; Payments</span><span class="ameta-pill">6 activity blocks &middot; 5 phases</span><span class="ameta-pill">10.4 FTE inefficient today</span><span class="ameta-pill">6.2 FTE sized in 5 of 7 opportunities</span></div>
+  </div>
+  <div class="phase-hdr">
+    <div class="ph-cell"><span class="ph-name">Capture the event</span><span class="ph-fte">2.0 FTE</span></div>
+    <div class="ph-cell"><span class="ph-name">Calculate entitlements</span><span class="ph-fte">6.0 FTE</span></div>
+    <div class="ph-cell"><span class="ph-name">Client elections</span><span class="ph-fte">7.0 FTE</span></div>
+    <div class="ph-cell"><span class="ph-name">Pay and settle</span><span class="ph-fte">6.5 FTE</span></div>
+    <div class="ph-cell"><span class="ph-name">Reconcile and close</span><span class="ph-fte">4.5 FTE</span></div>
+  </div>
+  <div class="cols-grid">
+    <div class="phase-col">
+      <div class="act-card opt2" onclick="openModal('act-01')">
+        <div class="act-name">Capture and validate the event</div>
+        <div class="act-sdesc">Compare three vendor versions, then release the event</div>
+        <div class="act-foot"><span class="fte-badge">2.0 FTE</span><div class="lever-dots"><div class="ldot ldot-auto"></div></div></div>
+      </div>
+    </div>
+    <div class="phase-col">
+      <div class="act-card opt1" onclick="openModal('act-02')">
+        <div class="act-name">Calculate entitlements</div>
+        <div class="act-sdesc">Holdings at record date to entitlement per account</div>
+        <div class="act-foot"><span class="fte-badge">6.0 FTE</span><div class="lever-dots"><div class="ldot ldot-auto"></div><div class="ldot ldot-process"></div></div></div>
+      </div>
+    </div>
+    <div class="phase-col">
+      <div class="act-card opt2" onclick="openModal('act-03')">
+        <div class="act-name">Collect and process client elections</div>
+        <div class="act-sdesc">Notify clients, read and key their elections</div>
+        <div class="act-foot"><span class="fte-badge">7.0 FTE</span><div class="lever-dots"><div class="ldot ldot-acc"></div><div class="ldot ldot-process"></div></div></div>
+      </div>
+    </div>
+    <div class="phase-col">
+      <div class="act-card opt1" onclick="openModal('act-04')">
+        <div class="act-name">Pay and settle the entitlement</div>
+        <div class="act-sdesc">Build, check and release the payment file</div>
+        <div class="act-foot"><span class="fte-badge">4.5 FTE</span><div class="lever-dots"></div></div>
+      </div>
+      <div class="act-card opt2" onclick="openModal('act-06')">
+        <div class="act-name">Answer questions on open events</div>
+        <div class="act-sdesc">Tell clients and colleagues where an event stands</div>
+        <div class="act-foot"><span class="fte-badge">2.0 FTE</span><div class="lever-dots"><div class="ldot ldot-enh"></div></div></div>
+      </div>
+    </div>
+    <div class="phase-col">
+      <div class="act-card opt2" onclick="openModal('act-05')">
+        <div class="act-name">Reconcile and close the event</div>
+        <div class="act-sdesc">Match the depository report and clear the breaks</div>
+        <div class="act-foot"><span class="fte-badge">4.5 FTE</span><div class="lever-dots"><div class="ldot ldot-auto"></div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="legend-bar">
+    <span class="leg-label">Inefficiency level</span>
+    <div class="leg-grp"><div class="leg-sw" style="background:var(--opt0-bg);border-color:var(--opt0-bc);"></div><span class="leg-txt">0&ndash;25%</span></div>
+    <div class="leg-grp"><div class="leg-sw" style="background:var(--opt1-bg);border-color:var(--opt1-bc);"></div><span class="leg-txt">25&ndash;50%</span></div>
+    <div class="leg-grp"><div class="leg-sw" style="background:var(--opt2-bg);border-color:var(--opt2-bc);"></div><span class="leg-txt">50&ndash;75%</span></div>
+    <div class="leg-grp"><div class="leg-sw" style="background:var(--opt3-bg);border-color:var(--opt3-bc);"></div><span class="leg-txt">75&ndash;100%</span></div>
+    <div class="leg-sep"></div>
+    <span class="leg-label">Levers</span>
+    <div class="leg-grp"><div class="leg-dot" style="background:var(--lv-process);"></div><span class="leg-txt">Process, lean &amp; org redesign</span></div>
+    <div class="leg-grp"><div class="leg-dot" style="background:var(--lv-auto);"></div><span class="leg-txt">Automation &amp; data foundation</span></div>
+    <div class="leg-grp"><div class="leg-dot" style="background:var(--lv-acc);"></div><span class="leg-txt">AI acceleration</span></div>
+    <div class="leg-grp"><div class="leg-dot" style="background:var(--lv-enh);"></div><span class="leg-txt">AI enhancement</span></div>
+    <div class="leg-sep"></div>
+    <span class="leg-txt" style="font-style:italic;color:var(--muted);">Click any card for detail</span>
+    <div class="nr-tag"><div class="nr-dot"></div><span class="nr-lbl">Sample data &middot; Northwind Securities Services is fictional</span></div>
+  </div>
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+    <div class="modal" id="modal">
+      <div class="modal-hd">
+        <div class="modal-hd-left">
+          <div class="modal-phase-tag" id="m-phase"></div>
+          <div class="modal-title" id="m-title"></div>
+          <div class="modal-chips"><span class="modal-fte" id="m-fte"></span><span class="modal-opt" id="m-opt"></span></div>
+        </div>
+        <div class="close-btn" onclick="closeModal()">&#10005;</div>
+      </div>
+      <div class="modal-body">
+        <div class="m-section"><div class="m-sec-title">Description</div><div class="m-desc" id="m-desc"></div></div>
+        <div class="m-section"><div class="m-sec-title">Pain points</div><div class="pain-list" id="m-pain"></div></div>
+        <div class="m-section"><div class="m-sec-title">Improvement opportunities</div><div class="opp-list" id="m-opps"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const OPT_STYLE=[
+  {bg:"#F0F2F5",c:"#9CA3AF",label:"0-25% inefficient today"},
+  {bg:"#DCFCE7",c:"#166534",label:"25-50% inefficient today"},
+  {bg:"#86EFAC",c:"#14532D",label:"50-75% inefficient today"},
+  {bg:"#1D7044",c:"#ffffff",label:"75-100% inefficient today"}
+];
+const LV={"auto": {"label": "Automation", "bg": "#EEF2FF", "bc": "#C7D2FE", "bb": "#E0E7FF", "bt": "#3730A3"}, "aiacc": {"label": "AI acceleration", "bg": "#EFF6FF", "bc": "#BFDBFE", "bb": "#DBEAFE", "bt": "#1E40AF"}, "aienh": {"label": "AI enhancement", "bg": "#F5F3FF", "bc": "#DDD6FE", "bb": "#EDE9FE", "bt": "#4C1D95"}, "process": {"label": "Process redesign", "bg": "#FFFBEB", "bc": "#FDE68A", "bb": "#FEF3C7", "bt": "#92400E"}, "lean": {"label": "Lean management", "bg": "#FFFBEB", "bc": "#FDE68A", "bb": "#FEF3C7", "bt": "#92400E"}, "data": {"label": "Data & tech foundation", "bg": "#EEF2FF", "bc": "#C7D2FE", "bb": "#E0E7FF", "bt": "#3730A3"}, "org": {"label": "Org redesign", "bg": "#FFFBEB", "bc": "#FDE68A", "bb": "#FEF3C7", "bt": "#92400E"}, "journey": {"label": "Journey redesign", "bg": "#FFFBEB", "bc": "#FDE68A", "bb": "#FEF3C7", "bt": "#92400E"}, "change": {"label": "Change program", "bg": "#FFFBEB", "bc": "#FDE68A", "bb": "#FEF3C7", "bt": "#92400E"}};
+const A={
+ "act-01": {
+  "title": "Capture and validate the event",
+  "phase": "Capture the event",
+  "fte": "2.0 FTE",
+  "opt": 2,
+  "desc": "3 activities, in the order the work happens: compare the event across the three vendor feeds, validate the event terms against the issuer notice and release the event for entitlement. The work runs on Excel, Vendor feeds, Email and EventHub.",
+  "pain": [
+   {
+    "fte": "~1.0 FTE",
+    "text": "Every event is compared by hand across three vendor feeds. There is no golden record of the event, so each vendor's version is kept and compared in Excel"
+   }
+  ],
+  "opps": [
+   {
+    "type": "data",
+    "text": "Build one golden record from the three vendor feeds. Sized with CA Announcements, where most of the effort sits. Here it removes the second comparison. Not sized yet."
+   }
+  ]
+ },
+ "act-02": {
+  "title": "Calculate entitlements",
+  "phase": "Calculate entitlements",
+  "fte": "6.0 FTE",
+  "opt": 1,
+  "desc": "5 activities, in the order the work happens: load and check holdings at record date, calculate the entitlement per account, recalculate disputed entitlements in Excel, apply fractions and rounding rules and get a second check above the threshold. The work runs on Custody ledger, EventHub, Excel and Email.",
+  "pain": [
+   {
+    "fte": "~1.5 FTE",
+    "text": "Disputed entitlements are recalculated in a spreadsheet outside EventHub. EventHub cannot hold an override or a second rate, so each specialist keeps their own workbook"
+   },
+   {
+    "fte": "not quantified",
+    "text": "A disputed entitlement goes to whoever is free, not to someone who owns it. No decision rights are set for disputes above the threshold"
+   }
+  ],
+  "opps": [
+   {
+    "type": "auto",
+    "text": "Calculate entitlements in EventHub, not in Excel. Needs EventHub to hold an override with its reason, which the vendor offers in the next release. Sized at 1.2 FTE (estimated)."
+   },
+   {
+    "type": "org",
+    "text": "Set decision rights for disputed entitlements. One named owner per dispute above the threshold, with a time limit. Not sized yet."
+   }
+  ]
+ },
+ "act-03": {
+  "title": "Collect and process client elections",
+  "phase": "Client elections",
+  "fte": "7.0 FTE",
+  "opt": 2,
+  "desc": "5 activities, in the order the work happens: send the event notice to clients, read elections arriving by SWIFT free text and email, re-key each election into EventHub, chase missing elections before the deadline and apply the default option to accounts with no election. The work runs on SWIFT gateway, Email, EventHub and Phone.",
+  "pain": [
+   {
+    "fte": "~3.0 FTE",
+    "text": "Client elections arrive as free text and are re-keyed into EventHub. Clients are not asked for structured instructions, and nothing reads the free text"
+   },
+   {
+    "fte": "~1.2 FTE",
+    "text": "Missing elections are chased by phone in the two days before the deadline. The deadline sits in EventHub, but nothing warns the client or the team before the last two days"
+   }
+  ],
+  "opps": [
+   {
+    "type": "aiacc",
+    "text": "Read client elections from SWIFT and email with AI. An assistant reads the free text and proposes the election in EventHub; a specialist confirms it. Sized at 2.0 FTE (measured)."
+   },
+   {
+    "type": "lean",
+    "text": "Run a daily performance dialogue on open events. Ten minutes each morning on deadlines, missing elections and breaks, so chasing starts on day one. Sized at 0.7 FTE (estimated)."
+   }
+  ]
+ },
+ "act-04": {
+  "title": "Pay and settle the entitlement",
+  "phase": "Pay and settle",
+  "fte": "4.5 FTE",
+  "opt": 1,
+  "desc": "4 activities, in the order the work happens: prepare the payment file, check the payment file before release, release payments to client accounts and handle payment exceptions and returns. The work runs on EventHub, Custody ledger and Email.",
+  "pain": [
+   {
+    "fte": "not quantified",
+    "text": "Peak days around payment dates are covered with overtime. Capacity is not planned against the event calendar"
+   }
+  ],
+  "opps": []
+ },
+ "act-06": {
+  "title": "Answer questions on open events",
+  "phase": "Pay and settle",
+  "fte": "2.0 FTE",
+  "opt": 2,
+  "desc": "1 activities, in the order the work happens: answer client and colleague questions on open events. The work runs on Phone and Email.",
+  "pain": [
+   {
+    "fte": "~1.0 FTE",
+    "text": "Clients call to ask whether a payment was made. Payment status is not published to the client portal, so the phone is the only status channel"
+   }
+  ],
+  "opps": [
+   {
+    "type": "aienh",
+    "text": "Tell clients when their payment is made. A message per payment, drafted and sent automatically; the status-call volume shows whether it works. Sized at 0.6 FTE (estimated)."
+   }
+  ]
+ },
+ "act-05": {
+  "title": "Reconcile and close the event",
+  "phase": "Reconcile and close",
+  "fte": "4.5 FTE",
+  "opt": 2,
+  "desc": "3 activities, in the order the work happens: reconcile entitlements against the depository report, investigate and clear reconciliation breaks and close the event and archive the file. The work runs on Depository reports, Excel, Email and EventHub.",
+  "pain": [
+   {
+    "fte": "~2.0 FTE",
+    "text": "Entitlements are reconciled against the depository report line by line. The depository report arrives as a file EventHub cannot read"
+   }
+  ],
+  "opps": [
+   {
+    "type": "auto",
+    "text": "Reconcile entitlements against the depository automatically. Read the depository file into EventHub and match it there; only breaks reach a person. Sized at 1.7 FTE (measured)."
+   }
+  ]
+ }
+};
+function openModal(id){
+  var d=A[id]; if(!d) return;
+  var os=OPT_STYLE[d.opt];
+  document.getElementById('m-phase').textContent=d.phase;
+  document.getElementById('m-title').textContent=d.title;
+  document.getElementById('m-fte').textContent=d.fte;
+  var mopt=document.getElementById('m-opt');
+  mopt.textContent=os.label; mopt.style.background=os.bg; mopt.style.color=os.c; mopt.style.border='1px solid '+os.c+'33';
+  document.getElementById('m-desc').textContent=d.desc;
+  var painEl=document.getElementById('m-pain');
+  painEl.innerHTML=d.pain.length?d.pain.map(function(p){return '<div class="pain-item"><span class="pain-fte">'+p.fte+'</span><span class="pain-text">'+p.text+'</span></div>';}).join(''):'<span style="font-size:var(--fs-10);color:var(--muted);font-style:italic;">No significant pain points identified.</span>';
+  var oppEl=document.getElementById('m-opps');
+  oppEl.innerHTML=d.opps.length?d.opps.map(function(o){var lv=LV[o.type];return '<div class="opp-item" style="background:'+lv.bg+';border-color:'+lv.bc+';border:1px solid '+lv.bc+';border-radius:5px;padding:6px 9px;display:flex;align-items:flex-start;gap:8px;"><span class="opp-badge" style="background:'+lv.bb+';color:'+lv.bt+';flex-shrink:0;font-size:var(--fs-75);font-weight:800;padding:1px 6px;border-radius:3px;margin-top:2px;white-space:nowrap;">'+lv.label+'</span><span class="opp-text">'+o.text+'</span></div>';}).join(''):'<span style="font-size:var(--fs-10);color:var(--muted);font-style:italic;">No improvement opportunities identified.</span>';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(e){
+  if(!e||e.target===document.getElementById('modal-overlay')){
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+}
+document.getElementById('modal').addEventListener('click',function(e){e.stopPropagation();});
+document.querySelector('.close-btn').addEventListener('click',function(){document.getElementById('modal-overlay').classList.remove('open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.getElementById('modal-overlay').classList.remove('open');});
+</script>
+<!-- NR-GLASS:BEGIN — the glass layer (diagnostic-skill-builder/templates/glass-layer.html, put in by
+     scripts/patch_glass.py). Everything that floats above the page is glass; the page itself stays solid
+     (cards, tables, charts, slides). Small things get liquid glass: a lens at the edges, a light rim and a
+     highlight that follows the pointer. Large things (the edit sidebar, big pop-ups) get calmer frosted glass.
+     Hooks: .nr-glass (small), .nr-glass-lg (large), .nr-glass-tint (a dark tinted message), .nr-glass-night (with
+     .nr-glass: small glass that always sits on a dark surface, like the canvas twin), plus the shared
+     pieces every instrument has. Do not edit a copy in a page: change this file and run patch_glass.py. -->
+<style id="nr-glass">
+  :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu){
+    background-color:rgba(255,255,255,.55)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.34),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(14px) saturate(185%) brightness(1.06);backdrop-filter:blur(14px) var(--nr-lens,) saturate(185%) brightness(1.06);
+    border-color:transparent!important;
+    box-shadow:0 22px 50px -12px rgba(11,35,71,.28),0 2px 6px rgba(11,35,71,.08),inset 0 0 0 .5px rgba(255,255,255,.6),inset 1.5px 1.5px 0 -.5px rgba(255,255,255,.95),inset -1px -1px 0 -.5px rgba(255,255,255,.5)!important}
+  :is(#ed,.nr-glass-lg){
+    background-color:rgba(255,255,255,.74)!important;-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);
+    box-shadow:-24px 0 60px -28px rgba(11,35,71,.38),inset 1px 0 0 rgba(255,255,255,.85)!important;border-color:rgba(255,255,255,.6)!important}
+  :is(.nr-toast,#nr-ask-msg,.nr-glass-tint){
+    background:rgba(11,35,71,.72)!important;-webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);
+    box-shadow:0 16px 36px -12px rgba(11,35,71,.45),inset 0 0 0 .5px rgba(255,255,255,.18),inset 1px 1px 0 -.5px rgba(255,255,255,.45)!important}
+  /* what sits on glass: light fills, never glass on glass */
+  :is(#ed,.nr-glass-lg) :is(.edh,.edf){background:rgba(255,255,255,.35)!important}
+  /* dark */
+  :is([data-t="dark"],html.dark) :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu){
+    background-color:rgba(20,30,44,.56)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.08),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(14px) saturate(170%) brightness(.9);backdrop-filter:blur(14px) var(--nr-lens,) saturate(170%) brightness(.9);
+    box-shadow:0 22px 50px -12px rgba(0,0,0,.6),inset 0 0 0 .5px rgba(255,255,255,.16),inset 1.5px 1.5px 0 -.5px rgba(255,255,255,.35),inset -1px -1px 0 -.5px rgba(255,255,255,.12)!important}
+  :is([data-t="dark"],html.dark) :is(#ed,.nr-glass-lg){background-color:rgba(22,32,44,.78)!important;box-shadow:-24px 0 60px -28px rgba(0,0,0,.7),inset 1px 0 0 rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.1)!important}
+  :is([data-t="dark"],html.dark) :is(#ed,.nr-glass-lg) :is(.edh,.edf){background:rgba(255,255,255,.05)!important}
+  /* glass that always sits on a dark surface (the canvas twin): the dark values in both themes */
+  .nr-glass.nr-glass-night{background-color:rgba(12,21,38,.58)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.07),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(12px) saturate(160%) brightness(.9);backdrop-filter:blur(12px) var(--nr-lens,) saturate(160%) brightness(.9);
+    box-shadow:0 18px 44px -14px rgba(0,0,0,.65),inset 0 0 0 .5px rgba(143,168,206,.22),inset 1.5px 1.5px 0 -.5px rgba(175,198,246,.35),inset -1px -1px 0 -.5px rgba(175,198,246,.12)!important}
+  /* when glass cannot be glass: solid, as before */
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg){background-color:var(--card,#fff)!important;background-image:none!important}}
+  @media (prefers-reduced-transparency:reduce){
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg){background-color:var(--card,#fff)!important;background-image:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+    :is(.nr-toast,#nr-ask-msg,.nr-glass-tint){background:var(--navy-fill,#0B2347)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}}
+  @media print{
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg,.nr-toast,#nr-ask-msg,.nr-glass-tint){-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:#fff!important;box-shadow:none!important}}
+</style>
+<svg id="nr-glass-defs" width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false"></svg>
+<script id="nr-glass-js">
+(function(){
+  /* the lens: only where a browser can put an SVG filter inside backdrop-filter (Chrome, Edge, the Claude desktop
+     app). Safari and Firefox would draw nothing at all, so they keep the plain frosted glass. */
+  var ua=navigator.userAgent, lens=/Chrome\/|Chromium\/|Edg\//.test(ua)&&!/Firefox\//.test(ua);
+  var calm=window.matchMedia&&(matchMedia('(prefers-reduced-transparency: reduce)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var SMALL='.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu', R=16, BEZEL=22, MAXA=700*800, n=0;
+  var defs=document.getElementById('nr-glass-defs'), NS='http://www.w3.org/2000/svg';
+  function lensMap(w,h,r){ var c=document.createElement('canvas'); c.width=w; c.height=h; var x=c.getContext('2d'), im=x.createImageData(w,h), d=im.data;
+    for(var j=0;j<h;j++) for(var i=0;i<w;i++){
+      var cx=Math.min(Math.max(i,r),w-r), cy=Math.min(Math.max(j,r),h-r), dx=i-cx, dy=j-cy, nx=0, ny=0, dist;
+      if((i<r||i>w-r)&&(j<r||j>h-r)){ var l=Math.sqrt(dx*dx+dy*dy)||1; dist=r-l; nx=dx/l; ny=dy/l; }
+      else { var a=i, b=w-1-i, t=j, u=h-1-j, m=Math.min(a,b,t,u); dist=m; if(m===a)nx=-1; else if(m===b)nx=1; else if(m===t)ny=-1; else ny=1; }
+      var k=Math.pow(Math.max(0,1-dist/BEZEL),3), o=(j*w+i)*4; d[o]=128+nx*k*127; d[o+1]=128+ny*k*127; d[o+2]=128; d[o+3]=255; }
+    x.putImageData(im,0,0); return c.toDataURL(); }
+  function filterFor(el){ if(!el.__nrg){ var id='nr-lens-'+(++n), f=document.createElementNS(NS,'filter');
+      f.setAttribute('id',id); f.setAttribute('filterUnits','userSpaceOnUse'); f.setAttribute('primitiveUnits','userSpaceOnUse'); f.setAttribute('x','0'); f.setAttribute('y','0'); f.setAttribute('color-interpolation-filters','sRGB');
+      var im=document.createElementNS(NS,'feImage'); im.setAttribute('x','0'); im.setAttribute('y','0'); im.setAttribute('preserveAspectRatio','none'); im.setAttribute('result','map');
+      var dm=document.createElementNS(NS,'feDisplacementMap'); dm.setAttribute('in','SourceGraphic'); dm.setAttribute('in2','map'); dm.setAttribute('scale','0'); dm.setAttribute('xChannelSelector','R'); dm.setAttribute('yChannelSelector','G');
+      f.appendChild(im); f.appendChild(dm); defs.appendChild(f); el.__nrg={id:id,f:f,im:im,dm:dm,key:''}; }
+    return el.__nrg; }
+  function grow(g){ if(calm){ g.dm.setAttribute('scale','40'); return; } var t0=performance.now();   /* the glass materialises by bending more */
+    (function step(t){ var p=Math.min(1,(t-t0)/260); g.dm.setAttribute('scale',(40*(1-Math.pow(1-p,3))).toFixed(1)); if(p<1) requestAnimationFrame(step); })(t0); }
+  function scan(){ q=0; if(!lens||calm&&matchMedia('(prefers-reduced-transparency: reduce)').matches) return;
+    document.querySelectorAll(SMALL).forEach(function(el){
+      var w=Math.round(el.offsetWidth), h=Math.round(el.offsetHeight), shown=w>0&&h>0&&getComputedStyle(el).visibility!=='hidden';
+      var g=el.__nrg; if(!shown){ if(g) g.key=''; return; } if(w*h>MAXA) return;
+      g=filterFor(el); var key=w+'x'+h; if(g.key===key) return; var fresh=!g.key; g.key=key;
+      var r=parseFloat(getComputedStyle(el).borderTopLeftRadius)||R;
+      g.f.setAttribute('width',w); g.f.setAttribute('height',h); g.im.setAttribute('width',w); g.im.setAttribute('height',h); g.im.setAttribute('href',lensMap(w,h,Math.min(r,w/2,h/2)));
+      el.style.setProperty('--nr-lens','url(#'+g.id+')'); if(fresh) grow(g); }); }
+  var q=0; function soon(){ if(!q) q=requestAnimationFrame(scan); }
+  function start(){ scan(); new MutationObserver(soon).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style','hidden','open']}); window.addEventListener('resize',soon); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
+  /* the highlight follows the pointer across a small piece of glass */
+  document.addEventListener('pointermove',function(e){ var el=e.target.closest&&e.target.closest(SMALL); if(!el) return; var r=el.getBoundingClientRect();
+    el.style.setProperty('--lx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%'); el.style.setProperty('--ly',((e.clientY-r.top)/r.height*100).toFixed(1)+'%'); },{passive:true});
+})();
+</script>
+<!-- NR-GLASS:END -->
+<!-- NR-REFIT:BEGIN — fit again when the space changes (diagnostic-skill-builder/templates/refit-layer.html,
+     put in by scripts/patch_refit.py). Every page fits its view on a window resize. The space a page has can
+     also change without one: fonts that arrive late, the header stacking, a preview pane or iframe that grows
+     after the first paint. Then the page used to keep its first fit until you switched tabs. This watches the
+     view and the window, and replays the page's own resize handling once that space has really changed
+     (a change in the page's content alone does not count). -->
+<script>(function(){
+  var last = '', t = 0;
+  function box(){ var v = document.getElementById('view'); return (v ? v.clientWidth + 'x' + v.clientHeight + '/' : '') + innerWidth + 'x' + innerHeight; }
+  function kick(){ var k = box(); if(k === last) return; last = k; window.dispatchEvent(new Event('resize')); }
+  function soon(){ cancelAnimationFrame(t); t = requestAnimationFrame(kick); }
+  function again(){ last = ''; soon(); }
+  function watch(){ if(!window.ResizeObserver) return; var ro = new ResizeObserver(soon), v = document.getElementById('view');
+    if(v) ro.observe(v); ro.observe(document.documentElement); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watch); else watch();
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(again);
+  window.addEventListener('load', again);
+})();</script>
+<!-- NR-REFIT:END -->
+<style>
+/* ── READ MODE · narrow screens ──────────────────────────────────────────────
+   This artifact normally scales its whole body down so the page fits one screen.
+   On a phone that turns 13px type into 4px. Below 760px the scaling is switched
+   off and the page simply flows and scrolls at its real size. Desktop is
+   untouched — every rule here lives inside the media query. */
+@media (max-width:760px){
+  html,body{height:auto!important;overflow:auto!important}
+  #art,#pw,#pm{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;padding:12px 14px 22px 34px!important}
+  #view{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;flex:none!important;position:static!important}
+  #vinner{position:static!important;transform:none!important;width:100%!important;
+    padding-bottom:14px!important}
+  .nr-rail{width:22px!important}
+  .toprow{position:static!important;top:auto!important;right:auto!important;left:auto!important;
+    margin:0 0 10px!important;flex-wrap:wrap!important;gap:8px 10px!important;justify-content:flex-start!important}
+  .tags{flex-wrap:wrap!important;gap:8px!important;margin-left:-34px!important}
+  .ctrls{flex-wrap:wrap!important;gap:8px!important;flex:1 1 100%!important}
+  #ft{position:static!important;flex-wrap:wrap!important;row-gap:6px!important;margin-top:14px!important}
+  h1{font-size:19px!important;max-width:none!important}
+  .grid,.classic,.cols-grid{grid-template-columns:1fr!important}
+  table{min-width:0!important}
+  .tbl-wrap,.wrap-x{overflow-x:auto!important}
+}
+</style>
+<style>/* READ-MODE TYPE FLOOR — nothing under 11px once the page stops scaling */
+
+@media (max-width:760px){
+  #ft{font-size:11px!important}
+  .conf,.lp,.li,.nr-track,.nr-foot,.lbl,.note{font-size:11px!important}
+  .inum,.chip,.inev,.num,.wf-num,.vnum{font-size:11px!important}
+  #ft b,.legend b,.l b{font-size:11px!important}
+  /* a row label truncated to '…' is worse than a wrapped one once the page flows */
+  [style*="ellipsis"]{white-space:normal!important;text-overflow:clip!important;overflow:visible!important}
+}
+</style>
+</body>
+</html>

@@ -1,0 +1,2338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Data Readiness Read-out</title>
+<style>
+/* Type scale — one place, not case by case. Every size below 12px is a token; the
+   whole small end lifts on a narrow screen so nothing drops under 11px on a phone. */
+:root{
+  --fs-65:6.5px; --fs-7:7px; --fs-75:7.5px; --fs-8:8px; --fs-85:8.5px; --fs-9:9px;
+  --fs-95:9.5px; --fs-10:10px; --fs-105:10.5px; --fs-11:11px; --fs-115:11.5px;
+}
+@media (max-width:760px){
+  :root{
+    --fs-65:11px; --fs-7:11px; --fs-75:11px; --fs-8:11px; --fs-85:11px; --fs-9:11px;
+    --fs-95:11px; --fs-10:11.5px; --fs-105:12px; --fs-11:12px; --fs-115:12.5px;
+  }
+}
+</style>
+<style>
+  *{box-sizing:border-box}
+  :root{--page:#FFF}
+  html,body{margin:0;height:100vh;overflow:hidden}
+  body{background:var(--page);font-family:'Aptos','Segoe UI',system-ui,sans-serif;transition:background .25s}
+  /* ===== BRAND THEME (inlined from templates/brand.css — do not hand-edit the tokens) ===== */
+  #art{--navy:#0B2347;--slate:#364156;--steel:#7991AD;--green:#1C7A4A;--accent:#6EB1D1;--sky:#A9D5E6;
+      --slate-10:rgba(54,65,86,.09);--navy-10:rgba(11,35,71,.10);--green-10:rgba(28,122,74,.10);
+      --rag-green:#2F8F6B;--rag-amber:#D49A3A;--rag-red:#D2645A;--rag-na:#9AA4B0;
+      --rag-green-text:#2F8F6B;--rag-amber-text:#B97F22;--rag-red-text:#C2483D;--rag-na-text:#6B7480;
+      --tint-green:rgba(47,143,107,.12);--tint-amber:rgba(212,154,58,.16);--tint-red:rgba(210,100,90,.13);
+      --navy-fill:#0B2347;
+      --wf-total:#0B2347;--wf-loss:#C0405A;--wf-value-c:#1C7A4A;
+      --tint-value:rgba(28,122,74,.075);--tint-loss:rgba(192,64,90,.08);
+      --ink:#15243A;--txt:#46505C;--mut:#7A838F;--line:#E1E6EE;--card:#FFF;--bg:#FFF;
+      --ui:11px;--rowpad:0px;
+      --fs-micro:calc(var(--ui)*.78);--fs-small:calc(var(--ui)*.88);--fs-body:var(--ui);
+      --fs-lead:calc(var(--ui)*1.1);--fs-sect:calc(var(--ui)*1.22);
+      --lh-tight:1.25;--lh-ui:1.4;--lh-prose:1.55;
+      --sh:0 1px 2px rgba(20,30,50,.04),0 14px 32px -24px rgba(20,30,50,.30);
+      width:100%;max-width:2200px;margin:0 auto;height:100vh;overflow:hidden;position:relative;
+      display:flex;flex-direction:column;background:var(--bg);color:var(--ink);padding:76px 40px 12px 98px}
+  #art[data-t="dark"]{--bg:#16202C;--card:#1E2937;--ink:#EAEFF5;--txt:#C4CEDA;--mut:#94A1B2;--line:#2A3744;
+      --navy-fill:#243246;--accent:#8FC7E8;--steel:#93A9C4;
+      --wf-total:#5B85B8;--wf-loss:#D9647C;--wf-value-c:#4FA97C;
+      --tint-value:rgba(79,169,124,.15);--tint-loss:rgba(217,100,124,.15);
+      --rag-green:#5FBF94;--rag-amber:#E8B96A;--rag-red:#F0968C;--rag-na:#9AA8B8;
+      --rag-green-text:#5FBF94;--rag-amber-text:#E8B96A;--rag-red-text:#F0968C;--rag-na-text:#9AA8B8;
+      --tint-green:rgba(95,191,148,.15);--tint-amber:rgba(232,185,106,.15);--tint-red:rgba(240,150,140,.14);
+      --sh:0 1px 2px rgba(0,0,0,.4),0 14px 32px -24px rgba(0,0,0,.6)}
+  body:has(#art[data-t="dark"]){--page:#0E1620}
+  .nr-rail{position:absolute;left:0;top:0;bottom:0;width:52px;background:var(--navy-fill)}
+  .toprow{position:absolute;top:22px;left:0;right:40px;display:flex;justify-content:space-between;align-items:center;gap:14px;z-index:3}
+  .tags{display:flex;align-items:center;gap:11px;min-width:0;flex:none;white-space:nowrap}
+  .nr-pill{display:inline-flex;align-items:center;gap:11px;background:var(--green);padding:10px 22px 10px 14px;border-radius:0 9px 9px 0}
+  .nr-pill img{height:21px;filter:brightness(0) invert(1)}
+  .nr-pill b{color:#fff;font-size:13px;font-weight:700;letter-spacing:.3px}
+  .nr-track{background:#E3E8EF;color:var(--navy);font-weight:700;font-size:var(--fs-115);letter-spacing:.8px;padding:9px 16px;border-radius:8px}
+  #art[data-t="dark"] .nr-track{background:#243246;color:#EAEFF5}
+  .seg{display:flex;background:var(--slate-10);border-radius:999px;padding:3px}
+  .seg button{font-size:12px;font-weight:600;border:none;background:transparent;color:var(--mut);padding:6px 13px;border-radius:999px;cursor:pointer;white-space:nowrap;font-family:inherit}
+  .seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--sh)}
+  .seg button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  .ctrls{display:flex;gap:9px;flex:0 1 auto;min-width:0;justify-content:flex-end}
+  h1{font-size:clamp(20px,1.85vw,28px);font-weight:700;color:var(--navy);letter-spacing:-.2px;line-height:1.24;margin:0;max-width:1300px}
+  #art[data-t="dark"] h1{color:#EAEFF5}
+  h1 .hl{color:var(--green)}
+  #art[data-t="dark"] h1 .hl{color:#5FBF94}
+  .subrow{display:flex;align-items:baseline;gap:16px;margin:6px 0 12px}
+  .subt{font-size:15px;font-weight:600;color:var(--accent)}
+  #view{flex:1;min-height:0;position:relative;overflow:hidden}
+  #vinner{position:absolute;top:0;left:0;width:100%;transform-origin:top left;padding-bottom:14px}
+
+  /* ══ THE MAIN SLIDE: visual left, insights right (the house layout) ══ */
+  .slide{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);
+    gap:calc(var(--ui)*2.6);align-items:start}
+  .slide.one{grid-template-columns:minmax(0,1fr)}
+  .slide.wide{grid-template-columns:minmax(0,.92fr) minmax(0,1.18fr)}
+  .sech{margin:0 0 calc(var(--ui)*1.05);font-size:var(--fs-sect);font-weight:700;color:var(--ink);
+    line-height:var(--lh-tight);padding-bottom:calc(var(--ui)*.55);border-bottom:1px solid var(--steel)}
+  .col-vis,.col-ins{min-width:0}
+
+  /* ── insight panel ── */
+  .col-ins{font-size:var(--ui)}
+  .inswrap{display:flex;flex-direction:column;gap:1.15em}
+  .ins .inh{display:flex;align-items:flex-start;gap:.65em;margin-bottom:.4em}
+  .ins .inum{flex:none;width:1.6em;height:1.6em;border-radius:50%;background:var(--wf-total);color:#fff;
+    font-size:.84em;font-weight:800;display:inline-flex;align-items:center;justify-content:center;margin-top:.15em}
+  .ins .inh b{font-size:1.1em;font-weight:700;color:var(--ink);line-height:1.35}
+  .ins .chip{display:inline-flex;align-items:center;font-size:.8em;font-weight:700;
+    padding:.1em .55em;border-radius:99px;vertical-align:.1em;white-space:nowrap;line-height:1.5}
+  .ins .chip.good{background:var(--tint-value);color:var(--wf-value-c)}
+  .ins .chip.neu{background:var(--tint-amber);color:var(--rag-amber-text)}
+  .ins .chip.poor{background:var(--tint-loss);color:var(--wf-loss)}
+  .ins ul{margin:0;padding-left:2.9em;list-style:none}
+  .ins li{position:relative;font-size:1em;color:var(--txt);line-height:var(--lh-prose);margin-bottom:.25em}
+  .ins li::before{content:"";position:absolute;left:-.9em;top:.6em;width:.33em;height:.33em;border-radius:50%;background:var(--mut)}
+  .ins .inev{margin:.4em 0 0 2.9em;font-size:.88em;color:var(--mut);font-style:italic}
+
+  /* ── dependency map ── */
+  .mapwrap svg{display:block;width:100%;height:auto}
+  .lnk{fill:none;stroke-width:2;opacity:.42;transition:opacity .15s}
+  .nodelabel{font-size:16px;fill:var(--ink)}
+  .nodesub{font-size:13.5px;fill:var(--mut)}
+  .axcap{font-size:15px;letter-spacing:1.1px;text-transform:uppercase;fill:var(--ink);font-weight:700}
+  .badge{font-size:12px;font-weight:800;fill:#fff}
+  .axpill{fill:#E8ECF2}
+  #art[data-t="dark"] .axpill{fill:#243246}
+  .gnode{cursor:pointer}
+  svg.dim .lnk{opacity:.07} svg.dim .gnode{opacity:.3}
+  svg.dim .lnk.hot{opacity:.95} svg.dim .gnode.hot{opacity:1}
+
+  /* ── dot plot ── */
+  .dotrow{display:grid;grid-template-columns:calc(var(--ui)*14) 1fr;gap:calc(var(--ui)*1.4);
+    align-items:center;padding:calc(var(--ui)*.6 + var(--rowpad)) 0;border-top:1px solid var(--line)}
+  .dotrow:first-child{border-top:0}
+  .dotrow.sep{border-top:2px solid var(--steel)}
+  .seplab{font-size:var(--fs-micro);color:var(--steel);margin-top:2px}
+  .dotlab{font-size:var(--fs-body);color:var(--txt)}
+  .track{position:relative;height:calc(var(--ui)*3.6)}
+  .track::before{content:"";position:absolute;left:0;width:50%;top:0;bottom:0;
+    background:var(--tint-loss);border-radius:4px 0 0 4px}
+  .tick{position:absolute;top:0;bottom:0;width:1px;background:var(--line)}
+  .tick.bar{background:transparent;width:0;border-left:2px dashed var(--steel);z-index:1}
+  .dot{position:absolute;width:calc(var(--ui)*1.15);height:calc(var(--ui)*1.15);border-radius:50%;
+    transform:translate(-50%,-50%);border:2px solid var(--card);cursor:help;z-index:2}
+  .dot:hover{transform:translate(-50%,-50%) scale(1.25)}
+  .d1{background:var(--rag-red)} .d2{background:var(--rag-amber)}
+  .d3,.d4,.d5{background:var(--rag-green)}
+  .scaleline{display:grid;grid-template-columns:calc(var(--ui)*14) 1fr;gap:calc(var(--ui)*1.4);margin-top:6px}
+  .scalenums{position:relative;height:calc(var(--ui)*1.5);font-size:var(--fs-micro);color:var(--mut)}
+  .scalenums span{position:absolute;transform:translateX(-50%)}
+
+  /* ── the unit rows: one per activity block (or value chain) ── */
+  .phead,.prow{display:grid;grid-template-columns:1fr calc(var(--ui)*5) calc(var(--ui)*10.5) 1.15fr;
+    gap:calc(var(--ui)*1.1);align-items:center}
+  .phead{padding-bottom:calc(var(--ui)*.6);font-size:var(--fs-micro);color:var(--mut);
+    font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+  .prow{padding:calc(var(--ui)*.8 + var(--rowpad)) 0;border-top:1px solid var(--line)}
+  .pn{font-weight:600;color:var(--ink);font-size:var(--fs-body)}
+  .pf{text-align:right;font-variant-numeric:tabular-nums;color:var(--mut);font-size:var(--fs-small)}
+  .pv{text-align:center}
+  .pl{display:flex;flex-wrap:wrap;gap:calc(var(--ui)*.35)}
+  .chip2{display:inline-block;border-radius:99px;padding:.18em .8em;font-size:var(--fs-small);font-weight:700;white-space:nowrap}
+  .k1{background:var(--tint-red);color:var(--rag-red-text)}
+  .k2{background:var(--tint-amber);color:var(--rag-amber-text)}
+  .k3,.k4,.k5{background:var(--tint-green);color:var(--rag-green-text)}
+  .dp{display:inline-flex;align-items:baseline;gap:.4em;border-radius:4px;padding:.18em .65em;
+    font-size:var(--fs-small);border:1px solid transparent}
+  .dp b{font-weight:800}
+  .dp1{background:var(--tint-red);color:var(--rag-red-text)}
+  .dp2{background:var(--tint-amber);color:var(--rag-amber-text)}
+  .dp3,.dp4,.dp5{background:var(--tint-green);color:var(--rag-green-text)}
+  .dp.bind{border-color:currentColor}
+  .dp{cursor:pointer}
+
+  /* ── data point cards (quiet: no shadow, no side stripe) ── */
+  .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:calc(var(--ui)*1.5)}
+  .card{border:1px solid var(--line);border-radius:10px;padding:calc(var(--ui)*1.1) calc(var(--ui)*1.2) calc(var(--ui)*.9);
+    background:transparent;cursor:pointer;transition:border-color .12s,background .12s}
+  .card:hover{border-color:var(--steel);background:var(--slate-10)}
+  .chead{display:flex;justify-content:space-between;align-items:flex-start;gap:.7em}
+  .cname{font-weight:700;font-size:var(--fs-lead);color:var(--ink);line-height:1.25;min-height:2.5em}
+  .csys{font-size:var(--fs-micro);color:var(--mut);margin-bottom:calc(var(--ui)*1)}
+  .mini{display:grid;grid-template-columns:repeat(5,1fr);gap:calc(var(--ui)*.45);align-items:end;
+    height:calc(var(--ui)*4.2 + var(--rowpad)*2);position:relative;margin-bottom:5px}
+  .mini::before{content:"";position:absolute;left:0;right:0;bottom:60%;border-top:2px dashed var(--steel);opacity:.6}
+  .mb{border-radius:3px 3px 0 0;min-height:3px;cursor:help;transition:filter .12s}
+  .mb:hover{filter:brightness(1.12) saturate(1.2)}
+  .mb1{background:var(--rag-red)} .mb2{background:var(--rag-amber)}
+  .mb3,.mb4,.mb5{background:var(--rag-green)}
+  .mlab{display:grid;grid-template-columns:repeat(5,1fr);gap:calc(var(--ui)*.45);
+    font-size:var(--fs-micro);color:var(--mut);text-align:center}
+  .cfoot{margin-top:calc(var(--ui)*.9);padding-top:calc(var(--ui)*.7);border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;gap:.7em;font-size:var(--fs-small)}
+  .hold{color:var(--mut)} .hold b{color:var(--ink);font-weight:700}
+  .ownm{color:var(--mut);white-space:nowrap;display:inline-flex;align-items:center;gap:.4em;font-size:var(--fs-micro);cursor:help}
+  .ownm i{width:.7em;height:.7em;border-radius:2px;background:var(--rag-green);display:inline-block}
+  .ownm.weak i{background:var(--rag-amber)}
+  .prov{display:inline-block;width:.5em;height:.5em;border-radius:50%;background:var(--steel);margin-right:.5em;vertical-align:.1em}
+  .prov.meas{background:var(--green)}
+
+  /* ── repairs ── */
+  .fix{display:grid;grid-template-columns:calc(var(--ui)*14) 1fr calc(var(--ui)*13);
+    gap:calc(var(--ui)*.6) calc(var(--ui)*1.6);padding:calc(var(--ui)*1 + var(--rowpad)) 0;border-top:1px solid var(--line)}
+  .fix:first-child{border-top:0}
+  .fl{font-weight:700;color:var(--ink);font-size:var(--fs-body)}
+  .fs{font-size:var(--fs-small);color:var(--mut);margin-top:1px}
+  .fb{font-size:var(--fs-small);color:var(--rag-amber-text);font-weight:700;margin-bottom:1px}
+  .fneed{margin-bottom:calc(var(--ui)*.6);font-size:var(--fs-body);color:var(--txt);line-height:var(--lh-prose)}
+  .fneed:last-child{margin-bottom:0}
+  .fr{font-size:var(--fs-small);color:var(--mut);text-align:right;line-height:var(--lh-ui)}
+
+  /* ── review ── */
+  .q{border-top:1px solid var(--line);padding:calc(var(--ui)*1.1) 0;max-width:92ch}
+  .q:first-child{border-top:0}
+  .qh{font-weight:700;color:var(--ink);font-size:var(--fs-lead);margin-bottom:2px}
+  .qb{color:var(--txt);font-size:var(--fs-body);line-height:var(--lh-prose)}
+
+  /* ── maturity profile: radar left, dimension rows right ── */
+  .radarwrap{display:flex;align-items:center;justify-content:center}
+  .radarwrap svg{width:100%;height:auto;max-width:calc(var(--ui)*44)}
+  .rlab{font-size:15px;fill:var(--ink);font-weight:600}
+  .rtick{font-size:12px;fill:var(--mut)}
+  .drow{padding:calc(var(--ui)*.8) 0;border-top:1px solid var(--line);cursor:help}
+  .drow:first-child{border-top:0}
+  .drh{display:flex;align-items:center;gap:.7em}
+  .dnm{font-weight:700;color:var(--ink);font-size:var(--fs-lead);flex:1;min-width:0}
+  .dsc{font-weight:700;font-size:var(--fs-small);border-radius:99px;padding:.15em .7em;white-space:nowrap}
+  .dsc.lo{background:var(--tint-amber);color:var(--rag-amber-text)}
+  .dsc.hi{background:var(--tint-green);color:var(--rag-green-text)}
+  .dsc.blk{background:var(--tint-red);color:var(--rag-red-text)}
+  .dmeter{display:flex;gap:.32em;flex:none}
+  .dmeter i{width:.62em;height:.62em;border-radius:50%;background:var(--line);display:block}
+  .dmeter i.on.lo{background:var(--rag-amber)}
+  .dmeter i.on.hi{background:var(--rag-green)}
+  .dmeter i.on.blk{background:var(--rag-red)}
+  .dtx{font-size:var(--fs-body);color:var(--txt);line-height:var(--lh-prose);margin-top:.3em}
+  .ovbox{display:flex;align-items:center;gap:calc(var(--ui)*1.3);margin-top:calc(var(--ui)*.6);
+    border:1px solid var(--line);border-radius:12px;
+    background:var(--slate-10);padding:calc(var(--ui)*1) calc(var(--ui)*1.3);--nr-tc:var(--steel);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
+  .ovbox.hi{--nr-tc:var(--rag-green)} .ovbox.lo{--nr-tc:var(--rag-amber)}
+  .ovbox.blk{--nr-tc:var(--rag-red)}
+  .ovnum{flex:none;text-align:center;line-height:1}
+  .ovnum b{font-size:calc(var(--ui)*2.6);font-weight:700;letter-spacing:-1px;display:block}
+  .ovnum.hi b{color:var(--rag-green-text)} .ovnum.lo b{color:var(--rag-amber-text)}
+  .ovnum.blk b{color:var(--rag-red-text)}
+  .ovnum span{font-size:var(--fs-micro);color:var(--mut);display:block;margin-top:.25em}
+  .ovk{font-size:var(--fs-micro);letter-spacing:.9px;text-transform:uppercase;color:var(--steel);font-weight:700}
+  .ovw{font-size:var(--fs-lead);font-weight:700;color:var(--ink);margin:.05em 0 .2em}
+  .ovt{font-size:var(--fs-small);color:var(--txt);line-height:var(--lh-prose)}
+
+  /* ── the drill-down panel ── */
+  #ovl{position:fixed;inset:0;background:rgba(11,25,45,.42);z-index:70;display:none;
+    align-items:center;justify-content:center;padding:34px}
+  #ovl.on{display:flex}
+  .mdl{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    width:min(760px,94vw);max-height:86vh;overflow:auto;box-shadow:0 30px 70px -30px rgba(5,15,35,.6);
+    font-size:clamp(13px,1.3vh + 3px,17.5px)}
+  .mhead{display:flex;justify-content:space-between;align-items:flex-start;gap:1em;
+    padding:1.1em 1.35em .85em;border-bottom:1px solid var(--line)}
+  .mtit{font-size:1.26em;font-weight:700;color:var(--ink);line-height:1.22}
+  .msub{font-size:.85em;color:var(--mut);margin-top:.2em}
+  .mx{appearance:none;border:1px solid var(--line);background:transparent;color:var(--mut);
+    width:2em;height:2em;border-radius:50%;cursor:pointer;font-size:1.1em;line-height:1;flex:none;font-family:inherit}
+  .mx:hover{color:var(--ink);border-color:var(--steel)}
+  .mbody{padding:.95em 1.35em 1.3em}
+  .mh2{font-size:.75em;letter-spacing:.8px;text-transform:uppercase;color:var(--steel);
+    font-weight:700;margin:1.15em 0 .45em}
+  .mh2:first-child{margin-top:0}
+  .mrow{display:grid;grid-template-columns:11em 2.6em 1fr;gap:.8em;align-items:baseline;
+    padding:.36em 0;border-top:1px solid var(--line)}
+  .mrow:first-of-type{border-top:0}
+  .mrow.own{margin-top:.4em;padding-top:.55em;border-top:2px solid var(--steel)}
+  .mcl{font-weight:600;color:var(--ink)}
+  .mcl small{display:block;font-weight:400;color:var(--steel);font-size:.8em;line-height:1.3}
+  .msc{font-weight:800;text-align:center;border-radius:99px;padding:.1em 0}
+  .m1{background:var(--tint-red);color:var(--rag-red-text)}
+  .m2{background:var(--tint-amber);color:var(--rag-amber-text)}
+  .m3,.m4,.m5{background:var(--tint-green);color:var(--rag-green-text)}
+  .mtx{color:var(--txt);line-height:var(--lh-prose)}
+  .mtx em{color:var(--mut);font-style:italic;display:block;margin-top:.05em;font-size:.9em}
+
+  .mdep{display:grid;grid-template-columns:1fr 4.5em 9em;gap:.8em;align-items:baseline;
+    padding:.3em 0;border-top:1px solid var(--line);color:var(--txt)}
+  .mdep:first-of-type{border-top:0}
+  .mdep .r{text-align:right;font-variant-numeric:tabular-nums;color:var(--mut)}
+  .mdep .b{color:var(--rag-red-text);font-weight:600;font-size:.9em}
+  .mfix{background:var(--tint-amber);border-radius:9px;padding:.55em .8em;
+    color:var(--txt);line-height:1.5}
+  .mscale{margin-top:1em;padding-top:.65em;border-top:1px solid var(--line);
+    font-size:.76em;color:var(--mut);line-height:1.45}
+
+  /* ── the hover card ── */
+  #tip{position:fixed;z-index:60;max-width:330px;background:var(--card);border:1px solid var(--line);
+    border-radius:10px;box-shadow:0 12px 34px -14px rgba(10,20,40,.45);padding:10px 13px;
+    font-size:13px;color:var(--txt);line-height:1.5;pointer-events:none;opacity:0;transition:opacity .1s}
+  #tip.on{opacity:1}
+  #tip .th{display:flex;align-items:baseline;justify-content:space-between;gap:.9em;margin-bottom:3px}
+  #tip .th b{color:var(--ink);font-size:13px;font-weight:700}
+  #tip .ts{font-weight:800;font-size:12.5px;white-space:nowrap}
+  #tip .tc{font-size:var(--fs-115);color:var(--mut);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:4px}
+
+  #ft{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:10px;
+    font-size:clamp(9.5px,0.75vw,12px);color:var(--mut)}
+  #ft .l{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .legend{display:flex;gap:1.1em;flex-wrap:wrap;row-gap:.25em}
+  .lp{display:inline-flex;align-items:center;gap:.5em;font-size:0.95em;font-weight:600;color:var(--txt)}
+  .lp i{width:.75em;height:.75em;border-radius:2px;display:inline-block;flex:none}
+  .conf{font-size:0.88em;letter-spacing:.5px;font-weight:600;white-space:nowrap;flex:none}
+  /* The band where the row still fits on one line, but only just: the tabs give up a little
+     padding before anything is allowed to collide. The working copy is the tight case, because
+     it carries the padlock and Export on the same row. */
+  @media (max-width:1460px){
+    .seg{padding:2px}
+    .seg button{padding:5px 9px;font-size:var(--fs-115)}
+    .nr-track{font-size:var(--fs-11);padding:8px 12px}
+  }
+  @media (max-width:1320px){
+    .seg button{padding:5px 7px;font-size:var(--fs-11)}
+    .nr-pill{padding:9px 16px 9px 11px}
+  }
+  /* collapsed / narrow: the top row joins the flow instead of floating over the title */
+  @media (max-width:1240px){
+    #art{padding:18px 20px 12px 60px}
+    .nr-rail{width:34px}
+    .nr-pill{padding:8px 16px 8px 10px;border-radius:9px}
+    .nr-pill img{height:18px} .nr-pill b{font-size:var(--fs-115)}
+    .nr-track{font-size:var(--fs-105);padding:7px 12px}
+    .seg button{padding:5px 11px;font-size:var(--fs-115)}
+    h1{font-size:clamp(18px,2.6vw,24px)}
+    .subrow{gap:8px}
+    .slide{grid-template-columns:minmax(0,1fr);gap:calc(var(--ui)*1.6)}
+    .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+  /* ── responsive chrome ──────────────────────────────────────────────────────
+     The toprow stacks when it does not fit, and the switch is DETECTED, not
+     guessed: fitChrome() below measures the one-row layout and adds .stacked to
+     the artifact root. Never hard-code a breakpoint for the chrome — see
+     brand-guide.html, "Responsive chrome". Stacked order is brand row, then
+     navigation, then working controls: where am I, what am I looking at, what
+     can I change. ── */
+  #art.stacked .toprow,#pm.stacked .toprow,#pw.stacked .toprow{
+    position:static;top:auto;left:auto;right:auto;margin:0 0 12px;
+    display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:center;gap:10px 12px}
+  #art.stacked .tags,#pm.stacked .tags,#pw.stacked .tags{display:contents}
+  /* only the brand pill bleeds out onto the navy rail — that is why it is
+     border-radius:0 9px 9px 0. The negative margin is given back as padding, so
+     its right edge does not move and no sibling shifts. */
+  #art.stacked .nr-pill,#pm.stacked .nr-pill,#pw.stacked .nr-pill{
+    order:1;margin-left:calc(-1 * var(--padl,0px));padding-left:calc(14px + var(--padl,0px))}
+  /* no text in an artifact is ever cut to make it fit: the lens badge wraps, it
+     does not ellipsise. An instrument that truncates it looks fine to a gate and
+     wrong to a client. */
+  #art.stacked .nr-track,#pm.stacked .nr-track,#pw.stacked .nr-track{
+    order:2;max-width:none;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+  #art.stacked .ctrls,#pm.stacked .ctrls,#pw.stacked .ctrls{
+    order:3;flex:1 1 100%;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:8px}
+  /* a shell whose view switch sits straight in the toprow, with no .ctrls group */
+  #art.stacked .toprow>.seg,#pm.stacked .toprow>.seg,#pw.stacked .toprow>.seg{order:3;flex:1 1 100%}
+  #art.stacked .seg,#pm.stacked .seg,#pw.stacked .seg{flex-wrap:wrap;max-width:100%}
+  #art.stacked .wgrp,#pm.stacked .wgrp,#pw.stacked .wgrp{
+    order:4;flex:1 1 100%;flex-wrap:wrap;gap:8px}
+  #art.stacked #save,#art.stacked #lock,#pm.stacked #save,#pm.stacked #lock,
+  #pw.stacked #save,#pw.stacked #lock{order:4}
+  /* the narrow-screen media query keeps only what it was really for: padding and
+     rail width on a phone. Chrome layout is no longer its business. */
+  @media (max-width:760px){
+    #art.stacked,#pm.stacked,#pw.stacked{padding:14px 18px 10px 42px}
+    #art.stacked .nr-rail,#pm.stacked .nr-rail,#pw.stacked .nr-rail{width:24px}
+  }
+</style>
+<style id="nr-finish">
+/* == THE DECK FINISH (patch_finish.py) == one look across the toolkit: the same base size as a deck
+   in the same window, the quiet subtitle, light grey cards for ideas, icons from the house set.
+   Written with an html prefix so it wins over the template's own rules wherever they sit. */
+html{--srf:#F7F9FB;--srf-line:#E4E9EF;--sh-soft:0 1px 2px rgba(16,24,40,.05);--subt:#5E718B}
+html [data-t="dark"]{--srf:#1E2937;--srf-line:#2C3947;--sh-soft:0 1px 2px rgba(0,0,0,.35);--subt:#9FB1C8}
+html .subt{font-size:max(15px,calc(var(--nr-t,14px) * 1.22));font-weight:400;color:var(--subt)}
+/* the title follows the deck where the deck's title is the larger one (a window above about 1615 x 909);
+   below that every instrument keeps its own title, including the ones that shrink it to fit */
+@media (min-width:1615px) and (min-height:909px){html h1{font-size:calc(var(--nr-t,15.14px) * 1.85)}}
+html :is(.card,.kpi,#pw .tcard,.plan,.findings,.acard,.t-dept .nc,.t-team.in .nc,.blk.boxed,.conc-so,.node.l3){background:var(--srf);border-color:var(--srf-line);border-radius:14px;box-shadow:var(--sh-soft)}
+/* the templates paint their dark cards from #art[data-t="dark"] rules; the finish wins over those */
+html [data-t="dark"]:is(#art,#pw,#pm) :is(.card,.kpi,#pw .tcard,.plan,.findings,.acard,.t-dept .nc,.t-team.in .nc,.blk.boxed,.conc-so,.node.l3){background:var(--srf);border-color:var(--srf-line)}
+html :is(.blk.boxed,.conc-so){border:1px solid var(--srf-line)}
+html .ic{width:1.2em;height:1.2em;fill:var(--navy);flex:none;vertical-align:-.24em;margin-right:.4em}
+html [data-t="dark"] .ic{fill:#93A9C4}
+@media print{html{--sh-soft:0 0 0 transparent}}
+</style>
+<script id="nr-finish-js">
+/* == ONE TYPE SIZE PER WINDOW (patch_finish.py) == the deck's base size for this window, published
+   on <html> before any fit runs, and nrZ() for the fit caps. Never below the instrument's own 14px. */
+(function(){
+  function deck(){var W=window.innerWidth||1600,H=window.innerHeight||900;
+    return Math.max(11,Math.min(20,H/60,(W-138)/97.5));}
+  function ui(){return Math.max(14,deck());}
+  function put(){var d=document.documentElement.style;d.setProperty('--nr-t',deck().toFixed(2)+'px');
+    d.setProperty('--nr-ui',ui().toFixed(2)+'px');}
+  window.nrZ=function(){return ui()/14;};
+  put(); window.addEventListener('resize',put);
+  /* icons from the house set on the fixed vocabularies, re-applied whenever a view re-renders */
+  var I={"alt_route":"M450-80v-200q0-48-16-79t-49-64l43-43q13 11 27.5 30t24.5 35q17-26 33.5-45t31.5-32q58-47 83.5-113.5T648-766l-90 90-42-42 162-162 162 162-42 42-90-90q5 126-24.5 198.5T585-432q-44 40-59.5 73T510-280v200h-60ZM258-636q-4-18-6.5-52.5T251-765l-89 89-42-42 162-162 162 162-42 42-90-90q-2 38-1 66.5t5 49.5l-58 14Zm84 171q-17-18-37.5-47.5T273-577l59-15q9 25 24 48t28 37l-42 42Z","badge":"M140-80q-24 0-42-18t-18-42v-480q0-24 18-42t42-18h250v-140q0-24 18-42t42-18h60q24 0 42 18t18 42v140h250q24 0 42 18t18 42v480q0 24-18 42t-42 18H140Zm0-60h680v-480H570v30q0 28-18 44t-42 16h-60q-24 0-42-16t-18-44v-30H140v480Zm92-107h239v-14q0-18-9-32t-23-19q-32-11-50-14.5t-35-3.5q-19 0-40.5 4.5T265-312q-15 5-24 19t-9 32v14Zm336-67h170v-50H568v50Zm-175.5-65.5Q408-395 408-418t-15.5-38.5Q377-472 354-472t-38.5 15.5Q300-441 300-418t15.5 38.5Q331-364 354-364t38.5-15.5ZM568-427h170v-50H568v50ZM450-590h60v-230h-60v230Zm30 210Z","build":"M705-128 447-388q-23 8-46 13t-47 5q-97.08 0-165.04-67.67Q121-505.33 121-602q0-31 8.16-60.39T152-718l145 145 92-86-149-149q25.91-15.16 54.96-23.58Q324-840 354-840q99.17 0 168.58 69.42Q592-701.17 592-602q0 24-5 47t-13 46l259 258q11 10.96 11 26.48T833-198l-76 70q-10.7 11-25.85 11Q716-117 705-128Zm28-57 40-40-273-273q16-21 24-49.5t8-54.5q0-75-55.5-127T350-782l102 104q9 9 8.5 21.5T451-635L318-510q-9.27 8-21.64 8-12.36 0-20.36-8l-98-97q3 77 54.67 127T354-430q25 0 53-8t49-24l277 277ZM476-484Z","checklist":"M222-214 80-356l42-42 100 99 179-179 42 43-221 221Zm0-320L80-676l42-42 100 99 179-179 42 43-221 221Zm298 244v-60h360v60H520Zm0-320v-60h360v60H520Z","description":"M319-250h322v-60H319v60Zm0-170h322v-60H319v60ZM220-80q-24 0-42-18t-18-42v-680q0-24 18-42t42-18h361l219 219v521q0 24-18 42t-42 18H220Zm331-554v-186H220v680h520v-494H551ZM220-820v186-186 680-680Z","flag":"M200-120v-680h343l19 86h238v370H544l-18.93-85H260v309h-60Zm300-452Zm95 168h145v-250H511l-19-86H260v251h316l19 85Z","forum":"M880-81 721-240H300q-24.75 0-42.37-17.63Q240-275.25 240-300v-80h440q24.75 0 42.38-17.63Q740-415.25 740-440v-280h80q24.75 0 42.38 17.62Q880-684.75 880-660v579ZM140-425l75-75h405v-320H140v395ZM80-280v-540q0-24.75 17.63-42.38Q115.25-880 140-880h480q24.75 0 42.38 17.62Q680-844.75 680-820v320q0 24.75-17.62 42.37Q644.75-440 620-440H240L80-280Zm60-220v-320 320Z","groups":"M0-240v-53q0-38.57 41.5-62.78Q83-380 150.38-380q12.16 0 23.39.5t22.23 2.15q-8 17.35-12 35.17-4 17.81-4 37.18v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Zm540 0v-65q0-19.86-3.5-37.43T765-377.27q11-1.73 22.17-2.23 11.17-.5 22.83-.5 67.5 0 108.75 23.77T960-293v53H780Zm-480-60h360v-6q0-37-50.5-60.5T480-390q-79 0-129.5 23.5T300-305v5ZM149.57-410q-28.57 0-49.07-20.56Q80-451.13 80-480q0-29 20.56-49.5Q121.13-550 150-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T149.57-410Zm660 0q-28.57 0-49.07-20.56Q740-451.13 740-480q0-29 20.56-49.5Q781.13-550 810-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T809.57-410ZM480-480q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T600-600q0 50-34.5 85T480-480Zm.35-60Q506-540 523-557.35t17-43Q540-626 522.85-643t-42.5-17q-25.35 0-42.85 17.15t-17.5 42.5q0 25.35 17.35 42.85t43 17.5ZM480-300Zm0-300Z","monitoring":"M120-120v-76l60-60v136h-60Zm165 0v-236l60-60v296h-60Zm165 0v-296l60 61v235h-60Zm165 0v-235l60-60v295h-60Zm165 0v-396l60-60v456h-60ZM120-356v-85l280-278 160 160 280-281v85L560-474 400-634 120-356Z","psychology":"M240-80v-172q-57-52-88.5-121.5T120-520q0-150 105-255t255-105q125 0 221.5 73.5T827-615l55 218q4 14-5 25.5T853-360h-93v140q0 24.75-17.62 42.37Q724.75-160 700-160H600v80h-60v-140h160v-200h114l-45-180q-24-97-105-158.5T480-820q-125 0-212.5 86.5T180-522.46q0 64.42 26.32 122.39Q232.65-342.09 281-297l19 18v199h-60Zm257-370Zm-48 76h60l3-44q12-2 22.47-8.46Q544.94-432.92 553-441l42 14 28-48-30-24q5-14 5-29t-5-29l30-24-28-48-42 14q-8.33-7.69-19.17-13.85Q523-635 512-638l-3-44h-60l-3 44q-11 3-21.83 9.15Q413.33-622.69 405-615l-42-14-28 48 30 24q-5 14-5 29t5 29l-30 24 28 48 42-14q8.06 8.08 18.53 14.54Q434-420 446-418l3 44Zm-19.5-104.38q-20.5-20.38-20.5-49.5t20.38-49.62q20.38-20.5 49.5-20.5t49.62 20.38q20.5 20.38 20.5 49.5t-20.38 49.62q-20.38 20.5-49.5 20.5t-49.62-20.38Z","school":"M479-120 189-279v-240L40-600l439-240 441 240v317h-60v-282l-91 46v240L479-120Zm0-308 315-172-315-169-313 169 313 172Zm0 240 230-127v-168L479-360 249-485v170l230 127Zm1-240Zm-1 74Zm0 0Z","speed":"M473.5-303.5Q517-305 537-336l216-339-335 219q-30 20-32 64t21 67q23 23 66.5 21.5ZM478-799q57 0 119 18.5T716-717l-52 37q-45-30-96.5-44.5T477.98-739q-140.47 0-239.23 100.22Q140-538.57 140-396.02 140-351 152.5-305q12.5 46 35.5 85h579q22-36 35-84t13-94q0-42-12.5-90.5T758-578l39-52q38 56 57 112.5T875-404q2 60-12 113t-41 98q-12 23-25.5 28t-33.5 5H192q-17 0-33.5-8.5T134-193q-26-48-40-97.5T80-396q0-83 31.5-156.5t85.5-128Q251-735 323.68-767T478-799Zm-9 331Z","supervisor_account":"M617.5-408.5Q590-436 590-475t27.5-66.5Q645-569 684-569t66.5 27.5Q778-514 778-475t-27.5 66.5Q723-381 684-381t-66.5-27.5ZM488-160v-51q0-26 11-44.5t31-28.5q37-19 75-28t79-9q41 0 79 8.5t75 28.5q20 9 31 28t11 45v51H488ZM292-523q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42Zm108-108ZM80-160v-94q0-34 17-62.5t51-43.5q67-30 128.5-45T400-420q32 0 57 3t54 9l-25.5 25.5L460-357q-13-2-28-2.5t-32-.5q-57 0-111 11.5T172-306q-14 7-23 22t-9 30v34h288v60H80Zm348-60Zm36.5-346.5Q490-592 490-631t-25.5-64.5Q439-721 400-721t-64.5 25.5Q310-670 310-631t25.5 64.5Q361-541 400-541t64.5-25.5Z","track_changes":"M324-111.5Q251-143 197-197t-85.5-127Q80-397 80-480t31.5-156Q143-709 197-763t127-85.5Q397-880 480-880h30v326q22 9 36 29t14 45q0 33-23.5 56.5T480-400q-33 0-56.5-23.5T400-480q0-25 14-45t36-29v-104q-65 11-107.5 60.5T300-480q0 75 52.5 127.5T480-300q75 0 127.5-52.5T660-480q0-41-16-75t-44-59l43-43q35 33 56 78.5t21 98.5q0 100-70 170t-170 70q-100 0-170-70t-70-170q0-93 60-160.5T450-719v-100q-131 11-220.5 108T140-480q0 142 99 241t241 99q142 0 241-99t99-241q0-74-28.5-137T713-727l43-43q57 55 90.5 129.5T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80q-83 0-156-31.5Z","update":"M483-120q-75 0-141-28.5T226.5-226q-49.5-49-78-115T120-482q0-75 28.5-140t78-113.5Q276-784 342-812t141-28q80 0 151.5 35T758-709v-106h60v208H609v-60h105q-44-51-103.5-82T483-780q-125 0-214 85.5T180-485q0 127 88 216t215 89q125 0 211-88t86-213h60q0 150-104 255.5T483-120Zm122-197L451-469v-214h60v189l137 134-43 43Z","verified":"m346-60-76-130-151-31 17-147-96-112 96-111-17-147 151-31 76-131 134 62 134-62 77 131 150 31-17 147 96 111-96 112 17 147-150 31-77 130-134-62-134 62Zm27-79 107-45 110 45 67-100 117-30-12-119 81-92-81-94 12-119-117-28-69-100-108 45-110-45-67 100-117 28 12 119-81 94 81 92-12 121 117 28 70 100Zm107-341Zm-43 133 227-225-45-41-182 180-95-99-46 45 141 140Z","work":"M140-120q-24 0-42-18t-18-42v-480q0-24 18-42t42-18h180v-100q0-24 18-42t42-18h200q24 0 42 18t18 42v100h180q24 0 42 18t18 42v480q0 24-18 42t-42 18H140Zm0-60h680v-480H140v480Zm240-540h200v-100H380v100ZM140-180v-480 480Z"}, M={"mission & vision":"flag","metrics & objectives":"track_changes","performance tracking":"monitoring","performance dialogues":"forum","consequences & recognition":"verified","mission & target condition":"flag","roles & skills":"badge","objectives & development plans":"school","skill building & review":"psychology","existence & design":"description","adoption & usage":"checklist","deviation management":"alt_route","maintenance & update":"update","work & role":"work","team & atmosphere":"groups","workload":"speed","enablement":"build","leadership":"supervisor_account"}, SEL='.cnm,.dgrp';
+  function dec(){var n=0,els=document.querySelectorAll(SEL);for(var i=0;i<els.length;i++){var e=els[i];
+    if(e.querySelector('svg.ic'))continue;var t='';for(var j=0;j<e.childNodes.length;j++){if(e.childNodes[j].nodeType===3)t+=e.childNodes[j].textContent;}
+    var k=M[t.trim().toLowerCase()];if(!k||!I[k])continue;
+    e.insertAdjacentHTML('afterbegin','<svg class="ic" viewBox="0 -960 960 960" aria-hidden="true"><path d="'+I[k]+'"/></svg>');n++;}
+    /* an icon can move a line: let every fit measure again */
+    if(n)requestAnimationFrame(function(){window.dispatchEvent(new Event('resize'));});}
+  function start(){dec();new MutationObserver(dec).observe(document.body,{childList:true,subtree:true});}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+</script>
+<style id="nr-topbar">
+  /* patch_topbar.py: one theme button and the way home. See the script of the same
+     name at the end of the body. The doubled id outranks the stacked-chrome rules. */
+  :is(#theme,#tseg):is(#theme,#tseg).seg{padding:3px}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button.on{display:none}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button{font-size:0;line-height:0;width:34px;height:28px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button::before{content:"";width:16px;height:16px;background:currentColor;-webkit-mask:var(--nr-ico) center/16px 16px no-repeat;mask:var(--nr-ico) center/16px 16px no-repeat}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button[data-s="dark"]{--nr-ico:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M12%203a6%206%200%200%200%209%209a9%209%200%201%201-9-9z'/%3E%3C/svg%3E")}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button[data-s="light"]{--nr-ico:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Ccircle%20cx='12'%20cy='12'%20r='4'/%3E%3Cpath%20d='M12%202v2M12%2020v2M4.9%204.9l1.4%201.4M17.7%2017.7l1.4%201.4M2%2012h2M20%2012h2M4.9%2019.1l1.4-1.4M17.7%206.3l1.4-1.4'/%3E%3C/svg%3E")}
+  .nr-crumb{display:inline-flex;align-items:center;gap:8px}
+  .nr-crumb>.nr-track{background:transparent!important;padding:0!important;border-radius:0!important;color:inherit!important;margin:0!important}
+  .nr-crumb .nr-home{color:inherit;opacity:.6;text-decoration:none;text-transform:uppercase;white-space:nowrap}
+  .nr-crumb .nr-home:hover{opacity:1;text-decoration:underline}
+  .nr-crumb .nr-sep{opacity:.4}
+</style>
+</head>
+<body>
+<div id="art" data-t="light">
+  <div class="nr-rail"></div>
+  <div class="toprow">
+    <div class="tags">
+      <div class="nr-pill"><img alt="Nova Reperta" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEkAAAAvCAYAAACv3uebAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFxEAABcRAcom8z8AAAzdSURBVGhD7VoL9KVTFfdINXlNBnmOZzRUXolMnomIjEYpkhiP8mZFHsWEVnqoaJWKUIkQSS9KL1lSxptVaDBFXiPTPN3v27/faf0+e1/7nvmPaVXKX/Zad917z9lnn/Pt75z9+O2zwAIvYCqlvIbkBAAXm9ldZvYYgEcB3A7g2yT3Jvnqetz/BZHcEsAlAP5e5kNm9gSAC0huUst5QVIp5RUATgUws1LE/QCuA/AjfczsegBTMg+AJ0keX0p5aS33BUOllFcCuKh68O+b2ftIrlHzk1zLzPYG8JNqzNdLKYvV/MOe9PYBXJge9H4z2+Of2RUkR5jZvmb21zT+nFLKwjXvsKZSysR4QDO7heS6qW9hktuR/CiALwI408yOJ7l1KWXB4GuaZiMAdyU5R/UnGO5EclMA0/3B/iSPlvpkwK8GMCsePkhjAPwgG+xSihT1F5c1leTr+hMNVyqlLBLHDEBLcrfoI/leAE9UinkwHyuRmT3Stu0uMU5HL/Gf059suFIpZf3wZAC+V0pZSO1t224DYEZ6WLn4t5Ic0+v11iW5I4BLk6KebJpmY42dNGmSFH+Ntz9KcqV63mFFJI9yJTRt23a7iOSicvHRTvKIepxICpXLNzM478/C0JPcC0DXbma712OHFfnu0QPeS3IZtZEcHw8I4MvBS3J5M9vfzPYJXpdxgfMaye2dd42Io4b1kZM9MrM/+oNcHe0AzvA2Rdvrq02pB4Cb0/G6Po6RDDeAno85zWUvBOBa5705TTu8SMGjmXVeTXmYt71ECvO2W0spI9UeissEYKKPWRrAHd52YcgHcLnaZJcUH7wxzT1AJF9FcjOSY0muWff/L8kj7CvM7KaIaUi+DMBnAdwE4PNhY+JYVko6z+WMBPBbb7ss5AP4jrf9TX8ebtt2hzR/n0opByShF9T9w4VI7pMV5PQu9c2ePXtlAA+pIdsf5XhqM7MHpIju/ErQgOSnhe8fEgF8s+5/vhDJJbTT58yZswbJ1Uopq/r36mr3o3mimd2ngJPkhyPtIPn+eEYzO9LbFg8bJq/XKcn/NKWUY3OoTnK/1P+NvDBtZZI7k/wYgNNJfoTkFql/W5KHkDy4TjB7vd6G3n5wKWW02jyHejeAUwB8spQyTm+Z5J7Ot1GWkYnkYSZfDswBMNvM+h95OpI7Od8IHck0bhUzu8ef77HAlpqmeVOCWSb2lRSkB5YBdCFDKklvSCG95q/GKtSXkVQM8sHU3jeIbjd+qXYP/VeYNWvWSgB+mGV5/+9jDikuZNRE8oR6bCaFBZlfG0G21sxuDB69nOgHcHIaO3YuJYk8Ql1UoX1q65TkmM0vUvujpZRJOT8KV5qCOkW/nTtu2/btSiHUbmaHasEymGmsUolJZjaQb5E8KT3nAGnXCuJQ8qrjYWYDL4/kO8WnpJbkcQLkzKyPObn96TyhdheAP6tdyXIHmyTGbuHp/0W+9eNNdkoys/4Z1oL86Ixq23Y7AN3WNbNpsglt2+6UeM/U+FAIgD88/vjjizdNs0Wa4wYlrHLLTdMoOe3HNs+mpCAFiQB+HmPS2E5JpZTz6z49p7x4yADQ59FL7BoT8z3aZmb2eGLSGR9QUopQZ5Fc75klDnrDcAQAfu38U8zs4MjYZUfUT/JE75dNHJflKSWIlzc/JfkO+F1a+xQAT/nYTkkAPiebBeABAD8l+Z7I91yGkMkYf51OU9cRjQAmS6N6g3J70Z76Q0nhGh/T0Xtmmd0kmwe/PIi37eYK0Jhui3ukPBDoAZgLmtAuFazq8uapJO1a2a+01vOUf5nZgJJIrt22rRLdtarxI/zUmI9/mOQb+gxJ8P0yyGprmkah+m3R5/2hpK/4/6fatt06zaXJjgt+HUuXryi4M9RB8nppTGd0tUAz27OSt28sfF5KktHXWw/ZAK6Uc5CdSlN2MVFNpZSXkxRicFUwKopv23bA0A8oKUfV+m1m3VHx/k5JJHdIAm/zMGCMPKEbcfE+qO2fZO2cju3t06dPXzrNv1UcKdkpZfMk1yG5h3Z3zDWUkhQXmdlvggfAj8O+NE2zuSJpt2tb+Vyr63fbtrua2bFeFOiSYR8/WY6lnicraUqdepBcSp7A+zs3riAsG0AdpYhYg0genuU4OCYoQn0HDdEn8D3kKd4ZAMaculwrjVu48opX5eze47hRJJdN6cmnZRO1ZbNgt1MX6jjmOfqUGPX25yrUucs/1xHAzsh5vvMF1ayqySab2YCCgmSbHH9eaoi+UQDOUvCXZM1QLJaS2JOHGLeTHI12k+Ktur8m2aq8XkXgAL7Vtu2ONe8AlVLeLCxYhmpe1QV/K+ofqCD0er3Xy0OQ/JCMY9i0ocjjrjE5oq9JybZXVScowlZ60DTNpo4q9o9vpqZplIAP2VcTybcpQ/B0a1sd15rnBU/a6Tq+2a3/R0hnufqouiAIQp5quZr/+Uwkj1YwKZhjqGP9L1M+ozUBuLGOKZ7PpIsRvu7p2Yj/25QUouj6BjOT25yT2i+vx7h92cQz/bmMvUMXq4QxFVQhuyf7p981fyaHOd6iBLSUsmTVJ8+6nGRHnwODG+q3HIyv+RG3aSv4OkZUckY6kLjltGnTuh0nDNx5l8i8MSCUMaXX662nyVUiDk/jkXCnCBldr5/f5t5H7l/XWeQ+VwuZJA+VGwdwZynlNDO7U6Ufd78C7Y8IpCGNWcGT1Edc7iwAdztMEtjP8gpMXfZnBOpr3Xq5jkuf7WsW6YqN+B4h2cU+mtPMDjGzux2x0Jru8Gj7FvGrApPX1VFS0n3pzWvCe719RgcXPL3I/SLGUHBoZn9L42+KQE4eJNrnRQLB0hqWLqX8KvqUiphZl8qIoixEcsVYl5k9lKoiCjr7ShqCuohbmFfdUVOGTPqUOh8g+VpBA4p6IxHVThIwNmPGjGUjyPMoVtt5WeHLdRLq4F1HniSf5m78pBT3CA3tjkmkM56CTPQjNAZAF0171XW0B7fanbHmVjyOgUlJuuig9ieUu7nLFxKh47VOVHTNTKfg47ojAOATCiZD5lCRfVaSkLxr5R0kJLVf6g+ijDnaztIDSlFt224bpWPlUM7bf2PK8vN8UVD0vsM9t+vgDclp2/YdurzQ6/U2UNaeePWwi4WSZDcjPwyKYFGBcW3PdMySrGOqvv7Of1Yl1eTpgepTnT1SCSb6zGwAewrSkXXU72j/P5PkQDWm1+upNN1BowA+pV2jq3r+XztjADALInmgjGoq/1yT5YqSkpQmDYQvsmHqMzPNPQAFK1CONT2rktxQyniFzZmdqygZInU+gXJX+Odi4UwBscZOcqRgIOT3mx6xvaX4kWZ2u/PLmF6p3etyL1NNzYExRdZKX0JJ52a5osgpPcUalft0rLxvpuCg3CdvGsjq/JQ0Wd6tugx1WQDnOt+pXZcNFqnkrBptGTLxxHNF2Yzp06cLOewnpVFnT+VqwRS7Zrkebqzsv4WFx3Hr6maZAHzVRQsZ7ZzN1KlTl/Bq7+4xbynlEq1Fa5o5c+ZyeiHRMT8lCSpZxkvCfa8lQF98WmyGRh2kl/HT5ajL/QZGF3hmJYkc9dQN2G4XeNvN4Q119SV2sIA5wTLajV5olLs+2+XKu8VFq/OrR1G/bFxHCjWkSDO71W+9LSkPnPoVlugEdKXyoPkpSfFEB5XIPUe7zjDJDXwRwpj6+E0mDw26BDd5K0EQc8EefsFhs7wOufl53ZYF8DXn0U7SRS21daXtSoYKjf3bakHxopumGSvl1f26o5TMzKm1XG3Rc/TmFPTFm/US8ulqVx6keljwezQtgO27UpgqJwC+5NfrohQVSlL4ME7ewz2neE+ZF1pAcmPfPdfIU+piqJSnIFL9vq6TPTebq5gqEiaka3+aT6ChfssUpP7V/IauvLjWpNMw1ue9QN51UOJzROm4yTYMFAteJKdKSd0NshepogTuK6Xp4iQFggHq+W9VeeV5hAEJkNdx7R9DbwvP2pWnhZKqXd5KpWgH8UY6r0riXQlI/QLskiyNW1KBrwOFgnTVtqDmFNin4kftsZ9TivqVpx7dThLA7pcTFjOzE9y176rCghZNcnev+8eNtQ3M7DBXkL7XFojvCOhoL5KO83F7tW27fUqEJftQH6P0SfcOdlHhU/clfR6hAOuZmZDV/aT0+jmeU9IDqmxUSvmAFKA2r9TKSE4ws2N011oGXS7Xqy0TVMrRFWOP2tdUAKiykmp4nv4c7jI2l8fSTVmvxJzhChihHeNKUt+RrmB99tU6tJNcueP9auDGLmcd35UD6cx/lYQ/6ejJjXtNfrwXCrcxMylTO2G0AkLn0fER9r6SH62DtJMc8xZ8IixLl9jHS6GCQzzNOdCPsPolR1dwtAO3VzLucoQ6rO/lMSW/Rygz8IsSB9Rr/wcS5txQy6GnOwAAAABJRU5ErkJggg=="><b>OPEX QUICKSCAN</b></div>
+      <div class="nr-track">DATA · DATA MATURITY</div>
+    </div>
+    <div class="ctrls">
+      <!-- The six views are fixed methodology, so the tab bar is static markup.
+           The script only moves the "on" class. -->
+      <div class="seg" id="views">
+        <button data-v="o" class="on">Overview</button>
+        <button data-v="x">Maturity profile</button>
+        <button data-v="m">Maturity assessment</button>
+        <button data-v="p">Activity blocks</button>
+        <button data-v="d">Data points</button>
+        <button data-v="f">Critical repairs</button>
+      </div>
+      <div class="seg" id="theme"><button data-s="light" class="on">Light</button><button data-s="dark">Dark</button></div>
+      
+    </div>
+  </div>
+  <h1 id="title"></h1>
+  <div class="subrow"><div class="subt" id="subt"></div></div>
+  <div id="view"><div id="vinner"></div></div>
+  <div id="ft">
+    <div class="l"><span id="src"></span><div class="legend" id="lg"></div></div>
+    <span class="conf">Sample data · Northwind Assurance is fictional</span>
+  </div>
+  <div id="tip"></div>
+  <div id="ovl"></div>
+</div>
+
+<!-- NRSRC:BEGIN - the sources panel (operating-baseline/assets/source-panel.html, filled by
+     scripts/source_panel.py). The same block in every instrument and slide: a small (i) next to a
+     score or figure opens what it rests on. Do not edit a copy in a page: change this file and render
+     again. -->
+<style>
+  .nrsrc-i{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;flex:none;border-radius:50%;border:1px solid var(--mut,#7A838F);background:none;color:var(--mut,#7A838F);font:italic 700 10px/1 Georgia,"Times New Roman",serif;padding:0;margin:0 0 0 5px;cursor:pointer;vertical-align:1px}
+  /* the (i) is faint at rest and full where you point; it always keeps its place, so nothing moves */
+  .nrsrc-i{opacity:.38;transition:opacity .18s ease,background-color .15s,color .15s}
+  .nrsrc-row:hover .nrsrc-i,.nrsrc-i:hover,.nrsrc-i:focus-visible,.nrsrc-i[aria-expanded="true"],.nrsrc-i.miss{opacity:1}
+  @media (hover:none){.nrsrc-i{opacity:.75}}
+  .nrsrc-i:hover,.nrsrc-i[aria-expanded="true"]{background:var(--navy,#0B2347);border-color:var(--navy,#0B2347);color:#fff}
+  .nrsrc-i.miss{border:1px dashed var(--rag-red-text,#C2483D);color:var(--rag-red-text,#C2483D);font-style:normal}
+  .nrsrc-i:focus-visible{outline:2px solid var(--accent,#6EB1D1);outline-offset:2px}
+  .nrsrc-pop{position:fixed;z-index:1200;width:360px;max-width:calc(100vw - 24px);max-height:calc(100vh - 24px);overflow:auto;background:var(--card,#fff);color:var(--txt,#46505C);border:1px solid var(--line,#E1E6EE);border-radius:16px;box-shadow:0 12px 34px rgba(11,35,71,.20);font:400 13px/1.45 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;text-align:left;display:none}
+  .nrsrc-pop.on{display:block;animation:nrsrcOpen .26s cubic-bezier(.2,.9,.25,1.15)}
+  @keyframes nrsrcOpen{from{opacity:0;transform:scale(.95) translateY(-4px)}to{opacity:1;transform:none}}
+  .nrsrc-hx{position:relative;padding:12px 40px 10px 16px;border-bottom:1px solid rgba(120,135,155,.25)}
+  .nrsrc-ey{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13.5px;font-weight:700;color:var(--ink,#15243A)}
+  .nrsrc-sc{font-size:12px;font-weight:700;letter-spacing:0;text-transform:none;border-radius:8px;padding:0 8px;white-space:nowrap}
+  .nrsrc-x{position:absolute;top:8px;right:10px;width:24px;height:24px;border:0;background:none;color:var(--mut,#7A838F);font-size:17px;line-height:1;cursor:pointer;border-radius:6px}
+  .nrsrc-bd{padding:12px 16px 14px}
+  .nrsrc-sum{margin:0 0 12px}
+  .nrsrc-qt{background:rgba(255,255,255,.45);box-shadow:inset 0 0 0 .5px rgba(120,135,155,.25);border-radius:10px;padding:10px 12px;margin:0 0 12px}
+  [data-t="dark"] .nrsrc-qt,[data-t="dark"] .nrsrc-how{background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.1)}
+  .nrsrc-qt p{margin:0;color:var(--ink,#15243A);font-size:14px;line-height:1.45}
+  .nrsrc-by{margin-top:4px;font-size:12px;color:var(--mut,#7A838F)}
+  .nrsrc-how{background:rgba(255,255,255,.45);box-shadow:inset 0 0 0 .5px rgba(120,135,155,.25);border-radius:10px;padding:9px 12px;margin:0 0 12px;color:var(--ink,#15243A)}
+  .nrsrc-how b,.nrsrc-gh{display:block;font-size:var(--fs-11);font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mut,#7A838F);margin-bottom:3px}
+  .nrsrc-g{margin:0 0 10px}.nrsrc-g:last-child{margin-bottom:0}
+  .nrsrc-it{padding:2px 0 2px 12px;color:var(--ink,#15243A)}
+  .nrsrc-d{color:var(--mut,#7A838F);font-size:12px}
+  .nrsrc-id{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:var(--fs-11);color:var(--mut,#7A838F)}
+  .nrsrc-it a,.nrsrc-how a{color:var(--accent-text,#1F5FA8);font-size:12px;text-decoration:none}
+  .nrsrc-o{display:inline-block;font-size:var(--fs-105);font-weight:650;border-radius:10px;padding:0 7px;margin-left:4px;vertical-align:1px}
+  .nrsrc-o.thirdparty{color:#0E6B66;background:#DFF2F0}.nrsrc-o.internet{color:#8A5A00;background:#FBF0DA}
+  [data-t="dark"] .nrsrc-o.thirdparty{color:#7FD4CB;background:#163330}[data-t="dark"] .nrsrc-o.internet{color:#F0C56E;background:#3A2E15}
+  [data-t="dark"] .nrsrc-it a,[data-t="dark"] .nrsrc-how a{color:#9CC4F2}
+  .nrsrc-ft{border-top:1px solid var(--line,#E1E6EE);margin-top:10px;padding-top:8px;font-size:12px;color:var(--mut,#7A838F)}
+  .nrsrc-warn{color:var(--rag-red-text,#C2483D);font-size:12.5px}
+  .nrsrc-pick .chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+  .nrsrc-pick .chip{display:inline-flex;align-items:center;gap:5px;font-size:var(--fs-115);background:var(--slate-10,rgba(54,65,86,.08));color:var(--ink,#15243A);border-radius:8px;padding:2px 4px 2px 8px}
+  .nrsrc-pick .chip button{border:0;background:none;color:var(--mut,#7A838F);cursor:pointer;font-size:14px;line-height:1;padding:0 3px}
+  .nrsrc-hint{position:fixed;z-index:1201;display:flex;align-items:center;gap:10px;max-width:min(420px,calc(100vw - 24px));padding:9px 10px 9px 14px;border-radius:14px;
+    font:500 13px/1.4 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;color:var(--ink,#15243A);background:var(--card,#fff);box-shadow:0 14px 34px -10px rgba(11,35,71,.28);
+    opacity:0;transform:translateY(6px) scale(.97);transition:opacity .28s ease,transform .32s cubic-bezier(.2,.9,.25,1.15);pointer-events:none}
+  .nrsrc-hint.on{opacity:1;transform:none;pointer-events:auto}
+  .nrsrc-hint .nrsrc-ic{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;margin:0 1px;vertical-align:-2px;border-radius:50%;border:1px solid currentColor;font:italic 700 10px/1 Georgia,serif}
+  .nrsrc-hint button{border:0;background:none;color:var(--mut,#7A838F);font-size:16px;line-height:1;cursor:pointer;padding:2px 4px;border-radius:6px}
+  @media (prefers-reduced-motion:reduce){.nrsrc-pop.on{animation:none}.nrsrc-hint{transition:opacity .2s}}
+  .nrsrc-print{display:none}
+  @media print{
+    .nrsrc-i,.nrsrc-pop,.nrsrc-hint{display:none!important}
+    .nrsrc-print{display:block;break-before:page;page-break-before:always;padding:24px 32px;font:12px/1.5 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;color:#15243A}
+    .nrsrc-print h2{font-size:16px;margin:0 0 10px}.nrsrc-print h3{font-size:var(--fs-11);text-transform:uppercase;letter-spacing:.05em;color:#7A838F;margin:12px 0 4px}
+    .nrsrc-print ol{margin:0;padding-left:22px}
+  }
+</style>
+<script>
+(function(){
+  var GROUPS=[['interviews','Interviews'],['observations','Observations'],['documents','Documents'],['data','Data'],['external','External sources'],['internal','Internal discussions']];
+  var NOUN={interviews:['interview','interviews'],observations:['observation','observations'],documents:['document','documents'],data:['data extract','data extracts'],external:['external source','external sources']};
+  var SPECS={}, pop=null, cur=null;
+  function P(){ try{ return (typeof DATA!=='undefined'&&DATA&&DATA.sourcePanel)||null; }catch(e){ return null; } }
+  function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function low(t){ t=String(t||''); return /^[A-Z][a-z]*(?=[\s,.;:-]|$)/.test(t)?t.charAt(0).toLowerCase()+t.slice(1):t; }   /* EventHub stays EventHub */
+  function plain(t){ return String(t||'').replace(/\*\*/g,'').replace(/<[^>]+>/g,''); }
+  function working(){ var p=P(); return !!(p&&p.build==='working'); }
+  function root(){ return document.querySelector('#art,#pm,#pw')||document.body; }
+  function href(e){ var p=P(); if(e.url) return e.url; if(e.file&&p&&p.rootRel!=null) return (p.rootRel?p.rootRel+'/':'')+e.file.split('/').map(encodeURIComponent).join('/'); return ''; }
+  function badge(s){ if(s.badge==null&&s.score==null) return '';
+    var r=s.rag||'na', txt=s.badge!=null?s.badge:(s.score+' out of 5');
+    return '<span class="nrsrc-sc" style="color:var(--rag-'+r+'-text);background:var(--tint-'+r+')">'+esc(txt)+'</span>'; }
+  /* every source an item rests on: an analysis gives its method and what it was built from */
+  function expand(ids){ var p=P(), S=p.src, pool=[], how=[], seen={};
+    (function walk(list,top){ (list||[]).forEach(function(k){ var e=S[k]; if(!e||seen[k]) return; seen[k]=1;
+      if(e.group==='analysis'){ how.push({k:k,e:e}); walk(e.builtFrom,false); } else pool.push({k:k,e:e}); }); })(ids,true);
+    return {pool:pool,how:how}; }
+  function summary(pool){ var n={}, one={}; pool.forEach(function(x){ var g=x.e.group; if(g==='internal') return; n[g]=(n[g]||0)+1; one[g]=x.e; });
+    var parts=[]; ['interviews','observations','documents','data','external'].forEach(function(g){ if(!n[g]) return;
+      if(n[g]===1&&(g==='documents'||g==='data')) parts.push('the '+low(one[g].label)); else parts.push(n[g]+' '+NOUN[g][n[g]===1?0:1]); });
+    if(!parts.length) return '';
+    return 'Based on '+(parts.length>1?parts.slice(0,-1).join(', ')+' and '+parts[parts.length-1]:parts[0])+'.'; }
+  function who(e){ var w=working(); if(w&&e.people&&e.label.indexOf(e.people.split(/[;,]/)[0].trim())<0) return e.people; return ''; }
+  function item(x){ var e=x.e, w=working(), h=w?href(e):(e.url||'');
+    return '<div class="nrsrc-it">'+esc(e.label)+(who(e)?' <span class="nrsrc-d">· '+esc(who(e))+'</span>':'')+(e.date?' <span class="nrsrc-d">· '+esc(e.date)+'</span>':'')+
+      (w&&e.group==='external'&&e.origins&&e.origins.length?e.origins.map(function(o){return o==='thirdparty'||o==='internet'?'<span class="nrsrc-o '+o+'">'+(o==='thirdparty'?'Third party':'Internet')+'</span>':'';}).join(''):'')+
+      (w?' <span class="nrsrc-id">'+esc(x.k)+'</span>':'')+(h?' <a href="'+esc(h)+'" target="_blank" rel="noopener">open</a>':'')+'</div>'; }
+  function body(s){ var p=P(), w=working(), ids=s.ids||[], h='';
+    h+='<div class="nrsrc-hx"><div class="nrsrc-ey"><span>'+esc(s.eyebrow||'')+'</span>'+badge(s)+'</div>'+
+       '<button type="button" class="nrsrc-x" aria-label="Close">&times;</button></div><div class="nrsrc-bd">';
+    if(!ids.length){ return h+'<div class="nrsrc-warn">No source yet. Unlock the page and pick one where you score it. Without a source this score cannot go into the client build.</div></div>'; }
+    var x=expand(ids), sm=summary(x.pool);
+    if(sm) h+='<p class="nrsrc-sum">'+esc(sm)+'</p>';
+    x.how.forEach(function(a){ var e=a.e; h+='<div class="nrsrc-how"><b>Method</b>'+esc(e.method||e.label)+(w?' <span class="nrsrc-id">'+esc(a.k)+'</span>'+(href(e)?' <a href="'+esc(href(e))+'" target="_blank" rel="noopener">open</a>':''):'')+'</div>'; });
+    var q=s.quote; if(q&&q.text&&(!q.sourceId||p.src[q.sourceId])){ var qe=p.src[q.sourceId]||{};
+      var by=w?[qe.label||'',who(qe)].filter(Boolean).join(' · '):(qe.label||'');
+      h+='<div class="nrsrc-qt"><p>“'+esc(String(q.text).replace(/^[“"]|[”"]$/g,''))+'”</p>'+(by||qe.date?'<div class="nrsrc-by">'+esc([by,qe.date].filter(Boolean).join(' · '))+'</div>':'')+'</div>'; }
+    GROUPS.forEach(function(g){ if(g[0]==='internal'&&!w) return; var its=x.pool.filter(function(y){return y.e.group===g[0];}); if(!its.length) return;
+      h+='<div class="nrsrc-g"><span class="nrsrc-gh">'+g[1]+'</span>'+its.map(item).join('')+'</div>'; });
+    if(!w&&(s.scoredBy||p.scoredBy)) h+='<div class="nrsrc-ft">'+esc(s.scoredBy||p.scoredBy)+'</div>';
+    return h+'</div>'; }
+  function spec(k){ var f=SPECS[k]; return typeof f==='function'?f():f; }
+  function close(){ if(pop) pop.classList.remove('on'); if(cur) cur.setAttribute('aria-expanded','false'); cur=null; }
+  function open(btn){ var s=spec(btn.getAttribute('data-nrsrc')); if(!s) return;
+    if(!pop||!pop.isConnected){ pop=document.createElement('div'); pop.className='nrsrc-pop'; pop.setAttribute('role','dialog'); pop.setAttribute('aria-label','Sources'); root().appendChild(pop); }
+    close(); cur=btn; btn.setAttribute('aria-expanded','true'); pop.innerHTML=body(s); pop.classList.add('on');
+    var r=btn.getBoundingClientRect(), W=window.innerWidth, H=window.innerHeight, pw=pop.offsetWidth, ph=pop.offsetHeight;
+    var x=Math.min(Math.max(12,r.left+r.width/2-pw/2),W-pw-12), y=r.bottom+8;
+    if(y+ph>H-12){ y=r.top-ph-8; if(y<12) y=Math.max(12,H-ph-12); }
+    pop.style.left=x+'px'; pop.style.top=y+'px'; var c=pop.querySelector('.nrsrc-x'); if(c) c.focus({preventScroll:true}); }
+  document.addEventListener('click',function(ev){ var b=ev.target.closest&&ev.target.closest('.nrsrc-i');
+    if(b){ ev.preventDefault(); ev.stopPropagation(); if(cur===b){ close(); return; } open(b); return; }
+    if(pop&&pop.classList.contains('on')&&(ev.target.closest('.nrsrc-x')||!ev.target.closest('.nrsrc-pop'))){ var back=cur; close(); if(back&&ev.target.closest('.nrsrc-x')) back.focus(); } },true);
+  document.addEventListener('keydown',function(ev){ if(ev.key==='Escape'&&cur){ var back=cur; close(); back.focus(); } });
+  window.addEventListener('resize',close);
+  function printList(){ var p=P(); if(!p||p.build!=='client'||document.querySelector('.nrsrc-print')) return;
+    var keys=Object.keys(p.src); if(!keys.length) return; var h='<h2>Sources</h2>';
+    GROUPS.concat([['analysis','Analyses']]).forEach(function(g){ var ks=keys.filter(function(k){return p.src[k].group===g[0];}); if(!ks.length) return;
+      h+='<h3>'+g[1]+'</h3><ol>'+ks.map(function(k){var e=p.src[k];return '<li>'+esc(e.label)+(e.date?', '+esc(e.date):'')+(e.method?'. '+esc(e.method):'')+'</li>';}).join('')+'</ol>'; });
+    if(p.scoredBy) h+='<p>'+esc(p.scoredBy)+'</p>';
+    var d=document.createElement('section'); d.className='nrsrc-print'; d.innerHTML=h; document.body.appendChild(d); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',printList); else setTimeout(printList,0);
+  /* every page: an (i) on its Source line for everything the page cites, when the page draws none itself */
+  function allIds(){ var p=P(), o=[], seen=[]; if(!p) return o; (function w(x,d){ if(!x||typeof x!=='object'||d>40||seen.indexOf(x)>=0) return; seen.push(x);
+      if(Array.isArray(x)){ x.forEach(function(y){ w(y,d+1); }); return; }
+      for(var k in x){ if(k==='sourcePanel'||k.slice(0,2)==='__'||!Object.prototype.hasOwnProperty.call(x,k)) continue; var v=x[k];
+        if(k==='sourceIds'||k==='sourceId'||k==='source_ids'||k==='source_id'){ (Array.isArray(v)?v:[v]).forEach(function(i){ if(typeof i==='string'&&p.src[i]&&o.indexOf(i)<0) o.push(i); }); }
+        else w(v,d+1); } })(typeof DATA!=='undefined'?DATA:null,0); return o; }
+  function autoSrc(){ var p=P(), el=document.getElementById('src'); if(!p||!el||document.querySelector('.nrsrc-i[data-nrsrc="slide"]:not([data-nrsrc-auto])')) return;
+    if(!allIds().length||el.querySelector('[data-nrsrc-auto]')) return;
+    if(el.parentNode&&el.parentNode.classList) el.parentNode.classList.add('nrsrc-row');
+    el.insertAdjacentHTML('beforeend', NRSRC.icon('slide', function(){ return {eyebrow:'All sources on this page', ids:allIds()}; }).replace('<button ','<button data-nrsrc-auto ')); }
+  function watchSrc(){ autoSrc(); var el=document.getElementById('src'); if(el&&window.MutationObserver) new MutationObserver(function(){ if(!el.querySelector('.nrsrc-i')) autoSrc(); }).observe(el,{childList:true}); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',watchSrc); else setTimeout(watchSrc,0);
+  /* the hint, once per viewer: a client does not go looking for an (i) by pointing around */
+  var HINT='nr-src-hint-seen';
+  /* the first one on screen (a deck shows one slide at a time) */
+  function vis(sel){ var l=document.querySelectorAll(sel); for(var i=0;i<l.length;i++){ var r=l[i].getBoundingClientRect(); if(r.width&&r.height) return l[i]; } return null; }
+  function hint(){ var p=P(); if(!p||document.querySelector('.nrsrc-hint')) return; var seen=false; try{ seen=localStorage.getItem(HINT)==='1'; }catch(e){}
+    if(seen) return; var anchor=vis('.nrsrc-i[data-nrsrc^="slide"]')||vis('.nrsrc-i');
+    if(!anchor){ if(document.querySelector('.nrsrc-i')&&(hint.n=(hint.n||0)+1)<240) setTimeout(hint,1500); return; }   /* a deck: wait for a slide that has one */
+    var h=document.createElement('div'); h.className='nrsrc-hint nr-glass'; h.setAttribute('role','status');
+    var perItem=document.querySelectorAll('.nrsrc-i:not([data-nrsrc^="slide"])').length;
+    h.innerHTML='<span>'+(perItem?(document.querySelector('.nrsrc-i[data-nrsrc^="seg:"]')?'Every score shows where it comes from.':'Every finding shows where it comes from.')+' Click the <span class="nrsrc-ic">i</span> next to it.':'See what this page rests on: click the <span class="nrsrc-ic">i</span> next to the source.')+'</span><button type="button" aria-label="Got it">&times;</button>';
+    root().appendChild(h);
+    function place(){ var a=(vis('.nrsrc-i[data-nrsrc^="slide"]')||vis('.nrsrc-i')||anchor).getBoundingClientRect(), w=h.offsetWidth, hh=h.offsetHeight;
+      h.style.left=Math.max(12,Math.min(a.left-24,window.innerWidth-w-12))+'px'; h.style.top=Math.max(12,a.top-hh-12)+'px'; }
+    function done(){ h.classList.remove('on'); try{ localStorage.setItem(HINT,'1'); }catch(e){} }
+    h.querySelector('button').onclick=done;
+    document.addEventListener('click',function(e){ if(e.target.closest&&e.target.closest('.nrsrc-i')) done(); },true);
+    window.addEventListener('resize',function(){ if(h.classList.contains('on')) place(); });
+    setTimeout(function(){ place(); h.classList.add('on'); },700); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){ setTimeout(hint,30); }); else setTimeout(hint,30);
+  window.NRSRC={
+    on:function(){ return !!P(); },
+    /* the (i) for one item; spec is an object or a function returning
+       {eyebrow, score|badge, rag, headline, ids:[...], quote:{text,sourceId}, scoredBy} */
+    icon:function(key,s){ if(!P()) return ''; SPECS[key]=s; var v=spec(key)||{}, miss=!(v.ids&&v.ids.length);
+      if(miss&&!working()) return '';
+      return '<button type="button" class="nrsrc-i'+(miss?' miss':'')+'" data-nrsrc="'+esc(key)+'" aria-expanded="false" aria-label="'+(miss?'No source yet':'Where this comes from')+'" title="'+(miss?'No source yet':'Where this comes from')+'">'+(miss?'!':'i')+'</button>'; },
+    close:close,
+    /* the (i) for any record that carries sourceIds (or one sourceId) and, optionally, a quote:
+       NRSRC.item(record, 'Its title', {k:'unique key', score:3, badge:'2.4 FTE', rag:'red', optional:true})
+       optional: no (i) at all for a record without a sourceIds or sourceId field (an insight block that
+       does not cite); with the field but nothing in it, the working copy shows a red ! */
+    item:function(o,eyebrow,opt){ var p=P(); if(!p||!o) return ''; opt=opt||{};
+      if(opt.optional&&!('sourceIds' in o)&&!('sourceId' in o)) return '';      /* a record that does not cite (yet) */
+      var ids=[]; (Array.isArray(o.sourceIds)?o.sourceIds:[]).concat(o.sourceId?[o.sourceId]:[]).forEach(function(i){ if(typeof i==='string'&&p.src[i]&&ids.indexOf(i)<0) ids.push(i); });
+      var q=o.quote&&o.quote.text&&(!o.quote.sourceId||p.src[o.quote.sourceId])?o.quote:null;
+      return this.icon('it:'+(opt.k||eyebrow), {eyebrow:eyebrow, score:opt.score, badge:opt.badge, rag:opt.rag, ids:ids, quote:q}); },
+    /* the source picker where a score is set: chips for what is cited, a list to add one */
+    picker:function(ids){ var p=P(); if(!p) return ''; ids=ids||[];
+      var opts=Object.keys(p.src).filter(function(k){return ids.indexOf(k)<0;}).map(function(k){var e=p.src[k];return '<option value="'+esc(k)+'">'+esc(k+' · '+e.label+(e.date?' · '+e.date:''))+'</option>';}).join('');
+      return '<div class="nrsrc-pick" data-ids="'+esc(ids.join(','))+'"><div class="chips">'+ids.map(function(k){var e=p.src[k]||{label:'not in the register'};return '<span class="chip" title="'+esc(e.label)+'">'+esc(k)+' · '+esc(String(e.label).slice(0,34))+'<button type="button" data-rm="'+esc(k)+'" aria-label="Remove">&times;</button></span>';}).join('')+'</div>'+
+        '<select><option value="">Add a source…</option>'+opts+'</select></div>'; },
+    bindPicker:function(el,onChange){ if(!el) return; var self=this;
+      function ids(){ return (el.getAttribute('data-ids')||'').split(',').filter(Boolean); }
+      function redraw(list){ var tmp=document.createElement('div'); tmp.innerHTML=self.picker(list); var nw=tmp.firstChild; el.innerHTML=nw.innerHTML; el.setAttribute('data-ids',list.join(',')); wire(); if(onChange) onChange(list); }
+      function wire(){ el.querySelectorAll('[data-rm]').forEach(function(b){ b.onclick=function(){ redraw(ids().filter(function(k){return k!==b.getAttribute('data-rm');})); }; });
+        var sel=el.querySelector('select'); if(sel) sel.onchange=function(){ if(sel.value){ var l=ids(); l.push(sel.value); redraw(l); } }; }
+      wire(); },
+    readPicker:function(el){ return el?(el.getAttribute('data-ids')||'').split(',').filter(Boolean):[]; },
+    label:function(k){ var p=P(), e=p&&p.src[k]; return e?e.label:k; }
+  };
+})();
+</script>
+<!-- NRSRC:END -->
+
+<script>
+/* ============ ONLY THIS OBJECT CHANGES PER TEAM ============ */
+/* scripts/render_data_maturity.py replaces everything between the markers below with the
+   `data` block of a capture JSON. Keep the marker comments exactly as they are. */
+const DATA = /* DATA */ {
+ "team": "CA Entitlements & Payments",
+ "period": "Jan-Aug 2026",
+ "keyMessage": {
+  "o": "AI can run on <span class=\"hl\">6.5 of the team's 26 FTE</span> today. Capture and entitlements are blocked by data kept in Excel, elections by free text",
+  "x": "<span class=\"hl\">Access and ownership</span> are the weak spots. The data is mostly complete and right, but often not reachable where the work needs it",
+  "m": "Holdings and payments are ready for AI. <span class=\"hl\">Seven of 14 data points</span> sit below the bar, held back by access and structure more than by wrong data",
+  "p": "Only paying and answering questions run on today's data. <span class=\"hl\">8.0 FTE is blocked</span> and 11.5 FTE needs a person to check every case",
+  "d": "Seven of 14 data points clear what AI needs without a repair, and <span class=\"hl\">the golden event record does not exist</span> as a record at all",
+  "f": "One repair, holding disputes in EventHub, <span class=\"hl\">frees 6.0 FTE</span> on its own. Elections and reconciliation each need two repairs before anything moves"
+ },
+ "sources": {
+  "o": "Data owner sessions 29 Oct 2026 · team challenge session 30 Oct 2026 · EventHub and SWIFT report pack Jan-Aug 2026 · holdings extract Aug 2026",
+  "x": "Data owner sessions 29 Oct 2026 · team challenge session 30 Oct 2026 · EventHub and SWIFT report pack Jan-Aug 2026 · holdings extract Aug 2026",
+  "m": "Data owner sessions 29 Oct 2026 · team challenge session 30 Oct 2026 · EventHub and SWIFT report pack Jan-Aug 2026 · holdings extract Aug 2026",
+  "d": "Data owner sessions 29 Oct 2026 · team challenge session 30 Oct 2026 · EventHub and SWIFT report pack Jan-Aug 2026 · holdings extract Aug 2026",
+  "f": "Data owner sessions 29 Oct 2026 · team challenge session 30 Oct 2026 · EventHub and SWIFT report pack Jan-Aug 2026 · holdings extract Aug 2026",
+  "p": "Operating baseline · FTE from the activity map (MAE), Sep 2026"
+ },
+ "insights": {
+  "o": [
+   {
+    "num": 1,
+    "h": "Golden event record",
+    "chip": [
+     "blocked",
+     "poor"
+    ],
+    "b": [
+     "Capture and validation (2.0 FTE) waits for it, and it does not exist as a record.",
+     "The agreed terms live in one comparison sheet per event, built from three vendor feeds that disagree on one event in five.",
+     "CA Announcements builds the same comparison first, so the event is matched twice."
+    ],
+    "ev": "Data owner sessions, 29 Oct 2026"
+   },
+   {
+    "num": 2,
+    "h": "Disputed entitlement workings",
+    "chip": [
+     "blocked",
+     "poor"
+    ],
+    "b": [
+     "The only weak data point in calculating entitlements, and it holds the whole 6.0 FTE block down.",
+     "Holdings and entitlements beside it are among the best data the team has.",
+     "The workings sit in personal workbooks, and a dispute goes to whoever is free."
+    ],
+    "ev": "Data owner sessions, 29 Oct 2026"
+   },
+   {
+    "num": 3,
+    "h": "Client elections",
+    "chip": [
+     "assist only",
+     "neu"
+    ],
+    "b": [
+     "Elections are the largest block at 7.0 FTE, and 62% of them arrive as SWIFT free text or email.",
+     "An assistant can read them and propose the election. A specialist still confirms each one.",
+     "Contact details for chasing are just as weak, so both have to move."
+    ],
+    "ev": "Team challenge session, 30 Oct 2026"
+   },
+   {
+    "num": 4,
+    "h": "Depository report",
+    "chip": [
+     "assist only",
+     "neu"
+    ],
+    "b": [
+     "The report is right, but it is a file EventHub cannot read.",
+     "So 4.5 FTE of reconciliation is done line by line in Excel, and 210 breaks a month are still open after payment date."
+    ],
+    "ev": "Data owner sessions, 29 Oct 2026"
+   }
+  ],
+  "m": [
+   {
+    "h": "Holdings and payments are ready",
+    "chip": [
+     "good"
+    ],
+    "b": [
+     "Holdings load overnight from the custody ledger and matched it to the unit in August.",
+     "The payment file is generated by interface and owned by Income Processing.",
+     "Both have a named owner and a daily control. They are what the rest should look like."
+    ],
+    "ev": "Holdings extract, Aug 2026"
+   },
+   {
+    "h": "Access and structure hold the work back",
+    "chip": [
+     "poor"
+    ],
+    "b": [
+     "Six data points live in Excel, a mailbox or a file EventHub cannot read.",
+     "The facts are mostly there and mostly right. A person has to fetch them or read them first.",
+     "Every block below the bar is held there by access or structure first, not by wrong figures."
+    ],
+    "ev": "Data owner sessions, 29 Oct 2026"
+   },
+   {
+    "h": "Nine of 14 have no owner",
+    "chip": [
+     "poor"
+    ],
+    "b": [
+     "Where data is owned, it also scores well elsewhere: holdings, payments, entitlements, elections once keyed.",
+     "The golden record, disputes, breaks and status have no owner, so nobody fixes them when they are wrong."
+    ],
+    "ev": "Data owner sessions, 29 Oct 2026"
+   }
+  ],
+  "p": [
+   {
+    "h": "A quarter of the work runs on today's data",
+    "chip": [
+     "fair"
+    ],
+    "b": [
+     "Paying and settling (4.5 FTE) and answering questions on open events (2.0 FTE) clear the bar: 6.5 of 26 FTE.",
+     "A block is only as ready as the weakest data point it leans on, and four of six have one below the bar."
+    ],
+    "ev": "Operating baseline · FTE from the activity map (MAE), Sep 2026"
+   },
+   {
+    "h": "8.0 FTE is blocked outright",
+    "chip": [
+     "blocked"
+    ],
+    "b": [
+     "Calculating entitlements (6.0) is held down by the disputed workings in personal workbooks.",
+     "Capturing the event (2.0) is held down by a golden record that only exists as a comparison sheet.",
+     "Nothing automated can run on either until the data moves into EventHub."
+    ],
+    "ev": "Operating baseline · FTE from the activity map (MAE), Sep 2026"
+   },
+   {
+    "h": "11.5 FTE can be assisted, not run",
+    "chip": [
+     "fair"
+    ],
+    "b": [
+     "Elections (7.0) and reconciliation (4.5) sit at the level where a person checks every case.",
+     "An assistant can draft the election or propose the match. It cannot decide."
+    ],
+    "ev": "Operating baseline · FTE from the activity map (MAE), Sep 2026"
+   }
+  ],
+  "f": [
+   {
+    "h": "Disputes in EventHub: one repair, 6.0 FTE",
+    "chip": [
+     "fair"
+    ],
+    "b": [
+     "Holdings and entitlements already clear the bar, so moving the disputed workings into EventHub clears the whole block.",
+     "The vendor offers the override in the next release. It also gives disputes a record someone can own."
+    ],
+    "ev": "Data owner sessions, 29 Oct 2026"
+   },
+   {
+    "h": "Elections and reconciliation pay off in pairs",
+    "chip": [
+     "poor"
+    ],
+    "b": [
+     "Structured elections alone move nothing: the contact list keeps elections at the same level. Fixed together they free 7.0 FTE.",
+     "Reading the depository file into EventHub also needs the break log there. Together they free 4.5 FTE.",
+     "A client who picks off the cheapest repair will see the number stay where it was."
+    ],
+    "ev": "Team challenge session, 30 Oct 2026"
+   },
+   {
+    "h": "The golden record repairs two data points",
+    "chip": [
+     "fair"
+    ],
+    "b": [
+     "Built in EventHub with rules that settle vendor disagreements, it fixes the record and the event terms at once.",
+     "Built as a better spreadsheet, capture moves only from blocked to assisted.",
+     "Most of the effort it saves sits in CA Announcements, so it is sized with them."
+    ],
+    "ev": "Data owner sessions, 29 Oct 2026"
+   }
+  ]
+ },
+ "objects": {
+  "dp-02": {
+   "n": "Golden event record",
+   "sh": "Golden event record",
+   "sy": "Excel",
+   "c": [
+    1,
+    2,
+    2,
+    3,
+    2
+   ],
+   "g": 1,
+   "m": 0,
+   "num": 1,
+   "fix": "Build one golden record in EventHub from the three vendor feeds, with the rule that picks each term and the reason kept on the record.",
+   "why": [
+    "There is no golden record. The agreed terms exist only in the comparison sheet the specialist saves for that event, then are typed into EventHub.",
+    "One sheet per event, laid out by whoever made it. The reason a vendor's version was set aside is a comment in a cell.",
+    "About one sheet in three records which vendor was taken on each term. The rest only show the final answer.",
+    "Once agreed, the terms are right: no event was paid on the wrong rate this year, because every term is checked twice.",
+    "Built on the day the event is captured and never updated when a vendor sends a correction."
+   ],
+   "whyg": "Nobody owns it. CA Announcements and CA Entitlements & Payments each keep their own comparison.",
+   "seed": {
+    "dataPointId": "dp-02",
+    "inScopeBecause": "8% of team FTE leans on it",
+    "dependentFte": 2.0,
+    "activityBlocks": [
+     {
+      "id": "act-01",
+      "name": "Capture and validate the event",
+      "fte": 2.0
+     }
+    ],
+    "maeSaid": [
+     "unavailable"
+    ],
+    "usedAs": [
+     "create"
+    ],
+    "hypothesis": null,
+    "toProbe": "Added back after the cap of ten: scored with the other thirteen."
+   },
+   "t": "record",
+   "elig": "clear",
+   "sourceIds": [
+    "s1",
+    "s2"
+   ]
+  },
+  "dp-06": {
+   "n": "Disputed entitlement workings",
+   "sh": "Disputed entitlement workings",
+   "sy": "Excel",
+   "c": [
+    1,
+    2,
+    2,
+    3,
+    2
+   ],
+   "g": 1,
+   "m": 0,
+   "num": 2,
+   "fix": "Hold the override and its reason in EventHub, which the vendor offers in the next release, and retire the personal workbooks.",
+   "why": [
+    "The workings live in personal workbooks on each specialist's drive. Nothing outside them can reach them.",
+    "Every workbook is laid out differently, and the reason for the new figure is a note in a cell.",
+    "Some disputes have a workbook and some were settled on the phone, with no record at all.",
+    "The arithmetic in the workbooks the team showed us was right.",
+    "Updated while the dispute runs, then left as it was. Nobody can tell which version was paid."
+   ],
+   "whyg": "Nobody owns them. Each specialist keeps their own, and a dispute goes to whoever is free.",
+   "seed": {
+    "dataPointId": "dp-06",
+    "inScopeBecause": "23% of team FTE leans on it",
+    "dependentFte": 6.0,
+    "activityBlocks": [
+     {
+      "id": "act-02",
+      "name": "Calculate entitlements",
+      "fte": 6.0
+     }
+    ],
+    "maeSaid": [
+     "unreliable"
+    ],
+    "usedAs": [
+     "create"
+    ],
+    "hypothesis": "Completeness / Accuracy & consistency",
+    "toProbe": "The MAE recorded this as unreliable. That word covers both an empty field and a wrong one - separate the two: which is it, and on how many records?"
+   },
+   "t": "record",
+   "elig": "clear",
+   "sourceIds": [
+    "s1",
+    "s2"
+   ]
+  },
+  "dp-07": {
+   "n": "Client elections, free text",
+   "sh": "Client elections",
+   "sy": "SWIFT gateway",
+   "c": [
+    3,
+    2,
+    3,
+    2,
+    4
+   ],
+   "g": 1,
+   "m": 1,
+   "num": 3,
+   "fix": "Ask clients for structured election messages, and have an assistant read the rest and propose the election for a specialist to confirm.",
+   "why": [
+    "SWIFT free-text messages sit in the gateway and emails in the team mailbox, both retrievable per event.",
+    "SWIFT messages carry the event reference, most emails do not. The election itself is written in words.",
+    "Measured: 62% of elections arrived as SWIFT free text or email in Jan-Aug. The rest came in as structured instructions.",
+    "The last message in the thread is the only statement of what the client chose, so every election is read by a person.",
+    "Arrives the moment the client sends it."
+   ],
+   "whyg": "Nobody owns the inbound channel. Clients are never asked to use the structured message.",
+   "seed": {
+    "dataPointId": "dp-07",
+    "inScopeBecause": "27% of team FTE leans on it",
+    "dependentFte": 7.0,
+    "activityBlocks": [
+     {
+      "id": "act-03",
+      "name": "Collect and process client elections",
+      "fte": 7.0
+     }
+    ],
+    "maeSaid": [
+     "unreliable"
+    ],
+    "usedAs": [
+     "read"
+    ],
+    "hypothesis": "Completeness / Accuracy & consistency",
+    "toProbe": "The MAE recorded this as unreliable. That word covers both an empty field and a wrong one - separate the two: which is it, and on how many records?"
+   },
+   "t": "stream",
+   "elig": "clear",
+   "sourceIds": [
+    "s1",
+    "s3"
+   ]
+  },
+  "dp-11": {
+   "n": "Depository entitlement report",
+   "sh": "Depository report",
+   "sy": "Depository reports",
+   "c": [
+    2,
+    3,
+    4,
+    4,
+    3
+   ],
+   "g": 1,
+   "m": 0,
+   "num": 4,
+   "fix": "Read the depository file into EventHub and keep the mapping of the depository's account references there.",
+   "why": [
+    "A file EventHub cannot read. It is downloaded from the depository's portal per event and opened in Excel.",
+    "Structured, but with the depository's own account references rather than ours, so every line is matched by hand.",
+    "Every position the depository holds for us is on the report.",
+    "The depository's figures are right, and it is the reference the team reconciles to.",
+    "Published the day after payment date, a day after the team needs it."
+   ],
+   "whyg": "The depository owns the content. Nobody internally owns the download or the mapping of references.",
+   "seed": {
+    "dataPointId": "dp-11",
+    "inScopeBecause": "17% of team FTE leans on it",
+    "dependentFte": 4.5,
+    "activityBlocks": [
+     {
+      "id": "act-05",
+      "name": "Reconcile and close the event",
+      "fte": 4.5
+     }
+    ],
+    "maeSaid": [
+     "reliable"
+    ],
+    "usedAs": [
+     "read"
+    ],
+    "hypothesis": null,
+    "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
+   },
+   "t": "record",
+   "elig": "clear",
+   "sourceIds": [
+    "s1",
+    "s2"
+   ]
+  },
+  "dp-01": {
+   "n": "Event terms per vendor",
+   "sh": "Vendor event terms",
+   "sy": "Vendor feeds",
+   "c": [
+    4,
+    4,
+    3,
+    2,
+    4
+   ],
+   "g": 1,
+   "m": 0,
+   "num": 5,
+   "fix": "Let the golden record settle disagreements by rule, so a person only sees the events where the vendors still differ.",
+   "why": [
+    "The three vendor feeds arrive in the feed store and can be pulled per event without asking anyone.",
+    "Each vendor sends the event in fields, rates and dates included, in a standard layout.",
+    "Most terms are filled. Options on voluntary events are often missing from one of the three feeds.",
+    "The three vendors disagree on at least one term on about one event in five, and nothing says which is right.",
+    "Feeds update within the hour of the vendor's own change."
+   ],
+   "whyg": "The feed contracts sit with procurement. Nobody in operations owns what the feeds say.",
+   "seed": {
+    "dataPointId": "dp-01",
+    "inScopeBecause": "8% of team FTE leans on it",
+    "dependentFte": 2.0,
+    "activityBlocks": [
+     {
+      "id": "act-01",
+      "name": "Capture and validate the event",
+      "fte": 2.0
+     }
+    ],
+    "maeSaid": [
+     "unreliable"
+    ],
+    "usedAs": [
+     "read"
+    ],
+    "hypothesis": null,
+    "toProbe": "Added back after the cap of ten: scored with the other thirteen."
+   },
+   "t": "record",
+   "elig": "clear",
+   "sourceIds": [
+    "s1",
+    "s2"
+   ]
+  },
+  "dp-14": {
+   "n": "Client contact details",
+   "sh": "Client contact details",
+   "sy": "Email",
+   "c": [
+    2,
+    3,
+    3,
+    2,
+    2
+   ],
+   "g": 1,
+   "m": 0,
+   "num": 6,
+   "fix": "Keep one contact for corporate actions per client in the client master, owned by Client Queries and checked twice a year.",
+   "why": [
+    "Kept in personal address books and old emails. Each specialist asks a colleague or the client relationship team.",
+    "Name, email and phone are fields, but the role of the person is not.",
+    "About a third of clients have no named contact for corporate actions, and the team knows which ones.",
+    "Contacts who have left the client are still listed, so the first call often goes to the wrong person.",
+    "Updated only when a call bounces."
+   ],
+   "whyg": "Nobody owns it. Client service, the relationship team and the specialists each keep their own list.",
+   "seed": {
+    "dataPointId": "dp-14",
+    "inScopeBecause": "27% of team FTE leans on it",
+    "dependentFte": 7.0,
+    "activityBlocks": [
+     {
+      "id": "act-03",
+      "name": "Collect and process client elections",
+      "fte": 7.0
+     }
+    ],
+    "maeSaid": [
+     "unreliable"
+    ],
+    "usedAs": [
+     "read"
+    ],
+    "hypothesis": "Completeness / Accuracy & consistency",
+    "toProbe": "The MAE recorded this as unreliable. That word covers both an empty field and a wrong one - separate the two: which is it, and on how many records?"
+   },
+   "elig": "conditional",
+   "eligwhy": "Personal data. Usable to contact a client about its own events under the custody agreement, not to train a model, and limited to business contacts.",
+   "t": "record",
+   "sourceIds": [
+    "s1",
+    "s2"
+   ]
+  },
+  "dp-12": {
+   "n": "Reconciliation breaks",
+   "sh": "Reconciliation breaks",
+   "sy": "Excel",
+   "c": [
+    2,
+    2,
+    3,
+    3,
+    2
+   ],
+   "g": 1,
+   "m": 1,
+   "num": 7,
+   "fix": "Log every break in EventHub with a cause from a fixed list, generated by the automatic reconciliation.",
+   "why": [
+    "Kept in the reconciliation workbook of each event, on a shared drive.",
+    "One row per break, with the cause typed as free text, so breaks cannot be grouped by cause.",
+    "Measured: all 210 breaks a month still open after payment date are on the lists. Breaks cleared on the day are not logged.",
+    "The amounts are right, they are copied from the two sources.",
+    "Updated when someone works the break, so a closed break can still look open."
+   ],
+   "whyg": "Nobody owns the list as a whole. Breaks are cleared one by one and causes are not tracked.",
+   "seed": {
+    "dataPointId": "dp-12",
+    "inScopeBecause": "17% of team FTE leans on it",
+    "dependentFte": 4.5,
+    "activityBlocks": [
+     {
+      "id": "act-05",
+      "name": "Reconcile and close the event",
+      "fte": 4.5
+     }
+    ],
+    "maeSaid": [
+     "unreliable"
+    ],
+    "usedAs": [
+     "create"
+    ],
+    "hypothesis": "Completeness / Accuracy & consistency",
+    "toProbe": "The MAE recorded this as unreliable. That word covers both an empty field and a wrong one - separate the two: which is it, and on how many records?"
+   },
+   "t": "record",
+   "elig": "clear",
+   "sourceIds": [
+    "s1",
+    "s3"
+   ]
+  },
+  "dp-03": {
+   "n": "Issuer notice",
+   "sh": "Issuer notice",
+   "sy": "Email",
+   "c": [
+    3,
+    3,
+    3,
+    3,
+    4
+   ],
+   "g": 2,
+   "m": 0,
+   "num": 8,
+   "fix": "",
+   "why": [
+    "Notices arrive by email and are attached to the event in EventHub, so the full set can be found per event.",
+    "Machine-readable PDF text with the issuer, event type and date on the cover. What the notice changes still has to be read out of the body.",
+    "Most events carry their notice. Small foreign issuers are the gap, and the team knows which ones.",
+    "An amended notice is marked as amended, but the original stays attached beside it.",
+    "Filed the day it arrives."
+   ],
+   "whyg": "Filed by whoever captures the event. No one checks that the notice in the file is the one in force.",
+   "seed": {
+    "dataPointId": "dp-03",
+    "inScopeBecause": "8% of team FTE leans on it",
+    "dependentFte": 2.0,
+    "activityBlocks": [
+     {
+      "id": "act-01",
+      "name": "Capture and validate the event",
+      "fte": 2.0
+     }
+    ],
+    "maeSaid": [
+     "reliable"
+    ],
+    "usedAs": [
+     "read"
+    ],
+    "hypothesis": null,
+    "toProbe": "Added back after the cap of ten: scored with the other thirteen."
+   },
+   "t": "doc",
+   "elig": "clear",
+   "sourceIds": [
+    "s1",
+    "s2"
+   ]
+  },
+  "dp-05": {
+   "n": "Entitlement per account",
+   "sh": "Entitlement per account",
+   "sy": "EventHub",
+   "c": [
+    4,
+    4,
+    4,
+    3,
+    4
+   ],
+   "g": 3,
+   "m": 0,
+   "num": 9,
+   "fix": "",
+   "why": [
+    "Calculated in EventHub and available per account on screen and through a report.",
+    "One field per account, per option, with the rate and the rounding applied.",
+    "Every account in the event carries an entitlement once the calculation has run.",
+    "Right for mandatory events. Where a dispute was settled in a workbook, EventHub still shows the first figure.",
+    "Recalculated the moment the holdings or the rate change."
+   ],
+   "whyg": "Owned by the team lead for mandatory events, but the rule for overriding a figure is not written down.",
+   "seed": {
+    "dataPointId": "dp-05",
+    "inScopeBecause": "23% of team FTE leans on it",
+    "dependentFte": 6.0,
+    "activityBlocks": [
+     {
+      "id": "act-02",
+      "name": "Calculate entitlements",
+      "fte": 6.0
+     }
+    ],
+    "maeSaid": [
+     "reliable"
+    ],
+    "usedAs": [
+     "create"
+    ],
+    "hypothesis": null,
+    "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
+   },
+   "t": "record",
+   "elig": "clear",
+   "sourceIds": [
+    "s1",
+    "s2"
+   ]
+  },
+  "dp-08": {
+   "n": "Election record",
+   "sh": "Election record",
+   "sy": "EventHub",
+   "c": [
+    4,
+    4,
+    3,
+    4,
+    3
+   ],
+   "g": 3,
+   "m": 0,
+   "num": 10,
+   "fix": "",
+   "why": [
+    "Held in EventHub per account and option, available on screen and through a report.",
+    "One field per option, from a controlled list.",
+    "Missing until the free text is re-keyed, so on deadline day some accounts still show no election.",
+    "Once keyed, it matches what the client sent: the team checks every keyed election against the message.",
+    "As current as the re-keying, which runs a day behind in peak weeks."
+   ],
+   "whyg": "Owned by the team lead for voluntary events, with a routine but no written definition.",
+   "seed": {
+    "dataPointId": "dp-08",
+    "inScopeBecause": "27% of team FTE leans on it",
+    "dependentFte": 7.0,
+    "activityBlocks": [
+     {
+      "id": "act-03",
+      "name": "Collect and process client elections",
+      "fte": 7.0
+     }
+    ],
+    "maeSaid": [
+     "reliable"
+    ],
+    "usedAs": [
+     "create"
+    ],
+    "hypothesis": null,
+    "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
+   },
+   "t": "record",
+   "elig": "clear",
+   "sourceIds": [
+    "s1",
+    "s2"
+   ]
+  },
+  "dp-09": {
+   "n": "Default option rules",
+   "sh": "Default option rules",
+   "sy": "EventHub",
+   "c": [
+    4,
+    4,
+    4,
+    4,
+    3
+   ],
+   "g": 3,
+   "m": 0,
+   "num": 11,
+   "fix": "",
+   "why": [
+    "Stored on each event in EventHub.",
+    "A field per event naming the option that applies without an election.",
+    "Every voluntary event carries a default.",
+    "The default matches the issuer notice on every event the team checked.",
+    "Set at capture. A late change by the issuer is applied by hand."
+   ],
+   "whyg": "Owned by the team lead for voluntary events.",
+   "seed": {
+    "dataPointId": "dp-09",
+    "inScopeBecause": "27% of team FTE leans on it",
+    "dependentFte": 7.0,
+    "activityBlocks": [
+     {
+      "id": "act-03",
+      "name": "Collect and process client elections",
+      "fte": 7.0
+     }
+    ],
+    "maeSaid": [
+     "reliable"
+    ],
+    "usedAs": [
+     "read"
+    ],
+    "hypothesis": null,
+    "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
+   },
+   "t": "record",
+   "elig": "clear",
+   "sourceIds": [
+    "s1",
+    "s2"
+   ]
+  },
+  "dp-13": {
+   "n": "Event and payment status",
+   "sh": "Event and payment status",
+   "sy": "EventHub",
+   "c": [
+    3,
+    3,
+    3,
+    4,
+    4
+   ],
+   "g": 1,
+   "m": 0,
+   "num": 12,
+   "fix": "",
+   "why": [
+    "Status exists in EventHub and can be read there, but it is not published to the client portal or any feed.",
+    "Workflow codes per event and per payment. Two of them mean the same thing to a client.",
+    "Every event and payment carries a status.",
+    "The status is right: it drives the team's own worklist.",
+    "Updates the moment the payment is released."
+   ],
+   "whyg": "Nobody owns it as client information. The codes were set up for the team's worklist.",
+   "seed": {
+    "dataPointId": "dp-13",
+    "inScopeBecause": "8% of team FTE leans on it",
+    "dependentFte": 2.0,
+    "activityBlocks": [
+     {
+      "id": "act-06",
+      "name": "Answer questions on open events",
+      "fte": 2.0
+     }
+    ],
+    "maeSaid": [
+     "reliable"
+    ],
+    "usedAs": [
+     "read"
+    ],
+    "hypothesis": null,
+    "toProbe": "Added back after the cap of ten: scored with the other thirteen."
+   },
+   "t": "record",
+   "elig": "clear",
+   "sourceIds": [
+    "s1",
+    "s2"
+   ]
+  },
+  "dp-04": {
+   "n": "Holdings at record date",
+   "sh": "Holdings at record date",
+   "sy": "Custody ledger",
+   "c": [
+    4,
+    4,
+    4,
+    4,
+    4
+   ],
+   "g": 4,
+   "m": 1,
+   "num": 13,
+   "fix": "",
+   "why": [
+    "Holdings load into EventHub from the custody ledger every night through an interface.",
+    "One row per account and security at record date, with the identifiers EventHub needs.",
+    "Every account in the August extract carried a position at record date.",
+    "The specialists check the totals and trust the detail. The August extract matched the custody ledger to the unit.",
+    "Loaded overnight, so the record date position is in EventHub the next morning."
+   ],
+   "whyg": "Custody operations owns the positions, with a written definition and a daily control.",
+   "seed": {
+    "dataPointId": "dp-04",
+    "inScopeBecause": "23% of team FTE leans on it",
+    "dependentFte": 6.0,
+    "activityBlocks": [
+     {
+      "id": "act-02",
+      "name": "Calculate entitlements",
+      "fte": 6.0
+     }
+    ],
+    "maeSaid": [
+     "reliable"
+    ],
+    "usedAs": [
+     "read"
+    ],
+    "hypothesis": null,
+    "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
+   },
+   "t": "record",
+   "elig": "clear",
+   "sourceIds": [
+    "s1",
+    "s3"
+   ]
+  },
+  "dp-10": {
+   "n": "Payment file",
+   "sh": "Payment file",
+   "sy": "Custody ledger",
+   "c": [
+    4,
+    4,
+    4,
+    4,
+    4
+   ],
+   "g": 4,
+   "m": 0,
+   "num": 14,
+   "fix": "",
+   "why": [
+    "Generated from EventHub into the custody ledger through an interface.",
+    "One line per account and currency, in the ledger's own format.",
+    "Every entitled account is on the file.",
+    "The file is checked before release and the check rarely finds anything.",
+    "Generated on the morning of payment date."
+   ],
+   "whyg": "Income Processing owns the payment run, with a written procedure and controlled release.",
+   "seed": {
+    "dataPointId": "dp-10",
+    "inScopeBecause": "17% of team FTE leans on it",
+    "dependentFte": 4.5,
+    "activityBlocks": [
+     {
+      "id": "act-04",
+      "name": "Pay and settle the entitlement",
+      "fte": 4.5
+     }
+    ],
+    "maeSaid": [
+     "reliable"
+    ],
+    "usedAs": [
+     "create"
+    ],
+    "hypothesis": null,
+    "toProbe": "The MAE raised no flag. Still score it: reliable in an activity interview is not the same as structured enough for AI to run on."
+   },
+   "t": "record",
+   "elig": "clear",
+   "sourceIds": [
+    "s1",
+    "s2"
+   ]
+  }
+ },
+ "units": [
+  {
+   "n": "Collect and process client elections",
+   "f": 7.0,
+   "u": [
+    "dp-07",
+    "dp-08",
+    "dp-09",
+    "dp-14"
+   ]
+  },
+  {
+   "n": "Calculate entitlements",
+   "f": 6.0,
+   "u": [
+    "dp-04",
+    "dp-05",
+    "dp-06"
+   ]
+  },
+  {
+   "n": "Pay and settle the entitlement",
+   "f": 4.5,
+   "u": [
+    "dp-10"
+   ]
+  },
+  {
+   "n": "Reconcile and close the event",
+   "f": 4.5,
+   "u": [
+    "dp-11",
+    "dp-12"
+   ]
+  },
+  {
+   "n": "Capture and validate the event",
+   "f": 2.0,
+   "u": [
+    "dp-01",
+    "dp-02",
+    "dp-03"
+   ]
+  },
+  {
+   "n": "Answer questions on open events",
+   "f": 2.0,
+   "u": [
+    "dp-13"
+   ]
+  }
+ ],
+ "unitWord": "activity block",
+ "profileSummary": "Most of the data is complete and right. Access and ownership hold it back, and they are two different repairs.",
+ "profileNotes": {
+  "Availability & access": "Nine of the 14 come straight out of a system. The golden record and the dispute workings sit in spreadsheets nobody else can reach, and the depository report, the contact list and the break log have to be fetched by hand.",
+  "Structure & granularity": "Four of the 14 sit below the bar. In each, the fact the work needs is written in words: why a vendor's term was set aside, why a disputed figure changed, what the client elected, what caused a break.",
+  "Completeness": "What sits in EventHub and the custody ledger is complete. The gaps are in what is kept on the side: the comparison sheets and the dispute workbooks.",
+  "Accuracy & consistency": "Once a figure is in EventHub it is right, because the team checks everything twice. Accuracy drops where sources meet: the three vendor feeds disagree on one event in five, an election is only as clear as the client's words, and old contacts stay listed.",
+  "Timeliness": "Feeds, holdings and EventHub update with the work. What is kept by hand does not: a comparison sheet is never updated after capture, a closed break can still look open, and a contact is corrected only when a call bounces.",
+  "Ownership & governance": "Nine of the 14 have no named owner. The five that do, holdings, the payment file, entitlements, elections once keyed and default options, all clear the bar."
+ },
+ "sourceIds": [],
+ "sourcePanel": {
+  "build": "client",
+  "scoredBy": "Prepared by Nova Reperta, Oct 2026.",
+  "src": {
+   "s1": {
+    "label": "Data intake sheet - EventHub product owner",
+    "group": "data",
+    "date": "Oct 2026"
+   },
+   "s2": {
+    "label": "Senior specialist",
+    "group": "interviews",
+    "date": "Sep 2026"
+   },
+   "s3": {
+    "label": "EventHub and SWIFT report pack, Jan-Aug 2026",
+    "group": "data",
+    "date": "Sep 2026"
+   }
+  }
+ }
+} /* /DATA */;
+var TEAM=DATA.team, PERIOD=DATA.period;
+/* ========================================================== */
+
+/* Fixed methodology constants — the same for every team. */
+var CRIT=["Availability & access","Structure & granularity","Completeness","Accuracy & consistency","Timeliness"];
+var SHORT=["Avail","Struct","Compl","Accur","Timel"];
+var VERD={1:"Blocked",2:"Assist only",3:"Runs with controls",4:"Runs as-is",5:"Build on it"};
+
+var D=DATA.objects, P=DATA.units||DATA.processes||[];      // rows: activity blocks (or value chains)
+var UNIT=DATA.unitWord||'activity block', UNITS=UNIT+'s';
+var KEYS=Object.keys(D);
+function sc(k){return Math.min.apply(null,D[k].c)}
+function bindNames(k){var c=D[k].c,s=sc(k),r=[];
+  for(var i=0;i<5;i++)if(c[i]===s)r.push(CRIT[i].split(" ")[0]);return r.join(" and ")}
+function needs(k){var c=D[k].c,r=[];for(var i=0;i<5;i++)if(c[i]<3)r.push(CRIT[i].split(" ")[0].toLowerCase());return r}
+function pScore(p){return Math.min.apply(null,p.u.map(sc))}
+function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;")}
+function css(v){return getComputedStyle(document.getElementById("art")).getPropertyValue(v).trim()}
+function bandHex(s){return s>=3?css("--rag-green"):(s===2?css("--rag-amber"):css("--rag-red"))}
+function bandCls(s){return s>=3?"good":(s===2?"neu":"poor")}
+
+var used={};P.forEach(function(p){p.u.forEach(function(k){used[k]=(used[k]||0)+1})});
+var agg={ok:0,mid:0,blk:0};
+P.forEach(function(p){var s=pScore(p);agg[s>=3?"ok":(s===2?"mid":"blk")]+=p.f});
+var TOT=P.reduce(function(a,p){return a+p.f},0);
+
+/* ── the hover card ─────────────────────────────────────── */
+var TIPS=[],tipEl;
+function tip(title,label,score,body){
+  TIPS.push('<div class="tc">'+esc(label)+'</div><div class="th"><b>'+esc(title)+'</b>'+
+    (score?'<span class="ts" style="color:'+bandHex(score)+'">'+score+' of 5</span>':'')+'</div>'+esc(body));
+  return TIPS.length-1;
+}
+function wireTips(){
+  tipEl=document.getElementById("tip");
+  var host=document.getElementById("vinner");
+  host.addEventListener("mouseover",function(e){
+    var t=e.target.closest?e.target.closest("[data-tip]"):null;
+    if(!t)return;tipEl.innerHTML=TIPS[+t.getAttribute("data-tip")];tipEl.classList.add("on");place(e);});
+  host.addEventListener("mousemove",function(e){if(tipEl.classList.contains("on"))place(e);});
+  host.addEventListener("click",function(e){
+    var t=e.target.closest?e.target.closest("[data-dp]"):null;
+    if(t)openDP(t.getAttribute("data-dp"));});
+  host.addEventListener("keydown",function(e){
+    if(e.key!=="Enter"&&e.key!==" ")return;
+    var t=e.target.closest?e.target.closest("[data-dp]"):null;
+    if(t){e.preventDefault();openDP(t.getAttribute("data-dp"));}});
+  host.addEventListener("mouseout",function(e){
+    var t=e.target.closest?e.target.closest("[data-tip]"):null;
+    if(t)tipEl.classList.remove("on");});
+  function place(e){
+    var w=tipEl.offsetWidth,h=tipEl.offsetHeight,x=e.clientX+16,y=e.clientY+16;
+    if(x+w>innerWidth-12)x=e.clientX-w-16;
+    if(y+h>innerHeight-12)y=e.clientY-h-16;
+    tipEl.style.left=Math.max(8,x)+"px";tipEl.style.top=Math.max(8,y)+"px";}
+}
+
+/* ── the drill-down: everything known about one data point ─────────────── */
+var LEVEL={1:"Blocks everything. Nothing runs on this.",
+ 2:"Human in the loop only. A person has to check every record.",
+ 3:"Runs with controls, once an exception route is built around the known gaps.",
+ 4:"Runs as-is. Reliable enough to act on without a routine check.",
+ 5:"Strong enough for others to build on."};
+/* In the client build the edit layer below is cut out entirely, so this stays false and HOOK
+   stays empty - no editor identifier survives anywhere in the file the client receives. */
+var EDITING=false, HOOK={};
+function openDP(k){
+  var o=D[k],s=sc(k),deps=P.filter(function(p){return p.u.indexOf(k)>-1});
+  var h='<div class="mdl" role="dialog" aria-modal="true" aria-label="'+esc(o.n)+'">'+
+    '<div class="mhead"><div><div class="mtit nrsrc-row">'+esc(o.n)+(window.NRSRC?NRSRC.item(o,o.n,{k:'dp:'+k,badge:VERD[s]}):'')+'</div><div class="msub">'+esc(o.sy)+
+    ' · used by '+deps.length+' '+(deps.length===1?UNIT:UNITS)+' · '+
+    (o.m?"score measured from an extract":"scored from interview evidence")+
+    '</div></div><span class="chip2 k'+s+'" style="margin-top:.2em">'+VERD[s]+
+    '</span><button class="mx" id="mx" aria-label="Close">&times;</button></div><div class="mbody">'+
+    '';
+  if(EDITING && HOOK.panel){
+    h+=HOOK.panel(k);
+  }else{
+    h+='<div class="mh2">Evaluation criteria</div>';
+    o.c.forEach(function(v,i){
+      h+='<div class="mrow"><div class="mcl">'+CRIT[i]+(v===s?'<small>the lowest of the five</small>':'')+
+         '</div><div class="msc m'+v+'">'+v+'</div><div class="mtx">'+esc(o.why[i])+
+         (v===s?'<em>'+LEVEL[v]+'</em>':'')+'</div></div>';
+    });
+    h+='<div class="mrow own"><div class="mcl">Ownership &amp; governance<small>outside the verdict</small></div>'+
+       '<div class="msc m'+o.g+'">'+o.g+'</div><div class="mtx">'+esc(o.whyg)+'</div></div>';
+  }
+  h+='<div class="mh2">Depending '+UNITS+'</div>';
+  deps.sort(function(a,b){return b.f-a.f}).forEach(function(p){
+    var ps=pScore(p),binds=(ps<3&&sc(k)===ps);
+    h+='<div class="mdep"><div>'+esc(p.n)+'</div><div class="r">'+p.f.toFixed(1)+' FTE</div>'+
+       '<div class="'+(binds?"b":"r")+'">'+(binds?"held back by this":VERD[ps])+'</div></div>';
+  });
+  h+=(EDITING ? '' :
+      '<div class="mh2">Key improvement areas</div>'+
+      (s>=3?'<div class="mtx">Nothing. It already reaches the bar, so no repair is needed here.</div>'
+           :'<div class="mfix"><b>Needs '+needs(k).join(", ")+'.</b> '+esc(o.fix)+'</div>'))+
+     '<div class="mscale"><b>The scale:</b> 1 blocks everything · 2 a person checks every record · '+
+     '3 runs with controls · 4 runs as-is · 5 strong enough to build on. '+
+     'Ownership is scored the same way but kept out of the verdict, because it decides whether the data keeps working rather than whether it works today.</div>'+
+     '</div></div>';
+  var ov=document.getElementById("ovl");ov.innerHTML=h;ov.classList.add("on");
+  document.getElementById("tip").classList.remove("on");
+  document.getElementById("mx").onclick=closeDP;
+  
+  ov.onclick=function(e){if(e.target===ov)closeDP()};
+}
+function closeDP(){var ov=document.getElementById("ovl");ov.classList.remove("on");ov.innerHTML=""}
+
+
+addEventListener("keydown",function(e){if(e.key==="Escape")closeDP()});
+
+/* ── the visuals ────────────────────────────────────────── */
+function mapSVG(H){
+  H=H||560;
+  var PX=374,PW=15,DX=786,DW=15,TOP=52,BOT=18,VBW=1200;
+  var pGap=12,avail=H-TOP-BOT-pGap*(P.length-1),y=TOP,pn=[];
+  P.forEach(function(p){var h=Math.max(20,avail*p.f/TOT);pn.push({y:y,h:h});y+=h+pGap});
+  var order=KEYS.slice(),dh=32,dGap=13,dTot=order.length*dh+(order.length-1)*dGap,dy=(H-dTot)/2+4,dn={};
+  order.forEach(function(k){dn[k]={y:dy,h:dh};dy+=dh+dGap});
+  var s='<text class="axcap" x="18" y="20">'+esc(UNITS.charAt(0).toUpperCase()+UNITS.slice(1))+'</text>'+
+        '<text class="axcap" x="'+(DX+DW+31)+'" y="20">Data points</text>';
+  P.forEach(function(p,i){
+    var ay=pn[i].y+pn[i].h/2;
+    p.u.forEach(function(k){
+      var by=dn[k].y+dn[k].h/2,x1=PX+PW,x2=DX,mx=(x1+x2)/2;
+      s+='<path class="lnk" data-p="'+i+'" data-d="'+k+'" stroke="'+bandHex(sc(k))+'" d="M'+x1+','+ay+
+         ' C'+mx+','+ay+' '+mx+','+by+' '+x2+','+by+'"/>';
+    });
+  });
+  P.forEach(function(p,i){
+    var a=pn[i],v=pScore(p),bind=p.u.filter(function(k){return sc(k)===v});
+    var t=tip(p.n,VERD[v]+" · "+p.f.toFixed(1)+" FTE",0,
+      v>=3?"Everything this "+UNIT+" leans on reaches the bar.":
+      "Held back by "+bind.map(function(k){return D[k].sh}).join(" and ")+".");
+    s+='<g class="gnode" data-p="'+i+'" data-tip="'+t+'">'+
+       '<rect x="'+PX+'" y="'+a.y+'" width="'+PW+'" height="'+a.h+'" rx="4" fill="'+bandHex(v)+'"/>'+
+       '<text class="nodelabel" x="'+(PX-14)+'" y="'+(a.y+a.h/2-2)+'" text-anchor="end">'+esc(p.n)+'</text>'+
+       '<text class="nodesub" x="'+(PX-14)+'" y="'+(a.y+a.h/2+16)+'" text-anchor="end">'+p.f.toFixed(1)+' FTE</text></g>';
+  });
+  order.forEach(function(k){
+    var b=dn[k],v=sc(k),cy=b.y+b.h/2,star=(D[k].num<=4);
+    var t=tip(D[k].n,D[k].sy+" · used by "+(used[k]||0)+" "+UNITS,v,
+      v>=3?"Clears the bar. Nothing here blocks the work.":
+      "Lowest on "+bindNames(k).toLowerCase()+". "+D[k].why[D[k].c.indexOf(v)]);
+    s+='<g class="gnode" data-d="'+k+'" data-dp="'+k+'" data-tip="'+t+'">'+
+       '<rect x="'+DX+'" y="'+b.y+'" width="'+DW+'" height="'+b.h+'" rx="4" fill="'+bandHex(v)+'"/>';
+    var tx=DX+DW+13;
+    if(star){ s+='<circle cx="'+(tx+9)+'" cy="'+(cy-5)+'" r="9.5" fill="'+css("--wf-total")+'"/>'+
+      '<text class="badge" x="'+(tx+9)+'" y="'+(cy-1)+'" text-anchor="middle">'+D[k].num+'</text>'; tx+=25; }
+    s+='<text class="nodelabel" x="'+tx+'" y="'+(cy-2)+'">'+esc(D[k].sh)+'</text>'+
+       '<text class="nodesub" x="'+(DX+DW+13)+'" y="'+(cy+16)+'">'+
+       (v>=3?'clears the bar':'held back by '+bindNames(k).toLowerCase())+'</text></g>';
+  });
+  return '<div class="mapwrap"><svg viewBox="0 0 '+VBW+' '+H+'" role="img" aria-label="Dependency map: '+
+    P.length+' '+UNITS+' linked to the '+KEYS.length+' data points they use.">'+s+'</svg></div>';
+}
+function capPills(svg){
+  var NS="http://www.w3.org/2000/svg";
+  [].forEach.call(svg.querySelectorAll(".axcap"),function(t){
+    var b=t.getBBox(),padX=15,padY=9,h=b.height+padY*2;
+    var r=document.createElementNS(NS,"rect");
+    r.setAttribute("class","axpill");
+    r.setAttribute("x",(b.x-padX).toFixed(1));
+    r.setAttribute("y",(b.y-padY).toFixed(1));
+    r.setAttribute("width",(b.width+padX*2).toFixed(1));
+    r.setAttribute("height",h.toFixed(1));
+    r.setAttribute("rx",(h/2).toFixed(1));
+    t.parentNode.insertBefore(r,t);
+  });
+}
+function wireMap(){
+  var svg=document.querySelector(".mapwrap svg");if(!svg)return;
+  capPills(svg);
+  var links=svg.querySelectorAll(".lnk"),nodes=svg.querySelectorAll(".gnode");
+  function clear(){svg.classList.remove("dim");
+    [].forEach.call(links,function(l){l.classList.remove("hot")});
+    [].forEach.call(nodes,function(n){n.classList.remove("hot")});}
+  [].forEach.call(nodes,function(n){
+    n.addEventListener("mouseenter",function(){
+      clear();svg.classList.add("dim");n.classList.add("hot");
+      var pi=n.getAttribute("data-p"),dk=n.getAttribute("data-d");
+      [].forEach.call(links,function(l){
+        if(!((pi!==null&&l.getAttribute("data-p")===pi)||(dk!==null&&l.getAttribute("data-d")===dk)))return;
+        l.classList.add("hot");
+        var sel=pi!==null?'[data-d="'+l.getAttribute("data-d")+'"]':'[data-p="'+l.getAttribute("data-p")+'"]';
+        var g=svg.querySelector("g.gnode"+sel);if(g)g.classList.add("hot");
+      });
+    });
+    n.addEventListener("mouseleave",clear);
+  });
+}
+function dotPlot(){
+  var rows=CRIT.map(function(c,i){return {label:c,i:i,sep:false}});
+  rows.push({label:"Ownership & governance",i:5,sep:true});
+  var h="";
+  rows.forEach(function(row){
+    var byVal={};KEYS.forEach(function(k){
+      var v=row.i<5?D[k].c[row.i]:D[k].g;(byVal[v]=byVal[v]||[]).push(k)});
+    var d="";
+    [1,2,3,4,5].forEach(function(v){
+      var arr=byVal[v]||[],n=arr.length;
+      arr.forEach(function(k,j){
+        var t=tip(D[k].n,row.label,v,row.i<5?D[k].why[row.i]:D[k].whyg);
+        d+='<span class="dot d'+v+'" data-dp="'+k+'" data-tip="'+t+'" style="left:'+((v-1)/4*100)+
+           '%;top:calc(50% + '+((j-(n-1)/2)*1.35)+'em)"></span>';
+      });
+    });
+    var t="";[0,25,50,75,100].forEach(function(pc){t+='<span class="tick" style="left:'+pc+'%"></span>'});
+    t+='<span class="tick bar" style="left:50%"></span>';
+    h+='<div class="dotrow'+(row.sep?" sep":"")+'"><div class="dotlab">'+row.label+
+       (row.sep?'<div class="seplab">Scored, but outside the verdict</div>':'')+
+       '</div><div class="track">'+t+d+'</div></div>';
+  });
+  var sn="";[1,2,3,4,5].forEach(function(v){
+    sn+='<span style="left:'+((v-1)/4*100)+'%">'+v+(v===3?" · what AI needs":"")+'</span>'});
+  return '<div data-stretch>'+h+'</div><div class="scaleline"><div></div><div class="scalenums">'+sn+'</div></div>';
+}
+function processList(){
+  return '<div class="phead"><div>'+esc(UNIT.charAt(0).toUpperCase()+UNIT.slice(1))+'</div><div class="pf">FTE</div><div class="pv">Readiness</div><div>Leans on</div></div>'+
+   '<div data-stretch>'+P.map(function(p){var s=pScore(p);
+    return '<div class="prow"><div class="pn">'+esc(p.n)+'</div>'+
+     '<div class="pf">'+p.f.toFixed(1)+'</div>'+
+     '<div class="pv"><span class="chip2 k'+s+'">'+VERD[s]+'</span></div>'+
+     '<div class="pl">'+p.u.map(function(k){var v=sc(k);
+       var t=tip(D[k].n,CRIT[D[k].c.indexOf(v)]||"Lowest of the five",v,
+         v>=3?"Clears the bar, so it does not hold this "+UNIT+" back.":D[k].why[D[k].c.indexOf(v)]);
+       return '<span class="dp dp'+v+(v===s?" bind":"")+'" data-dp="'+k+'" data-tip="'+t+'">'+esc(D[k].sh)+' <b>'+v+'</b></span>'}).join("")+
+     '</div></div>';
+  }).join("")+'</div>';
+}
+function cardGrid(){
+  return '<div class="cards" data-stretch data-rows="2">'+KEYS.map(function(k){
+    var o=D[k],s=sc(k);
+    var bars=o.c.map(function(v,i){
+      var t=tip(o.n,CRIT[i],v,o.why[i]);
+      return '<div class="mb mb'+v+'" data-tip="'+t+'" style="height:'+(v/5*100)+'%"></div>'}).join("");
+    var gt=tip(o.n,"Ownership & governance",o.g,o.whyg);
+    return '<div class="card" data-dp="'+k+'" tabindex="0" role="button"><div class="chead"><div class="cname"><span class="prov'+(o.m?" meas":"")+
+     '"></span>'+esc(o.n)+'</div><span class="chip2 k'+s+'">'+VERD[s]+'</span></div>'+
+     '<div class="csys">'+esc(o.sy)+' · used by '+(used[k]||0)+' '+(used[k]===1?UNIT:UNITS)+'</div>'+
+     '<div class="mini">'+bars+'</div><div class="mlab">'+SHORT.map(function(t){return "<span>"+t+"</span>"}).join("")+'</div>'+
+     '<div class="cfoot"><span class="hold">'+(s>=4?"Nothing holds it back":
+        (s===3?'At the bar on <b>'+bindNames(k).toLowerCase()+'</b>':'Held back by <b>'+bindNames(k).toLowerCase()+'</b>'))+
+     '</span><span class="ownm'+(o.g<=2?" weak":"")+'" data-tip="'+gt+'"><i></i>Owner '+o.g+'/5</span></div></div>';
+  }).join("")+'</div>';
+}
+function repairList(){
+  return '<div data-stretch>'+P.filter(function(p){return pScore(p)<3}).sort(function(a,b){return b.f-a.f}).map(function(p){
+    var weak=p.u.filter(function(k){return sc(k)<3});
+    return '<div class="fix"><div><div class="fl">'+esc(p.n)+'</div><div class="fs">'+p.f.toFixed(1)+' FTE waiting</div></div>'+
+     '<div>'+weak.map(function(k){
+       return '<div class="fneed"><div class="fb">'+esc(D[k].sh)+' — needs '+needs(k).join(", ")+'</div>'+esc(D[k].fix)+'</div>'
+     }).join("")+'</div><div class="fr">'+
+     (weak.length===1?"Clears with this one repair":"Clears only when all "+weak.length+" are done")+'</div></div>';
+  }).join("")+'</div>';
+}
+/* ── maturity profile ─────────────────────────────────────── */
+var LVLW={1:"Blocked",2:"Assist only",3:"Runs with controls",4:"Runs as-is",5:"Build on it"};
+var RSHORT=["Availability","Structure","Completeness","Accuracy","Timeliness","Ownership"];
+function avg(get){var t=0;KEYS.forEach(function(k){t+=get(k)});return t/KEYS.length}
+function profile(){
+  return [0,1,2,3,4].map(function(i){return {k:CRIT[i],s:RSHORT[i],v:avg(function(k){return D[k].c[i]})}})
+   .concat([{k:"Ownership & governance",s:RSHORT[5],v:avg(function(k){return D[k].g})}]);
+}
+function bandOf(v){return v<2?"blk":(v<3?"lo":"hi")}
+var PROF_ONE={
+ "Availability & access":"Six of the eight come straight out of a system. The exceptions are repair invoices, which somebody has to forward by hand, and the claims archive, where pulling a set needs a request to IT.",
+ "Structure & granularity":"Four of the eight sit below the bar and two of those score 1. In every case the fact the work needs is written into prose: the assessor's finding, the garage's invoice, the handler's call note.",
+ "Completeness":"The mandatory fields are filled everywhere. It is the optional ones the work actually relies on that are not, and fraud flags are set on only a fraction of the files that should carry one.",
+ "Accuracy & consistency":"The claim file has one definition in one system and it is the number everyone quotes. Accuracy drops where sources meet: assessors differ across garage networks, and invoice totals disagree with their own line items.",
+ "Timeliness":"Most data is written as the work happens, on the same day. Two exceptions pull the score down: reserving parameters refresh quarterly, and fraud flags were last updated three months ago.",
+ "Ownership & governance":"Repair invoices has nobody named against it at all, and three more run on one person's habit with nothing written down. Where the data is fresh and correct, that is diligence rather than a control."};
+function critVal(k,i){return i<5?D[k].c[i]:D[k].g}
+function critDetail(i){
+  var lows=KEYS.filter(function(k){return critVal(k,i)<3})
+    .sort(function(a,b){return critVal(a,i)-critVal(b,i)})
+    .map(function(k){return D[k].sh+" "+critVal(k,i)});
+  if(!lows.length) return "All eight data points reach the bar on this one.";
+  return "Below the bar: "+lows.join(", ")+". The other "+(KEYS.length-lows.length)+" reach 3 or better.";
+}
+function radar(P6){
+  var W=580,H=440,CX=290,CY=210,R=142,pts=[],ax="",rings="";
+  function xy(i,r){var a=(-90+i*60)*Math.PI/180;return [CX+Math.cos(a)*r,CY+Math.sin(a)*r]}
+  [1,2,3,4,5].forEach(function(step){
+    var r=R*step/5,p=[];for(var i=0;i<6;i++)p.push(xy(i,r).map(function(n){return n.toFixed(1)}).join(","));
+    rings+='<polygon points="'+p.join(" ")+'" fill="none" stroke="'+(step===5?css("--steel"):css("--line"))+
+      '" stroke-width="'+(step===5?1.4:1)+'"/>';
+    rings+='<text class="rtick" x="'+(CX+5)+'" y="'+(CY-r+4).toFixed(1)+'">'+step+'</text>';
+  });
+  for(var i=0;i<6;i++){var e=xy(i,R),l=xy(i,R+30);
+    ax+='<line x1="'+CX+'" y1="'+CY+'" x2="'+e[0].toFixed(1)+'" y2="'+e[1].toFixed(1)+
+        '" stroke="'+css("--line")+'" stroke-width="1"/>';
+    var an=i===0||i===3?"middle":(i<3?"start":"end");
+    ax+='<text class="rlab" x="'+l[0].toFixed(1)+'" y="'+(l[1]+(i===0?-4:i===3?12:4)).toFixed(1)+
+        '" text-anchor="'+an+'">'+RSHORT[i]+'</text>';
+    pts.push(xy(i,R*P6[i].v/5));}
+  var poly=pts.map(function(p){return p[0].toFixed(1)+","+p[1].toFixed(1)}).join(" ");
+  var dots=pts.map(function(p,i){var v=P6[i].v,t=tip(P6[i].k,"Average of the eight data points",0,
+      v.toFixed(1)+" of 5, "+LVLW[Math.floor(v)].toLowerCase()+". "+critDetail(i));
+    return '<g data-tip="'+t+'" style="cursor:help">'+
+      '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="17" fill="transparent"/>'+
+      '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="7" fill="'+
+      (v<2?css("--rag-red"):v<3?css("--rag-amber"):css("--rag-green"))+
+      '" stroke="'+css("--card")+'" stroke-width="2"/></g>'}).join("");
+  return '<div class="radarwrap"><svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Maturity profile across the six criteria">'+
+    rings+ax+'<polygon points="'+poly+'" fill="'+css("--accent")+'" fill-opacity=".2" stroke="'+
+    css("--wf-total")+'" stroke-width="2.2"/>'+dots+'</svg></div>';
+}
+function maturityRadar(){
+  var P6=profile(),ov=P6.reduce(function(a,d){return a+d.v},0)/6,b=bandOf(ov);
+  return radar(P6)+
+    '<div class="ovbox '+b+'"><div class="ovnum '+b+'"><b>'+ov.toFixed(1)+'</b><span>of 5</span></div>'+
+    '<div><div class="ovk">Overall maturity</div><div class="ovw">'+LVLW[Math.floor(ov)]+'</div>'+
+    '<div class="ovt">Averaged across the six. The data can be reached and is broadly right. '+
+    'Structure and ownership are what hold it back, and they are two different repairs.</div></div></div>';
+}
+function maturityRows(){
+  var P6=profile(),ov=P6.reduce(function(a,d){return a+d.v},0)/6;
+  var h='<div>'+P6.map(function(d,idx){
+    var b=bandOf(d.v),f=Math.floor(d.v),t=tip(d.k,"Average of the eight data points",0,critDetail(idx));
+    var m="";for(var i=1;i<=5;i++)m+='<i class="'+(i<=f?"on "+b:"")+'"></i>';
+    return '<div class="drow" data-tip="'+t+'"><div class="drh"><span class="dnm">'+d.k+'</span>'+
+      '<span class="dsc '+b+'">'+d.v.toFixed(1)+' / 5</span><span class="dmeter">'+m+'</span></div>'+
+      '<div class="dtx">'+PROF_ONE[d.k]+'</div></div>';
+  }).join("")+'</div>';
+  return h;
+}
+
+function ins(list){
+  return '<div class="inswrap">'+list.map(function(o,i){
+    return '<div class="ins"><div class="inh nrsrc-row"><span class="inum">'+(o.num||i+1)+'</span><b>'+o.h+
+      (o.chip?' <span class="chip '+o.chip[1]+'">'+o.chip[0]+'</span>':'')+
+      (window.NRSRC?NRSRC.item(o,String(o.h).replace(/<[^>]*>/g,''),{k:'ins:'+i+':'+o.h,optional:true}):'')+'</b></div>'+
+      '<ul>'+o.b.map(function(t){return "<li>"+t+"</li>"}).join("")+'</ul>'+
+      (o.ev?'<div class="inev">'+o.ev+'</div>':'')+'</div>';
+  }).join("")+'</div>';
+}
+
+/* ── the views ──────────────────────────────────────────── */
+/* Everything that varies per team — action titles, insight blocks, source lines —
+   comes from the capture. What stays here is methodology: the reading instructions,
+   the section headings and the legends, which are the same for every team. */
+var KM=DATA.keyMessage||{}, INS=DATA.insights||{}, SRC=DATA.sources||{};
+var SRCTAIL={
+ x:" Each criterion is the average of its data points, so this is the profile of the team's data rather than the readiness verdict. Hover a dimension for the detail behind it.",
+ d:" A green dot on the name means the score was measured from an extract rather than described in an interview."
+};
+function srcOf(k){var s=SRC[k]||SRC.all||"",t=SRCTAIL[k]||"";
+  if(s&&t&&!/[.!?]$/.test(s))s+=".";
+  return (s?"Source: "+s:"")+t}
+var NUMW=["","one","two","three","four","five","six","seven","eight","nine","ten"];
+function NW(n){return NUMW[n]||String(n)}
+var LG3=[["Nothing runs","--rag-red"],["A person checks every case","--rag-amber"],["Runs with controls or better","--rag-green"]];
+var LG2=[["Below the bar","--rag-amber"],["At or above the bar","--rag-green"]];
+
+var VIEWS={
+ o:{label:"Overview",
+   title:"Where this team's readiness is lost",
+   meth:'An activity block inherits the score of the <b>weakest data point it leans on</b>. Hover for the reason, <b>click a data point</b> for its full assessment.',
+   sech:"Mapping from activity blocks to data points", vis:function(){return mapSVG()}, after:wireMap,
+   insh:"Insights and where the readiness is lost", ins:INS.o||[],
+   src:srcOf("o"), lg:LG3},
+
+ x:{label:"Maturity profile",
+   title:"The team's data across the six criteria",
+   wide:true, sech:"Overall maturity profile", vis:maturityRadar,
+   insh:"Dimension insights", insRaw:maturityRows,
+   src:srcOf("x"),
+   lg:LG2},
+
+ m:{label:"Maturity assessment",
+   title:"Where the weakness sits across the six criteria",
+   meth:'Anchors say <b>what can be deployed</b>, not how good the data is. Hover a dot for the finding, <b>click it</b> for the whole data point.',
+   sech:"Where the weakness sits", vis:dotPlot,
+   insh:"Insights and key sources of weakness", ins:INS.m||[],
+   src:srcOf("m"),
+   lg:[["Below the bar","--rag-red"],["At or above the bar","--rag-green"]]},
+
+ p:{label:"Activity blocks",
+   title:"What the team's work can run on today",
+   meth:'The <b>binding data point</b> is outlined on each row. Hover for the finding, <b>click it</b> for its full assessment.',
+   sech:"Readiness by activity block", vis:processList,
+   insh:"Insights and where the FTE sits", ins:INS.p||[],
+   src:srcOf("p"), lg:LG3},
+
+ d:{label:"Data points", one:true,
+   title:"The evidence behind every score",
+   meth:'Each card takes the <b>lowest of its five bars</b>, and the dashed line is what AI needs. Hover a bar for the finding, <b>click the card</b> for the full assessment.',
+   sech:"The "+NW(KEYS.length)+" data points this team works on, and the evidence behind every score",
+   vis:cardGrid,
+   src:srcOf("d"), lg:LG3},
+
+ f:{label:"Critical repairs",
+   title:"What it would take to unblock the work",
+   meth:'An activity block clears only when <b>every</b> data point it leans on reaches the bar.',
+   sech:"What it would take, largest first", vis:repairList,
+   insh:"Insights and how to sequence it", ins:INS.f||[],
+   src:srcOf("f"),
+   lg:[["Data point below the bar","--rag-amber"]]}
+};
+
+var ORDER=["o","x","m","p","d","f"],cur="o";
+
+function render(){
+  var V=VIEWS[cur];TIPS=[];
+  document.getElementById("title").innerHTML=((DATA.keyMessage||{})[cur])||V.title;
+  document.getElementById("subt").textContent=TEAM+" · "+PERIOD;
+  var body='<div class="slide'+(V.one?" one":"")+(V.wide?" wide":"")+'"><section class="col-vis"><h2 class="sech">'+V.sech+'</h2>'+V.vis()+'</section>';
+  if(!V.one) body+='<section class="col-ins"><h2 class="sech">'+V.insh+'</h2>'+(V.insRaw?V.insRaw():ins(V.ins))+'</section>';
+  var vi=document.getElementById("vinner");
+  vi.style.setProperty("--rowpad","0px");
+  vi.style.transform="scale(1)";vi.style.width="100%";
+  vi.innerHTML=body+'</div>';
+  document.getElementById("src").innerHTML=V.src;
+  document.getElementById("lg").innerHTML=(V.lg||[]).map(function(l){
+    return '<span class="lp"><i style="background:'+css(l[1])+'"></i>'+l[0]+'</span>'}).join("");
+  if(V.after) V.after();
+  fitUI(); sizeMap(); stretch(); fit();
+}
+/* Solve the type scale UP to the largest that still fits, rather than setting it small
+   and shrinking the slide afterwards. A binary search, so it is monotonic and terminates. */
+function setUI(v){document.getElementById("art").style.setProperty("--ui",v.toFixed(2)+"px")}
+function fitsAt(v){
+  var vi=document.getElementById("vinner"),vw=document.getElementById("view");
+  setUI(v);return vi.scrollHeight<=vw.clientHeight;
+}
+function fitUI(){
+  var lo=11,hi=22;
+  if(fitsAt(hi))return;
+  for(var i=0;i<11;i++){var mid=(lo+hi)/2;if(fitsAt(mid))lo=mid;else hi=mid;}
+  setUI(lo);
+}
+/* the map fills whatever height the frame leaves it */
+function sizeMap(){
+  var wrap=document.querySelector(".mapwrap");if(!wrap)return;
+  var vw=document.getElementById("view"),col=document.querySelector(".col-vis");
+  var top=wrap.getBoundingClientRect().top-vw.getBoundingClientRect().top;
+  var avail=vw.clientHeight-top-28,colW=col.clientWidth;
+  if(avail<220||colW<200)return;
+  var H=Math.max(420,Math.min(1180,Math.round(avail*1200/colW)));
+  wrap.outerHTML=mapSVG(H);
+  wireMap();
+}
+/* a list-shaped visual spreads its rows into the free height instead of stacking at the top */
+function stretch(){
+  var el=document.querySelector("[data-stretch]");if(!el)return;
+  var vw=document.getElementById("view");
+  var free=vw.clientHeight-(el.getBoundingClientRect().bottom-vw.getBoundingClientRect().top)-26;
+  var rows=+(el.getAttribute("data-rows")||el.children.length);
+  if(free<12||!rows)return;
+  document.getElementById("vinner").style.setProperty("--rowpad",Math.min(64,free/rows/2).toFixed(1)+"px");
+}
+/* monotonic fit: shrink until the slide clears the frame, never enlarge past 1 */
+function fit(){
+  var vi=document.getElementById("vinner"),vw=document.getElementById("view"),s=1;
+  for(var i=0;i<14;i++){
+    var h=vi.scrollHeight*s;
+    if(h<=vw.clientHeight+0.5) break;
+    s=Math.max(.45,s*(vw.clientHeight/h)*0.995);
+    vi.style.width=(100/s)+"%";vi.style.transform="scale("+s+")";
+  }
+}
+function seg(id,attr,cb){var box=document.getElementById(id);
+  [].forEach.call(box.querySelectorAll("button"),function(b){b.onclick=function(){
+    [].forEach.call(box.querySelectorAll("button"),function(x){x.classList.remove("on")});
+    b.classList.add("on");cb(b.getAttribute(attr));};});}
+seg("views","data-v",function(v){cur=v;render();});
+seg("theme","data-s",function(t){document.getElementById("art").setAttribute("data-t",t);render();});
+addEventListener("resize",function(){render()});
+wireTips();
+render();
+</script>
+<script>
+/* ── fitChrome() — the chrome stacks when it does not fit ────────────────────
+   Measures the one-row layout and adds .stacked to the artifact root when any of
+   six things is true: the two groups are closer than 12px · a control runs past
+   either edge · a label has been squeezed narrower than its own text · the
+   toprow wraps · the toprow comes within 6px of the action title · the viewport
+   is at or below 760px (the floor). Exposed as window.fitChrome() so a render
+   pass can call it after it changes a label. ── */
+(function(){
+  var busy=false,lastW=-1;
+  function root(){return document.querySelector('#art,#pm,#pw');}
+  function skip(e){
+    if(!e) return true;
+    if(e.id==='wpop'||(e.closest&&e.closest('#wpop'))) return true;
+    var cs=getComputedStyle(e);
+    if(cs.visibility==='hidden'||cs.display==='none') return true;
+    return false;
+  }
+  function fitChrome(){
+    if(busy) return; busy=true;
+    try{
+      var R=root(); if(!R) return;
+      var tr=R.querySelector('.toprow'); if(!tr) return;
+      R.classList.remove('stacked');
+      void tr.offsetWidth;                                  /* force the reflow we measure */
+      var need=window.innerWidth<=760, i, r, e;
+      var trb=tr.getBoundingClientRect();
+      /* 1. the two groups are closer than 12px */
+      var tags=R.querySelector('.tags'), ctrls=R.querySelector('.ctrls');
+      if(!need&&tags&&ctrls&&!skip(tags)&&!skip(ctrls)){
+        var a=tags.getBoundingClientRect(), b=ctrls.getBoundingClientRect();
+        if(b.left-a.right<12) need=true;
+      }
+      /* 2. a control runs past either edge */
+      if(!need){
+        var kids=tr.querySelectorAll('.nr-pill,.nr-track,.seg,.wgrp,button,#wnote');
+        for(i=0;i<kids.length;i++){
+          e=kids[i]; if(skip(e)) continue;
+          r=e.getBoundingClientRect(); if(!r.width&&!r.height) continue;
+          if(r.right>trb.right+0.5||r.left<trb.left-0.5){need=true;break;}
+        }
+      }
+      /* 3. a label has been squeezed narrower than its own text */
+      if(!need){
+        var ls=tr.querySelectorAll('.nr-pill b,.nr-track,.seg button,button,#wnote,span');
+        for(i=0;i<ls.length;i++){
+          e=ls[i]; if(skip(e)) continue;
+          if(!e.textContent||!e.textContent.trim()) continue;
+          if(e.scrollWidth>e.clientWidth+1){need=true;break;}
+        }
+      }
+      /* 4. the toprow wraps — a floating row that wraps grows downwards into the
+         title without pushing anything down */
+      if(!need){
+        var tall=0,ch=tr.children;
+        for(i=0;i<ch.length;i++){var h=ch[i].getBoundingClientRect().height;if(h>tall)tall=h;}
+        if(trb.height>tall+2) need=true;
+      }
+      /* 5. the toprow sits on, or within 6px of, the action title */
+      if(!need){
+        var t=R.querySelector('.nr-strip'); if(!t||skip(t)) t=R.querySelector('h1');
+        if(t&&!skip(t)){var tb=t.getBoundingClientRect(); if(tb.top-trb.bottom<6) need=true;}
+      }
+      if(need) R.classList.add('stacked');
+      /* --padl is read AFTER the class lands: the class itself changes the padding */
+      R.style.setProperty('--padl',(parseFloat(getComputedStyle(R).paddingLeft)||0)+'px');
+    } finally { busy=false; }
+  }
+  window.fitChrome=fitChrome;
+  function kick(){requestAnimationFrame(fitChrome);}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',kick); else kick();
+  window.addEventListener('load',kick);
+  window.addEventListener('resize',function(){lastW=-1;kick();});
+  if(window.ResizeObserver){
+    var ro=new ResizeObserver(function(en){
+      var w=en&&en[0]?Math.round(en[0].contentRect.width):-1;
+      if(w===lastW) return;                                 /* stacking must not re-trigger us */
+      lastW=w; kick();
+    });
+    var r0=root(); if(r0) ro.observe(r0);
+  }
+})();
+</script>
+<script id="nr-topbar-js">
+/* patch_topbar.py: one theme switch and the way home, the same in every instrument.
+   Theme: the choice is kept under the cockpit's key, nr_dark, so every page of an
+   engagement opens the same way. Home: a page that carries
+   <meta name="nr-home" content="index.html"> (the engagement artifact adds it) gets
+   "< Cockpit /" in front of its section tag. */
+(function(){
+  var K='nr_dark', box=document.getElementById('theme')||document.getElementById('tseg');
+  if(box){
+    box.querySelectorAll('button').forEach(function(b){ var d=b.getAttribute('data-s')==='dark';
+      b.title=d?'Dark mode':'Light mode'; b.setAttribute('aria-label',b.title);
+      b.addEventListener('click',function(){ try{ localStorage.setItem(K,d?'1':'0'); }catch(e){} }); });
+    var v=null; try{ v=localStorage.getItem(K); }catch(e){}
+    var dk=box.querySelector('button[data-s="dark"]');
+    if(v==='1'&&dk&&!dk.classList.contains('on')) dk.click();
+  }
+  var m=document.querySelector('meta[name="nr-home"]'), lens=document.getElementById('lens')||document.querySelector('.toprow .nr-track');
+  if(m&&lens&&!document.querySelector('.nr-crumb')){
+    var c=document.createElement('div'); c.className='nr-track nr-crumb';
+    var a=document.createElement('a'); a.className='nr-home'; a.href=m.getAttribute('content')||'index.html';
+    a.textContent='\u2039 '+(m.getAttribute('data-label')||'Cockpit'); a.title='Back to the engagement cockpit';
+    /* opened in a window of the findings dashboard (a frame of our own page): go back in that page, not in the frame */
+    try{ if(window.parent!==window&&window.parent.document) a.target='_parent'; }catch(e){}
+    var s=document.createElement('span'); s.className='nr-sep'; s.textContent='/';
+    lens.parentNode.insertBefore(c,lens); c.appendChild(a); c.appendChild(s); c.appendChild(lens);
+    if(window.fitChrome) requestAnimationFrame(window.fitChrome);
+  }
+})();
+</script>
+<!-- NR-GLASS:BEGIN — the glass layer (diagnostic-skill-builder/templates/glass-layer.html, put in by
+     scripts/patch_glass.py). Everything that floats above the page is glass; the page itself stays solid
+     (cards, tables, charts, slides). Small things get liquid glass: a lens at the edges, a light rim and a
+     highlight that follows the pointer. Large things (the edit sidebar, big pop-ups) get calmer frosted glass.
+     Hooks: .nr-glass (small), .nr-glass-lg (large), .nr-glass-tint (a dark tinted message), .nr-glass-night (with
+     .nr-glass: small glass that always sits on a dark surface, like the canvas twin), plus the shared
+     pieces every instrument has. Do not edit a copy in a page: change this file and run patch_glass.py. -->
+<style id="nr-glass">
+  :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu){
+    background-color:rgba(255,255,255,.55)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.34),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(14px) saturate(185%) brightness(1.06);backdrop-filter:blur(14px) var(--nr-lens,) saturate(185%) brightness(1.06);
+    border-color:transparent!important;
+    box-shadow:0 22px 50px -12px rgba(11,35,71,.28),0 2px 6px rgba(11,35,71,.08),inset 0 0 0 .5px rgba(255,255,255,.6),inset 1.5px 1.5px 0 -.5px rgba(255,255,255,.95),inset -1px -1px 0 -.5px rgba(255,255,255,.5)!important}
+  :is(#ed,.nr-glass-lg){
+    background-color:rgba(255,255,255,.74)!important;-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);
+    box-shadow:-24px 0 60px -28px rgba(11,35,71,.38),inset 1px 0 0 rgba(255,255,255,.85)!important;border-color:rgba(255,255,255,.6)!important}
+  :is(.nr-toast,#nr-ask-msg,.nr-glass-tint){
+    background:rgba(11,35,71,.72)!important;-webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);
+    box-shadow:0 16px 36px -12px rgba(11,35,71,.45),inset 0 0 0 .5px rgba(255,255,255,.18),inset 1px 1px 0 -.5px rgba(255,255,255,.45)!important}
+  /* what sits on glass: light fills, never glass on glass */
+  :is(#ed,.nr-glass-lg) :is(.edh,.edf){background:rgba(255,255,255,.35)!important}
+  /* dark */
+  :is([data-t="dark"],html.dark) :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu){
+    background-color:rgba(20,30,44,.56)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.08),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(14px) saturate(170%) brightness(.9);backdrop-filter:blur(14px) var(--nr-lens,) saturate(170%) brightness(.9);
+    box-shadow:0 22px 50px -12px rgba(0,0,0,.6),inset 0 0 0 .5px rgba(255,255,255,.16),inset 1.5px 1.5px 0 -.5px rgba(255,255,255,.35),inset -1px -1px 0 -.5px rgba(255,255,255,.12)!important}
+  :is([data-t="dark"],html.dark) :is(#ed,.nr-glass-lg){background-color:rgba(22,32,44,.78)!important;box-shadow:-24px 0 60px -28px rgba(0,0,0,.7),inset 1px 0 0 rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.1)!important}
+  :is([data-t="dark"],html.dark) :is(#ed,.nr-glass-lg) :is(.edh,.edf){background:rgba(255,255,255,.05)!important}
+  /* glass that always sits on a dark surface (the canvas twin): the dark values in both themes */
+  .nr-glass.nr-glass-night{background-color:rgba(12,21,38,.58)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.07),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(12px) saturate(160%) brightness(.9);backdrop-filter:blur(12px) var(--nr-lens,) saturate(160%) brightness(.9);
+    box-shadow:0 18px 44px -14px rgba(0,0,0,.65),inset 0 0 0 .5px rgba(143,168,206,.22),inset 1.5px 1.5px 0 -.5px rgba(175,198,246,.35),inset -1px -1px 0 -.5px rgba(175,198,246,.12)!important}
+  /* when glass cannot be glass: solid, as before */
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg){background-color:var(--card,#fff)!important;background-image:none!important}}
+  @media (prefers-reduced-transparency:reduce){
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg){background-color:var(--card,#fff)!important;background-image:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+    :is(.nr-toast,#nr-ask-msg,.nr-glass-tint){background:var(--navy-fill,#0B2347)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}}
+  @media print{
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg,.nr-toast,#nr-ask-msg,.nr-glass-tint){-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:#fff!important;box-shadow:none!important}}
+</style>
+<svg id="nr-glass-defs" width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false"></svg>
+<script id="nr-glass-js">
+(function(){
+  /* the lens: only where a browser can put an SVG filter inside backdrop-filter (Chrome, Edge, the Claude desktop
+     app). Safari and Firefox would draw nothing at all, so they keep the plain frosted glass. */
+  var ua=navigator.userAgent, lens=/Chrome\/|Chromium\/|Edg\//.test(ua)&&!/Firefox\//.test(ua);
+  var calm=window.matchMedia&&(matchMedia('(prefers-reduced-transparency: reduce)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var SMALL='.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu', R=16, BEZEL=22, MAXA=700*800, n=0;
+  var defs=document.getElementById('nr-glass-defs'), NS='http://www.w3.org/2000/svg';
+  function lensMap(w,h,r){ var c=document.createElement('canvas'); c.width=w; c.height=h; var x=c.getContext('2d'), im=x.createImageData(w,h), d=im.data;
+    for(var j=0;j<h;j++) for(var i=0;i<w;i++){
+      var cx=Math.min(Math.max(i,r),w-r), cy=Math.min(Math.max(j,r),h-r), dx=i-cx, dy=j-cy, nx=0, ny=0, dist;
+      if((i<r||i>w-r)&&(j<r||j>h-r)){ var l=Math.sqrt(dx*dx+dy*dy)||1; dist=r-l; nx=dx/l; ny=dy/l; }
+      else { var a=i, b=w-1-i, t=j, u=h-1-j, m=Math.min(a,b,t,u); dist=m; if(m===a)nx=-1; else if(m===b)nx=1; else if(m===t)ny=-1; else ny=1; }
+      var k=Math.pow(Math.max(0,1-dist/BEZEL),3), o=(j*w+i)*4; d[o]=128+nx*k*127; d[o+1]=128+ny*k*127; d[o+2]=128; d[o+3]=255; }
+    x.putImageData(im,0,0); return c.toDataURL(); }
+  function filterFor(el){ if(!el.__nrg){ var id='nr-lens-'+(++n), f=document.createElementNS(NS,'filter');
+      f.setAttribute('id',id); f.setAttribute('filterUnits','userSpaceOnUse'); f.setAttribute('primitiveUnits','userSpaceOnUse'); f.setAttribute('x','0'); f.setAttribute('y','0'); f.setAttribute('color-interpolation-filters','sRGB');
+      var im=document.createElementNS(NS,'feImage'); im.setAttribute('x','0'); im.setAttribute('y','0'); im.setAttribute('preserveAspectRatio','none'); im.setAttribute('result','map');
+      var dm=document.createElementNS(NS,'feDisplacementMap'); dm.setAttribute('in','SourceGraphic'); dm.setAttribute('in2','map'); dm.setAttribute('scale','0'); dm.setAttribute('xChannelSelector','R'); dm.setAttribute('yChannelSelector','G');
+      f.appendChild(im); f.appendChild(dm); defs.appendChild(f); el.__nrg={id:id,f:f,im:im,dm:dm,key:''}; }
+    return el.__nrg; }
+  function grow(g){ if(calm){ g.dm.setAttribute('scale','40'); return; } var t0=performance.now();   /* the glass materialises by bending more */
+    (function step(t){ var p=Math.min(1,(t-t0)/260); g.dm.setAttribute('scale',(40*(1-Math.pow(1-p,3))).toFixed(1)); if(p<1) requestAnimationFrame(step); })(t0); }
+  function scan(){ q=0; if(!lens||calm&&matchMedia('(prefers-reduced-transparency: reduce)').matches) return;
+    document.querySelectorAll(SMALL).forEach(function(el){
+      var w=Math.round(el.offsetWidth), h=Math.round(el.offsetHeight), shown=w>0&&h>0&&getComputedStyle(el).visibility!=='hidden';
+      var g=el.__nrg; if(!shown){ if(g) g.key=''; return; } if(w*h>MAXA) return;
+      g=filterFor(el); var key=w+'x'+h; if(g.key===key) return; var fresh=!g.key; g.key=key;
+      var r=parseFloat(getComputedStyle(el).borderTopLeftRadius)||R;
+      g.f.setAttribute('width',w); g.f.setAttribute('height',h); g.im.setAttribute('width',w); g.im.setAttribute('height',h); g.im.setAttribute('href',lensMap(w,h,Math.min(r,w/2,h/2)));
+      el.style.setProperty('--nr-lens','url(#'+g.id+')'); if(fresh) grow(g); }); }
+  var q=0; function soon(){ if(!q) q=requestAnimationFrame(scan); }
+  function start(){ scan(); new MutationObserver(soon).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style','hidden','open']}); window.addEventListener('resize',soon); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
+  /* the highlight follows the pointer across a small piece of glass */
+  document.addEventListener('pointermove',function(e){ var el=e.target.closest&&e.target.closest(SMALL); if(!el) return; var r=el.getBoundingClientRect();
+    el.style.setProperty('--lx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%'); el.style.setProperty('--ly',((e.clientY-r.top)/r.height*100).toFixed(1)+'%'); },{passive:true});
+})();
+</script>
+<!-- NR-GLASS:END -->
+<!-- NR-REFIT:BEGIN — fit again when the space changes (diagnostic-skill-builder/templates/refit-layer.html,
+     put in by scripts/patch_refit.py). Every page fits its view on a window resize. The space a page has can
+     also change without one: fonts that arrive late, the header stacking, a preview pane or iframe that grows
+     after the first paint. Then the page used to keep its first fit until you switched tabs. This watches the
+     view and the window, and replays the page's own resize handling once that space has really changed
+     (a change in the page's content alone does not count). -->
+<script>(function(){
+  var last = '', t = 0;
+  function box(){ var v = document.getElementById('view'); return (v ? v.clientWidth + 'x' + v.clientHeight + '/' : '') + innerWidth + 'x' + innerHeight; }
+  function kick(){ var k = box(); if(k === last) return; last = k; window.dispatchEvent(new Event('resize')); }
+  function soon(){ cancelAnimationFrame(t); t = requestAnimationFrame(kick); }
+  function again(){ last = ''; soon(); }
+  function watch(){ if(!window.ResizeObserver) return; var ro = new ResizeObserver(soon), v = document.getElementById('view');
+    if(v) ro.observe(v); ro.observe(document.documentElement); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watch); else watch();
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(again);
+  window.addEventListener('load', again);
+})();</script>
+<!-- NR-REFIT:END -->
+<style>
+/* ── READ MODE · narrow screens ──────────────────────────────────────────────
+   This artifact normally scales its whole body down so the page fits one screen.
+   On a phone that turns 13px type into 4px. Below 760px the scaling is switched
+   off and the page simply flows and scrolls at its real size. Desktop is
+   untouched — every rule here lives inside the media query. */
+@media (max-width:760px){
+  html,body{height:auto!important;overflow:auto!important}
+  #art,#pw,#pm{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;padding:12px 14px 22px 34px!important}
+  #view{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;flex:none!important;position:static!important}
+  #vinner{position:static!important;transform:none!important;width:100%!important;
+    padding-bottom:14px!important}
+  .nr-rail{width:22px!important}
+  .toprow{position:static!important;top:auto!important;right:auto!important;left:auto!important;
+    margin:0 0 10px!important;flex-wrap:wrap!important;gap:8px 10px!important;justify-content:flex-start!important}
+  .tags{flex-wrap:wrap!important;gap:8px!important;margin-left:-34px!important}
+  .ctrls{flex-wrap:wrap!important;gap:8px!important;flex:1 1 100%!important}
+  #ft{position:static!important;flex-wrap:wrap!important;row-gap:6px!important;margin-top:14px!important}
+  h1{font-size:19px!important;max-width:none!important}
+  .grid,.classic,.cols-grid{grid-template-columns:1fr!important}
+  table{min-width:0!important}
+  .tbl-wrap,.wrap-x{overflow-x:auto!important}
+}
+</style>
+<style>/* READ-MODE TYPE FLOOR — nothing under 11px once the page stops scaling */
+
+@media (max-width:760px){
+  #ft{font-size:11px!important}
+  .conf,.lp,.li,.nr-track,.nr-foot,.lbl,.note{font-size:11px!important}
+  .inum,.chip,.inev,.num,.wf-num,.vnum{font-size:11px!important}
+  #ft b,.legend b,.l b{font-size:11px!important}
+  /* a row label truncated to '…' is worse than a wrapped one once the page flows */
+  [style*="ellipsis"]{white-space:normal!important;text-overflow:clip!important;overflow:visible!important}
+}
+</style>
+</body>
+</html>

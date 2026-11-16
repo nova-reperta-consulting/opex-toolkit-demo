@@ -1,0 +1,2831 @@
+<!doctype html>
+<!-- ============================================================================
+  OTE WATERFALL (TOP-DOWN)  ·  Nova Reperta  ·  baseline-category instrument
+  Hybrid artifact: a read-out (5 views) plus a calculator layer in the working copy.
+
+  TWO FILES, built by scripts/render_ote.py:
+    ote-waterfall.html          client read-out — every edit fence stripped out. The file you SEND.
+    ote-waterfall.WORKING.html  working copy — lock-by-default; the calculator, the provenance
+                                and the narrative are editable; exports a delta. NEVER sent.
+
+  THE MATHS lives twice on purpose: here in JS (so the working copy recalculates live in a TL
+  session) and in scripts/render_ote.py (so the capture's numbers are produced by Python).
+  scripts/check_ote.py --parity asserts the two agree to 0.01 on the worked example. If you
+  change a formula here, change it there and re-run the parity check.
+
+  ONLY the /* DATA */ block changes per team. Markup, CSS and JS are fixed.
+============================================================================ -->
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OTE Waterfall (Top-Down)</title>
+<style>
+/* Type scale — one place, not case by case. Every size below 12px is a token; the
+   whole small end lifts on a narrow screen so nothing drops under 11px on a phone. */
+:root{
+  --fs-65:6.5px; --fs-7:7px; --fs-75:7.5px; --fs-8:8px; --fs-85:8.5px; --fs-9:9px;
+  --fs-95:9.5px; --fs-10:10px; --fs-105:10.5px; --fs-11:11px; --fs-115:11.5px;
+}
+@media (max-width:760px){
+  :root{
+    --fs-65:11px; --fs-7:11px; --fs-75:11px; --fs-8:11px; --fs-85:11px; --fs-9:11px;
+    --fs-95:11px; --fs-10:11.5px; --fs-105:12px; --fs-11:12px; --fs-115:12.5px;
+  }
+}
+</style>
+<style>
+  *{box-sizing:border-box}
+  :root{--page:#FFF}
+  html,body{margin:0;height:100vh;overflow:hidden}
+  body{background:var(--page);font-family:'Aptos','Segoe UI',system-ui,sans-serif;transition:background .25s}
+  /* ===== BRAND THEME (inlined from templates/brand.css — do not hand-edit the tokens) ===== */
+  #art{--navy:#0B2347;--slate:#364156;--steel:#7991AD;--green:#1C7A4A;--accent:#6EB1D1;--sky:#A9D5E6;--navy2:#16315B;
+      --slate-10:rgba(54,65,86,.09);--navy-10:rgba(11,35,71,.10);--green-10:rgba(28,122,74,.10);--accent-10:rgba(110,177,209,.13);--sky-10:rgba(169,213,230,.22);
+      --rag-green:#2F8F6B;--rag-amber:#D49A3A;--rag-red:#D2645A;--rag-na:#9AA4B0;
+      --rag-green-text:#2F8F6B;--rag-amber-text:#B97F22;--rag-red-text:#C2483D;--rag-na-text:#6B7480;
+      --tint-green:rgba(47,143,107,.12);--tint-amber:rgba(212,154,58,.16);--tint-red:rgba(210,100,90,.13);--tint-na:rgba(154,164,176,.16);
+      --navy-fill:#0B2347;
+      --dv-1:#0B2347;--dv-2:#2E5C8A;--dv-3:#7991AD;--dv-4:#A9D5E6;--dv-5:#1C7A4A;--dv-6:#2E8B6F;
+      /* waterfall encoding — chart tokens, deliberately SEPARATE from the RAG scoring set:
+         navy = a total · steel = a structural deduction · crimson = a loss you can attack ·
+         green = value. This is the house read of the slide, and the footer legend names it. */
+      --wf-total:#0B2347;--wf-struct:#3E5B80;--wf-loss:#C0405A;--wf-value-b:#8CBF3F;--wf-value-c:#1C7A4A;
+      --tint-value:rgba(28,122,74,.075);--tint-loss:rgba(192,64,90,.08);
+      --ink:#15243A;--txt:#46505C;--mut:#7A838F;--line:#E1E6EE;--card:#FFF;--bg:#FFF;
+      /* ══ THE TYPE SCALE ══
+         ONE base, --ui, solved from the frame height by fitUI() and used by BOTH columns, so the
+         chart and the prose beside it stay in proportion at every window size. Before this, the
+         insight column was solved and the chart column was fixed px: at 1920 the prose ran to
+         15.7px while its own section heading sat at 12.8, and the headings were SMALLER than the
+         body text under them. Six steps, and nothing outside them.
+         Anything expressed in px below this line is FURNITURE - a border, a badge circle, a
+         radius - not type. */
+      --ui:11px;
+      /* the label gutter, in --ui rather than em: `em` would resolve against each element's OWN
+         font-size, so the separator and the OTE box (which inherit the page default) would indent
+         to a different column than the labels they are supposed to line up with */
+      --labw:calc(var(--ui)*13.7);
+      --fs-micro:calc(var(--ui)*.78);   /* column headers, threshold labels, unit suffixes */
+      --fs-small:calc(var(--ui)*.88);   /* badges, the FTE column, values outside a bar */
+      --fs-body:var(--ui);              /* row labels, table cells, insight bullets */
+      --fs-lead:calc(var(--ui)*1.1);    /* insight headings, chart names */
+      --fs-sect:calc(var(--ui)*1.22);   /* section headings */
+      --fs-display:calc(var(--ui)*2.2); /* the OTE result, the waste summary numbers */
+      --lh-tight:1.25;--lh-ui:1.4;--lh-prose:1.55;
+      --sh:0 1px 2px rgba(20,30,50,.04),0 14px 32px -24px rgba(20,30,50,.30);
+      width:100%;max-width:2200px;margin:0 auto;height:100vh;overflow:hidden;position:relative;
+      display:flex;flex-direction:column;background:var(--bg);color:var(--ink);padding:76px 40px 12px 98px}
+  #art[data-t="dark"]{--bg:#16202C;--card:#1E2937;--ink:#EAEFF5;--txt:#C4CEDA;--mut:#94A1B2;--line:#2A3744;
+      --navy-fill:#243246;--accent:#8FC7E8;--steel:#93A9C4;
+      --dv-1:#5B85B8;--dv-2:#7BA3CC;--dv-3:#9DB4CE;--dv-4:#A9D5E6;--dv-5:#4FA97C;--dv-6:#66B79A;
+      --wf-total:#5B85B8;--wf-struct:#7B93B4;--wf-loss:#D9647C;--wf-value-b:#A6D45C;--wf-value-c:#4FA97C;
+      --tint-value:rgba(79,169,124,.15);--tint-loss:rgba(217,100,124,.15);
+      --rag-green:#5FBF94;--rag-amber:#E8B96A;--rag-red:#F0968C;--rag-na:#9AA8B8;
+      --rag-green-text:#5FBF94;--rag-amber-text:#E8B96A;--rag-red-text:#F0968C;--rag-na-text:#9AA8B8;
+      --tint-green:rgba(95,191,148,.15);--tint-amber:rgba(232,185,106,.15);--tint-red:rgba(240,150,140,.14);--tint-na:rgba(148,161,178,.15);
+      --sh:0 1px 2px rgba(0,0,0,.4),0 14px 32px -24px rgba(0,0,0,.6)}
+  body:has(#art[data-t="dark"]){--page:#0E1620}
+  .nr-rail{position:absolute;left:0;top:0;bottom:0;width:52px;background:var(--navy-fill)}
+  .toprow{position:absolute;top:22px;left:0;right:40px;display:flex;justify-content:space-between;align-items:center;gap:14px;z-index:3}
+  .tags{display:flex;align-items:center;gap:11px;min-width:0}
+  .nr-pill{display:inline-flex;align-items:center;gap:11px;background:var(--green);padding:10px 22px 10px 14px;border-radius:0 9px 9px 0}
+  .nr-pill img{height:21px;filter:brightness(0) invert(1)}
+  .nr-pill b{color:#fff;font-size:13px;font-weight:700;letter-spacing:.3px}
+  .nr-track{background:#E3E8EF;color:var(--navy);font-weight:700;font-size:var(--fs-115);letter-spacing:.8px;padding:9px 16px;border-radius:8px}
+  #art[data-t="dark"] .nr-track{background:#243246;color:#EAEFF5}
+  .seg{display:flex;background:var(--slate-10);border-radius:999px;padding:3px}
+  .seg button{font-size:12px;font-weight:600;border:none;background:transparent;color:var(--mut);padding:6px 13px;border-radius:999px;cursor:pointer;white-space:nowrap}
+  .seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--sh)}
+  .ctrls{display:flex;gap:9px;flex:none}
+  h1{font-size:clamp(20px,1.85vw,28px);font-weight:700;color:var(--navy);letter-spacing:-.2px;line-height:1.24;margin:0;max-width:1300px}
+  #art[data-t="dark"] h1{color:#EAEFF5}
+  h1 .hl{color:var(--green)}
+  .subrow{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:8px 0 14px}
+  .subt{font-size:15px;font-weight:600;color:var(--accent)}
+  .methodline{font-size:var(--fs-115);color:var(--mut);text-align:right;line-height:1.5}
+  .methodline b{color:var(--txt);font-weight:600}
+  #view{flex:1;min-height:0;position:relative;overflow:hidden}
+  #vinner{position:absolute;top:0;left:0;width:100%;transform-origin:top left;padding-bottom:20px}
+
+  /* ══ THE MAIN SLIDE: waterfall left, insights right (the house layout) ══ */
+  .slide{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);
+    gap:calc(var(--ui)*2.6);align-items:start}
+  .sech{margin:0 0 calc(var(--ui)*1.05);font-size:var(--fs-sect);font-weight:700;color:var(--ink);
+    line-height:var(--lh-tight);padding-bottom:calc(var(--ui)*.55);border-bottom:1px solid var(--steel)}
+  .col-wf,.col-ins{min-width:0}
+
+  /* ── waterfall cascade, indexed to available time = 100 ── */
+  .wfwrap{padding:0;position:relative}
+  .wfmeta{display:flex;align-items:baseline;gap:10px;font-size:var(--fs-small);color:var(--mut);
+    line-height:var(--lh-ui);margin-bottom:calc(var(--ui)*.9)}
+  .wfmeta>span:first-child{flex:1;min-width:0}
+  .wfmeta .fteh{font-weight:700;letter-spacing:.5px;text-transform:uppercase;flex:none;width:3.9em;text-align:right}
+  .wfmeta .cumh{font-weight:700;letter-spacing:.5px;text-transform:uppercase;flex:none;width:5.3em;text-align:right;padding-left:.8em;font-size:var(--fs-micro)}
+  .wf-row{display:flex;align-items:center;height:var(--rowh,29px)}
+  /* the gutters are in --ui too: a label column fixed in px clips its longest label as soon as
+     the type grows, and a right-hand number column stops lining up with its header */
+  .wf-label{width:var(--labw);flex:none;display:flex;align-items:center;justify-content:flex-end;
+    gap:.55em;padding-right:.9em;font-size:var(--fs-body);color:var(--txt);white-space:nowrap}
+  .wf-label>span{overflow:hidden;text-overflow:ellipsis}
+  .wf-row.tot .wf-label>span:not(.wf-num){font-weight:700;color:var(--ink)}
+  /* The badge is a SPAN inside .wf-label, so any `.wf-label>span{color:...}` rule will steal its
+     white and leave a dark digit on a dark circle. This wins, and every view-specific label rule
+     below excludes .wf-num explicitly. The test asserts the computed contrast on every badge. */
+  .wf-num{flex:none;width:1.5em;height:1.5em;border-radius:50%;background:var(--wf-total);
+    font-size:var(--fs-micro);font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+  .wf-label .wf-num,.wf-num{color:#fff}
+  /* the bar grows with its row, but not without limit: a 40px bar in a 58px row reads as a
+     block, not a chart */
+  .wf-track{flex:1;min-width:0;position:relative;
+    height:min(calc(var(--rowh,29px)*.7), calc(var(--ui)*2.1))}
+  .wf-bar{position:absolute;height:100%;border-radius:2px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .wf-bar span{font-size:var(--fs-small);font-weight:700;color:#fff;white-space:nowrap}
+  .wf-out{position:absolute;top:50%;transform:translateY(-50%);font-size:var(--fs-small);font-weight:700;color:var(--mut);white-space:nowrap}
+  /* The bars carry no reference marks. Two ticks per bar - a peer median and a good threshold -
+     put four extra objects on the busiest part of the page to say what the chips beside the
+     insight already say in words. The ranking lives in the chips and, in full, on the
+     Benchmark view. */
+  .wf-fte{width:3.8em;flex:none;padding-left:.9em;text-align:right;font-size:var(--fs-small);color:var(--mut);font-variant-numeric:tabular-nums}
+  .wf-sep{height:1px;background:var(--line);margin:calc(var(--ui)*.4) 0 calc(var(--ui)*.4) var(--labw)}
+  .wf-sub{height:20px}
+  .wf-sub .wf-label{font-size:var(--fs-small);color:var(--mut);font-style:italic}
+  .wf-sub .wf-bar{opacity:.45}
+  /* Value added time carries no band and no bracket. The numbered badge simply appears on BOTH
+     value rows, the way every other numbered bar carries its badge, and the insight card ties
+     them together. A marker drawn across rows is one more thing that can drift. */
+  .wf-num.vnum{background:var(--wf-value-c)}
+
+  /* ── the OTE formula box ── */
+  .otebox{display:flex;align-items:center;gap:calc(var(--ui)*1.2);
+    margin:calc(var(--ui)*1.5) 0 0 var(--labw);
+    background:var(--slate-10);border-radius:10px;padding:calc(var(--ui)*1) calc(var(--ui)*1.5)}
+  .otebox .oteeq{font-size:var(--fs-lead);font-weight:700;color:var(--ink);flex:none}
+  .otebox .otef{display:flex;flex-direction:column;align-items:center;flex:none;line-height:1.3}
+  .otebox .otef .num{font-size:var(--fs-body);font-weight:700;color:var(--wf-value-c);padding:0 6px 2px;border-bottom:1.5px solid var(--ink)}
+  .otebox .otef .den{font-size:var(--fs-body);color:var(--txt);padding-top:2px}
+  .otebox .oteres{font-size:var(--fs-display);font-weight:800;color:var(--ink);letter-spacing:-.5px;flex:none}
+  .otebox .otenote{font-size:var(--fs-small);color:var(--mut);line-height:var(--lh-prose);margin-left:auto;text-align:right}
+  .otebox.na{display:block;font-size:var(--fs-body);color:var(--txt);line-height:var(--lh-prose);background:var(--tint-na)}
+  .otebox.na b{color:var(--ink)}
+
+
+  /* ── waste breakdown: the same cascade furniture, ranked instead of stepped ── */
+  .wf-row.wst .wf-label>span:not(.wf-num){color:var(--txt)}
+  .wf-row.wst.top .wf-label>span:not(.wf-num){font-weight:700;color:var(--ink)}
+  .wf-cum{width:4.7em;flex:none;padding-left:.8em;text-align:right;font-size:var(--fs-small);color:var(--mut);
+    font-variant-numeric:tabular-nums}
+  .wf-row.wtot{border-top:1px solid var(--line);margin-top:5px;padding-top:5px}
+  .wf-row.wtot .wf-label>span:not(.wf-num){font-weight:700;color:var(--ink)}
+
+  /* The CSS for the four instrument views that were removed - the engine cards, the sanity
+     check cards and the reconciliation boxes - went with them. Dead CSS is not free: it is
+     where a stray font size hides from a scale audit, and where the next person looks for a
+     view that no longer exists. */
+
+  /* ── Benchmark view: three ranked columns, stacked ──
+     No axis and no team labels on the face. The value is on this team's bar, the rank is the
+     bar's position, and the band is which side of the dashed lines it falls on, so none of it
+     is written out twice. Everything else is in the hover. */
+  #art{--bnpeer:#B8C4D4}
+  #art[data-t="dark"]{--bnpeer:#4A5A6E}
+  .bn{max-width:none}
+  .bnblk{margin-bottom:calc(var(--ui)*1.6)}
+  .bnblk:last-child{margin-bottom:0}
+  .bncat{font-size:var(--fs-lead);font-weight:700;color:var(--ink);margin-bottom:calc(var(--ui)*.5)}
+  .bnplot{position:relative;height:var(--bnh,150px)}
+  .bnbars{position:absolute;left:0;right:0;top:0;bottom:0;display:flex;align-items:flex-end;gap:3px}
+  .bnbar{flex:1;background:var(--bnpeer);border-radius:2px 2px 0 0;position:relative;cursor:help;transition:filter .12s}
+  .bnbar:hover{filter:brightness(.9)}
+  .bnbar.me{background:var(--wf-loss)}
+  .bnbar .bnv{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);font-size:var(--fs-small);
+    font-weight:800;color:var(--wf-loss);margin-bottom:3px;white-space:nowrap}
+  .bnbase{position:absolute;left:0;right:0;bottom:0;border-bottom:1px solid var(--line)}
+  .bnthr{position:absolute;left:0;right:0;height:0;border-top:1px dashed var(--mut);pointer-events:none}
+  .bnthr.g{border-top-color:var(--wf-value-c)}
+  .bnthrl{position:absolute;right:0;font-size:var(--fs-micro);color:var(--mut);background:var(--card);
+    padding:0 3px;pointer-events:none;line-height:var(--lh-tight)}
+  .bnthrl.g{color:var(--wf-value-c);font-weight:600}
+  .bncap{font-size:var(--fs-small);color:var(--mut);margin-top:calc(var(--ui)*.75);
+    display:flex;justify-content:space-between;gap:12px}
+  #lg .lp i.lstd{background:none;border-top:1px dashed var(--wf-value-c);width:12px;height:0;border-radius:0}
+  .bmnote{font-size:.86em;color:var(--mut);line-height:var(--lh-prose);margin:-2px 0 .85em;font-style:italic}
+  .bmnote b{color:var(--txt);font-style:normal}
+
+  /* ── insight panel ── */
+  /* every size here is relative to .col-ins, whose font-size fitInsights() searches so the
+     insights always fill the height of the waterfall beside them */
+  /* fitInsights() searches this, but only inside a band around --ui, so the two columns can
+     never drift apart the way they did when this was solved and the chart column was not. */
+  .col-ins{font-size:var(--ui)}
+  .inswrap{display:flex;flex-direction:column;gap:1.35em}
+  .ins .inh{display:flex;align-items:flex-start;gap:.65em;margin-bottom:.4em}
+  .ins .inum{flex:none;width:1.6em;height:1.6em;border-radius:50%;background:var(--wf-total);color:#fff;
+    font-size:.84em;font-weight:800;display:inline-flex;align-items:center;justify-content:center;margin-top:.15em}
+  .ins .inh b{font-size:1.1em;font-weight:700;color:var(--ink);line-height:1.35}
+  /* ONE chip on an insight heading: the band against the stated standard. It sits on the heading
+     line, so it costs no height, and it is the only verdict the main page carries. */
+  .ins .chip{display:inline-flex;align-items:center;gap:.35em;font-size:.8em;font-weight:700;
+    padding:.1em .5em;border-radius:99px;vertical-align:.1em;white-space:nowrap;cursor:help;
+    line-height:1.5}
+  .ins .chip.st.good{background:var(--tint-value);color:var(--wf-value-c)}
+  .ins .chip.st.neu{background:var(--tint-amber);color:var(--rag-amber-text)}
+  .ins .chip.st.poor{background:var(--tint-loss);color:var(--wf-loss)}
+  /* .sev survives for the waste view's share-of-waste note, which is text, not a chip */
+  .sev.good{color:var(--wf-value-c)} .sev.neu{color:var(--mut)} .sev.poor{color:var(--wf-loss)}
+  .ins ul{margin:0;padding-left:2.9em;list-style:none}
+  .ins li{position:relative;font-size:1em;color:var(--txt);line-height:var(--lh-prose);margin-bottom:.3em}
+  .ins li::before{content:"";position:absolute;left:-.9em;top:.55em;width:.33em;height:.33em;border-radius:50%;background:var(--mut)}
+  .ins .inev{margin:.35em 0 0 2.9em;font-size:.88em;color:var(--mut);font-style:italic}
+  .ins.empty .inum{background:var(--rag-na)}
+  .ins.empty .inh b{color:var(--rag-na-text)}
+
+  /* ── tables ── */
+  .tmeta{font-size:var(--fs-small);color:var(--mut);line-height:var(--lh-prose);
+    margin:0 0 calc(var(--ui)*.95);max-width:840px}
+  .tmeta b{color:var(--txt);font-weight:700}
+  tbody td.run{color:var(--mut);font-variant-numeric:tabular-nums}
+  tbody tr.tot td.run{color:var(--ink)}
+  .tcard{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh);overflow:hidden}
+  table{border-collapse:collapse;width:100%}
+  thead tr{background:var(--navy-fill)}
+  th{text-align:left;font-size:var(--fs-micro);letter-spacing:.6px;text-transform:uppercase;color:#DCE4F0;
+    font-weight:700;padding:calc(var(--ui)*.78) calc(var(--ui)*1.2);white-space:nowrap}
+  th.r{text-align:right}
+  td{font-size:var(--fs-body);color:var(--txt);line-height:var(--lh-ui);
+    padding:calc(var(--ui)*.72) calc(var(--ui)*1.2);border-bottom:1px solid var(--line);vertical-align:top}
+  td.r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr.tot td{font-weight:700;color:var(--ink);background:var(--slate-10)}
+  tbody tr.sub td{color:var(--mut);font-style:italic}
+  tbody tr.val td:first-child{padding-left:26px}
+  tbody tr.tot.val td{background:var(--green-10)}
+  td b{color:var(--ink)}
+  /* ── the peer cell: a distribution, not two words to translate ── */
+  td.pk{padding-top:0;padding-bottom:0;vertical-align:middle}
+  .pstrip{position:relative;display:inline-block;width:11em;height:1.5em;vertical-align:middle}
+  .pstrip i{position:absolute;display:block}
+  .prail{left:0;right:0;top:50%;height:1.5px;margin-top:-.75px;background:var(--line);border-radius:1px}
+  .pbox{top:50%;height:.66em;margin-top:-.33em;background:rgba(11,35,71,.16);border-radius:2px}
+  .pmed{top:50%;height:.95em;margin-top:-.475em;width:1.5px;background:var(--steel)}
+  .pme{top:50%;width:.6em;height:.6em;margin-top:-.3em;margin-left:-.3em;border-radius:50%;
+    background:var(--wf-loss);box-shadow:0 0 0 1.5px var(--card)}
+  .pme.good{background:var(--wf-value-c)} .pme.neu{background:var(--mut)}
+  #art[data-t="dark"] .pbox{background:rgba(255,255,255,.14)}
+  .pkey{display:flex;align-items:flex-start;gap:.8em}
+  .pkey .pstrip.key{width:5.5em;flex:none;margin-top:-.1em}
+  .miss{color:var(--rag-red-text);font-style:italic;font-size:var(--fs-body)}
+  .psub{font-size:var(--fs-small);color:var(--mut);margin-top:.25em;line-height:var(--lh-ui)}
+  /* the editor panel is 570px: a nowrap header is what pushed the Sources table off its own edge.
+     Scoped to .psrc - the calculator's own .mtx tables want their nowrap labels. */
+  #ed .psrc{table-layout:fixed}
+  #ed .psrc th{white-space:normal}
+  #ed .psrc td:first-child,#ed .psrc th:first-child{width:36%;overflow-wrap:anywhere}
+  .naChip{display:inline-block;font-size:var(--fs-small);font-weight:700;padding:2px 8px;border-radius:999px;background:var(--tint-na);color:var(--rag-na-text)}
+
+  /* bucket tooltip: a definition, not a repeat of what the row already shows */
+  #tip{position:fixed;z-index:80;max-width:330px;background:var(--navy-fill,#0B2347);color:#fff;
+    font-size:var(--fs-115);line-height:1.5;padding:9px 12px;border-radius:8px;pointer-events:none;
+    box-shadow:0 14px 32px -14px rgba(0,0,0,.55);opacity:0;transition:opacity .12s}
+  #tip.on{opacity:1}
+  #tip b{display:block;font-size:var(--fs-10);letter-spacing:.5px;text-transform:uppercase;color:#9FC7E8;margin-bottom:3px}
+  #art[data-t="dark"] #tip{background:#0B1729}
+  .wf-row[data-tip] .wf-bar,.wf-row[data-tip] .wf-label{cursor:help}
+  /* a thin bar is a tiny hit target, so widen the hit area without changing what is drawn */
+  .wf-row[data-tip] .wf-bar::after{content:"";position:absolute;inset:0 -7px}
+  #ft{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:10px;font-size:clamp(9.5px,0.75vw,12px);color:var(--mut)}
+  #ft .l{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .legend{display:flex;gap:1.1em;flex-wrap:wrap;row-gap:.25em}
+  .lp{display:inline-flex;align-items:center;gap:.5em;font-size:0.95em;font-weight:600;color:var(--txt)}
+  .lp i{width:.75em;height:.75em;border-radius:2px;display:inline-block;flex:none}
+  .conf{font-size:0.88em;letter-spacing:.5px;font-weight:600;white-space:nowrap;flex:none}
+  .gapbox{margin-top:12px;background:var(--tint-amber);
+    border-radius:10px;padding:10px 14px;font-size:var(--fs-115);color:var(--txt);line-height:1.5;--nr-tc:var(--rag-amber);background-image:linear-gradient(color-mix(in srgb,var(--nr-tc) 11%,transparent),color-mix(in srgb,var(--nr-tc) 11%,transparent))}
+  .gapbox.ok{--nr-tc:var(--rag-green);background:var(--tint-green)}
+  .gapbox b{display:block;font-size:12px;color:var(--ink);margin-bottom:3px}
+  .gapbox ul{margin:0;padding-left:16px} .gapbox li{margin-bottom:2px}
+  
+  @media (max-width:900px){
+    #art{padding:14px 18px 10px 42px}
+    .nr-rail{width:24px}
+    .slide{grid-template-columns:1fr;gap:20px}
+    .otebox{margin-left:0}
+    .rec{grid-template-columns:1fr}
+    .wf-label{width:104px;font-size:var(--fs-10)}
+    .wf-sep{margin-left:104px}
+  }
+
+  /* ── responsive chrome ──────────────────────────────────────────────────────
+     The toprow stacks when it does not fit, and the switch is DETECTED, not
+     guessed: fitChrome() below measures the one-row layout and adds .stacked to
+     the artifact root. Never hard-code a breakpoint for the chrome — see
+     brand-guide.html, "Responsive chrome". Stacked order is brand row, then
+     navigation, then working controls: where am I, what am I looking at, what
+     can I change. ── */
+  #art.stacked .toprow,#pm.stacked .toprow,#pw.stacked .toprow{
+    position:static;top:auto;left:auto;right:auto;margin:0 0 12px;
+    display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:center;gap:10px 12px}
+  #art.stacked .tags,#pm.stacked .tags,#pw.stacked .tags{display:contents}
+  /* only the brand pill bleeds out onto the navy rail — that is why it is
+     border-radius:0 9px 9px 0. The negative margin is given back as padding, so
+     its right edge does not move and no sibling shifts. */
+  #art.stacked .nr-pill,#pm.stacked .nr-pill,#pw.stacked .nr-pill{
+    order:1;margin-left:calc(-1 * var(--padl,0px));padding-left:calc(14px + var(--padl,0px))}
+  /* no text in an artifact is ever cut to make it fit: the lens badge wraps, it
+     does not ellipsise. An instrument that truncates it looks fine to a gate and
+     wrong to a client. */
+  #art.stacked .nr-track,#pm.stacked .nr-track,#pw.stacked .nr-track{
+    order:2;max-width:none;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+  #art.stacked .ctrls,#pm.stacked .ctrls,#pw.stacked .ctrls{
+    order:3;flex:1 1 100%;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:8px}
+  /* a shell whose view switch sits straight in the toprow, with no .ctrls group */
+  #art.stacked .toprow>.seg,#pm.stacked .toprow>.seg,#pw.stacked .toprow>.seg{order:3;flex:1 1 100%}
+  #art.stacked .seg,#pm.stacked .seg,#pw.stacked .seg{flex-wrap:wrap;max-width:100%}
+  #art.stacked .wgrp,#pm.stacked .wgrp,#pw.stacked .wgrp{
+    order:4;flex:1 1 100%;flex-wrap:wrap;gap:8px}
+  #art.stacked #save,#art.stacked #lock,#pm.stacked #save,#pm.stacked #lock,
+  #pw.stacked #save,#pw.stacked #lock{order:4}
+  /* the narrow-screen media query keeps only what it was really for: padding and
+     rail width on a phone. Chrome layout is no longer its business. */
+  @media (max-width:760px){
+    #art.stacked,#pm.stacked,#pw.stacked{padding:14px 18px 10px 42px}
+    #art.stacked .nr-rail,#pm.stacked .nr-rail,#pw.stacked .nr-rail{width:24px}
+  }
+</style><style id="nr-finish">
+/* == THE DECK FINISH (patch_finish.py) == one look across the toolkit: the same base size as a deck
+   in the same window, the quiet subtitle, light grey cards for ideas, icons from the house set.
+   Written with an html prefix so it wins over the template's own rules wherever they sit. */
+html{--srf:#F7F9FB;--srf-line:#E4E9EF;--sh-soft:0 1px 2px rgba(16,24,40,.05);--subt:#5E718B}
+html [data-t="dark"]{--srf:#1E2937;--srf-line:#2C3947;--sh-soft:0 1px 2px rgba(0,0,0,.35);--subt:#9FB1C8}
+html .subt{font-size:max(15px,calc(var(--nr-t,14px) * 1.22));font-weight:400;color:var(--subt)}
+/* the title follows the deck where the deck's title is the larger one (a window above about 1615 x 909);
+   below that every instrument keeps its own title, including the ones that shrink it to fit */
+@media (min-width:1615px) and (min-height:909px){html h1{font-size:calc(var(--nr-t,15.14px) * 1.85)}}
+html :is(.card,.kpi,#pw .tcard,.plan,.findings,.acard,.t-dept .nc,.t-team.in .nc,.blk.boxed,.conc-so,.node.l3){background:var(--srf);border-color:var(--srf-line);border-radius:14px;box-shadow:var(--sh-soft)}
+/* the templates paint their dark cards from #art[data-t="dark"] rules; the finish wins over those */
+html [data-t="dark"]:is(#art,#pw,#pm) :is(.card,.kpi,#pw .tcard,.plan,.findings,.acard,.t-dept .nc,.t-team.in .nc,.blk.boxed,.conc-so,.node.l3){background:var(--srf);border-color:var(--srf-line)}
+html :is(.blk.boxed,.conc-so){border:1px solid var(--srf-line)}
+html .ic{width:1.2em;height:1.2em;fill:var(--navy);flex:none;vertical-align:-.24em;margin-right:.4em}
+html [data-t="dark"] .ic{fill:#93A9C4}
+@media print{html{--sh-soft:0 0 0 transparent}}
+</style>
+<script id="nr-finish-js">
+/* == ONE TYPE SIZE PER WINDOW (patch_finish.py) == the deck's base size for this window, published
+   on <html> before any fit runs, and nrZ() for the fit caps. Never below the instrument's own 14px. */
+(function(){
+  function deck(){var W=window.innerWidth||1600,H=window.innerHeight||900;
+    return Math.max(11,Math.min(20,H/60,(W-138)/97.5));}
+  function ui(){return Math.max(14,deck());}
+  function put(){var d=document.documentElement.style;d.setProperty('--nr-t',deck().toFixed(2)+'px');
+    d.setProperty('--nr-ui',ui().toFixed(2)+'px');}
+  window.nrZ=function(){return ui()/14;};
+  put(); window.addEventListener('resize',put);
+  /* icons from the house set on the fixed vocabularies, re-applied whenever a view re-renders */
+  var I={"alt_route":"M450-80v-200q0-48-16-79t-49-64l43-43q13 11 27.5 30t24.5 35q17-26 33.5-45t31.5-32q58-47 83.5-113.5T648-766l-90 90-42-42 162-162 162 162-42 42-90-90q5 126-24.5 198.5T585-432q-44 40-59.5 73T510-280v200h-60ZM258-636q-4-18-6.5-52.5T251-765l-89 89-42-42 162-162 162 162-42 42-90-90q-2 38-1 66.5t5 49.5l-58 14Zm84 171q-17-18-37.5-47.5T273-577l59-15q9 25 24 48t28 37l-42 42Z","badge":"M140-80q-24 0-42-18t-18-42v-480q0-24 18-42t42-18h250v-140q0-24 18-42t42-18h60q24 0 42 18t18 42v140h250q24 0 42 18t18 42v480q0 24-18 42t-42 18H140Zm0-60h680v-480H570v30q0 28-18 44t-42 16h-60q-24 0-42-16t-18-44v-30H140v480Zm92-107h239v-14q0-18-9-32t-23-19q-32-11-50-14.5t-35-3.5q-19 0-40.5 4.5T265-312q-15 5-24 19t-9 32v14Zm336-67h170v-50H568v50Zm-175.5-65.5Q408-395 408-418t-15.5-38.5Q377-472 354-472t-38.5 15.5Q300-441 300-418t15.5 38.5Q331-364 354-364t38.5-15.5ZM568-427h170v-50H568v50ZM450-590h60v-230h-60v230Zm30 210Z","build":"M705-128 447-388q-23 8-46 13t-47 5q-97.08 0-165.04-67.67Q121-505.33 121-602q0-31 8.16-60.39T152-718l145 145 92-86-149-149q25.91-15.16 54.96-23.58Q324-840 354-840q99.17 0 168.58 69.42Q592-701.17 592-602q0 24-5 47t-13 46l259 258q11 10.96 11 26.48T833-198l-76 70q-10.7 11-25.85 11Q716-117 705-128Zm28-57 40-40-273-273q16-21 24-49.5t8-54.5q0-75-55.5-127T350-782l102 104q9 9 8.5 21.5T451-635L318-510q-9.27 8-21.64 8-12.36 0-20.36-8l-98-97q3 77 54.67 127T354-430q25 0 53-8t49-24l277 277ZM476-484Z","checklist":"M222-214 80-356l42-42 100 99 179-179 42 43-221 221Zm0-320L80-676l42-42 100 99 179-179 42 43-221 221Zm298 244v-60h360v60H520Zm0-320v-60h360v60H520Z","description":"M319-250h322v-60H319v60Zm0-170h322v-60H319v60ZM220-80q-24 0-42-18t-18-42v-680q0-24 18-42t42-18h361l219 219v521q0 24-18 42t-42 18H220Zm331-554v-186H220v680h520v-494H551ZM220-820v186-186 680-680Z","flag":"M200-120v-680h343l19 86h238v370H544l-18.93-85H260v309h-60Zm300-452Zm95 168h145v-250H511l-19-86H260v251h316l19 85Z","forum":"M880-81 721-240H300q-24.75 0-42.37-17.63Q240-275.25 240-300v-80h440q24.75 0 42.38-17.63Q740-415.25 740-440v-280h80q24.75 0 42.38 17.62Q880-684.75 880-660v579ZM140-425l75-75h405v-320H140v395ZM80-280v-540q0-24.75 17.63-42.38Q115.25-880 140-880h480q24.75 0 42.38 17.62Q680-844.75 680-820v320q0 24.75-17.62 42.37Q644.75-440 620-440H240L80-280Zm60-220v-320 320Z","groups":"M0-240v-53q0-38.57 41.5-62.78Q83-380 150.38-380q12.16 0 23.39.5t22.23 2.15q-8 17.35-12 35.17-4 17.81-4 37.18v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Zm540 0v-65q0-19.86-3.5-37.43T765-377.27q11-1.73 22.17-2.23 11.17-.5 22.83-.5 67.5 0 108.75 23.77T960-293v53H780Zm-480-60h360v-6q0-37-50.5-60.5T480-390q-79 0-129.5 23.5T300-305v5ZM149.57-410q-28.57 0-49.07-20.56Q80-451.13 80-480q0-29 20.56-49.5Q121.13-550 150-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T149.57-410Zm660 0q-28.57 0-49.07-20.56Q740-451.13 740-480q0-29 20.56-49.5Q781.13-550 810-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T809.57-410ZM480-480q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T600-600q0 50-34.5 85T480-480Zm.35-60Q506-540 523-557.35t17-43Q540-626 522.85-643t-42.5-17q-25.35 0-42.85 17.15t-17.5 42.5q0 25.35 17.35 42.85t43 17.5ZM480-300Zm0-300Z","monitoring":"M120-120v-76l60-60v136h-60Zm165 0v-236l60-60v296h-60Zm165 0v-296l60 61v235h-60Zm165 0v-235l60-60v295h-60Zm165 0v-396l60-60v456h-60ZM120-356v-85l280-278 160 160 280-281v85L560-474 400-634 120-356Z","psychology":"M240-80v-172q-57-52-88.5-121.5T120-520q0-150 105-255t255-105q125 0 221.5 73.5T827-615l55 218q4 14-5 25.5T853-360h-93v140q0 24.75-17.62 42.37Q724.75-160 700-160H600v80h-60v-140h160v-200h114l-45-180q-24-97-105-158.5T480-820q-125 0-212.5 86.5T180-522.46q0 64.42 26.32 122.39Q232.65-342.09 281-297l19 18v199h-60Zm257-370Zm-48 76h60l3-44q12-2 22.47-8.46Q544.94-432.92 553-441l42 14 28-48-30-24q5-14 5-29t-5-29l30-24-28-48-42 14q-8.33-7.69-19.17-13.85Q523-635 512-638l-3-44h-60l-3 44q-11 3-21.83 9.15Q413.33-622.69 405-615l-42-14-28 48 30 24q-5 14-5 29t5 29l-30 24 28 48 42-14q8.06 8.08 18.53 14.54Q434-420 446-418l3 44Zm-19.5-104.38q-20.5-20.38-20.5-49.5t20.38-49.62q20.38-20.5 49.5-20.5t49.62 20.38q20.5 20.38 20.5 49.5t-20.38 49.62q-20.38 20.5-49.5 20.5t-49.62-20.38Z","school":"M479-120 189-279v-240L40-600l439-240 441 240v317h-60v-282l-91 46v240L479-120Zm0-308 315-172-315-169-313 169 313 172Zm0 240 230-127v-168L479-360 249-485v170l230 127Zm1-240Zm-1 74Zm0 0Z","speed":"M473.5-303.5Q517-305 537-336l216-339-335 219q-30 20-32 64t21 67q23 23 66.5 21.5ZM478-799q57 0 119 18.5T716-717l-52 37q-45-30-96.5-44.5T477.98-739q-140.47 0-239.23 100.22Q140-538.57 140-396.02 140-351 152.5-305q12.5 46 35.5 85h579q22-36 35-84t13-94q0-42-12.5-90.5T758-578l39-52q38 56 57 112.5T875-404q2 60-12 113t-41 98q-12 23-25.5 28t-33.5 5H192q-17 0-33.5-8.5T134-193q-26-48-40-97.5T80-396q0-83 31.5-156.5t85.5-128Q251-735 323.68-767T478-799Zm-9 331Z","supervisor_account":"M617.5-408.5Q590-436 590-475t27.5-66.5Q645-569 684-569t66.5 27.5Q778-514 778-475t-27.5 66.5Q723-381 684-381t-66.5-27.5ZM488-160v-51q0-26 11-44.5t31-28.5q37-19 75-28t79-9q41 0 79 8.5t75 28.5q20 9 31 28t11 45v51H488ZM292-523q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42Zm108-108ZM80-160v-94q0-34 17-62.5t51-43.5q67-30 128.5-45T400-420q32 0 57 3t54 9l-25.5 25.5L460-357q-13-2-28-2.5t-32-.5q-57 0-111 11.5T172-306q-14 7-23 22t-9 30v34h288v60H80Zm348-60Zm36.5-346.5Q490-592 490-631t-25.5-64.5Q439-721 400-721t-64.5 25.5Q310-670 310-631t25.5 64.5Q361-541 400-541t64.5-25.5Z","track_changes":"M324-111.5Q251-143 197-197t-85.5-127Q80-397 80-480t31.5-156Q143-709 197-763t127-85.5Q397-880 480-880h30v326q22 9 36 29t14 45q0 33-23.5 56.5T480-400q-33 0-56.5-23.5T400-480q0-25 14-45t36-29v-104q-65 11-107.5 60.5T300-480q0 75 52.5 127.5T480-300q75 0 127.5-52.5T660-480q0-41-16-75t-44-59l43-43q35 33 56 78.5t21 98.5q0 100-70 170t-170 70q-100 0-170-70t-70-170q0-93 60-160.5T450-719v-100q-131 11-220.5 108T140-480q0 142 99 241t241 99q142 0 241-99t99-241q0-74-28.5-137T713-727l43-43q57 55 90.5 129.5T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80q-83 0-156-31.5Z","update":"M483-120q-75 0-141-28.5T226.5-226q-49.5-49-78-115T120-482q0-75 28.5-140t78-113.5Q276-784 342-812t141-28q80 0 151.5 35T758-709v-106h60v208H609v-60h105q-44-51-103.5-82T483-780q-125 0-214 85.5T180-485q0 127 88 216t215 89q125 0 211-88t86-213h60q0 150-104 255.5T483-120Zm122-197L451-469v-214h60v189l137 134-43 43Z","verified":"m346-60-76-130-151-31 17-147-96-112 96-111-17-147 151-31 76-131 134 62 134-62 77 131 150 31-17 147 96 111-96 112 17 147-150 31-77 130-134-62-134 62Zm27-79 107-45 110 45 67-100 117-30-12-119 81-92-81-94 12-119-117-28-69-100-108 45-110-45-67 100-117 28 12 119-81 94 81 92-12 121 117 28 70 100Zm107-341Zm-43 133 227-225-45-41-182 180-95-99-46 45 141 140Z","work":"M140-120q-24 0-42-18t-18-42v-480q0-24 18-42t42-18h180v-100q0-24 18-42t42-18h200q24 0 42 18t18 42v100h180q24 0 42 18t18 42v480q0 24-18 42t-42 18H140Zm0-60h680v-480H140v480Zm240-540h200v-100H380v100ZM140-180v-480 480Z"}, M={"mission & vision":"flag","metrics & objectives":"track_changes","performance tracking":"monitoring","performance dialogues":"forum","consequences & recognition":"verified","mission & target condition":"flag","roles & skills":"badge","objectives & development plans":"school","skill building & review":"psychology","existence & design":"description","adoption & usage":"checklist","deviation management":"alt_route","maintenance & update":"update","work & role":"work","team & atmosphere":"groups","workload":"speed","enablement":"build","leadership":"supervisor_account"}, SEL='.cnm,.dgrp';
+  function dec(){var n=0,els=document.querySelectorAll(SEL);for(var i=0;i<els.length;i++){var e=els[i];
+    if(e.querySelector('svg.ic'))continue;var t='';for(var j=0;j<e.childNodes.length;j++){if(e.childNodes[j].nodeType===3)t+=e.childNodes[j].textContent;}
+    var k=M[t.trim().toLowerCase()];if(!k||!I[k])continue;
+    e.insertAdjacentHTML('afterbegin','<svg class="ic" viewBox="0 -960 960 960" aria-hidden="true"><path d="'+I[k]+'"/></svg>');n++;}
+    /* an icon can move a line: let every fit measure again */
+    if(n)requestAnimationFrame(function(){window.dispatchEvent(new Event('resize'));});}
+  function start(){dec();new MutationObserver(dec).observe(document.body,{childList:true,subtree:true});}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+</script>
+<style id="nr-topbar">
+  /* patch_topbar.py: one theme button and the way home. See the script of the same
+     name at the end of the body. The doubled id outranks the stacked-chrome rules. */
+  :is(#theme,#tseg):is(#theme,#tseg).seg{padding:3px}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button.on{display:none}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button{font-size:0;line-height:0;width:34px;height:28px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button::before{content:"";width:16px;height:16px;background:currentColor;-webkit-mask:var(--nr-ico) center/16px 16px no-repeat;mask:var(--nr-ico) center/16px 16px no-repeat}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button[data-s="dark"]{--nr-ico:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M12%203a6%206%200%200%200%209%209a9%209%200%201%201-9-9z'/%3E%3C/svg%3E")}
+  :is(#theme,#tseg):is(#theme,#tseg).seg>button[data-s="light"]{--nr-ico:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Ccircle%20cx='12'%20cy='12'%20r='4'/%3E%3Cpath%20d='M12%202v2M12%2020v2M4.9%204.9l1.4%201.4M17.7%2017.7l1.4%201.4M2%2012h2M20%2012h2M4.9%2019.1l1.4-1.4M17.7%206.3l1.4-1.4'/%3E%3C/svg%3E")}
+  .nr-crumb{display:inline-flex;align-items:center;gap:8px}
+  .nr-crumb>.nr-track{background:transparent!important;padding:0!important;border-radius:0!important;color:inherit!important;margin:0!important}
+  .nr-crumb .nr-home{color:inherit;opacity:.6;text-decoration:none;text-transform:uppercase;white-space:nowrap}
+  .nr-crumb .nr-home:hover{opacity:1;text-decoration:underline}
+  .nr-crumb .nr-sep{opacity:.4}
+</style>
+</head>
+<body>
+<div id="art" data-t="light">
+  <div class="nr-rail"></div>
+  <div class="toprow">
+    <div class="tags">
+      <div class="nr-pill"><img alt="Nova Reperta" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEkAAAAvCAYAAACv3uebAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFxEAABcRAcom8z8AAAzdSURBVGhD7VoL9KVTFfdINXlNBnmOZzRUXolMnomIjEYpkhiP8mZFHsWEVnqoaJWKUIkQSS9KL1lSxptVaDBFXiPTPN3v27/faf0+e1/7nvmPaVXKX/Zad917z9lnn/Pt75z9+O2zwAIvYCqlvIbkBAAXm9ldZvYYgEcB3A7g2yT3Jvnqetz/BZHcEsAlAP5e5kNm9gSAC0huUst5QVIp5RUATgUws1LE/QCuA/AjfczsegBTMg+AJ0keX0p5aS33BUOllFcCuKh68O+b2ftIrlHzk1zLzPYG8JNqzNdLKYvV/MOe9PYBXJge9H4z2+Of2RUkR5jZvmb21zT+nFLKwjXvsKZSysR4QDO7heS6qW9hktuR/CiALwI408yOJ7l1KWXB4GuaZiMAdyU5R/UnGO5EclMA0/3B/iSPlvpkwK8GMCsePkhjAPwgG+xSihT1F5c1leTr+hMNVyqlLBLHDEBLcrfoI/leAE9UinkwHyuRmT3Stu0uMU5HL/Gf059suFIpZf3wZAC+V0pZSO1t224DYEZ6WLn4t5Ic0+v11iW5I4BLk6KebJpmY42dNGmSFH+Ntz9KcqV63mFFJI9yJTRt23a7iOSicvHRTvKIepxICpXLNzM478/C0JPcC0DXbma712OHFfnu0QPeS3IZtZEcHw8I4MvBS3J5M9vfzPYJXpdxgfMaye2dd42Io4b1kZM9MrM/+oNcHe0AzvA2Rdvrq02pB4Cb0/G6Po6RDDeAno85zWUvBOBa5705TTu8SMGjmXVeTXmYt71ECvO2W0spI9UeissEYKKPWRrAHd52YcgHcLnaZJcUH7wxzT1AJF9FcjOSY0muWff/L8kj7CvM7KaIaUi+DMBnAdwE4PNhY+JYVko6z+WMBPBbb7ss5AP4jrf9TX8ebtt2hzR/n0opByShF9T9w4VI7pMV5PQu9c2ePXtlAA+pIdsf5XhqM7MHpIju/ErQgOSnhe8fEgF8s+5/vhDJJbTT58yZswbJ1Uopq/r36mr3o3mimd2ngJPkhyPtIPn+eEYzO9LbFg8bJq/XKcn/NKWUY3OoTnK/1P+NvDBtZZI7k/wYgNNJfoTkFql/W5KHkDy4TjB7vd6G3n5wKWW02jyHejeAUwB8spQyTm+Z5J7Ot1GWkYnkYSZfDswBMNvM+h95OpI7Od8IHck0bhUzu8ef77HAlpqmeVOCWSb2lRSkB5YBdCFDKklvSCG95q/GKtSXkVQM8sHU3jeIbjd+qXYP/VeYNWvWSgB+mGV5/+9jDikuZNRE8oR6bCaFBZlfG0G21sxuDB69nOgHcHIaO3YuJYk8Ql1UoX1q65TkmM0vUvujpZRJOT8KV5qCOkW/nTtu2/btSiHUbmaHasEymGmsUolJZjaQb5E8KT3nAGnXCuJQ8qrjYWYDL4/kO8WnpJbkcQLkzKyPObn96TyhdheAP6tdyXIHmyTGbuHp/0W+9eNNdkoys/4Z1oL86Ixq23Y7AN3WNbNpsglt2+6UeM/U+FAIgD88/vjjizdNs0Wa4wYlrHLLTdMoOe3HNs+mpCAFiQB+HmPS2E5JpZTz6z49p7x4yADQ59FL7BoT8z3aZmb2eGLSGR9QUopQZ5Fc75klDnrDcAQAfu38U8zs4MjYZUfUT/JE75dNHJflKSWIlzc/JfkO+F1a+xQAT/nYTkkAPiebBeABAD8l+Z7I91yGkMkYf51OU9cRjQAmS6N6g3J70Z76Q0nhGh/T0Xtmmd0kmwe/PIi37eYK0Jhui3ukPBDoAZgLmtAuFazq8uapJO1a2a+01vOUf5nZgJJIrt22rRLdtarxI/zUmI9/mOQb+gxJ8P0yyGprmkah+m3R5/2hpK/4/6fatt06zaXJjgt+HUuXryi4M9RB8nppTGd0tUAz27OSt28sfF5KktHXWw/ZAK6Uc5CdSlN2MVFNpZSXkxRicFUwKopv23bA0A8oKUfV+m1m3VHx/k5JJHdIAm/zMGCMPKEbcfE+qO2fZO2cju3t06dPXzrNv1UcKdkpZfMk1yG5h3Z3zDWUkhQXmdlvggfAj8O+NE2zuSJpt2tb+Vyr63fbtrua2bFeFOiSYR8/WY6lnicraUqdepBcSp7A+zs3riAsG0AdpYhYg0genuU4OCYoQn0HDdEn8D3kKd4ZAMaculwrjVu48opX5eze47hRJJdN6cmnZRO1ZbNgt1MX6jjmOfqUGPX25yrUucs/1xHAzsh5vvMF1ayqySab2YCCgmSbHH9eaoi+UQDOUvCXZM1QLJaS2JOHGLeTHI12k+Ktur8m2aq8XkXgAL7Vtu2ONe8AlVLeLCxYhmpe1QV/K+ofqCD0er3Xy0OQ/JCMY9i0ocjjrjE5oq9JybZXVScowlZ60DTNpo4q9o9vpqZplIAP2VcTybcpQ/B0a1sd15rnBU/a6Tq+2a3/R0hnufqouiAIQp5quZr/+Uwkj1YwKZhjqGP9L1M+ozUBuLGOKZ7PpIsRvu7p2Yj/25QUouj6BjOT25yT2i+vx7h92cQz/bmMvUMXq4QxFVQhuyf7p981fyaHOd6iBLSUsmTVJ8+6nGRHnwODG+q3HIyv+RG3aSv4OkZUckY6kLjltGnTuh0nDNx5l8i8MSCUMaXX662nyVUiDk/jkXCnCBldr5/f5t5H7l/XWeQ+VwuZJA+VGwdwZynlNDO7U6Ufd78C7Y8IpCGNWcGT1Edc7iwAdztMEtjP8gpMXfZnBOpr3Xq5jkuf7WsW6YqN+B4h2cU+mtPMDjGzux2x0Jru8Gj7FvGrApPX1VFS0n3pzWvCe719RgcXPL3I/SLGUHBoZn9L42+KQE4eJNrnRQLB0hqWLqX8KvqUiphZl8qIoixEcsVYl5k9lKoiCjr7ShqCuohbmFfdUVOGTPqUOh8g+VpBA4p6IxHVThIwNmPGjGUjyPMoVtt5WeHLdRLq4F1HniSf5m78pBT3CA3tjkmkM56CTPQjNAZAF0171XW0B7fanbHmVjyOgUlJuuig9ieUu7nLFxKh47VOVHTNTKfg47ojAOATCiZD5lCRfVaSkLxr5R0kJLVf6g+ijDnaztIDSlFt224bpWPlUM7bf2PK8vN8UVD0vsM9t+vgDclp2/YdurzQ6/U2UNaeePWwi4WSZDcjPwyKYFGBcW3PdMySrGOqvv7Of1Yl1eTpgepTnT1SCSb6zGwAewrSkXXU72j/P5PkQDWm1+upNN1BowA+pV2jq3r+XztjADALInmgjGoq/1yT5YqSkpQmDYQvsmHqMzPNPQAFK1CONT2rktxQyniFzZmdqygZInU+gXJX+Odi4UwBscZOcqRgIOT3mx6xvaX4kWZ2u/PLmF6p3etyL1NNzYExRdZKX0JJ52a5osgpPcUalft0rLxvpuCg3CdvGsjq/JQ0Wd6tugx1WQDnOt+pXZcNFqnkrBptGTLxxHNF2Yzp06cLOewnpVFnT+VqwRS7Zrkebqzsv4WFx3Hr6maZAHzVRQsZ7ZzN1KlTl/Bq7+4xbynlEq1Fa5o5c+ZyeiHRMT8lCSpZxkvCfa8lQF98WmyGRh2kl/HT5ajL/QZGF3hmJYkc9dQN2G4XeNvN4Q119SV2sIA5wTLajV5olLs+2+XKu8VFq/OrR1G/bFxHCjWkSDO71W+9LSkPnPoVlugEdKXyoPkpSfFEB5XIPUe7zjDJDXwRwpj6+E0mDw26BDd5K0EQc8EefsFhs7wOufl53ZYF8DXn0U7SRS21daXtSoYKjf3bakHxopumGSvl1f26o5TMzKm1XG3Rc/TmFPTFm/US8ulqVx6keljwezQtgO27UpgqJwC+5NfrohQVSlL4ME7ewz2neE+ZF1pAcmPfPdfIU+piqJSnIFL9vq6TPTebq5gqEiaka3+aT6ChfssUpP7V/IauvLjWpNMw1ue9QN51UOJzROm4yTYMFAteJKdKSd0NshepogTuK6Xp4iQFggHq+W9VeeV5hAEJkNdx7R9DbwvP2pWnhZKqXd5KpWgH8UY6r0riXQlI/QLskiyNW1KBrwOFgnTVtqDmFNin4kftsZ9TivqVpx7dThLA7pcTFjOzE9y176rCghZNcnev+8eNtQ3M7DBXkL7XFojvCOhoL5KO83F7tW27fUqEJftQH6P0SfcOdlHhU/clfR6hAOuZmZDV/aT0+jmeU9IDqmxUSvmAFKA2r9TKSE4ws2N011oGXS7Xqy0TVMrRFWOP2tdUAKiykmp4nv4c7jI2l8fSTVmvxJzhChihHeNKUt+RrmB99tU6tJNcueP9auDGLmcd35UD6cx/lYQ/6ejJjXtNfrwXCrcxMylTO2G0AkLn0fER9r6SH62DtJMc8xZ8IixLl9jHS6GCQzzNOdCPsPolR1dwtAO3VzLucoQ6rO/lMSW/Rygz8IsSB9Rr/wcS5txQy6GnOwAAAABJRU5ErkJggg=="><b id="ctx">OPEX QUICKSCAN</b></div>
+      <div class="nr-track" id="lens">INSTRUMENT</div>
+      
+    </div>
+    <div class="ctrls">
+      <div class="seg" id="views"></div>
+      <div class="seg" id="theme"><button data-s="light" class="on">Light</button><button data-s="dark">Dark</button></div>
+    </div>
+  </div>
+  <h1 id="title"></h1>
+  <div class="subrow"><div class="subt" id="subt"></div></div>
+  <div id="view"><div id="vinner"></div></div>
+  <div id="ft">
+    <div class="l"><span id="src"></span><div class="legend" id="lg"></div></div>
+    <span class="conf">Sample data · Northwind Assurance is fictional</span>
+  </div>
+  
+</div>
+<!-- NRSRC:BEGIN - the sources panel (operating-baseline/assets/source-panel.html, filled by
+     scripts/source_panel.py). The same block in every instrument and slide: a small (i) next to a
+     score or figure opens what it rests on. Do not edit a copy in a page: change this file and render
+     again. -->
+<style>
+  .nrsrc-i{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;flex:none;border-radius:50%;border:1px solid var(--mut,#7A838F);background:none;color:var(--mut,#7A838F);font:italic 700 10px/1 Georgia,"Times New Roman",serif;padding:0;margin:0 0 0 5px;cursor:pointer;vertical-align:1px}
+  /* the (i) is faint at rest and full where you point; it always keeps its place, so nothing moves */
+  .nrsrc-i{opacity:.38;transition:opacity .18s ease,background-color .15s,color .15s}
+  .nrsrc-row:hover .nrsrc-i,.nrsrc-i:hover,.nrsrc-i:focus-visible,.nrsrc-i[aria-expanded="true"],.nrsrc-i.miss{opacity:1}
+  @media (hover:none){.nrsrc-i{opacity:.75}}
+  .nrsrc-i:hover,.nrsrc-i[aria-expanded="true"]{background:var(--navy,#0B2347);border-color:var(--navy,#0B2347);color:#fff}
+  .nrsrc-i.miss{border:1px dashed var(--rag-red-text,#C2483D);color:var(--rag-red-text,#C2483D);font-style:normal}
+  .nrsrc-i:focus-visible{outline:2px solid var(--accent,#6EB1D1);outline-offset:2px}
+  .nrsrc-pop{position:fixed;z-index:1200;width:360px;max-width:calc(100vw - 24px);max-height:calc(100vh - 24px);overflow:auto;background:var(--card,#fff);color:var(--txt,#46505C);border:1px solid var(--line,#E1E6EE);border-radius:16px;box-shadow:0 12px 34px rgba(11,35,71,.20);font:400 13px/1.45 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;text-align:left;display:none}
+  .nrsrc-pop.on{display:block;animation:nrsrcOpen .26s cubic-bezier(.2,.9,.25,1.15)}
+  @keyframes nrsrcOpen{from{opacity:0;transform:scale(.95) translateY(-4px)}to{opacity:1;transform:none}}
+  .nrsrc-hx{position:relative;padding:12px 40px 10px 16px;border-bottom:1px solid rgba(120,135,155,.25)}
+  .nrsrc-ey{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13.5px;font-weight:700;color:var(--ink,#15243A)}
+  .nrsrc-sc{font-size:12px;font-weight:700;letter-spacing:0;text-transform:none;border-radius:8px;padding:0 8px;white-space:nowrap}
+  .nrsrc-x{position:absolute;top:8px;right:10px;width:24px;height:24px;border:0;background:none;color:var(--mut,#7A838F);font-size:17px;line-height:1;cursor:pointer;border-radius:6px}
+  .nrsrc-bd{padding:12px 16px 14px}
+  .nrsrc-sum{margin:0 0 12px}
+  .nrsrc-qt{background:rgba(255,255,255,.45);box-shadow:inset 0 0 0 .5px rgba(120,135,155,.25);border-radius:10px;padding:10px 12px;margin:0 0 12px}
+  [data-t="dark"] .nrsrc-qt,[data-t="dark"] .nrsrc-how{background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.1)}
+  .nrsrc-qt p{margin:0;color:var(--ink,#15243A);font-size:14px;line-height:1.45}
+  .nrsrc-by{margin-top:4px;font-size:12px;color:var(--mut,#7A838F)}
+  .nrsrc-how{background:rgba(255,255,255,.45);box-shadow:inset 0 0 0 .5px rgba(120,135,155,.25);border-radius:10px;padding:9px 12px;margin:0 0 12px;color:var(--ink,#15243A)}
+  .nrsrc-how b,.nrsrc-gh{display:block;font-size:var(--fs-11);font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mut,#7A838F);margin-bottom:3px}
+  .nrsrc-g{margin:0 0 10px}.nrsrc-g:last-child{margin-bottom:0}
+  .nrsrc-it{padding:2px 0 2px 12px;color:var(--ink,#15243A)}
+  .nrsrc-d{color:var(--mut,#7A838F);font-size:12px}
+  .nrsrc-id{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:var(--fs-11);color:var(--mut,#7A838F)}
+  .nrsrc-it a,.nrsrc-how a{color:var(--accent-text,#1F5FA8);font-size:12px;text-decoration:none}
+  .nrsrc-o{display:inline-block;font-size:var(--fs-105);font-weight:650;border-radius:10px;padding:0 7px;margin-left:4px;vertical-align:1px}
+  .nrsrc-o.thirdparty{color:#0E6B66;background:#DFF2F0}.nrsrc-o.internet{color:#8A5A00;background:#FBF0DA}
+  [data-t="dark"] .nrsrc-o.thirdparty{color:#7FD4CB;background:#163330}[data-t="dark"] .nrsrc-o.internet{color:#F0C56E;background:#3A2E15}
+  [data-t="dark"] .nrsrc-it a,[data-t="dark"] .nrsrc-how a{color:#9CC4F2}
+  .nrsrc-ft{border-top:1px solid var(--line,#E1E6EE);margin-top:10px;padding-top:8px;font-size:12px;color:var(--mut,#7A838F)}
+  .nrsrc-warn{color:var(--rag-red-text,#C2483D);font-size:12.5px}
+  .nrsrc-pick .chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+  .nrsrc-pick .chip{display:inline-flex;align-items:center;gap:5px;font-size:var(--fs-115);background:var(--slate-10,rgba(54,65,86,.08));color:var(--ink,#15243A);border-radius:8px;padding:2px 4px 2px 8px}
+  .nrsrc-pick .chip button{border:0;background:none;color:var(--mut,#7A838F);cursor:pointer;font-size:14px;line-height:1;padding:0 3px}
+  .nrsrc-hint{position:fixed;z-index:1201;display:flex;align-items:center;gap:10px;max-width:min(420px,calc(100vw - 24px));padding:9px 10px 9px 14px;border-radius:14px;
+    font:500 13px/1.4 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;color:var(--ink,#15243A);background:var(--card,#fff);box-shadow:0 14px 34px -10px rgba(11,35,71,.28);
+    opacity:0;transform:translateY(6px) scale(.97);transition:opacity .28s ease,transform .32s cubic-bezier(.2,.9,.25,1.15);pointer-events:none}
+  .nrsrc-hint.on{opacity:1;transform:none;pointer-events:auto}
+  .nrsrc-hint .nrsrc-ic{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;margin:0 1px;vertical-align:-2px;border-radius:50%;border:1px solid currentColor;font:italic 700 10px/1 Georgia,serif}
+  .nrsrc-hint button{border:0;background:none;color:var(--mut,#7A838F);font-size:16px;line-height:1;cursor:pointer;padding:2px 4px;border-radius:6px}
+  @media (prefers-reduced-motion:reduce){.nrsrc-pop.on{animation:none}.nrsrc-hint{transition:opacity .2s}}
+  .nrsrc-print{display:none}
+  @media print{
+    .nrsrc-i,.nrsrc-pop,.nrsrc-hint{display:none!important}
+    .nrsrc-print{display:block;break-before:page;page-break-before:always;padding:24px 32px;font:12px/1.5 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;color:#15243A}
+    .nrsrc-print h2{font-size:16px;margin:0 0 10px}.nrsrc-print h3{font-size:var(--fs-11);text-transform:uppercase;letter-spacing:.05em;color:#7A838F;margin:12px 0 4px}
+    .nrsrc-print ol{margin:0;padding-left:22px}
+  }
+</style>
+<script>
+(function(){
+  var GROUPS=[['interviews','Interviews'],['observations','Observations'],['documents','Documents'],['data','Data'],['external','External sources'],['internal','Internal discussions']];
+  var NOUN={interviews:['interview','interviews'],observations:['observation','observations'],documents:['document','documents'],data:['data extract','data extracts'],external:['external source','external sources']};
+  var SPECS={}, pop=null, cur=null;
+  function P(){ try{ return (typeof DATA!=='undefined'&&DATA&&DATA.sourcePanel)||null; }catch(e){ return null; } }
+  function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function low(t){ t=String(t||''); return /^[A-Z][a-z]*(?=[\s,.;:-]|$)/.test(t)?t.charAt(0).toLowerCase()+t.slice(1):t; }   /* EventHub stays EventHub */
+  function plain(t){ return String(t||'').replace(/\*\*/g,'').replace(/<[^>]+>/g,''); }
+  function working(){ var p=P(); return !!(p&&p.build==='working'); }
+  function root(){ return document.querySelector('#art,#pm,#pw')||document.body; }
+  function href(e){ var p=P(); if(e.url) return e.url; if(e.file&&p&&p.rootRel!=null) return (p.rootRel?p.rootRel+'/':'')+e.file.split('/').map(encodeURIComponent).join('/'); return ''; }
+  function badge(s){ if(s.badge==null&&s.score==null) return '';
+    var r=s.rag||'na', txt=s.badge!=null?s.badge:(s.score+' out of 5');
+    return '<span class="nrsrc-sc" style="color:var(--rag-'+r+'-text);background:var(--tint-'+r+')">'+esc(txt)+'</span>'; }
+  /* every source an item rests on: an analysis gives its method and what it was built from */
+  function expand(ids){ var p=P(), S=p.src, pool=[], how=[], seen={};
+    (function walk(list,top){ (list||[]).forEach(function(k){ var e=S[k]; if(!e||seen[k]) return; seen[k]=1;
+      if(e.group==='analysis'){ how.push({k:k,e:e}); walk(e.builtFrom,false); } else pool.push({k:k,e:e}); }); })(ids,true);
+    return {pool:pool,how:how}; }
+  function summary(pool){ var n={}, one={}; pool.forEach(function(x){ var g=x.e.group; if(g==='internal') return; n[g]=(n[g]||0)+1; one[g]=x.e; });
+    var parts=[]; ['interviews','observations','documents','data','external'].forEach(function(g){ if(!n[g]) return;
+      if(n[g]===1&&(g==='documents'||g==='data')) parts.push('the '+low(one[g].label)); else parts.push(n[g]+' '+NOUN[g][n[g]===1?0:1]); });
+    if(!parts.length) return '';
+    return 'Based on '+(parts.length>1?parts.slice(0,-1).join(', ')+' and '+parts[parts.length-1]:parts[0])+'.'; }
+  function who(e){ var w=working(); if(w&&e.people&&e.label.indexOf(e.people.split(/[;,]/)[0].trim())<0) return e.people; return ''; }
+  function item(x){ var e=x.e, w=working(), h=w?href(e):(e.url||'');
+    return '<div class="nrsrc-it">'+esc(e.label)+(who(e)?' <span class="nrsrc-d">· '+esc(who(e))+'</span>':'')+(e.date?' <span class="nrsrc-d">· '+esc(e.date)+'</span>':'')+
+      (w&&e.group==='external'&&e.origins&&e.origins.length?e.origins.map(function(o){return o==='thirdparty'||o==='internet'?'<span class="nrsrc-o '+o+'">'+(o==='thirdparty'?'Third party':'Internet')+'</span>':'';}).join(''):'')+
+      (w?' <span class="nrsrc-id">'+esc(x.k)+'</span>':'')+(h?' <a href="'+esc(h)+'" target="_blank" rel="noopener">open</a>':'')+'</div>'; }
+  function body(s){ var p=P(), w=working(), ids=s.ids||[], h='';
+    h+='<div class="nrsrc-hx"><div class="nrsrc-ey"><span>'+esc(s.eyebrow||'')+'</span>'+badge(s)+'</div>'+
+       '<button type="button" class="nrsrc-x" aria-label="Close">&times;</button></div><div class="nrsrc-bd">';
+    if(!ids.length){ return h+'<div class="nrsrc-warn">No source yet. Unlock the page and pick one where you score it. Without a source this score cannot go into the client build.</div></div>'; }
+    var x=expand(ids), sm=summary(x.pool);
+    if(sm) h+='<p class="nrsrc-sum">'+esc(sm)+'</p>';
+    x.how.forEach(function(a){ var e=a.e; h+='<div class="nrsrc-how"><b>Method</b>'+esc(e.method||e.label)+(w?' <span class="nrsrc-id">'+esc(a.k)+'</span>'+(href(e)?' <a href="'+esc(href(e))+'" target="_blank" rel="noopener">open</a>':''):'')+'</div>'; });
+    var q=s.quote; if(q&&q.text&&(!q.sourceId||p.src[q.sourceId])){ var qe=p.src[q.sourceId]||{};
+      var by=w?[qe.label||'',who(qe)].filter(Boolean).join(' · '):(qe.label||'');
+      h+='<div class="nrsrc-qt"><p>“'+esc(String(q.text).replace(/^[“"]|[”"]$/g,''))+'”</p>'+(by||qe.date?'<div class="nrsrc-by">'+esc([by,qe.date].filter(Boolean).join(' · '))+'</div>':'')+'</div>'; }
+    GROUPS.forEach(function(g){ if(g[0]==='internal'&&!w) return; var its=x.pool.filter(function(y){return y.e.group===g[0];}); if(!its.length) return;
+      h+='<div class="nrsrc-g"><span class="nrsrc-gh">'+g[1]+'</span>'+its.map(item).join('')+'</div>'; });
+    if(!w&&(s.scoredBy||p.scoredBy)) h+='<div class="nrsrc-ft">'+esc(s.scoredBy||p.scoredBy)+'</div>';
+    return h+'</div>'; }
+  function spec(k){ var f=SPECS[k]; return typeof f==='function'?f():f; }
+  function close(){ if(pop) pop.classList.remove('on'); if(cur) cur.setAttribute('aria-expanded','false'); cur=null; }
+  function open(btn){ var s=spec(btn.getAttribute('data-nrsrc')); if(!s) return;
+    if(!pop||!pop.isConnected){ pop=document.createElement('div'); pop.className='nrsrc-pop'; pop.setAttribute('role','dialog'); pop.setAttribute('aria-label','Sources'); root().appendChild(pop); }
+    close(); cur=btn; btn.setAttribute('aria-expanded','true'); pop.innerHTML=body(s); pop.classList.add('on');
+    var r=btn.getBoundingClientRect(), W=window.innerWidth, H=window.innerHeight, pw=pop.offsetWidth, ph=pop.offsetHeight;
+    var x=Math.min(Math.max(12,r.left+r.width/2-pw/2),W-pw-12), y=r.bottom+8;
+    if(y+ph>H-12){ y=r.top-ph-8; if(y<12) y=Math.max(12,H-ph-12); }
+    pop.style.left=x+'px'; pop.style.top=y+'px'; var c=pop.querySelector('.nrsrc-x'); if(c) c.focus({preventScroll:true}); }
+  document.addEventListener('click',function(ev){ var b=ev.target.closest&&ev.target.closest('.nrsrc-i');
+    if(b){ ev.preventDefault(); ev.stopPropagation(); if(cur===b){ close(); return; } open(b); return; }
+    if(pop&&pop.classList.contains('on')&&(ev.target.closest('.nrsrc-x')||!ev.target.closest('.nrsrc-pop'))){ var back=cur; close(); if(back&&ev.target.closest('.nrsrc-x')) back.focus(); } },true);
+  document.addEventListener('keydown',function(ev){ if(ev.key==='Escape'&&cur){ var back=cur; close(); back.focus(); } });
+  window.addEventListener('resize',close);
+  function printList(){ var p=P(); if(!p||p.build!=='client'||document.querySelector('.nrsrc-print')) return;
+    var keys=Object.keys(p.src); if(!keys.length) return; var h='<h2>Sources</h2>';
+    GROUPS.concat([['analysis','Analyses']]).forEach(function(g){ var ks=keys.filter(function(k){return p.src[k].group===g[0];}); if(!ks.length) return;
+      h+='<h3>'+g[1]+'</h3><ol>'+ks.map(function(k){var e=p.src[k];return '<li>'+esc(e.label)+(e.date?', '+esc(e.date):'')+(e.method?'. '+esc(e.method):'')+'</li>';}).join('')+'</ol>'; });
+    if(p.scoredBy) h+='<p>'+esc(p.scoredBy)+'</p>';
+    var d=document.createElement('section'); d.className='nrsrc-print'; d.innerHTML=h; document.body.appendChild(d); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',printList); else setTimeout(printList,0);
+  /* every page: an (i) on its Source line for everything the page cites, when the page draws none itself */
+  function allIds(){ var p=P(), o=[], seen=[]; if(!p) return o; (function w(x,d){ if(!x||typeof x!=='object'||d>40||seen.indexOf(x)>=0) return; seen.push(x);
+      if(Array.isArray(x)){ x.forEach(function(y){ w(y,d+1); }); return; }
+      for(var k in x){ if(k==='sourcePanel'||k.slice(0,2)==='__'||!Object.prototype.hasOwnProperty.call(x,k)) continue; var v=x[k];
+        if(k==='sourceIds'||k==='sourceId'||k==='source_ids'||k==='source_id'){ (Array.isArray(v)?v:[v]).forEach(function(i){ if(typeof i==='string'&&p.src[i]&&o.indexOf(i)<0) o.push(i); }); }
+        else w(v,d+1); } })(typeof DATA!=='undefined'?DATA:null,0); return o; }
+  function autoSrc(){ var p=P(), el=document.getElementById('src'); if(!p||!el||document.querySelector('.nrsrc-i[data-nrsrc="slide"]:not([data-nrsrc-auto])')) return;
+    if(!allIds().length||el.querySelector('[data-nrsrc-auto]')) return;
+    if(el.parentNode&&el.parentNode.classList) el.parentNode.classList.add('nrsrc-row');
+    el.insertAdjacentHTML('beforeend', NRSRC.icon('slide', function(){ return {eyebrow:'All sources on this page', ids:allIds()}; }).replace('<button ','<button data-nrsrc-auto ')); }
+  function watchSrc(){ autoSrc(); var el=document.getElementById('src'); if(el&&window.MutationObserver) new MutationObserver(function(){ if(!el.querySelector('.nrsrc-i')) autoSrc(); }).observe(el,{childList:true}); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',watchSrc); else setTimeout(watchSrc,0);
+  /* the hint, once per viewer: a client does not go looking for an (i) by pointing around */
+  var HINT='nr-src-hint-seen';
+  /* the first one on screen (a deck shows one slide at a time) */
+  function vis(sel){ var l=document.querySelectorAll(sel); for(var i=0;i<l.length;i++){ var r=l[i].getBoundingClientRect(); if(r.width&&r.height) return l[i]; } return null; }
+  function hint(){ var p=P(); if(!p||document.querySelector('.nrsrc-hint')) return; var seen=false; try{ seen=localStorage.getItem(HINT)==='1'; }catch(e){}
+    if(seen) return; var anchor=vis('.nrsrc-i[data-nrsrc^="slide"]')||vis('.nrsrc-i');
+    if(!anchor){ if(document.querySelector('.nrsrc-i')&&(hint.n=(hint.n||0)+1)<240) setTimeout(hint,1500); return; }   /* a deck: wait for a slide that has one */
+    var h=document.createElement('div'); h.className='nrsrc-hint nr-glass'; h.setAttribute('role','status');
+    var perItem=document.querySelectorAll('.nrsrc-i:not([data-nrsrc^="slide"])').length;
+    h.innerHTML='<span>'+(perItem?(document.querySelector('.nrsrc-i[data-nrsrc^="seg:"]')?'Every score shows where it comes from.':'Every finding shows where it comes from.')+' Click the <span class="nrsrc-ic">i</span> next to it.':'See what this page rests on: click the <span class="nrsrc-ic">i</span> next to the source.')+'</span><button type="button" aria-label="Got it">&times;</button>';
+    root().appendChild(h);
+    function place(){ var a=(vis('.nrsrc-i[data-nrsrc^="slide"]')||vis('.nrsrc-i')||anchor).getBoundingClientRect(), w=h.offsetWidth, hh=h.offsetHeight;
+      h.style.left=Math.max(12,Math.min(a.left-24,window.innerWidth-w-12))+'px'; h.style.top=Math.max(12,a.top-hh-12)+'px'; }
+    function done(){ h.classList.remove('on'); try{ localStorage.setItem(HINT,'1'); }catch(e){} }
+    h.querySelector('button').onclick=done;
+    document.addEventListener('click',function(e){ if(e.target.closest&&e.target.closest('.nrsrc-i')) done(); },true);
+    window.addEventListener('resize',function(){ if(h.classList.contains('on')) place(); });
+    setTimeout(function(){ place(); h.classList.add('on'); },700); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){ setTimeout(hint,30); }); else setTimeout(hint,30);
+  window.NRSRC={
+    on:function(){ return !!P(); },
+    /* the (i) for one item; spec is an object or a function returning
+       {eyebrow, score|badge, rag, headline, ids:[...], quote:{text,sourceId}, scoredBy} */
+    icon:function(key,s){ if(!P()) return ''; SPECS[key]=s; var v=spec(key)||{}, miss=!(v.ids&&v.ids.length);
+      if(miss&&!working()) return '';
+      return '<button type="button" class="nrsrc-i'+(miss?' miss':'')+'" data-nrsrc="'+esc(key)+'" aria-expanded="false" aria-label="'+(miss?'No source yet':'Where this comes from')+'" title="'+(miss?'No source yet':'Where this comes from')+'">'+(miss?'!':'i')+'</button>'; },
+    close:close,
+    /* the (i) for any record that carries sourceIds (or one sourceId) and, optionally, a quote:
+       NRSRC.item(record, 'Its title', {k:'unique key', score:3, badge:'2.4 FTE', rag:'red', optional:true})
+       optional: no (i) at all for a record without a sourceIds or sourceId field (an insight block that
+       does not cite); with the field but nothing in it, the working copy shows a red ! */
+    item:function(o,eyebrow,opt){ var p=P(); if(!p||!o) return ''; opt=opt||{};
+      if(opt.optional&&!('sourceIds' in o)&&!('sourceId' in o)) return '';      /* a record that does not cite (yet) */
+      var ids=[]; (Array.isArray(o.sourceIds)?o.sourceIds:[]).concat(o.sourceId?[o.sourceId]:[]).forEach(function(i){ if(typeof i==='string'&&p.src[i]&&ids.indexOf(i)<0) ids.push(i); });
+      var q=o.quote&&o.quote.text&&(!o.quote.sourceId||p.src[o.quote.sourceId])?o.quote:null;
+      return this.icon('it:'+(opt.k||eyebrow), {eyebrow:eyebrow, score:opt.score, badge:opt.badge, rag:opt.rag, ids:ids, quote:q}); },
+    /* the source picker where a score is set: chips for what is cited, a list to add one */
+    picker:function(ids){ var p=P(); if(!p) return ''; ids=ids||[];
+      var opts=Object.keys(p.src).filter(function(k){return ids.indexOf(k)<0;}).map(function(k){var e=p.src[k];return '<option value="'+esc(k)+'">'+esc(k+' · '+e.label+(e.date?' · '+e.date:''))+'</option>';}).join('');
+      return '<div class="nrsrc-pick" data-ids="'+esc(ids.join(','))+'"><div class="chips">'+ids.map(function(k){var e=p.src[k]||{label:'not in the register'};return '<span class="chip" title="'+esc(e.label)+'">'+esc(k)+' · '+esc(String(e.label).slice(0,34))+'<button type="button" data-rm="'+esc(k)+'" aria-label="Remove">&times;</button></span>';}).join('')+'</div>'+
+        '<select><option value="">Add a source…</option>'+opts+'</select></div>'; },
+    bindPicker:function(el,onChange){ if(!el) return; var self=this;
+      function ids(){ return (el.getAttribute('data-ids')||'').split(',').filter(Boolean); }
+      function redraw(list){ var tmp=document.createElement('div'); tmp.innerHTML=self.picker(list); var nw=tmp.firstChild; el.innerHTML=nw.innerHTML; el.setAttribute('data-ids',list.join(',')); wire(); if(onChange) onChange(list); }
+      function wire(){ el.querySelectorAll('[data-rm]').forEach(function(b){ b.onclick=function(){ redraw(ids().filter(function(k){return k!==b.getAttribute('data-rm');})); }; });
+        var sel=el.querySelector('select'); if(sel) sel.onchange=function(){ if(sel.value){ var l=ids(); l.push(sel.value); redraw(l); } }; }
+      wire(); },
+    readPicker:function(el){ return el?(el.getAttribute('data-ids')||'').split(',').filter(Boolean):[]; },
+    label:function(k){ var p=P(), e=p&&p.src[k]; return e?e.label:k; }
+  };
+})();
+</script>
+<!-- NRSRC:END -->
+
+<script>
+/* ============ ONLY THIS BLOCK CHANGES PER TEAM ============ */
+const DATA = /* DATA */ {
+ "context": "OPEX QUICKSCAN",
+ "lens": "BASELINE · OTE WATERFALL",
+ "teamName": "Client Queries",
+ "teamId": "cq",
+ "keyMessage": "Client Queries turns **44%** of its time into value. Status calls drive **22%** waste, and a young team gives the highest variability of the six.",
+ "referencePeriod": {
+  "from": "2025-09-01",
+  "to": "2026-09-28",
+  "label": "Sep 2025 - Aug 2026"
+ },
+ "methods": {
+  "rigidity": "Peak, normal and quiet days x lead and follower profiles, anchored on the pace-setter's best day at 99%",
+  "variability": "Seniority profile of every person against the average senior",
+  "waste": "Ten waste questions in minutes per workday, walked one by one with the team"
+ },
+ "inputs": {
+  "fte": 26.0,
+  "headcount": 28,
+  "hoursPerDay": 8,
+  "contractedDaysYear": 260,
+  "absence": {
+   "publicHolidays": 11,
+   "legalHolidays": 20,
+   "recuperationDays": 12,
+   "absenteeismPct": 6,
+   "overtimePct": 1
+  },
+  "management": {
+   "managerFte": 1,
+   "managerMgmtPct": 85,
+   "teamLeadFte": 2,
+   "teamLeadMgmtPct": 70
+  },
+  "trainings": [
+   {
+    "name": "New joiner induction, classroom part",
+    "hours": 40,
+    "freq": 1,
+    "participants": 5
+   },
+   {
+    "name": "Product and event-type briefing",
+    "hours": 3,
+    "freq": 6,
+    "participants": 26
+   }
+  ],
+  "meetings": [
+   {
+    "name": "Weekly team meeting",
+    "hours": 1,
+    "freq": 44,
+    "participants": 26
+   },
+   {
+    "name": "Morning briefing on open events",
+    "hours": 0.25,
+    "freq": 220,
+    "participants": 24
+   },
+   {
+    "name": "One-to-one, about ten a year",
+    "hours": 0.5,
+    "freq": 10,
+    "participants": 26
+   }
+  ],
+  "waste": {
+   "items": [
+    {
+     "id": "waiting-people",
+     "minutesPerDay": 14
+    },
+    {
+     "id": "waiting-systems",
+     "minutesPerDay": 8
+    },
+    {
+     "id": "transport",
+     "minutesPerDay": 3
+    },
+    {
+     "id": "unused-output",
+     "minutesPerDay": 2
+    },
+    {
+     "id": "correcting",
+     "minutesPerDay": 8
+    },
+    {
+     "id": "chasing-info",
+     "minutesPerDay": 16
+    },
+    {
+     "id": "moving-building",
+     "minutesPerDay": 2
+    },
+    {
+     "id": "searching",
+     "minutesPerDay": 22
+    },
+    {
+     "id": "over-processing",
+     "minutesPerDay": 10
+    },
+    {
+     "id": "status-questions",
+     "minutesPerDay": 32
+    }
+   ]
+  },
+  "rigidity": {
+   "days": {
+    "peak": 4,
+    "normal": 12,
+    "quiet": 5
+   },
+   "leaderFte": 6,
+   "anchorPct": 99,
+   "ratios": {
+    "aVsB": 6,
+    "aPeakVsNormal": 2,
+    "bPeakVsNormal": 3,
+    "aNormalVsQuiet": 2,
+    "bNormalVsQuiet": 3
+   }
+  },
+  "variability": {
+   "levels": [
+    {
+     "label": "Above expected, coaches others",
+     "fte": 1,
+     "levelPct": 120
+    },
+    {
+     "label": "As expected, the reference",
+     "fte": 9,
+     "levelPct": 100
+    },
+    {
+     "label": "Good, needs to grow",
+     "fte": 7,
+     "levelPct": 80
+    },
+    {
+     "label": "Below expectations",
+     "fte": 4,
+     "levelPct": 60
+    },
+    {
+     "label": "Just started",
+     "fte": 5,
+     "levelPct": 60
+    }
+   ]
+  },
+  "valueSplit": {
+   "assessed": true,
+   "businessPct": 45,
+   "customerPct": 55,
+   "method": "Call and mail reasons classified with Nadia Benali and both team leads, 29 Oct 2026",
+   "labels": {}
+  },
+  "flags": {
+   "idleTimeObserved": false,
+   "senioritySpread": true
+  }
+ },
+ "provenance": {
+  "paid-time": {
+   "source": "HR time and absence export, confirmed by Nadia Benali",
+   "period": "Sep 2025 - Aug 2026",
+   "method": "Contracted days x FTE, plus paid overtime"
+  },
+  "absences": {
+   "source": "HR time and absence export, confirmed by Nadia Benali",
+   "period": "Sep 2025 - Aug 2026",
+   "method": "Public, legal and recuperation days per FTE, plus the absenteeism actual on the days that were schedulable"
+  },
+  "management": {
+   "source": "Team manager intake with Nadia Benali, 23 Oct 2026",
+   "period": "Sep 2025 - Aug 2026",
+   "method": "Manager FTE x management share + team lead FTE x management share, operational work left in process time"
+  },
+  "trainings": {
+   "source": "Learning calendar and the onboarding plan, walked in the intake",
+   "period": "Sep 2025 - Aug 2026",
+   "method": "Hours x frequency x participants"
+  },
+  "meetings": {
+   "source": "Outlook calendar export, recurring internal series only",
+   "period": "Sep 2025 - Aug 2026",
+   "method": "Hours x frequency x participants. Client calls and meetings stay in process time"
+  },
+  "rigidity": {
+   "source": "Team manager intake with Nadia Benali, 23 Oct 2026",
+   "period": "Representative month, Sep 2026",
+   "method": "Day types counted over a typical month, five ratios and the anchor agreed in the session"
+  },
+  "variability": {
+   "source": "Team manager intake with Nadia Benali, 23 Oct 2026",
+   "period": "Roster at 28 Sep 2026",
+   "method": "Every person graded against the average senior, reconciled to the team's FTE"
+  },
+  "waste": {
+   "source": "Waste observation with six client service officers, 29 Oct 2026",
+   "period": "Assessment at 29 Oct 2026",
+   "method": "Ten fixed questions in minutes per workday x operational FTE x days actually attended"
+  },
+  "business-value": {
+   "source": "Value classification with Nadia Benali and both team leads, 29 Oct 2026",
+   "period": "Assessment at 29 Oct 2026",
+   "method": "Share of the time left after waste that the business needs but a client would not pay for"
+  },
+  "customer-value": {
+   "source": "Value classification with Nadia Benali and both team leads, 29 Oct 2026",
+   "period": "Assessment at 29 Oct 2026",
+   "method": "Share of the time left after waste that the client would pay for"
+  }
+ },
+ "annotations": [
+  {
+   "categoryId": "rigidity",
+   "evidence": "Team manager intake 23 Oct 2026",
+   "bullets": [
+    "Call volume follows payment dates, but the queue is shared, so the load spreads across the team. Four peak days a month against five quiet ones.",
+    "Below the 15% the instrument expects, and checked: quiet hours go to the mail queue, so no idle time was seen."
+   ]
+  },
+  {
+   "categoryId": "variability",
+   "evidence": "Seniority profile agreed with Nadia Benali, 23 Oct 2026",
+   "bullets": [
+    "16 of 26 FTE sit below the average senior, nine of them at 60%: five joined in the last year.",
+    "The highest variability of the six teams, 2.5 FTE a year. New officers pass anything about an event to a senior or to Entitlements."
+   ]
+  },
+  {
+   "categoryId": "waste",
+   "evidence": "Waste observation 29 Oct 2026, call reason log Jun-Aug 2026",
+   "bullets": [
+    "117 minutes per person per workday, 4.5 FTE.",
+    "Four in ten calls ask where an event or a payment stands. Answering them, and waiting on Entitlements for the answer, is the largest part.",
+    "The client portal does not show event or payment status, so the phone is the only way to find out."
+   ]
+  },
+  {
+   "categoryId": "value-added",
+   "evidence": "Value classification 29 Oct 2026",
+   "bullets": [
+    "Value adding time is 24% of available time: answering what the client actually needs to decide or to book.",
+    "Rigidity and waste overlap by construction. Together they are 28% of available time."
+   ]
+  },
+  {
+   "categoryId": "status-questions",
+   "evidence": "Call reason log Jun-Aug 2026",
+   "bullets": [
+    "Status calls about events and payments, which a published status would answer before the client picks up the phone."
+   ]
+  },
+  {
+   "categoryId": "searching",
+   "evidence": "Waste observation 29 Oct 2026",
+   "bullets": [
+    "The answer sits in EventHub, the custody ledger or a colleague's mailbox, and officers open all three."
+   ]
+  }
+ ],
+ "benchmarkInsights": [
+  {
+   "title": "12% variability, the highest of six",
+   "bullets": [
+    "4 points above the middle of the six: five of the team joined in the last year.",
+    "Rigidity is the second lowest of six, because the shared queue spreads the load."
+   ]
+  },
+  {
+   "title": "Waste sits just above the middle",
+   "bullets": [
+    "22% against a middle of 21%, and most of it is status calls that start in other teams."
+   ]
+  },
+  {
+   "title": "Start with status",
+   "bullets": [
+    "A published event and payment status lowers this team's waste and Entitlements' at the same time."
+   ]
+  }
+ ],
+ "reconciliation": {
+  "enabled": false,
+  "allocatedFte": null,
+  "source": null
+ },
+ "source": "Team manager intake 23 Oct 2026 · call reason log Jun-Aug 2026 · waste observation 29 Oct 2026 · HR time and absence export, Sep 2025 - Aug 2026 · validated with Nadia Benali 5 Nov 2026",
+ "generatedAt": "2026-11-09",
+ "baselineVersion": null,
+ "capacitySource": {
+  "enabled": false,
+  "source": null,
+  "fields": []
+ },
+ "methodFingerprint": "1681311c6a0e",
+ "benchmarks": [
+  {
+   "population": "engagement",
+   "label": "the six Asset Servicing Operations teams",
+   "methodFingerprint": "1681311c6a0e",
+   "builtAt": "2026-11-09",
+   "teams": 6,
+   "minN": 5,
+   "categories": {
+    "management": {
+     "n": 6,
+     "q1": 0.08702,
+     "q2": 0.09006,
+     "q3": 0.09792
+    },
+    "trainings": {
+     "n": 6,
+     "q1": 0.01146,
+     "q2": 0.01501,
+     "q3": 0.03255
+    },
+    "meetings": {
+     "n": 6,
+     "q1": 0.04183,
+     "q2": 0.04992,
+     "q3": 0.05909
+    },
+    "rigidity": {
+     "n": 6,
+     "q1": 0.06251,
+     "q2": 0.07455,
+     "q3": 0.10322
+    },
+    "variability": {
+     "n": 6,
+     "q1": 0.07119,
+     "q2": 0.07502,
+     "q3": 0.08713
+    },
+    "waste": {
+     "n": 6,
+     "q1": 0.16434,
+     "q2": 0.21427,
+     "q3": 0.23474
+    },
+    "business-value": {
+     "n": 6,
+     "q1": 0.22455,
+     "q2": 0.23419,
+     "q3": 0.24237
+    },
+    "customer-value": {
+     "n": 6,
+     "q1": 0.20029,
+     "q2": 0.24024,
+     "q3": 0.2427
+    },
+    "value-added": {
+     "n": 6,
+     "q1": 0.43054,
+     "q2": 0.45858,
+     "q3": 0.48475
+    },
+    "ote": {
+     "n": 6,
+     "q1": 0.43054,
+     "q2": 0.45858,
+     "q3": 0.48475
+    }
+   },
+   "teamNames": [
+    "CA Announcements",
+    "Client Queries",
+    "CA Entitlements & Payments",
+    "General Meetings & Proxy Voting",
+    "Income Processing",
+    "Tax Reclaims"
+   ],
+   "series": {
+    "management": [
+     {
+      "team": "CA Announcements",
+      "v": 0.08333
+     },
+     {
+      "team": "Client Queries",
+      "v": 0.08654
+     },
+     {
+      "team": "CA Entitlements & Payments",
+      "v": 0.08846
+     },
+     {
+      "team": "General Meetings & Proxy Voting",
+      "v": 0.09167
+     },
+     {
+      "team": "Tax Reclaims",
+      "v": 0.1
+     },
+     {
+      "team": "Income Processing",
+      "v": 0.10455
+     }
+    ],
+    "trainings": [
+     {
+      "team": "General Meetings & Proxy Voting",
+      "v": 0.00804
+     },
+     {
+      "team": "CA Announcements",
+      "v": 0.01046
+     },
+     {
+      "team": "CA Entitlements & Payments",
+      "v": 0.01447
+     },
+     {
+      "team": "Client Queries",
+      "v": 0.01555
+     },
+     {
+      "team": "Tax Reclaims",
+      "v": 0.03822
+     },
+     {
+      "team": "Income Processing",
+      "v": 0.06379
+     }
+    ],
+    "meetings": [
+     {
+      "team": "General Meetings & Proxy Voting",
+      "v": 0.03274
+     },
+     {
+      "team": "CA Entitlements & Payments",
+      "v": 0.04092
+     },
+     {
+      "team": "Tax Reclaims",
+      "v": 0.04459
+     },
+     {
+      "team": "CA Announcements",
+      "v": 0.05525
+     },
+     {
+      "team": "Client Queries",
+      "v": 0.06037
+     },
+     {
+      "team": "Income Processing",
+      "v": 0.08134
+     }
+    ],
+    "rigidity": [
+     {
+      "team": "Tax Reclaims",
+      "v": 0.05111
+     },
+     {
+      "team": "Client Queries",
+      "v": 0.06091
+     },
+     {
+      "team": "Income Processing",
+      "v": 0.06732
+     },
+     {
+      "team": "CA Announcements",
+      "v": 0.08179
+     },
+     {
+      "team": "CA Entitlements & Payments",
+      "v": 0.11036
+     },
+     {
+      "team": "General Meetings & Proxy Voting",
+      "v": 0.15958
+     }
+    ],
+    "variability": [
+     {
+      "team": "Income Processing",
+      "v": 0.05632
+     },
+     {
+      "team": "CA Announcements",
+      "v": 0.07099
+     },
+     {
+      "team": "General Meetings & Proxy Voting",
+      "v": 0.0718
+     },
+     {
+      "team": "Tax Reclaims",
+      "v": 0.07824
+     },
+     {
+      "team": "CA Entitlements & Payments",
+      "v": 0.0901
+     },
+     {
+      "team": "Client Queries",
+      "v": 0.11879
+     }
+    ],
+    "waste": [
+     {
+      "team": "Income Processing",
+      "v": 0.13082
+     },
+     {
+      "team": "General Meetings & Proxy Voting",
+      "v": 0.14956
+     },
+     {
+      "team": "Tax Reclaims",
+      "v": 0.20868
+     },
+     {
+      "team": "Client Queries",
+      "v": 0.21985
+     },
+     {
+      "team": "CA Entitlements & Payments",
+      "v": 0.2397
+     },
+     {
+      "team": "CA Announcements",
+      "v": 0.27013
+     }
+    ],
+    "business-value": [
+     {
+      "team": "Client Queries",
+      "v": 0.1971
+     },
+     {
+      "team": "Income Processing",
+      "v": 0.22314
+     },
+     {
+      "team": "CA Entitlements & Payments",
+      "v": 0.2288
+     },
+     {
+      "team": "Tax Reclaims",
+      "v": 0.23958
+     },
+     {
+      "team": "General Meetings & Proxy Voting",
+      "v": 0.24331
+     },
+     {
+      "team": "CA Announcements",
+      "v": 0.25683
+     }
+    ],
+    "customer-value": [
+     {
+      "team": "CA Announcements",
+      "v": 0.17122
+     },
+     {
+      "team": "CA Entitlements & Payments",
+      "v": 0.1872
+     },
+     {
+      "team": "Tax Reclaims",
+      "v": 0.23958
+     },
+     {
+      "team": "Client Queries",
+      "v": 0.2409
+     },
+     {
+      "team": "General Meetings & Proxy Voting",
+      "v": 0.24331
+     },
+     {
+      "team": "Income Processing",
+      "v": 0.27272
+     }
+    ],
+    "value-added": [
+     {
+      "team": "CA Entitlements & Payments",
+      "v": 0.41599
+     },
+     {
+      "team": "CA Announcements",
+      "v": 0.42805
+     },
+     {
+      "team": "Client Queries",
+      "v": 0.43799
+     },
+     {
+      "team": "Tax Reclaims",
+      "v": 0.47916
+     },
+     {
+      "team": "General Meetings & Proxy Voting",
+      "v": 0.48661
+     },
+     {
+      "team": "Income Processing",
+      "v": 0.49586
+     }
+    ],
+    "ote": [
+     {
+      "team": "CA Entitlements & Payments",
+      "v": 0.41599
+     },
+     {
+      "team": "CA Announcements",
+      "v": 0.42805
+     },
+     {
+      "team": "Client Queries",
+      "v": 0.43799
+     },
+     {
+      "team": "Tax Reclaims",
+      "v": 0.47916
+     },
+     {
+      "team": "General Meetings & Proxy Voting",
+      "v": 0.48661
+     },
+     {
+      "team": "Income Processing",
+      "v": 0.49586
+     }
+    ]
+   }
+  },
+  {
+   "population": "standard",
+   "label": "Nova Reperta best-in-class standard",
+   "author": "Thomas Merckx, from NR engagement experience",
+   "statedAt": "2026-10-02",
+   "basis": "share of available time",
+   "kindNote": "A STATED standard, not a measured distribution. Nobody measured an industry to produce these thresholds: they are what a practitioner judges good, medium and high to look like. It is not measured industry data, the artifact says so on the face, and it is never called an industry benchmark.",
+   "demanding": true,
+   "demandingNote": "Deliberately demanding. On the V5 engines a typical team lands at 21-29% rigidity and 14-19% variability, so most teams read HIGH on both. That is the intended reading: best-in-class is far from typical. The artifact must not imply a team is unusual when it is typical, so a high band is worded as distance from good, never as an outlier.",
+   "categories": {
+    "rigidity": {
+     "good": 0.05,
+     "medium": 0.1,
+     "note": "Below 5% of available time is good, 5 to 10% medium, above 10% high."
+    },
+    "variability": {
+     "good": 0.05,
+     "medium": 0.1,
+     "note": "Same bands as rigidity."
+    },
+    "waste": {
+     "good": 0.1,
+     "medium": 0.2,
+     "note": "Below 10% of available time is good, 10 to 20% medium, 20% and above high. These bands sit where the instrument actually lands, so waste discriminates between teams."
+    }
+   }
+  }
+ ],
+ "derived": {
+  "categories": [
+   {
+    "id": "paid-time",
+    "label": "Paid time",
+    "kind": "total",
+    "type": "measured",
+    "days": 6827.6,
+    "fte": 26.26,
+    "pctOfAvailable": 1.2712,
+    "provenance": {
+     "source": "HR time and absence export, confirmed by Nadia Benali",
+     "period": "Sep 2025 - Aug 2026",
+     "method": "Contracted days x FTE, plus paid overtime"
+    }
+   },
+   {
+    "id": "absences",
+    "label": "Absences (leave, sick, …)",
+    "kind": "deduct",
+    "type": "measured",
+    "days": 1456.5,
+    "fte": 5.6,
+    "pctOfAvailable": 0.2712,
+    "provenance": {
+     "source": "HR time and absence export, confirmed by Nadia Benali",
+     "period": "Sep 2025 - Aug 2026",
+     "method": "Public, legal and recuperation days per FTE, plus the absenteeism actual on the days that were schedulable"
+    }
+   },
+   {
+    "id": "available",
+    "label": "Available time (in the seat)",
+    "kind": "total",
+    "type": "calculated",
+    "days": 5371.1,
+    "fte": 20.66,
+    "pctOfAvailable": 1.0,
+    "provenance": null
+   },
+   {
+    "id": "management",
+    "label": "Management",
+    "kind": "deduct",
+    "type": "measured",
+    "days": 464.8,
+    "fte": 1.79,
+    "pctOfAvailable": 0.0865,
+    "provenance": {
+     "source": "Team manager intake with Nadia Benali, 23 Oct 2026",
+     "period": "Sep 2025 - Aug 2026",
+     "method": "Manager FTE x management share + team lead FTE x management share, operational work left in process time"
+    }
+   },
+   {
+    "id": "trainings",
+    "label": "Trainings / Projects / Coaching",
+    "kind": "deduct",
+    "type": "measured",
+    "days": 83.5,
+    "fte": 0.32,
+    "pctOfAvailable": 0.0155,
+    "provenance": {
+     "source": "Learning calendar and the onboarding plan, walked in the intake",
+     "period": "Sep 2025 - Aug 2026",
+     "method": "Hours x frequency x participants"
+    }
+   },
+   {
+    "id": "meetings",
+    "label": "Meetings",
+    "kind": "deduct",
+    "type": "measured",
+    "days": 324.2,
+    "fte": 1.25,
+    "pctOfAvailable": 0.0604,
+    "provenance": {
+     "source": "Outlook calendar export, recurring internal series only",
+     "period": "Sep 2025 - Aug 2026",
+     "method": "Hours x frequency x participants. Client calls and meetings stay in process time"
+    }
+   },
+   {
+    "id": "rigidity",
+    "label": "Rigidity",
+    "kind": "deduct",
+    "type": "estimated",
+    "days": 327.2,
+    "fte": 1.26,
+    "pctOfAvailable": 0.0609,
+    "provenance": {
+     "source": "Team manager intake with Nadia Benali, 23 Oct 2026",
+     "period": "Representative month, Sep 2026",
+     "method": "Day types counted over a typical month, five ratios and the anchor agreed in the session"
+    }
+   },
+   {
+    "id": "variability",
+    "label": "Variability",
+    "kind": "deduct",
+    "type": "estimated",
+    "days": 638.0,
+    "fte": 2.45,
+    "pctOfAvailable": 0.1188,
+    "provenance": {
+     "source": "Team manager intake with Nadia Benali, 23 Oct 2026",
+     "period": "Roster at 28 Sep 2026",
+     "method": "Every person graded against the average senior, reconciled to the team's FTE"
+    }
+   },
+   {
+    "id": "process-time",
+    "label": "Total process time",
+    "kind": "total",
+    "type": "derived",
+    "days": 3533.4,
+    "fte": 13.59,
+    "pctOfAvailable": 0.6578,
+    "provenance": null
+   },
+   {
+    "id": "waste",
+    "label": "Waste",
+    "kind": "deduct",
+    "type": "assessed",
+    "days": 1180.9,
+    "fte": 4.54,
+    "pctOfAvailable": 0.2199,
+    "provenance": {
+     "source": "Waste observation with six client service officers, 29 Oct 2026",
+     "period": "Assessment at 29 Oct 2026",
+     "method": "Ten fixed questions in minutes per workday x operational FTE x days actually attended"
+    }
+   },
+   {
+    "id": "business-value",
+    "label": "Value enabling time",
+    "kind": "deduct",
+    "type": "estimated",
+    "days": 1058.6,
+    "fte": 4.07,
+    "pctOfAvailable": 0.1971,
+    "provenance": {
+     "source": "Value classification with Nadia Benali and both team leads, 29 Oct 2026",
+     "period": "Assessment at 29 Oct 2026",
+     "method": "Share of the time left after waste that the business needs but a client would not pay for"
+    }
+   },
+   {
+    "id": "customer-value",
+    "label": "Value adding time",
+    "kind": "deduct",
+    "type": "estimated",
+    "days": 1293.9,
+    "fte": 4.98,
+    "pctOfAvailable": 0.2409,
+    "provenance": {
+     "source": "Value classification with Nadia Benali and both team leads, 29 Oct 2026",
+     "period": "Assessment at 29 Oct 2026",
+     "method": "Share of the time left after waste that the client would pay for"
+    }
+   }
+  ],
+  "paidDays": 6827.6,
+  "availableDays": 5371.1,
+  "contractBasis": 260.0,
+  "capacityBasis": 206.6,
+  "procPctOfPaid": 0.5175,
+  "procPctOfAvailable": 0.6578,
+  "rigidityPlusVariabilityPct": 0.1797,
+  "rigidityPlusVariabilityFte": 3.71,
+  "operationalFte": 23.75,
+  "attendedDaysPerFte": 204.0,
+  "waste": {
+   "minutesPerDay": 117.0,
+   "shareOfWorkday": 0.2437,
+   "items": [
+    {
+     "id": "waiting-people",
+     "label": "waiting for people or information",
+     "minutesPerDay": 14.0
+    },
+    {
+     "id": "waiting-systems",
+     "label": "waiting for resources or systems",
+     "minutesPerDay": 8.0
+    },
+    {
+     "id": "transport",
+     "label": "transportation of goods",
+     "minutesPerDay": 3.0
+    },
+    {
+     "id": "unused-output",
+     "label": "working on things that are not used",
+     "minutesPerDay": 2.0
+    },
+    {
+     "id": "correcting",
+     "label": "correcting mistakes",
+     "minutesPerDay": 8.0
+    },
+    {
+     "id": "chasing-info",
+     "label": "requesting missing or unclear information",
+     "minutesPerDay": 16.0
+    },
+    {
+     "id": "moving-building",
+     "label": "moving through the building",
+     "minutesPerDay": 2.0
+    },
+    {
+     "id": "searching",
+     "label": "searching for goods or documents",
+     "minutesPerDay": 22.0
+    },
+    {
+     "id": "over-processing",
+     "label": "doing more than necessary",
+     "minutesPerDay": 10.0
+    },
+    {
+     "id": "status-questions",
+     "label": "answering status questions",
+     "minutesPerDay": 32.0
+    }
+   ]
+  },
+  "rigidity": {
+   "anchor": 0.99,
+   "leaderShare": 0.2308,
+   "netEffectDaysPerMonth": 1.527,
+   "rate": 0.0727,
+   "productivity": {
+    "leaderPeak": 0.99,
+    "leaderNormal": 0.9706,
+    "leaderQuiet": 0.9516,
+    "followerPeak": 0.9431,
+    "followerNormal": 0.9156,
+    "followerQuiet": 0.889
+   }
+  },
+  "variability": {
+   "currentLevel": 0.8154,
+   "topLevel": 1.2,
+   "gap": 0.1923
+  },
+  "rigidityPlusWastePctOfOperational": 0.3352,
+  "valueSplit": {
+   "assessed": true,
+   "businessValueDays": 1058.6,
+   "customerValueDays": 1293.9,
+   "valueAddedDays": 2352.5
+  },
+  "ote": 0.438
+ },
+ "sanityChecks": [
+  {
+   "id": "mgmt",
+   "name": "Management share",
+   "value": "8.7%",
+   "st": "g",
+   "thr": "8-12% of available time",
+   "why": "Inside the 8-12% band."
+  },
+  {
+   "id": "trnmtg",
+   "name": "Training + meetings",
+   "value": "7.6%",
+   "st": "g",
+   "thr": "amber above 25% of available time",
+   "why": "Inside the normal range."
+  },
+  {
+   "id": "rigidity",
+   "name": "Rigidity",
+   "value": "6.1%",
+   "st": "a",
+   "thr": "at least 15%, red if idle time was observed",
+   "why": "Below 15%. Confirm no idle time or waiting was observed. If it was, this is a contradiction, not a low score."
+  },
+  {
+   "id": "variability",
+   "name": "Variability",
+   "value": "11.9%",
+   "st": "g",
+   "thr": "at least 2%, red if a wide seniority spread was recorded",
+   "why": "Non-zero and consistent with the seniority profile."
+  },
+  {
+   "id": "overlap",
+   "name": "Rigidity + waste",
+   "value": "33.5%",
+   "st": "g",
+   "thr": "at most 65% of operational time",
+   "why": "The two estimates leave enough productive time between them to be credible."
+  },
+  {
+   "id": "process",
+   "name": "Process time",
+   "value": "65.8%",
+   "st": "a",
+   "thr": "20-45% of available time",
+   "why": "Residual above 45%. Rigidity or variability is probably understated, so the waterfall is deducting too little."
+  },
+  {
+   "id": "ote",
+   "name": "OTE",
+   "value": "44%",
+   "st": "g",
+   "thr": "15-50% of available time",
+   "why": "Inside the plausible band for a top-down OTE."
+  },
+  {
+   "id": "period",
+   "name": "Reference periods",
+   "value": "aligned",
+   "st": "g",
+   "thr": "all datasets on one window",
+   "why": "Every dataset carries the same window (Sep 2025 - Aug 2026)."
+  },
+  {
+   "id": "method",
+   "name": "Method & source recorded",
+   "value": "complete",
+   "st": "g",
+   "thr": "method + source on every category",
+   "why": "Every estimate states its method and every category cites its source."
+  }
+ ],
+ "gaps": [
+  "rigidity check is amber: 6.1%",
+  "process time check is amber: 65.8%",
+  "not reconciled against the Operating Baseline"
+ ],
+ "sourceIds": [
+  "s1",
+  "s2",
+  "s3",
+  "s4"
+ ],
+ "sourcePanel": {
+  "build": "client",
+  "scoredBy": "Prepared by Nova Reperta, Oct 2026.",
+  "src": {
+   "s1": {
+    "label": "Team manager, Client Queries",
+    "group": "interviews",
+    "date": "Sep 2026"
+   },
+   "s2": {
+    "label": "Waste observations - Client Queries",
+    "group": "observations",
+    "date": "Oct 2026"
+   },
+   "s3": {
+    "label": "Client Queries call reason log, Jun-Aug 2026",
+    "group": "data",
+    "date": "Sep 2026"
+   },
+   "s4": {
+    "label": "HR time and absence export, Sep 2025 - Aug 2026",
+    "group": "data",
+    "date": "Sep 2026"
+   }
+  }
+ }
+};
+/* ========================================================= */
+(function(){
+  /* ─────────────────────────── helpers ─────────────────────────── */
+  function esc(t){return String(t==null?'':t).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+  function hl(t){return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1</span>');}
+  function n(v){v=parseFloat(v);return isFinite(v)?v:0;}
+  function p(v){return n(v)/100;}
+  function d0(v){return v==null||!isFinite(v)?'n/a':Math.round(v).toLocaleString('en-GB');}
+  function d1(v){return v==null||!isFinite(v)?'n/a':v.toFixed(1);}
+  function pct(v,dp){return v==null||!isFinite(v)?'n/a':(v*100).toFixed(dp==null?1:dp)+'%';}
+
+  /* The ten waste questions, verbatim from the house sheet. "How much time per workday does an
+     average employee spend on ..." Each is answered in minutes. Mirrored in ote_calc.py. */
+  var WASTE_ITEMS=[
+    ['waiting-people','waiting for people or information','waiting for clients, colleagues, signatures'],
+    ['waiting-systems','waiting for resources or systems','availability of documents, loading of systems, files, e-mails, printers'],
+    ['transport','transportation of goods','forwarding e-mails, moving documents, moving goods'],
+    ['unused-output','working on things that are not used','unused reports, preparing services that are cancelled'],
+    ['correcting','correcting mistakes','handling complaints, correcting mistakes from clients or colleagues'],
+    ['chasing-info','requesting missing or unclear information','requesting client numbers, information, spare parts'],
+    ['moving-building','moving through the building','walking to a colleague, the coffee machine, collecting documents'],
+    ['searching','searching for goods or documents','scrolling through screens, browsing files, searching the mailbox'],
+    ['over-processing','doing more than necessary','retyping data between systems, copy-pasting, unnecessary meetings'],
+    ['status-questions','answering status questions','informing clients on the status of a request, chasing other departments']
+  ];
+
+
+  /* ───────────────── THE CALCULATION (mirrored in scripts/ote_calc.py) ─────────────────
+     The three estimation engines come from the house sheet "OTE quick scan assessment V5",
+     with four deliberate corrections recorded in reference.md: the rigidity anchor is an input,
+     variability is applied once, the rigidity/waste overlap is surfaced by a check, and waste
+     above process time is a hard failure.
+       FTE = days / contractedDaysYear, one basis, so every row sums to the payroll FTE.
+       capacityBasis (availableDays / fte) stays INTERNAL: management days derive from it, but
+       the read-out never shows a second FTE number.
+  ------------------------------------------------------------------------------- */
+  function calc(D){
+    var I=D.inputs||{}, A=I.absence||{}, M=I.management||{}, W=I.waste||{}, RG=I.rigidity||{},
+        RA=RG.ratios||{}, DY=RG.days||{}, VB=I.variability||{}, VA=I.valueSplit||{}, R={};
+    var fte=n(I.fte), cdy=n(I.contractedDaysYear)||260, hpd=n(I.hoursPerDay)||8;
+    R.fte=fte; R.contractBasis=cdy; R.hoursPerDay=hpd;
+
+    /* Sick leave applies to the days that were actually schedulable, after holidays: nobody is
+       sick on a public holiday. */
+    R.contractedDays=cdy*fte;
+    R.overtimeDays=R.contractedDays*p(A.overtimePct);
+    R.paidDays=R.contractedDays+R.overtimeDays;
+    var holPerFte=n(A.publicHolidays)+n(A.legalHolidays)+n(A.recuperationDays);
+    R.workingDaysPerFte=Math.max(0,cdy-holPerFte);
+    R.attendedDaysPerFte=R.workingDaysPerFte*(1-p(A.absenteeismPct));
+    R.holidayDays=holPerFte*fte;
+    R.sickDays=R.workingDaysPerFte*p(A.absenteeismPct)*fte;
+    R.absenceDays=R.holidayDays+R.sickDays;
+    R.availableDays=R.paidDays-R.absenceDays;
+    R.capacityBasis=fte>0?R.availableDays/fte:0;
+
+    /* Management time is the management SHARE of the managers. Their operational share joins
+       the employee pool and its output lands in process time, like everybody. */
+    R.mgmtFte=n(M.managerFte)*p(M.managerMgmtPct)+n(M.teamLeadFte)*p(M.teamLeadMgmtPct);
+    R.mgtDays=R.mgmtFte*R.capacityBasis;
+    R.operationalFte=Math.max(0,fte-R.mgmtFte);
+
+    function lineDays(list){var h=0;(list||[]).forEach(function(x){h+=n(x.hours)*n(x.freq)*n(x.participants);});return hpd>0?h/hpd:0;}
+    R.trnDays=lineDays(I.trainings);
+    R.mtgDays=lineDays(I.meetings);
+    R.opsDays=R.availableDays-R.mgtDays-R.trnDays-R.mtgDays;
+
+    /* WASTE — measured bottom-up from the ten waste questions, in minutes per workday. It does
+       not depend on process time, so it is computed before the residual. */
+    var got={}; (W.items||[]).forEach(function(x){got[x.id]=n(x.minutesPerDay);});
+    R.wasteMinutesPerDay=0;
+    R.wasteItems=WASTE_ITEMS.map(function(w){var m=got[w[0]]||0;R.wasteMinutesPerDay+=m;
+      return {id:w[0],label:w[1],minutesPerDay:m};});
+    R.wasteShareOfDay=hpd>0?(R.wasteMinutesPerDay/60)/hpd:0;
+    R.wasteDays=R.wasteShareOfDay*R.operationalFte*R.attendedDaysPerFte;
+
+    /* RIGIDITY — productivity is derived DOWNWARD from ONE anchor: the best lead profile on their
+       best day. The house sheet buried that anchor at 0.95 in a helper cell; here it is an
+       input, because it is the single most influential number in the model. */
+    var leadFte=n(RG.leaderFte);
+    R.leaderShare=fte>0?leadFte/fte:0; R.followerShare=1-R.leaderShare;
+    R.anchor=(RG.anchorPct===undefined||RG.anchorPct===null)?0.95:p(RG.anchorPct);
+    var aPk=p(RA.aPeakVsNormal), bPk=p(RA.bPeakVsNormal), aQt=p(RA.aNormalVsQuiet),
+        bQt=p(RA.bNormalVsQuiet), aVb=p(RA.aVsB);
+    var lPk=R.anchor, lNm=lPk/(1+aPk), lQt=lNm/(1+aQt);
+    var fNm=lNm/(1+aVb), fPk=fNm*(1+bPk), fQt=fNm/(1+bQt);
+    R.prod={leaderPeak:lPk,leaderNormal:lNm,leaderQuiet:lQt,
+            followerPeak:fPk,followerNormal:fNm,followerQuiet:fQt};
+    var dpk=n(DY.peak), dnm=n(DY.normal), dqt=n(DY.quiet);
+    R.daysPerMonth=dpk+dnm+dqt;
+    var lLoss=(1-lPk)*dpk+(1-lNm)*dnm+(1-lQt)*dqt;
+    var fLoss=(1-fPk)*dpk+(1-fNm)*dnm+(1-fQt)*dqt;
+    R.netEffect=lLoss*R.leaderShare+fLoss*R.followerShare;
+    R.matrixRate=R.daysPerMonth>0?R.netEffect/R.daysPerMonth:0;
+    R.rigDays=R.matrixRate*R.opsDays;
+
+    /* VARIABILITY — one seniority distribution, one estimate, covering competence variability
+       and individual variability together (guidelines slides 9, 10, 24, 25).
+       THE REFERENCE IS THE AVERAGE SENIOR, NOT THE BEST PERSON IN THE ROOM. Slide 18: team
+       members performing BELOW THE AVERAGE SENIOR LEVEL. The level scale is already written
+       against that reference, so the reference is 1.00 and needs no input of its own.
+       Only people BELOW it contribute: summing signed gaps would let an outperformer cancel a
+       newcomer, and a team of 120s and 80s would report no variability at all.
+       The house sheet derived this from shares of PAID time and then multiplied by OPERATIONAL
+       hours, discounting it twice. Applied once here. */
+    var levels=VB.levels||[], lvFte=0, wsum=0, top=0, shortfall=0, belowFte=0, REFL=1;
+    levels.forEach(function(x){var f=n(x.fte), l=p(x.levelPct); lvFte+=f; wsum+=f*l; if(l>top)top=l;
+      if(l<REFL){shortfall+=f*(REFL-l); belowFte+=f;}});
+    R.seniorityFte=lvFte;
+    R.referenceLevel=REFL;
+    R.currentLevel=lvFte>0?wsum/lvFte:0;
+    R.topLevel=top;
+    R.belowRefFte=belowFte;
+    R.levelGap=lvFte>0?shortfall/lvFte:0;
+    R.productiveOpsDays=R.opsDays-R.wasteDays;
+    R.varDays=R.levelGap*R.productiveOpsDays;
+
+    R.procDays=R.availableDays-R.mgtDays-R.trnDays-R.mtgDays-R.rigDays-R.varDays;
+
+    /* Waste is measured, so only the split of what remains is a judgement. */
+    R.valueAssessed=!!VA.assessed;
+    R.remainderDays=R.procDays-R.wasteDays;
+    R.businessValueDays=R.valueAssessed?R.remainderDays*p(VA.businessPct):null;
+    R.customerValueDays=R.valueAssessed?R.remainderDays*p(VA.customerPct):null;
+    R.valueAddedDays=R.valueAssessed?R.remainderDays:null;
+    /* THE headline metric:  OTE = value added time / available time */
+    R.ote=(R.valueAssessed&&R.availableDays>0)?R.valueAddedDays/R.availableDays:null;
+
+    R.procPctAvail=R.availableDays>0?R.procDays/R.availableDays:null;
+    R.procPctPaid=R.paidDays>0?R.procDays/R.paidDays:null;
+    R.rigVarDays=R.rigDays+R.varDays;
+    R.rigVarPct=R.availableDays>0?R.rigVarDays/R.availableDays:null;
+    /* the overlap the house sheet never reconciles: both claim the same operational time */
+    R.lossOfOps=R.opsDays>0?(R.rigDays+R.wasteDays)/R.opsDays:null;
+    R.bench=benchAll(D,R);
+    R.std=stdAll(D,R);
+    R.benchRank=benchRanks(D,R);
+    return R;
+  }
+
+  /* THE BENCHMARK. The old magnitude word was an absolute band on % of available, the same for
+     every category, so it compared nothing and restated the number beside it. This places the
+     team in the distribution of teams already measured the same way. Mirrors ote_calc.py. */
+  var MIN_N=5;
+  var DIRECTION={management:'neutral',trainings:'neutral',meetings:'neutral',
+    rigidity:'worse',variability:'worse',waste:'worse',
+    'business-value':'better','customer-value':'better','value-added':'better',ote:'better'};
+  var BAND_LABEL={'worse|4':'worst quartile','worse|3':'third quartile','worse|2':'second quartile',
+    'worse|1':'best quartile','better|4':'best quartile','better|3':'third quartile',
+    'better|2':'second quartile','better|1':'worst quartile','neutral|4':'top quartile',
+    'neutral|3':'third quartile','neutral|2':'second quartile','neutral|1':'bottom quartile'};
+  function quartileOf(v,q){ return v<=q[0]?1:(v<=q[1]?2:(v<=q[2]?3:4)); }
+  /* A STATED standard, not a measured distribution: below good is good, up to medium is medium,
+     above is high. Lower is better for every category a standard covers. */
+  function standard(catId,pctAvail,st){
+    if(pctAvail==null||!st) return null;
+    var e=(st.categories||{})[catId]; if(!e) return null;
+    if(e.good==null||e.medium==null) return null;
+    var g=+e.good, m=+e.medium;
+    var band=pctAvail<g?'good':(pctAvail<=m?'medium':'high');
+    return {kind:'standard',population:'standard',label:st.label,author:st.author,
+            band:band,good:g,medium:m,value:pctAvail}; }
+  function benchmark(catId,pctAvail,b){
+    if(pctAvail==null||!b) return null;
+    var e=(b.categories||{})[catId]; if(!e) return null;
+    var nn=+(e.n||0); if(nn<MIN_N) return null;
+    if(e.q1==null||e.q2==null||e.q3==null) return null;
+    var d=DIRECTION[catId]||'neutral', q=quartileOf(pctAvail,[+e.q1,+e.q2,+e.q3]);
+    return {population:b.population,label:b.label,n:nn,quartile:q,band:BAND_LABEL[d+'|'+q],
+            direction:d,median:+e.q2,value:pctAvail}; }
+  function benchShare(cid,R){
+    if(!R.availableDays) return null;
+    if(cid==='value-added') return R.valueAssessed?R.valueAddedDays/R.availableDays:null;
+    if(cid==='ote') return R.valueAssessed?R.ote:null;
+    var v=catDays(R,cid); return v==null?null:v/R.availableDays; }
+  function refsets(D){ var o=[]; if(D.benchmark) o.push(D.benchmark);
+    (D.benchmarks||[]).forEach(function(b){ if(b) o.push(b); }); return o; }
+  /* iterates DIRECTION, so the benchmarkable set is ONE table shared with ote_calc.py */
+  function benchAll(D,R){
+    var out={}; if(!R.availableDays) return out;
+    var b=null; refsets(D).forEach(function(x){
+      if(!b&&(x.population==='engagement'||x.population==='library')) b=x; });
+    if(!b) return out;
+    Object.keys(DIRECTION).forEach(function(cid){
+      var v=benchShare(cid,R); if(v==null) return;
+      var e=benchmark(cid,v,b); if(e) out[cid]=e; });
+    return out; }
+  function stdAll(D,R){
+    var out={}; if(!R.availableDays) return out;
+    var st=null; refsets(D).forEach(function(x){ if(!st&&x.population==='standard') st=x; });
+    if(!st) return out;
+    Object.keys(st.categories||{}).forEach(function(cid){
+      var v=benchShare(cid,R); if(v==null) return;
+      var e=standard(cid,v,st); if(e) out[cid]=e; });
+    return out; }
+  /* ── the ranked series behind the Benchmark view. Mirrors ote_calc.py. ──
+     Three loss categories only: the standard covers exactly these, and a chart that reverses
+     its direction halfway down the page is a chart nobody reads correctly. */
+  var BENCH_VIEW=['rigidity','variability','waste'];
+  function ordn(n){ var t=n%100; if(t>=11&&t<=13) return n+'th';
+    return n+({1:'st',2:'nd',3:'rd'}[n%10]||'th'); }
+  /* ENGAGEMENT ONLY. The library publishes distributions and nothing else, so it never reaches
+     this view, and check_ote.py refuses a library set that carries a series at all. */
+  function seriesSet(D){ var s=null; refsets(D).forEach(function(x){
+      if(!s&&x.population==='engagement'&&x.series) s=x; }); return s; }
+  function benchRows(D,R,cid){
+    var s=seriesSet(D); if(!s) return null;
+    var xs=(s.series||{})[cid]; if(!xs||!xs.length) return null;
+    var v=benchShare(cid,R); if(v==null) return null;
+    /* This team may or may not be one of the series entries. Matched by name when it is - and
+       then the figure in THIS capture wins, because the capture is what was just measured -
+       and appended when it is not, so the rank is never off by one in either direction.
+       (No apostrophes in this comment: the parity extractor brace-matches raw source and reads
+       one as an opening quote.) */
+    var me=String(D.teamName||'').trim().toLowerCase(), rows=[], hit=false;
+    xs.forEach(function(e){ var nm=e.team||'';
+      if(me&&!hit&&nm.trim().toLowerCase()===me){ rows.push({team:nm,v:v,me:true}); hit=true; }
+      else rows.push({team:nm,v:e.v,me:false}); });
+    if(!hit) rows.push({team:D.teamName||'this team',v:v,me:true});
+    rows.sort(function(a,b){return a.v-b.v;});
+    var k=0; rows.forEach(function(r,i){ if(r.me) k=i; });
+    return {rows:rows,rank:k+1,n:rows.length}; }
+  function benchRanks(D,R){
+    var out={}; BENCH_VIEW.forEach(function(cid){
+      var r=benchRows(D,R,cid); if(r) out[cid]={rank:r.rank,n:r.n}; }); return out; }
+
+  function cFte(R,days){return R.contractBasis>0?days/R.contractBasis:null;}
+  /* ONE FTE basis on the face: days / the contracted year, so every row adds up to the payroll.
+     capacityBasis still exists inside the calculation (management days are derived from it) but
+     the read-out never shows a second FTE number: two FTE columns is how a deck ends up quoting
+     the wrong one. */
+  function ofAvail(R,days){return R.availableDays>0?days/R.availableDays:null;}
+
+  /* ───────────────── the nine sanity checks ─────────────────
+     Each returns g (green) · a (amber) · r (red) · n (not assessed). */
+  function checks(D,R){
+    var I=D.inputs||{}, F=I.flags||{}, P=D.provenance||{}, out=[];
+    function add(id,name,val,st,why,thr){out.push({id:id,name:name,value:val,st:st,why:why,thr:thr});}
+
+    var mg=ofAvail(R,R.mgtDays);
+    add('mgmt','Management share',pct(mg),
+      mg>=0.08&&mg<=0.12?'g':(mg>=0.06&&mg<=0.15?'a':'r'),
+      mg<0.08?'Below the band. Either the manager carries operational work that belongs in process time, or the span of control is wide. Validate against the org baseline.'
+             :(mg>0.12?'Above the band. Usually a narrow span of control. Validate against the org baseline.':'Inside the 8–12% band.'),
+      '8–12% of available time');
+
+    var tm=ofAvail(R,R.trnDays+R.mtgDays);
+    add('trnmtg','Training + meetings',pct(tm), tm>0.25?'a':'g',
+      tm>0.25?'High. Check the line items for invisible operational work booked as a meeting.':'Inside the normal range.',
+      'amber above 25% of available time');
+
+    var rg=ofAvail(R,R.rigDays);
+    add('rigidity','Rigidity',pct(rg),
+      rg>=0.15?'g':(F.idleTimeObserved?'r':'a'),
+      rg>=0.15?'At or above the 15% floor.'
+             :(F.idleTimeObserved?'Below 15% while idle time, waiting or skill silos were observed in the interviews. The two cannot both be true, so rigidity is understated or another category absorbs it.'
+                                 :'Below 15%. Confirm no idle time or waiting was observed. If it was, this is a contradiction, not a low score.'),
+      'at least 15%, red if idle time was observed');
+
+    var vr=ofAvail(R,R.varDays);
+    add('variability','Variability',pct(vr),
+      vr>=0.02?'g':(F.senioritySpread?'r':'a'),
+      vr>=0.02?'Non-zero and consistent with the seniority profile.'
+             :(F.senioritySpread?'Near zero despite a wide seniority spread. Check the levels: if everybody is scored at the reference level the model has nothing to measure.'
+                                :'Near zero. That means the team is scored at a uniform level. Confirm that is really the case.'),
+      'at least 2%, red if a wide seniority spread was recorded');
+
+    /* The overlap the house sheet never reconciles: rigidity is a productivity loss across all
+       operational time, and the waste questions book part of the same hours again. */
+    if(R.lossOfOps==null) add('overlap','Rigidity + waste','n/a','n','No operational time to measure.','at most 65% of operational time');
+    else add('overlap','Rigidity + waste',pct(R.lossOfOps),
+      R.lossOfOps<=0.65?'g':(R.lossOfOps<=0.85?'a':'r'),
+      R.lossOfOps>0.65?('Together they claim '+pct(R.lossOfOps)+' of operational time. Rigidity is a productivity loss across all of that time, and the waste questions book part of the same hours again: waiting and searching are WHY productivity is below 100%. Reconcile them with the team before either number goes on a slide.')
+                      :'The two estimates leave enough productive time between them to be credible.',
+      'at most 65% of operational time');
+
+    var pr=R.procPctAvail;
+    add('process','Process time',pct(pr),
+      pr>0.45?'a':(pr<0.20?'r':'g'),
+      pr>0.45?'Residual above 45%. Rigidity or variability is probably understated, so the waterfall is deducting too little.'
+             :(pr<0.20?'Residual below 20%. Something above it is overstated, or work is being double-counted.':'Inside the 20–45% range.'),
+      '20–45% of available time');
+
+    if(R.valueAssessed){ var ote=R.ote||0, neg=R.remainderDays<0;
+      add('ote','OTE',pct(ote,0), neg?'r':((ote>=0.15&&ote<=0.50)?'g':'a'),
+        neg?'NEGATIVE. The measured waste exceeds the whole process-time residual, so the deductions above it cannot all be right. Fix the inputs before this goes anywhere.'
+        :(ote>0.50?'Above 50%. Very few service teams turn half of available time into value-added work. Revisit the waste answers with the business.'
+        :(ote<0.15?'Below 15%. Either the losses above are overstated or this team is in real trouble. Walk the waterfall before it goes on a slide.'
+                 :'Inside the plausible band for a top-down OTE.')),
+        '15–50% of available time'); }
+    else add('ote','OTE','not assessed','n',
+      'Waste is measured, but the remaining process time has not been split into business value and customer value, so there is no OTE. That split is the point of the instrument, not an optional extra.',
+      'needs the business/customer split');
+
+    var cats=rowsFor(D,R).filter(function(c){return c.prov;}), miss=[], mism=[];
+    var ref=(D.referencePeriod||{}).label||'';
+    /* only MEASURED categories share the one-year window; an estimated category is a
+       point-in-time assessment, so its own period is expected (reference.md §1). */
+    cats.filter(function(c){return c.type==='measured';}).forEach(function(c){ var e=(D.provenance||{})[c.id];
+      if(!e||!e.period) miss.push(c.label); else if(ref && e.period!==ref) mism.push(c.label+' ('+e.period+')'); });
+    add('period','Reference periods', miss.length?('not recorded ×'+miss.length):(mism.length?('mismatched ×'+mism.length):'aligned'),
+      (miss.length||mism.length)?'a':'g',
+      miss.length?('No period recorded for: '+miss.join(', ')+'. A number without a window cannot be compared with the rest.')
+        :(mism.length?('These datasets sit outside '+ref+': '+mism.join(', ')+'. Keep it only if the deviation is deliberate and recorded.')
+                    :('Every dataset carries the same window ('+ref+').')),
+      'all datasets on one window');
+
+    var mth=D.methods||{}, nomethod=[];
+    ['rigidity','variability','waste'].forEach(function(k){ if(!mth[k]) nomethod.push(k); });
+    var nosource=cats.filter(function(c){var e=(D.provenance||{})[c.id];return !e||!e.source;}).map(function(c){return c.label;});
+    add('method','Method & source recorded',
+      (nomethod.length||nosource.length)?'incomplete':'complete',
+      (nomethod.length?'r':(nosource.length?'a':'g')),
+      nomethod.length?('No method recorded for: '+nomethod.join(', ')+'. An estimate without a stated method is not a finding.')
+        :(nosource.length?('No source recorded for: '+nosource.join(', ')+'. Those numbers are excluded from the pass.')
+                        :'Every estimate states its method and every category cites its source.'),
+      'method + source on every category');
+    return out;
+  }
+
+
+  /* ───────────────── category spine (drives every view) ───────────────── */
+  /* Colour ENCODES the evidence type, it does not decorate: navy = a total, steel = the gross-to-net
+     step, mid blue = a measured deduction, sky = an estimated one, green = the derived residual.
+     That is the legend already in the footer, so the chart explains itself. */
+  var C_TOT='var(--wf-total)', C_STRUCT='var(--wf-struct)', C_LOSS='var(--wf-loss)',
+      C_VAL_B='var(--wf-value-b)', C_VAL_C='var(--wf-value-c)';
+  var CATS=[
+    {id:'paid-time',   label:'Paid time',            kind:'total',  type:'measured',   prov:true,  col:C_TOT},
+    {id:'absences',    label:'Absences (leave, sick, …)',  kind:'deduct', type:'measured',   prov:true,  col:C_STRUCT},
+    {id:'available',   label:'Available time (in the seat)',       kind:'total',  type:'calculated', prov:false, col:C_TOT},
+    {id:'management',  label:'Management',           kind:'deduct', type:'measured',   prov:true,  col:C_STRUCT, band:true},
+    {id:'trainings',   label:'Trainings / Projects / Coaching',   kind:'deduct', type:'measured',   prov:true,  col:C_STRUCT, band:true},
+    {id:'meetings',    label:'Meetings',             kind:'deduct', type:'measured',   prov:true,  col:C_STRUCT, band:true},
+    {id:'rigidity',    label:'Rigidity',             kind:'deduct', type:'estimated',  prov:true,  col:C_LOSS,   band:true},
+    {id:'variability', label:'Variability',          kind:'deduct', type:'estimated',  prov:true,  col:C_LOSS,   band:true},
+    {id:'process-time',label:'Total process time',   kind:'total',  type:'derived',    prov:false, col:C_TOT},
+    /* waste is MEASURED bottom-up from the ten questions; only the split below it is judged */
+    {id:'waste',          label:'Waste',           kind:'deduct', type:'assessed',  prov:true, col:C_LOSS,  band:true, value:true},
+    {id:'business-value', label:'Business value',  kind:'deduct', type:'estimated', prov:true, col:C_VAL_B, band:true, value:true},
+    {id:'customer-value', label:'Customer value',  kind:'deduct', type:'estimated', prov:true, col:C_VAL_C, band:true, value:true}
+  ];
+  /* The engagement may rename the three value rows (for example value enabling / value adding).
+     Defaults are the house labels. */
+  function catLabel(D,c){ return ((D.inputs&&D.inputs.valueSplit&&D.inputs.valueSplit.labels)||{})[c.id] || c.label; }
+  function rowsFor(D,R){ return CATS.filter(function(c){ return !c.value || R.valueAssessed; }); }
+  /* What each bucket MEANS. A tooltip earns its place only when it adds something the row does
+     not already show, so these are definitions, never a repeat of the number. */
+  /* CLIENT-FACING COPY. Everything in here is read over someone's shoulder in a session, so it
+     is written the way you would say it: short sentences, no house vocabulary, and none of the
+     "not a judgement, an assessment" phrasing this file used to be full of. */
+  /* CLIENT-FACING COPY, and not ours to phrase. Every definition below is quoted from the
+     Nova Reperta OTE Waterfall guidelines, slide 18, with one method note added where the
+     TOP-DOWN direction changes how the row is produced (annex slide 49). assets/terms.json
+     is the authority and check_docs.py fails a build that has drifted from it. */
+  var DEFS={
+    'paid-time':'Total contracted hours of all team members. Counted here in days: contracted days per year times FTE, plus overtime where it is real and not automatically compensated.',
+    'absences':'Non-productive time unavailable for work (sick leave, vacation, and public holidays).',
+    'available':'Total team time available on the floor, excluding (prolonged) sick leave, vacation, and public holidays. This is the 100 on the chart. Everything below is a share of it.',
+    'management':'Total time spent on management activities, both by managers and others (e.g. product specialists, team leads). All non-management tasks of managers belong in process time, not here.',
+    'trainings':'Team time spent on trainings, (on the job) coaching, projects, and meetings related to development or improvement. For team members only, not managers.',
+    'meetings':'Time spent in operational, recurring, or ad hoc meetings not captured under trainings or projects.',
+    'rigidity':'Lost productive time due to mismatch between demand and supply, and rigidity in how work is organised (e.g. excess breaks, scheduling inefficiencies). Estimated here on the two criteria of the house rigidity template: the number of peak and low days in a month, and how many people have a lead rather than a follower profile.',
+    'variability':'Additional process time required because team members perform below the average senior level due to skill differences or being newer to the role. Two things sit inside it: competence variability, the difference between juniors and seniors, and individual variability, the difference between people at the same level. Both are estimated here together, from one seniority profile. The reference is the average senior - the level marked as expected - and only the people below it are counted.',
+    'process-time':'Total productive time needed for average senior team members to complete all production work, based on standard times (norm times). In a top-down waterfall this is not measured. It is what is left of available time once management, trainings, meetings, variability and rigidity are taken off.',
+    'waste':'Portion of total process time spent on activities that add no direct value for the customer or the business. Assessed with the team through ten fixed questions, in minutes per person per workday.',
+    'business-value':'Portion of total process time spent on activities that add indirect value - necessary for the organisation but not directly perceived by the customer. The customer is not willing to pay for it, but production needs it: required controls, testing, back-office services.',
+    'customer-value':'Portion of total process time spent on activities that directly deliver value to the customer. The test is whether the customer is willing to pay for the activity.'
+  };
+  function catDays(R,id){
+    return {'paid-time':R.paidDays,'absences':R.absenceDays,'available':R.availableDays,
+      'management':R.mgtDays,'trainings':R.trnDays,'meetings':R.mtgDays,'rigidity':R.rigDays,
+      'variability':R.varDays,'process-time':R.procDays,
+      'waste':R.wasteDays,'business-value':R.businessValueDays,'customer-value':R.customerValueDays}[id];
+  }
+
+  /* ───────────────── views ─────────────────
+     LAYER = "the edit layer is present in this build". Hoisted OUTSIDE the fences and set to
+     true inside them, so one copy of the render code serves both builds: the client file emits
+     no lock affordances at all (its markup AND its CSS are stripped together). */
+  var LAYER=false;
+  function lockchip(){return LAYER?'<span class="lockchip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>locked</span>':'';}
+  function lockAttrs(kind){return LAYER?' class="wfwrap nr-locked" data-lock="'+kind+'"':' class="wfwrap"';}
+
+  /* ── the main slide: waterfall left, insights right (the house layout) ──
+     Everything is INDEXED TO AVAILABLE TIME = 100, so paid time reads above 100 (e.g. 129).
+     That is the convention the read-out is titled on: "current state OTE, %". */
+  function idx(R,days){ return R.availableDays>0 ? days/R.availableDays*100 : 0; }
+
+  function vWaterfall(D,R){
+    var list=rowsFor(D,R), maxI=idx(R,R.paidDays)||100, run=R.paidDays, out='';
+    /* Number the callouts in waterfall order, so the badge on a bar and the badge on its
+       insight card are the same number. */
+    var anns=(D.annotations||[]).filter(function(a){return WID.indexOf(a.categoryId)<0;});
+    var num={}, k=0;
+    list.concat([{id:'value-added'}]).forEach(function(c){
+      if(anns.some(function(a){return a.categoryId===c.id;})) num[c.id]=++k; });
+
+    list.forEach(function(c){
+      var days=catDays(R,c.id), left, w=idx(R,days)/maxI*100;
+      if(c.kind==='total'){ left=0; run=days; }
+      else { run-=days; left=idx(R,run)/maxI*100; }
+      var sep = (c.id==='available'||c.id==='process-time') ? '<div class="wf-sep"></div>' : '';
+      /* the value-added call-out numbers BOTH value rows, since it is about the pair of them.
+         Waste is a loss, not a value row, so it never picks that badge up. */
+      var isVal = (c.id==='business-value'||c.id==='customer-value');
+      var bn = num[c.id] || (isVal ? num['value-added'] : 0);
+      var badge = bn?'<span class="wf-num'+(isVal?' vnum':'')+'">'+bn+'</span>':'';
+      var val=Math.round(idx(R,days)), inBar=w>7;
+      var row=sep+'<div class="wf-row'+(c.kind==='total'?' tot':'')+(c.value?' val':'')+'"'+
+        (DEFS[c.id]?' data-tip="'+c.id+'"':'')+'>'+
+        '<div class="wf-label">'+badge+'<span>'+esc(catLabel(D,c))+'</span></div>'+
+        '<div class="wf-track"><div class="wf-bar" style="left:'+left.toFixed(2)+'%;width:'+Math.max(0.5,w).toFixed(2)+'%;background:'+c.col+'">'+
+          (inBar?'<span>'+val+'</span>':'')+'</div>'+
+          (inBar?'':'<span class="wf-out" style="left:calc('+(left+w).toFixed(2)+'% + 7px)">'+val+'</span>')+
+        '</div><div class="wf-fte">'+d1(cFte(R,days))+'</div></div>';
+      out+=row;
+    });
+
+    var oteBox = R.valueAssessed
+      ? '<div class="otebox"><div class="oteeq">OTE =</div>'+
+        '<div class="otef"><span class="num">Value added time</span><span class="den">Available time</span></div>'+
+        '<div class="oteres">= '+Math.round(R.ote*100)+'%</div>'+
+        '<div class="otenote">'+d0(R.valueAddedDays)+' of '+d0(R.availableDays)+' days<br>'+d1(cFte(R,R.valueAddedDays))+' of '+d1(R.fte)+' FTE</div></div>'
+      : '<div class="otebox na"><b>No OTE yet.</b> The chart stops at waste until the business and customer value split has been made with the business. That split is what gives the OTE.</div>';
+
+    return '<div class="slide">'+
+      '<section class="col-wf"><h3 class="sech">Current state OTE, %</h3>'+
+      '<div'+lockAttrs('derived')+'><div class="wfmeta"><span>Indexed to available time = 100 &middot; '+
+        d1(R.fte)+' FTE contracted &middot; '+d0(R.availableDays)+' available days'+lockchip()+'</span><span class="fteh">FTE</span></div>'+
+        out+'</div>'+oteBox+'</section>'+
+      '<section class="col-ins"><h3 class="sech">Insights and key sources of inefficiencies</h3>'+
+      bmNote(D,R,false)+
+      '<div class="inswrap">'+insightList(D,R,num,anns)+'</div></section></div>';
+  }
+
+
+  /* The comparison chip. It says WHICH population and HOW MANY teams, because a quartile of
+     five teams and a quartile of forty are different claims. Direction-aware: more waste is
+     worse, more customer value is better, and overheads are neither. */
+  function bmClass(b){ if(!b) return '';
+    if(b.direction==='neutral') return 'neu';
+    var good=(b.direction==='worse')?(b.quartile<=2):(b.quartile>=3);
+    return good?'good':'poor'; }
+  /* NO PEER CHIP ON THE WATERFALL. The band against the standard - good, medium, high - is the
+     whole verdict the main page needs; "third of 13" beside it is a second scale the reader has to
+     hold at the same time, on the page that is already carrying the cascade. The peer comparison
+     lives where it can be seen properly: the Benchmark view and the strip in the detailed table.
+     bmClass survives because the peer strip colours its dot with it. */
+  /* The STATED standard. Worded as distance from good, never as an outlier: on these engines
+     most teams read high on rigidity and variability, and that is the intended reading. */
+  var STDCLASS={good:'good',medium:'neu',high:'poor'};
+  function stdChip(t){ if(!t) return '';
+    var d='Against '+esc(t.label||'the standard')+
+      (t.author?', stated by '+esc(t.author):'')+': good below '+pct(t.good,0)+
+      ', medium to '+pct(t.medium,0)+', high above. A stated standard from experience, '+
+      'not measured industry data, and deliberately demanding.';
+    return ' <span class="chip st '+STDCLASS[t.band]+'" data-tiph="'+esc(t.band)+' against the standard"'+
+      ' data-tipb="'+d+'">'+esc(t.band)+'</span>'; }
+
+  /* One line naming what a band on this page is a band OF, so a word like "high" is never
+     floating. It names only what the page in front of the reader actually shows: the waterfall
+     carries the stated standard, the benchmark view carries both. */
+  function bmNote(D,R,withPeers){
+    var sets=refsets(D), parts=[];
+    var meas=null, st=null;
+    sets.forEach(function(x){ if(!meas&&(x.population==='engagement'||x.population==='library')) meas=x;
+                              if(!st&&x.population==='standard') st=x; });
+    if(st && Object.keys(R.std||{}).length)
+      parts.push('<b>'+esc(st.label||'the standard')+'</b>, a stated standard from experience '+
+                 'and deliberately demanding, not measured industry data');
+    if(withPeers){
+      if(meas && Object.keys(R.bench||{}).length)
+        parts.push('<b>'+esc(meas.label||'teams measured before')+'</b>, quartiles of what was '+
+                   'actually measured');
+      else if(meas)
+        parts.push('no measured comparison yet: fewer than '+MIN_N+' teams on this method');
+    }
+    if(!parts.length) return '<div class="bmnote">No standard loaded, so these are this team\'s '+
+      'figures on their own</div>';
+    var tail = (!withPeers && meas && Object.keys(R.bench||{}).length)
+      ? '. How this team compares with the other teams measured is on the Benchmark tab' : '';
+    return '<div class="bmnote">Compared with '+parts.join(' &middot; ')+tail+'</div>'; }
+
+  function insightList(D,R,num,anns){
+    if(!anns.length) return '<div class="ins empty" data-ann="-1"><div class="inh"><span class="inum">+</span>'+
+      '<b>No findings written</b></div><ul><li>The chart shows the numbers. It does not yet say what they mean.</li>'+
+      '<li>Add one note per category that matters: what is behind it, how big it is, and what it costs the team.</li></ul></div>';
+    var all=(D.annotations||[]);
+    return anns.map(function(a){
+      var i=all.indexOf(a);
+      var c=CATS.filter(function(x){return x.id===a.categoryId;})[0];
+      var days=c?catDays(R,c.id):(a.categoryId==='value-added'?R.valueAddedDays:null);
+      var pa=(days!=null&&R.availableDays>0)?days/R.availableDays:null;
+      var st=(R.std||{})[a.categoryId];
+      var head=(c?catLabel(D,c):(a.categoryId==='value-added'?'Value added time':'Other findings'))+
+        (pa!=null?': '+Math.round(pa*100)+'%':'')+stdChip(st);
+      var bl=(a.bullets&&a.bullets.length)?a.bullets:(a.text?[a.text]:[]);
+      return '<div class="ins" data-ann="'+i+'"><div class="inh nrsrc-row"><span class="inum">'+(num[a.categoryId]||'&bull;')+'</span>'+
+        '<b>'+head+(window.NRSRC?NRSRC.item(a,String(head).replace(/<[^>]*>/g,''),{k:'ann:'+i,optional:true}):'')+'</b></div><ul>'+bl.map(function(b){return '<li>'+esc(b)+'</li>';}).join('')+'</ul>'+
+        '<div class="inev">'+esc(a.evidence||'no evidence recorded')+'</div></div>';
+    }).join('');
+  }
+
+
+  /* ── Where time is wasted: the ten questions ranked ──
+     Same furniture as the waterfall (.wf-row / .wf-track / .wf-bar), so fitRows and fitInsights
+     size this view too, and a client reads the second slide the way they read the first. */
+  var WID=WASTE_ITEMS.map(function(w){return w[0];});
+  function cap(t){t=String(t||'');return t.charAt(0).toUpperCase()+t.slice(1);}
+
+  function vWaste(D,R){
+    var items=(R.wasteItems||[]).slice().sort(function(a,b){return b.minutesPerDay-a.minutesPerDay;});
+    var tot=R.wasteMinutesPerDay||0, mx=items.length?Math.max(0.0001,items[0].minutesPerDay):1;
+    var dPerMin = tot>0 ? R.wasteDays/tot : 0;
+    /* Number the call-outs in bar order, exactly as the waterfall does, so a badge on a bar and
+       the badge on its card are the same number. */
+    var anns=(D.annotations||[]).filter(function(a){return WID.indexOf(a.categoryId)>=0;});
+    var num={}, k=0;
+    items.forEach(function(w){ if(anns.some(function(a){return a.categoryId===w.id;})) num[w.id]=++k; });
+    var run=0, out='';
+    items.forEach(function(w,i){
+      var m=w.minutesPerDay||0; run+=m;
+      var wpc=m/mx*100, cat=WASTE_ITEMS.filter(function(x){return x[0]===w.id;})[0];
+      var badge = num[w.id]?'<span class="wf-num">'+num[w.id]+'</span>':'';
+      var lb=cap(w.label);
+      out+='<div class="wf-row wst'+(i<3?' top':'')+'" data-tiph="'+esc(lb)+
+          '" data-tipb="'+esc(cat?cat[2]:'')+'">'+
+        '<div class="wf-label">'+badge+'<span>'+esc(lb)+'</span></div>'+
+        '<div class="wf-track"><div class="wf-bar" style="left:0;width:'+Math.max(0.6,wpc).toFixed(2)+
+          '%;background:var(--wf-loss)'+(i<3?'':';opacity:.62')+'">'+(wpc>16?'<span>'+d0(m)+' min</span>':'')+'</div>'+
+          (wpc>16?'':'<span class="wf-out" style="left:calc('+Math.max(0.6,wpc).toFixed(2)+'% + 7px)">'+d0(m)+' min</span>')+
+        '</div><div class="wf-fte">'+d1(cFte(R,m*dPerMin))+'</div>'+
+        '<div class="wf-cum">'+pct(tot>0?run/tot:null,0)+'</div></div>';
+    });
+    /* The three summary cards under the chart are gone: they restated this row in three boxes and
+       took a third of the canvas to do it. Nothing unique went with them - the share of available
+       time is the waste bar on the waterfall, and the days are in the detailed table. This line
+       stays short on purpose: the track ends where the FTE column begins. */
+    out+='<div class="wf-row wtot"><div class="wf-label"><span>Total measured waste</span></div>'+
+      '<div class="wf-track"><span class="wf-out" style="left:0">'+d0(tot)+' min per person per workday, '+
+        pct(R.wasteShareOfDay,0)+' of an '+d1(R.hoursPerDay)+'h day</span></div>'+
+      '<div class="wf-fte">'+d1(cFte(R,R.wasteDays))+'</div><div class="wf-cum">100%</div></div>';
+
+    return '<div class="slide">'+
+      '<section class="col-wf" style="--labw:calc(var(--ui)*28.5)"><h3 class="sech">Where the time goes, minutes per workday</h3>'+
+      '<div class="wfwrap"><div class="wfmeta"><span>The ten questions, ranked largest first. '+
+        '<b>Cumulative</b> is the running share of all measured waste.</span>'+
+        '<span class="fteh">FTE</span><span class="cumh">cumulative</span></div>'+out+'</div></section>'+
+      '<section class="col-ins"><h3 class="sech">Insights</h3>'+
+      '<div class="inswrap">'+wasteInsights(D,R,anns,num,items)+'</div></section></div>';
+  }
+
+  /* The insight panel is AUTHORED, like the waterfall's. It carries what the team said about a
+     particular waste question, never a restatement of the arithmetic already on the bar beside it. */
+  function wasteInsights(D,R,anns,num,items){
+    if(!anns.length) return '<div class="ins empty" data-ann="-1"><div class="inh"><span class="inum">+</span>'+
+      '<b>No findings written</b></div><ul><li>There are ten answers here, and nothing yet about what sits '+
+      'behind them.</li><li>Write one note per question that matters: what actually happens, how often, and '+
+      'what it costs the team.</li></ul></div>';
+    var byId={}; items.forEach(function(w){byId[w.id]=w;});
+    var tot=R.wasteMinutesPerDay||0, dPerMin = tot>0 ? R.wasteDays/tot : 0;
+    return anns.map(function(a){
+      var w=byId[a.categoryId], m=w?w.minutesPerDay:0;
+      /* no per-question population exists yet, so this states the share of THIS team's waste,
+         which is arithmetic, and makes no comparison it cannot support */
+      var head=esc(cap(w?w.label:a.categoryId))+': '+d0(m)+' min'+
+        (tot>0?' <span class="sev neu">('+pct(m/tot,0)+' of waste, '+
+          d1(cFte(R,m*dPerMin))+' FTE)</span>':'');
+      var bl=(a.bullets&&a.bullets.length)?a.bullets:(a.text?[a.text]:[]);
+      return '<div class="ins" data-ann="'+(D.annotations||[]).indexOf(a)+'"><div class="inh nrsrc-row">'+
+        '<span class="inum">'+(num[a.categoryId]||'&bull;')+'</span><b>'+head+(window.NRSRC?NRSRC.item(a,String(head).replace(/<[^>]*>/g,''),{k:'ann:'+(D.annotations||[]).indexOf(a),optional:true}):'')+'</b></div>'+
+        '<ul>'+bl.map(function(b){return '<li>'+esc(b)+'</li>';}).join('')+'</ul>'+
+        '<div class="inev">'+esc(a.evidence||'no evidence recorded')+'</div></div>';
+    }).join('');
+  }
+
+  /* The detailed table. It ships in BOTH builds: the waterfall states the shape, this states the
+     numbers, and a client who wants the arithmetic should be able to see it.
+     ONE FTE column. Two columns on different bases is how the wrong one gets quoted. */
+  /* THE PEER CELL. `17% third q` was two things a reader has to translate before either says
+     anything. This draws the distribution instead: the box is the middle half of the reference
+     teams, the tick is their median, the dot is this team - on the good or the bad side, with
+     direction respected, so more customer value reads green and more waste reads crimson.
+     It also shows what a quartile word cannot: the SHAPE of the field. Rigidity is a wide spread
+     and this team sits just past the middle of it; variability is a tight cluster and the same
+     team sits at its edge. Same word, different finding. */
+  function peerStrip(D,R,cid){
+    var bm=(R.bench||{})[cid]; if(!bm) return '';
+    var s=seriesSet(D), xs=s?((s.series||{})[cid]||null):null;
+    var q1=null,q2=bm.median,q3=null;
+    var b=null; refsets(D).forEach(function(x){
+      if(!b&&(x.population==='engagement'||x.population==='library')) b=x; });
+    var e=b?((b.categories||{})[cid]||null):null; if(!e) return '';
+    q1=+e.q1; q3=+e.q3;
+    var lo,hi;
+    if(xs&&xs.length){ lo=xs[0].v; hi=xs[0].v;
+      xs.forEach(function(x){ if(x.v<lo)lo=x.v; if(x.v>hi)hi=x.v; }); }
+    else { var iqr=Math.max(1e-9,q3-q1); lo=q1-iqr*0.6; hi=q3+iqr*0.6; }
+    /* the team's own dot is never off the end of its own strip */
+    lo=Math.min(lo,bm.value); hi=Math.max(hi,bm.value);
+    var sp=hi-lo; if(!(sp>0)) return '';
+    var P=function(x){ return ((x-lo)/sp*100).toFixed(2)+'%'; };
+    return '<span class="pstrip" title="'+esc(bm.band)+' of '+bm.n+' teams; their median is '+
+      pct(bm.median,0)+'"><i class="prail"></i>'+
+      '<i class="pbox" style="left:'+P(q1)+';width:'+((q3-q1)/sp*100).toFixed(2)+'%"></i>'+
+      '<i class="pmed" style="left:'+P(q2)+'"></i>'+
+      '<i class="pme '+bmClass(bm)+'" style="left:'+P(bm.value)+'"></i></span>';
+  }
+
+  function vDetail(D,R){
+    /* The cascade in numbers. Two columns have been tried and removed here: a delta that restated
+       the days as a negative, and a running balance headed "Left" that needed a sentence of its
+       own to be read at all. A column a reader cannot use without a footnote is not earning its
+       place; days, share of available and FTE each read on their own row. */
+    var out='', hasBench=Object.keys(R.bench||{}).length>0;
+    rowsFor(D,R).forEach(function(c){
+      var days=catDays(R,c.id);
+      var ofProc = c.value ? ' <span style="color:var(--mut)">('+pct(R.procDays>0?days/R.procDays:null,0)+' of process)</span>' : '';
+      out+='<tr class="'+(c.kind==='total'?'tot':'')+(c.value?' val':'')+'"'+
+        (DEFS[c.id]?' data-tip="'+c.id+'"':'')+'><td><b>'+esc(catLabel(D,c))+'</b></td>'+
+        '<td class="r">'+d0(days)+'</td>'+
+        '<td class="r">'+pct(ofAvail(R,days))+ofProc+'</td>'+
+        '<td class="r">'+d1(cFte(R,days))+'</td>'+
+        (hasBench?'<td class="r pk">'+peerStrip(D,R,c.id)+'</td>':'')+
+        '</tr>';
+    });
+    if(R.valueAssessed){
+      out+='<tr class="tot val"><td><b>Value added time</b> <span style="font-weight:400;color:var(--mut)">(business + customer)</span></td>'+
+        '<td class="r">'+d0(R.valueAddedDays)+'</td><td class="r"><b>OTE '+pct(R.ote,0)+'</b></td>'+
+        '<td class="r">'+d1(cFte(R,R.valueAddedDays))+'</td>'+
+        (hasBench?'<td class="r pk">'+peerStrip(D,R,'value-added')+'</td>':'')+
+        '</tr>'; }
+    else
+      out+='<tr><td colspan="'+(hasBench?5:4)+'"><span class="naChip">n/a</span> <span style="color:var(--mut);font-size:var(--fs-small)">Business value and customer value not assessed for this team, so there is no OTE. The waterfall stops at waste.</span></td></tr>';
+    var meas=null; refsets(D).forEach(function(x){
+      if(!meas&&(x.population==='engagement'||x.population==='library')) meas=x; });
+    return '<h3 class="sech">The same cascade, in days and FTE</h3>'+
+      '<div class="tmeta"><span>Every row is deducted from the one above it. Percentages are of '+
+        '<b>available time</b> ('+d0(R.availableDays)+' days), which is why paid time reads above '+
+        '100%.</span></div>'+
+      '<div class="tcard"><table data-stretch><thead><tr><th>Category</th><th class="r">Days</th>'+
+      '<th class="r">% of available</th><th class="r">FTE</th>'+
+      (hasBench?'<th class="r">vs the '+((R.bench||{})['rigidity']||(R.bench||{})['waste']||{}).n+
+        ' teams</th>':'')+'</tr></thead>'+
+      '<tbody>'+out+'</tbody></table></div>'+
+      (hasBench?'<div class="tmeta pkey" style="margin:.8em 0 0">'+
+        '<span class="pstrip key"><i class="prail"></i><i class="pbox" style="left:22%;width:44%"></i>'+
+        '<i class="pmed" style="left:47%"></i><i class="pme" style="left:66%"></i></span>'+
+        'Across '+esc((meas||{}).label||'the reference teams')+', on the same share of available '+
+        'time: the <b>box</b> covers the middle half of them, the <b>tick</b> is their middle '+
+        'value and the <b>dot</b> is this team. Green means this team is on the better side of '+
+        'that middle value for that row, red the worse side.</div>':'');
+  }
+
+  /* ── Benchmark: where this team sits among the teams measured in the same engagement ──
+     Three ranked columns, stacked. Every team is a bar, sorted best to worst, this team in
+     crimson; the standard is two dashed lines across the plot. The face carries the category
+     name, the bars, the lines and one number - the team, its share and its rank are all in the
+     hover, because writing them out repeats what the picture already says. */
+  function vBench(D,R){
+    var s=seriesSet(D), blocks=[];
+    BENCH_VIEW.forEach(function(cid){
+      var br=benchRows(D,R,cid); if(!br) return;
+      var c=CATS.filter(function(x){return x.id===cid;})[0], sd=(R.std||{})[cid];
+      var mx=0; br.rows.forEach(function(r){ if(r.v>mx) mx=r.v; });
+      var top=mx*1.12||1, P=function(x){return (x/top*100).toFixed(2)+'%';};
+      var thr='';
+      if(sd){
+        thr='<div class="bnthr g" style="bottom:'+P(sd.good)+'"></div>'+
+            '<span class="bnthrl g" style="bottom:'+P(sd.good)+';margin-bottom:1px">good &lt;'+pct(sd.good,0)+'</span>'+
+            '<div class="bnthr" style="bottom:'+P(sd.medium)+'"></div>'+
+            '<span class="bnthrl" style="bottom:'+P(sd.medium)+';margin-bottom:1px">medium &lt;'+pct(sd.medium,0)+'</span>'; }
+      var bars=br.rows.map(function(r,i){
+        var band=sd?(r.v<sd.good?'good':(r.v<=sd.medium?'medium':'high')):null;
+        return '<div class="bnbar'+(r.me?' me':'')+'" style="height:'+P(r.v)+'"'+
+          ' data-tiph="'+esc(r.team)+'" data-tipb="'+pct(r.v,1)+' of available time. '+
+          ordn(i+1)+' lowest of '+br.n+' teams'+(band?', '+band+' against the standard':'')+'.">'+
+          (r.me?'<span class="bnv">'+pct(r.v,0)+'</span>':'')+'</div>'; }).join('');
+      blocks.push('<div class="bnblk"><div class="bncat">'+esc(c?catLabel(D,c):cid)+'</div>'+
+        /* the threshold lines paint OVER the bars: a line that a solid bar hides is a line
+           nobody sees, and crossing the bars is how a reference line is read anyway */
+        '<div class="bnplot"><div class="bnbars">'+bars+'</div>'+thr+'<div class="bnbase"></div></div></div>');
+    });
+    if(!blocks.length) return '<h3 class="sech">Benchmark</h3><div class="tmeta"><span>'+
+      'No engagement benchmark is loaded, so there is nothing to rank this team against.</span></div>';
+    var n=(R.benchRank[BENCH_VIEW[0]]||{}).n||0;
+    return '<div class="slide">'+
+      '<section class="col-wf bn"><h3 class="sech">Where this team ranks among the '+n+
+        ' teams measured</h3><div class="bn">'+blocks.join('')+'</div>'+
+        '<div class="bncap"><span>Each bar is one team, best to worst &rarr;</span>'+
+        '<span>hover a bar for the team, its share and its rank</span></div></section>'+
+      '<section class="col-ins"><h3 class="sech">Reading the benchmark</h3>'+
+      bmNote(D,R,true)+'<div class="inswrap">'+benchList(D,R,s)+'</div></section></div>';
+  }
+  /* Authored, like every other insight panel on this instrument. A ranking that writes its own
+     commentary produces sentences that restate the chart; what a client needs is what the
+     consultant concluded from it. */
+  function benchList(D,R,s){
+    var list=(D.benchmarkInsights||[]).filter(function(x){return x&&(x.title||x.bullets);});
+    if(!list.length) return '<div class="ins empty"><div class="inh"><span class="inum">+</span>'+
+      '<b>No reading written</b></div><ul><li>The ranking is here, but not what it means for this '+
+      'organisation.</li><li>Two or three notes: where this team sits, what the gap between the best and '+
+      'the worst team tells you, and where to start.</li>'+
+      '</ul></div>';
+    return list.map(function(x,i){
+      return '<div class="ins"><div class="inh nrsrc-row"><span class="inum">'+(i+1)+'</span><b>'+
+        esc(x.title||'')+(window.NRSRC?NRSRC.item(x,String(x.title||'').replace(/<[^>]*>/g,''),{k:'read:'+i,optional:true}):'')+'</b></div><ul>'+
+        (x.bullets||[]).map(function(b){return '<li>'+esc(b)+'</li>';}).join('')+'</ul></div>'; }).join('');
+  }
+
+  /* FOUR VIEWS, in both builds. The waterfall states the answer, the waste view states where the
+     time goes, the benchmark places the team among its peers, the table states the numbers behind
+     all three. Provenance, the sanity checks and the baseline reconciliation are still COMPUTED,
+     still written to the capture and still enforced by check_ote.py: they are consultant
+     apparatus, so they belong in the gate, not on a tab.
+     The benchmark tab appears only when an ENGAGEMENT benchmark with a series is loaded - a tab
+     that renders an apology is worse than no tab. */
+  var VIEWS=[['wf','Waterfall',vWaterfall],['waste','Where time is wasted',vWaste]];
+  if(seriesSet(DATA)) VIEWS.push(['bench','Benchmark',vBench]);
+  VIEWS.push(['detail','Detailed table',vDetail]);
+  var cur='wf', R=calc(DATA);
+
+  /* ───────────────── chrome ───────────────── */
+  document.getElementById('ctx').textContent=DATA.context||'OPEX QUICKSCAN';
+  document.getElementById('lens').textContent=DATA.lens||'BASELINE · OTE WATERFALL';
+  document.getElementById('subt').textContent=(DATA.teamName||'')+((DATA.referencePeriod||{}).label?' · '+DATA.referencePeriod.label:'');
+  document.getElementById('views').innerHTML=VIEWS.map(function(v,i){return '<button data-v="'+v[0]+'"'+(i===0?' class="on"':'')+'>'+v[1]+'</button>';}).join('');
+  function drawMeta(){
+    document.getElementById('src').innerHTML=DATA.source?('<b style="color:var(--txt)">Source:</b> '+esc(DATA.source)):'';
+    var lg=[['var(--wf-struct)','Structural time'],
+            ['var(--wf-loss)','Inefficiency'],
+            ['var(--wf-value-c)','Value added']]
+      .map(function(x){return '<span class="lp"><i style="background:'+x[0]+'"></i>'+x[1]+'</span>';});
+    if(cur==='bench') lg=[['var(--wf-loss)',(DATA.teamName||'this team')],
+                          ['var(--bnpeer)','the other teams measured']]
+      .map(function(x){return '<span class="lp"><i style="background:'+x[0]+'"></i>'+esc(x[1])+'</span>';})
+      .concat(['<span class="lp"><i class="lstd"></i>Best-in-class standard</span>']);
+    document.getElementById('lg').innerHTML=lg.join('');
+  }
+  function drawTitle(){document.getElementById('title').innerHTML=hl(DATA.keyMessage||'');}
+
+  /* Monotonic binary-search fit: the largest scale whose content still fits the frame. It cannot
+     overshoot (an iterative fit can oscillate and clip). Capped at 1.0 on purpose — a short view
+     stretches to fill rather than magnifying, so body text is the same size on every tab. */
+  /* BREATHING ROOM. The fit used to run the content to within 8px of the frame, which is why a
+     full slide read as packed. This leaves a deliberate margin at the bottom of every view, the
+     same on all four, so the whole deck breathes the same way. */
+  function bottomGap(ah){ return Math.max(14, ah*0.035); }
+
+  /* ONE TYPE BASE for the whole slide, solved from the frame and nothing else.
+     Deliberately NOT solved from content: a base that depended on how many findings were written
+     would make the chart type jump when someone added a bullet. Sub-linear in the frame height,
+     so a 1080p slide reads bigger than a 768p one without the chart becoming a poster. */
+  function fitUI(ah){
+    var art=document.getElementById('art');
+    var ui=Math.max(9.5, Math.min(14*nrZ(), ah/52));
+    art.style.setProperty('--ui', ui.toFixed(2)+'px');
+    return ui; }
+
+  /* TWO PASSES, always. The fit changes the layout it is measuring - row height moves the chart
+     column, which moves the insight column's target - and in the working copy the edit layer
+     changes it again underneath. One pass can therefore settle on a size solved against a stale
+     measurement, which is how the unlocked working copy ended up with 7px insights and content
+     past the bottom of the frame. The second pass measures what the first one produced. */
+  function fitView(){ fitOnce(); fitOnce(); }
+  function fitOnce(){var v=document.getElementById('view'),vi=document.getElementById('vinner');var ah=v.clientHeight;if(!ah)return;
+    var st=vi.querySelector('[data-stretch]'); if(st)st.style.height='';
+    vi.style.transform='none';vi.style.width='100%';
+    var gap=bottomGap(ah);
+    /* --ui first: every size downstream is measured in it */
+    fitUI(ah); fitRows(ah-gap); fitBench(ah-gap); fitInsights();
+    var lo=0.25,hi=1.0*nrZ(),best=0.25;
+    for(var k=0;k<12;k++){var s=(lo+hi)/2;vi.style.width=(100/s)+'%';if(vi.scrollHeight*s<=ah-gap){best=s;lo=s;}else{hi=s;}}
+    vi.style.width=(100/best)+'%';vi.style.transform='scale('+best+')';
+    if(st){var free=(ah-gap)/best-vi.scrollHeight; if(free>1)st.style.height=(st.offsetHeight+free)+'px';}
+    /* THE BACKSTOP. scrollHeight is a promise about layout; the painted bottom of the deepest
+       element is the fact. They disagree whenever something rewraps after the search - long
+       insight prose in a column whose width the search itself just changed is the case that bit
+       us, and only in the working copy, where the edit layer moves the goalposts again. So
+       measure what is actually on the glass and shrink until it is inside the frame. Three
+       passes, because each shrink can rewrap once more. */
+    var vt=vi.getBoundingClientRect().top;
+    for(var g=0;g<3;g++){
+      var fb=v.getBoundingClientRect().bottom-gap, deep=vt;
+      vi.querySelectorAll('*').forEach(function(e){var r=e.getBoundingClientRect();
+        if(r.height&&r.bottom>deep) deep=r.bottom;});
+      if(deep<=fb) break;
+      var k=(fb-vt)/(deep-vt); if(!(k>0&&k<1)) break;
+      best=Math.max(0.25,best*k);
+      vi.style.width=(100/best)+'%'; vi.style.transform='scale('+best+')';
+    }}
+    /* NO trailing fitInsights here. It used to re-solve the insight column AFTER the scale was
+       fixed, so it could grow the prose - and the gaps with it - past the height the scale search
+       had just approved: 707px of content inside a 536px frame, with the last finding off the
+       bottom. The second pass of fitView does that re-solve and then re-runs the scale search on
+       the result, which is the same work in an order that cannot overflow. */
+  /* The waterfall fills the frame by growing its ROWS, not by magnifying everything. Height is
+     linear in the row height (total = fixed chrome + rows x rowh), so one solve is exact. */
+  function fitRows(ah){
+    var art=document.getElementById('art'), col=document.querySelector('.col-wf');
+    if(!col){ if(art) art.style.removeProperty('--rowh'); return; }
+    var rows=col.querySelectorAll('.wf-row').length; if(!rows) return;
+    var cur=parseFloat(getComputedStyle(art).getPropertyValue('--rowh'))||29;
+    var fixed=col.offsetHeight-rows*cur;
+    var h=Math.max(22,Math.min(68,(ah-16-fixed)/rows));
+    art.style.setProperty('--rowh',h.toFixed(2)+'px');}
+  /* The benchmark charts fill the frame the same way the waterfall does: by growing the PLOTS,
+     not by magnifying everything. Height is linear in the plot height, so one solve is exact. */
+  function fitBench(ah){
+    var art=document.getElementById('art'), col=document.querySelector('.col-wf.bn');
+    if(!col){ if(art) art.style.removeProperty('--bnh'); return; }
+    var n=col.querySelectorAll('.bnplot').length; if(!n) return;
+    var cur=parseFloat(getComputedStyle(art).getPropertyValue('--bnh'))||150;
+    var fixed=col.offsetHeight-n*cur;
+    var h=Math.max(72,Math.min(300,(ah-16-fixed)/n));
+    art.style.setProperty('--bnh',h.toFixed(2)+'px');}
+  /* The insight column carries prose, so it cannot be stretched like a table. Instead search the
+     largest base font-size at which it still fits the height of the waterfall beside it, and let
+     every size inside it be relative. The column then always fills, at any width, with any number
+     of findings. It never drives the outer fit, because its target IS the waterfall's height. */
+  function fitInsights(){
+    var host=document.querySelector('.col-ins'), wf=document.querySelector('.col-wf');
+    if(!host||!wf) return;
+    var wrap=host.querySelector('.inswrap'); if(!wrap) return;
+    /* subtract EVERYTHING that sits above the list inside this column, not just the heading:
+       the reference note lives there too, and at 1920 it runs to two lines. Measuring the
+       offset is robust to whatever is added above it next. */
+    var target=wf.offsetHeight-(wrap.offsetTop-host.offsetTop);
+    if(target<40){host.style.fontSize='';return;}
+    /* The search is BANDED around --ui. It may shrink below the base when a team has a lot of
+       findings, because clipping is worse than small type, but it may not grow far above it:
+       an unbanded search is what let the prose reach 15.7px at 1920 while its own section
+       heading sat at 12.8 and the chart labels at 9.9. A little slack under a short list is
+       breathing room, not a fault. */
+    var ui=parseFloat(getComputedStyle(document.getElementById('art')).getPropertyValue('--ui'))||11;
+    var lo=7,hi=ui*1.06,best=lo;
+    wrap.style.gap='';
+    for(var i=0;i<11;i++){var f=(lo+hi)/2;host.style.fontSize=f+'px';
+      if(wrap.scrollHeight<=target){best=f;lo=f;}else{hi=f;}}
+    host.style.fontSize=best.toFixed(2)+'px';
+    /* Banding the type means a short list no longer stretches to the bottom of the column. Spend
+       the slack on the GAPS rather than on the letters: the cards spread down the column, which
+       is breathing room, where the same slack left at the foot is just a hole. Capped, because
+       three findings a hand-span apart stop reading as one list. */
+    var n=wrap.children.length;
+    if(n>1){
+      var free=target-wrap.scrollHeight;
+      /* Clamp by the room actually left in the FRAME, not just in the chart column beside it.
+         The working copy's chart column grows when the edit layer is on, so filling it blindly
+         pushed the last finding off the bottom of the slide - and this runs after the outer
+         scale is already fixed, so nothing downstream would have caught it. */
+      var fr=document.getElementById('view'), vi=document.getElementById('vinner');
+      if(fr&&vi){
+        var sc=+(String(vi.style.transform).match(/scale\(([\d.]+)\)/)||[0,1])[1]||1;
+        var room=(fr.clientHeight-bottomGap(fr.clientHeight))/sc-vi.scrollHeight;
+        free=Math.min(free, Math.max(0, room));
+      }
+      if(free>2){
+        var base=1.35*best, extra=Math.min(free/(n-1), 2.4*best);
+        wrap.style.gap=(base+extra).toFixed(1)+'px';
+      }
+    }}
+
+  var tipEl=null;
+  function bindTips(){
+    if(!tipEl){ tipEl=document.createElement('div'); tipEl.id='tip';
+      (document.getElementById('art')||document.body).appendChild(tipEl); }
+    /* Bind the BAR and the LABEL, never the whole row: the row spans the full width, so hovering
+       empty track would fire the tooltip wherever the pointer happened to be. */
+    /* Any element may carry a definition: a waterfall row, a waste question, a table row. The
+       TRIGGERS are the bar and the label where they exist, and the element itself otherwise, so a
+       hover never fires from empty track. */
+    document.querySelectorAll('#vinner [data-tip],#vinner [data-tiph]').forEach(function(el){
+      var id=el.getAttribute('data-tip');
+      var trig=[el.querySelector('.wf-bar'),el.querySelector('.wf-label')].filter(Boolean);
+      if(!trig.length) trig=[el];
+      trig.forEach(function(t){ if(!t) return;
+        t.addEventListener('mouseenter',function(){
+          if(id){ var c=CATS.filter(function(x){return x.id===id;})[0];
+            tipEl.innerHTML='<b>'+esc(c?catLabel(DATA,c):'')+'</b>'+esc(DEFS[id]||''); }
+          else { tipEl.innerHTML='<b>'+esc(el.getAttribute('data-tiph')||'')+'</b>'+
+            esc(el.getAttribute('data-tipb')||''); }
+          tipEl.classList.add('on'); place(el); });
+        t.addEventListener('mouseleave',function(){tipEl.classList.remove('on');});
+      });
+    });
+    /* Anchor over the chart's own whitespace, just right of the label column, rather than out
+       to the right where it would sit on top of the insight panel. */
+    function place(el){ var r=el.getBoundingClientRect(), t=tipEl.getBoundingClientRect();
+      var lab=el.querySelector('.wf-label'), trk=el.querySelector('.wf-track');
+      var top=r.top+r.height/2-t.height/2;
+      top=Math.max(8,Math.min(top,window.innerHeight-t.height-8));
+      var left=(lab?lab.getBoundingClientRect().right:r.left+24)+10;
+      var limit=(trk?trk.getBoundingClientRect().right:r.right);
+      if(left+t.width>limit) left=Math.max(8,limit-t.width);
+      if(left+t.width>window.innerWidth-8) left=Math.max(8,window.innerWidth-t.width-8);
+      tipEl.style.left=left+'px'; tipEl.style.top=top+'px'; }
+  }
+  function render(){
+    R=calc(DATA);
+    var v=VIEWS.filter(function(x){return x[0]===cur;})[0];
+    document.getElementById('vinner').innerHTML=v[2](DATA,R);
+    drawTitle(); drawMeta(); bindTips();
+    
+    requestAnimationFrame(fitView); setTimeout(fitView,60);
+  }
+  function seg(id,attr,cb){var box=document.getElementById(id);box.querySelectorAll('button').forEach(function(b){b.onclick=function(){
+    box.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});b.classList.add('on');cb(b.getAttribute(attr));};});}
+  seg('views','data-v',function(v){cur=v;render();});
+  seg('theme','data-s',function(t){document.getElementById('art').setAttribute('data-t',t);render();});
+  window.addEventListener('resize',fitView);
+
+  render();
+
+})();
+</script>
+<script>
+/* ── fitChrome() — the chrome stacks when it does not fit ────────────────────
+   Measures the one-row layout and adds .stacked to the artifact root when any of
+   six things is true: the two groups are closer than 12px · a control runs past
+   either edge · a label has been squeezed narrower than its own text · the
+   toprow wraps · the toprow comes within 6px of the action title · the viewport
+   is at or below 760px (the floor). Exposed as window.fitChrome() so a render
+   pass can call it after it changes a label. ── */
+(function(){
+  var busy=false,lastW=-1;
+  function root(){return document.querySelector('#art,#pm,#pw');}
+  function skip(e){
+    if(!e) return true;
+    if(e.id==='wpop'||(e.closest&&e.closest('#wpop'))) return true;
+    var cs=getComputedStyle(e);
+    if(cs.visibility==='hidden'||cs.display==='none') return true;
+    return false;
+  }
+  function fitChrome(){
+    if(busy) return; busy=true;
+    try{
+      var R=root(); if(!R) return;
+      var tr=R.querySelector('.toprow'); if(!tr) return;
+      R.classList.remove('stacked');
+      void tr.offsetWidth;                                  /* force the reflow we measure */
+      var need=window.innerWidth<=760, i, r, e;
+      var trb=tr.getBoundingClientRect();
+      /* 1. the two groups are closer than 12px */
+      var tags=R.querySelector('.tags'), ctrls=R.querySelector('.ctrls');
+      if(!need&&tags&&ctrls&&!skip(tags)&&!skip(ctrls)){
+        var a=tags.getBoundingClientRect(), b=ctrls.getBoundingClientRect();
+        if(b.left-a.right<12) need=true;
+      }
+      /* 2. a control runs past either edge */
+      if(!need){
+        var kids=tr.querySelectorAll('.nr-pill,.nr-track,.seg,.wgrp,button,#wnote');
+        for(i=0;i<kids.length;i++){
+          e=kids[i]; if(skip(e)) continue;
+          r=e.getBoundingClientRect(); if(!r.width&&!r.height) continue;
+          if(r.right>trb.right+0.5||r.left<trb.left-0.5){need=true;break;}
+        }
+      }
+      /* 3. a label has been squeezed narrower than its own text */
+      if(!need){
+        var ls=tr.querySelectorAll('.nr-pill b,.nr-track,.seg button,button,#wnote,span');
+        for(i=0;i<ls.length;i++){
+          e=ls[i]; if(skip(e)) continue;
+          if(!e.textContent||!e.textContent.trim()) continue;
+          if(e.scrollWidth>e.clientWidth+1){need=true;break;}
+        }
+      }
+      /* 4. the toprow wraps — a floating row that wraps grows downwards into the
+         title without pushing anything down */
+      if(!need){
+        var tall=0,ch=tr.children;
+        for(i=0;i<ch.length;i++){var h=ch[i].getBoundingClientRect().height;if(h>tall)tall=h;}
+        if(trb.height>tall+2) need=true;
+      }
+      /* 5. the toprow sits on, or within 6px of, the action title */
+      if(!need){
+        var t=R.querySelector('.nr-strip'); if(!t||skip(t)) t=R.querySelector('h1');
+        if(t&&!skip(t)){var tb=t.getBoundingClientRect(); if(tb.top-trb.bottom<6) need=true;}
+      }
+      if(need) R.classList.add('stacked');
+      /* --padl is read AFTER the class lands: the class itself changes the padding */
+      R.style.setProperty('--padl',(parseFloat(getComputedStyle(R).paddingLeft)||0)+'px');
+    } finally { busy=false; }
+  }
+  window.fitChrome=fitChrome;
+  function kick(){requestAnimationFrame(fitChrome);}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',kick); else kick();
+  window.addEventListener('load',kick);
+  window.addEventListener('resize',function(){lastW=-1;kick();});
+  if(window.ResizeObserver){
+    var ro=new ResizeObserver(function(en){
+      var w=en&&en[0]?Math.round(en[0].contentRect.width):-1;
+      if(w===lastW) return;                                 /* stacking must not re-trigger us */
+      lastW=w; kick();
+    });
+    var r0=root(); if(r0) ro.observe(r0);
+  }
+})();
+</script>
+<script id="nr-topbar-js">
+/* patch_topbar.py: one theme switch and the way home, the same in every instrument.
+   Theme: the choice is kept under the cockpit's key, nr_dark, so every page of an
+   engagement opens the same way. Home: a page that carries
+   <meta name="nr-home" content="index.html"> (the engagement artifact adds it) gets
+   "< Cockpit /" in front of its section tag. */
+(function(){
+  var K='nr_dark', box=document.getElementById('theme')||document.getElementById('tseg');
+  if(box){
+    box.querySelectorAll('button').forEach(function(b){ var d=b.getAttribute('data-s')==='dark';
+      b.title=d?'Dark mode':'Light mode'; b.setAttribute('aria-label',b.title);
+      b.addEventListener('click',function(){ try{ localStorage.setItem(K,d?'1':'0'); }catch(e){} }); });
+    var v=null; try{ v=localStorage.getItem(K); }catch(e){}
+    var dk=box.querySelector('button[data-s="dark"]');
+    if(v==='1'&&dk&&!dk.classList.contains('on')) dk.click();
+  }
+  var m=document.querySelector('meta[name="nr-home"]'), lens=document.getElementById('lens')||document.querySelector('.toprow .nr-track');
+  if(m&&lens&&!document.querySelector('.nr-crumb')){
+    var c=document.createElement('div'); c.className='nr-track nr-crumb';
+    var a=document.createElement('a'); a.className='nr-home'; a.href=m.getAttribute('content')||'index.html';
+    a.textContent='\u2039 '+(m.getAttribute('data-label')||'Cockpit'); a.title='Back to the engagement cockpit';
+    /* opened in a window of the findings dashboard (a frame of our own page): go back in that page, not in the frame */
+    try{ if(window.parent!==window&&window.parent.document) a.target='_parent'; }catch(e){}
+    var s=document.createElement('span'); s.className='nr-sep'; s.textContent='/';
+    lens.parentNode.insertBefore(c,lens); c.appendChild(a); c.appendChild(s); c.appendChild(lens);
+    if(window.fitChrome) requestAnimationFrame(window.fitChrome);
+  }
+})();
+</script>
+<!-- NR-GLASS:BEGIN — the glass layer (diagnostic-skill-builder/templates/glass-layer.html, put in by
+     scripts/patch_glass.py). Everything that floats above the page is glass; the page itself stays solid
+     (cards, tables, charts, slides). Small things get liquid glass: a lens at the edges, a light rim and a
+     highlight that follows the pointer. Large things (the edit sidebar, big pop-ups) get calmer frosted glass.
+     Hooks: .nr-glass (small), .nr-glass-lg (large), .nr-glass-tint (a dark tinted message), .nr-glass-night (with
+     .nr-glass: small glass that always sits on a dark surface, like the canvas twin), plus the shared
+     pieces every instrument has. Do not edit a copy in a page: change this file and run patch_glass.py. -->
+<style id="nr-glass">
+  :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu){
+    background-color:rgba(255,255,255,.55)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.34),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(14px) saturate(185%) brightness(1.06);backdrop-filter:blur(14px) var(--nr-lens,) saturate(185%) brightness(1.06);
+    border-color:transparent!important;
+    box-shadow:0 22px 50px -12px rgba(11,35,71,.28),0 2px 6px rgba(11,35,71,.08),inset 0 0 0 .5px rgba(255,255,255,.6),inset 1.5px 1.5px 0 -.5px rgba(255,255,255,.95),inset -1px -1px 0 -.5px rgba(255,255,255,.5)!important}
+  :is(#ed,.nr-glass-lg){
+    background-color:rgba(255,255,255,.74)!important;-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);
+    box-shadow:-24px 0 60px -28px rgba(11,35,71,.38),inset 1px 0 0 rgba(255,255,255,.85)!important;border-color:rgba(255,255,255,.6)!important}
+  :is(.nr-toast,#nr-ask-msg,.nr-glass-tint){
+    background:rgba(11,35,71,.72)!important;-webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);
+    box-shadow:0 16px 36px -12px rgba(11,35,71,.45),inset 0 0 0 .5px rgba(255,255,255,.18),inset 1px 1px 0 -.5px rgba(255,255,255,.45)!important}
+  /* what sits on glass: light fills, never glass on glass */
+  :is(#ed,.nr-glass-lg) :is(.edh,.edf){background:rgba(255,255,255,.35)!important}
+  /* dark */
+  :is([data-t="dark"],html.dark) :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu){
+    background-color:rgba(20,30,44,.56)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.08),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(14px) saturate(170%) brightness(.9);backdrop-filter:blur(14px) var(--nr-lens,) saturate(170%) brightness(.9);
+    box-shadow:0 22px 50px -12px rgba(0,0,0,.6),inset 0 0 0 .5px rgba(255,255,255,.16),inset 1.5px 1.5px 0 -.5px rgba(255,255,255,.35),inset -1px -1px 0 -.5px rgba(255,255,255,.12)!important}
+  :is([data-t="dark"],html.dark) :is(#ed,.nr-glass-lg){background-color:rgba(22,32,44,.78)!important;box-shadow:-24px 0 60px -28px rgba(0,0,0,.7),inset 1px 0 0 rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.1)!important}
+  :is([data-t="dark"],html.dark) :is(#ed,.nr-glass-lg) :is(.edh,.edf){background:rgba(255,255,255,.05)!important}
+  /* glass that always sits on a dark surface (the canvas twin): the dark values in both themes */
+  .nr-glass.nr-glass-night{background-color:rgba(12,21,38,.58)!important;background-image:radial-gradient(420px 260px at var(--lx,18%) var(--ly,0%),rgba(255,255,255,.07),rgba(255,255,255,0) 60%)!important;
+    -webkit-backdrop-filter:blur(12px) saturate(160%) brightness(.9);backdrop-filter:blur(12px) var(--nr-lens,) saturate(160%) brightness(.9);
+    box-shadow:0 18px 44px -14px rgba(0,0,0,.65),inset 0 0 0 .5px rgba(143,168,206,.22),inset 1.5px 1.5px 0 -.5px rgba(175,198,246,.35),inset -1px -1px 0 -.5px rgba(175,198,246,.12)!important}
+  /* when glass cannot be glass: solid, as before */
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg){background-color:var(--card,#fff)!important;background-image:none!important}}
+  @media (prefers-reduced-transparency:reduce){
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg){background-color:var(--card,#fff)!important;background-image:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+    :is(.nr-toast,#nr-ask-msg,.nr-glass-tint){background:var(--navy-fill,#0B2347)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}}
+  @media print{
+    :is(.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu,#ed,.nr-glass-lg,.nr-toast,#nr-ask-msg,.nr-glass-tint){-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:#fff!important;box-shadow:none!important}}
+</style>
+<svg id="nr-glass-defs" width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false"></svg>
+<script id="nr-glass-js">
+(function(){
+  /* the lens: only where a browser can put an SVG filter inside backdrop-filter (Chrome, Edge, the Claude desktop
+     app). Safari and Firefox would draw nothing at all, so they keep the plain frosted glass. */
+  var ua=navigator.userAgent, lens=/Chrome\/|Chromium\/|Edg\//.test(ua)&&!/Firefox\//.test(ua);
+  var calm=window.matchMedia&&(matchMedia('(prefers-reduced-transparency: reduce)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var SMALL='.nr-glass,.nrsrc-pop,.edmenupop,.nrp-menu,.nr-select-menu,.moremenu', R=16, BEZEL=22, MAXA=700*800, n=0;
+  var defs=document.getElementById('nr-glass-defs'), NS='http://www.w3.org/2000/svg';
+  function lensMap(w,h,r){ var c=document.createElement('canvas'); c.width=w; c.height=h; var x=c.getContext('2d'), im=x.createImageData(w,h), d=im.data;
+    for(var j=0;j<h;j++) for(var i=0;i<w;i++){
+      var cx=Math.min(Math.max(i,r),w-r), cy=Math.min(Math.max(j,r),h-r), dx=i-cx, dy=j-cy, nx=0, ny=0, dist;
+      if((i<r||i>w-r)&&(j<r||j>h-r)){ var l=Math.sqrt(dx*dx+dy*dy)||1; dist=r-l; nx=dx/l; ny=dy/l; }
+      else { var a=i, b=w-1-i, t=j, u=h-1-j, m=Math.min(a,b,t,u); dist=m; if(m===a)nx=-1; else if(m===b)nx=1; else if(m===t)ny=-1; else ny=1; }
+      var k=Math.pow(Math.max(0,1-dist/BEZEL),3), o=(j*w+i)*4; d[o]=128+nx*k*127; d[o+1]=128+ny*k*127; d[o+2]=128; d[o+3]=255; }
+    x.putImageData(im,0,0); return c.toDataURL(); }
+  function filterFor(el){ if(!el.__nrg){ var id='nr-lens-'+(++n), f=document.createElementNS(NS,'filter');
+      f.setAttribute('id',id); f.setAttribute('filterUnits','userSpaceOnUse'); f.setAttribute('primitiveUnits','userSpaceOnUse'); f.setAttribute('x','0'); f.setAttribute('y','0'); f.setAttribute('color-interpolation-filters','sRGB');
+      var im=document.createElementNS(NS,'feImage'); im.setAttribute('x','0'); im.setAttribute('y','0'); im.setAttribute('preserveAspectRatio','none'); im.setAttribute('result','map');
+      var dm=document.createElementNS(NS,'feDisplacementMap'); dm.setAttribute('in','SourceGraphic'); dm.setAttribute('in2','map'); dm.setAttribute('scale','0'); dm.setAttribute('xChannelSelector','R'); dm.setAttribute('yChannelSelector','G');
+      f.appendChild(im); f.appendChild(dm); defs.appendChild(f); el.__nrg={id:id,f:f,im:im,dm:dm,key:''}; }
+    return el.__nrg; }
+  function grow(g){ if(calm){ g.dm.setAttribute('scale','40'); return; } var t0=performance.now();   /* the glass materialises by bending more */
+    (function step(t){ var p=Math.min(1,(t-t0)/260); g.dm.setAttribute('scale',(40*(1-Math.pow(1-p,3))).toFixed(1)); if(p<1) requestAnimationFrame(step); })(t0); }
+  function scan(){ q=0; if(!lens||calm&&matchMedia('(prefers-reduced-transparency: reduce)').matches) return;
+    document.querySelectorAll(SMALL).forEach(function(el){
+      var w=Math.round(el.offsetWidth), h=Math.round(el.offsetHeight), shown=w>0&&h>0&&getComputedStyle(el).visibility!=='hidden';
+      var g=el.__nrg; if(!shown){ if(g) g.key=''; return; } if(w*h>MAXA) return;
+      g=filterFor(el); var key=w+'x'+h; if(g.key===key) return; var fresh=!g.key; g.key=key;
+      var r=parseFloat(getComputedStyle(el).borderTopLeftRadius)||R;
+      g.f.setAttribute('width',w); g.f.setAttribute('height',h); g.im.setAttribute('width',w); g.im.setAttribute('height',h); g.im.setAttribute('href',lensMap(w,h,Math.min(r,w/2,h/2)));
+      el.style.setProperty('--nr-lens','url(#'+g.id+')'); if(fresh) grow(g); }); }
+  var q=0; function soon(){ if(!q) q=requestAnimationFrame(scan); }
+  function start(){ scan(); new MutationObserver(soon).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style','hidden','open']}); window.addEventListener('resize',soon); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
+  /* the highlight follows the pointer across a small piece of glass */
+  document.addEventListener('pointermove',function(e){ var el=e.target.closest&&e.target.closest(SMALL); if(!el) return; var r=el.getBoundingClientRect();
+    el.style.setProperty('--lx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%'); el.style.setProperty('--ly',((e.clientY-r.top)/r.height*100).toFixed(1)+'%'); },{passive:true});
+})();
+</script>
+<!-- NR-GLASS:END -->
+<!-- NR-REFIT:BEGIN — fit again when the space changes (diagnostic-skill-builder/templates/refit-layer.html,
+     put in by scripts/patch_refit.py). Every page fits its view on a window resize. The space a page has can
+     also change without one: fonts that arrive late, the header stacking, a preview pane or iframe that grows
+     after the first paint. Then the page used to keep its first fit until you switched tabs. This watches the
+     view and the window, and replays the page's own resize handling once that space has really changed
+     (a change in the page's content alone does not count). -->
+<script>(function(){
+  var last = '', t = 0;
+  function box(){ var v = document.getElementById('view'); return (v ? v.clientWidth + 'x' + v.clientHeight + '/' : '') + innerWidth + 'x' + innerHeight; }
+  function kick(){ var k = box(); if(k === last) return; last = k; window.dispatchEvent(new Event('resize')); }
+  function soon(){ cancelAnimationFrame(t); t = requestAnimationFrame(kick); }
+  function again(){ last = ''; soon(); }
+  function watch(){ if(!window.ResizeObserver) return; var ro = new ResizeObserver(soon), v = document.getElementById('view');
+    if(v) ro.observe(v); ro.observe(document.documentElement); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watch); else watch();
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(again);
+  window.addEventListener('load', again);
+})();</script>
+<!-- NR-REFIT:END -->
+<style>
+/* ── READ MODE · narrow screens ──────────────────────────────────────────────
+   This artifact normally scales its whole body down so the page fits one screen.
+   On a phone that turns 13px type into 4px. Below 760px the scaling is switched
+   off and the page simply flows and scrolls at its real size. Desktop is
+   untouched — every rule here lives inside the media query. */
+@media (max-width:760px){
+  html,body{height:auto!important;overflow:auto!important}
+  #art,#pw,#pm{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;padding:12px 14px 22px 34px!important}
+  #view{height:auto!important;min-height:0!important;max-height:none!important;
+    overflow:visible!important;flex:none!important;position:static!important}
+  #vinner{position:static!important;transform:none!important;width:100%!important;
+    padding-bottom:14px!important}
+  .nr-rail{width:22px!important}
+  .toprow{position:static!important;top:auto!important;right:auto!important;left:auto!important;
+    margin:0 0 10px!important;flex-wrap:wrap!important;gap:8px 10px!important;justify-content:flex-start!important}
+  .tags{flex-wrap:wrap!important;gap:8px!important;margin-left:-34px!important}
+  .ctrls{flex-wrap:wrap!important;gap:8px!important;flex:1 1 100%!important}
+  #ft{position:static!important;flex-wrap:wrap!important;row-gap:6px!important;margin-top:14px!important}
+  h1{font-size:19px!important;max-width:none!important}
+  .grid,.classic,.cols-grid{grid-template-columns:1fr!important}
+  table{min-width:0!important}
+  .tbl-wrap,.wrap-x{overflow-x:auto!important}
+}
+</style>
+<style>/* READ-MODE TYPE FLOOR — nothing under 11px once the page stops scaling */
+
+@media (max-width:760px){
+  #ft{font-size:11px!important}
+  .conf,.lp,.li,.nr-track,.nr-foot,.lbl,.note{font-size:11px!important}
+  .inum,.chip,.inev,.num,.wf-num,.vnum{font-size:11px!important}
+  #ft b,.legend b,.l b{font-size:11px!important}
+  /* a row label truncated to '…' is worse than a wrapped one once the page flows */
+  [style*="ellipsis"]{white-space:normal!important;text-overflow:clip!important;overflow:visible!important}
+}
+</style>
+</body></html>
