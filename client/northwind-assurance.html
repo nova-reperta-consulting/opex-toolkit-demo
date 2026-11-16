@@ -3147,6 +3147,45 @@ html.nrs-setup #page{padding-left:24px;padding-right:24px}
 html.nrs-setup .x4dt input,html.nrs-setup .x4dtc input{font:inherit}
 html.nrs-setup .x4links + .x4fg{margin-top:16px!important}
 html.nrs-setup .x4chips + .x4links{margin-top:14px}
+/* perimeter: one white card per department, the column headers once on top */
+html.nrs-setup .x5top{display:flex;align-items:center;gap:8px;min-height:32px;margin:0 0 10px}
+html.nrs-setup .x5top h2{margin:0;font:700 var(--ds-fs-heading)/1.35 var(--ds-font);color:var(--ds-text)}
+html.nrs-setup .x5w{background:var(--ds-card)}html.nrs-setup .x5w:hover{background:var(--ds-fill)}
+html.nrs-setup .x5head,html.nrs-setup .x5dep{display:grid;grid-template-columns:var(--cols);column-gap:0;padding:0 12px}
+html.nrs-setup .x5head{height:30px;align-items:center;background:var(--ds-fill-strong);border-radius:8px;font:400 var(--ds-fs-label)/1 var(--ds-font);color:var(--ds-text-2)}
+html.nrs-setup .x5head span{padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.nrs-setup .x5head .r{text-align:right}
+html.nrs-setup .x5dep{background:var(--ds-card);border-radius:12px;margin-top:10px;padding-top:6px;padding-bottom:6px;align-items:start}
+html.nrs-setup .x5dc{grid-column:1;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:2px 6px 4px;min-width:0}
+html.nrs-setup .x5dc .x5dn{font-weight:700;width:100%}
+html.nrs-setup .x5loose{font:700 var(--ds-fs-body)/1.3 var(--ds-font);color:var(--ds-text-2);padding:7px 0 0}
+html.nrs-setup .x5hd{display:flex;align-items:center;gap:6px;width:100%;min-width:0}
+html.nrs-setup .x5hd .x4ced{font-size:var(--ds-fs-label);color:var(--ds-text-2);margin-left:-4px}
+html.nrs-setup .x5acts{display:flex;align-items:center;gap:6px;min-height:24px}
+html.nrs-setup .x5sm{font-size:var(--ds-fs-label)}
+html.nrs-setup .x5dep:hover .x4more,html.nrs-setup .x5dc:hover .x4more{opacity:1}
+html.nrs-setup .x5c{display:flex;align-items:center;gap:8px;min-height:40px;padding:0 6px;min-width:0;position:relative}
+html.nrs-setup .x5c.r{justify-content:flex-end}
+html.nrs-setup .x5sep::before{content:"";position:absolute;top:0;left:0;right:0;border-top:.5px solid var(--ds-line)}
+html.nrs-setup .x5dep > .x5c:nth-child(2).x5sep::before{left:6px}
+html.nrs-setup .x5none{color:var(--ds-text-3)}
+html.nrs-setup .x5dep .x4ced{min-width:0}
+html.nrs-setup .x5dep .x4cell .x4tag{pointer-events:none}
+html.nrs-setup .x3it .x4tag{margin-right:4px}
+/* plan: deliverables are diamonds, moments are dots */
+html.nrs-setup .x3mk.kd{border-radius:2px;transform:rotate(45deg);background:var(--ds-accent);width:11px;height:11px;margin-left:-5.5px;top:4.5px}
+html.nrs-setup .x5leg{display:flex;gap:18px;font:400 var(--ds-fs-label)/1 var(--ds-font);color:var(--ds-text-2)}
+html.nrs-setup .x5leg span{display:inline-flex;align-items:center;gap:6px}
+html.nrs-setup .x5leg .x3mk{position:static;margin:0;box-shadow:none;width:10px;height:10px}
+html.nrs-setup .x5leg .x3mk.kd{width:9px;height:9px;margin:0 1px}
+html.nrs-setup .x5now{display:inline-block;width:2px;height:12px;background:var(--ds-accent);border-radius:2px}
+html.nrs-setup .x5f3{grid-template-columns:repeat(3,minmax(0,1fr))}
+html.nrs-setup .nolead .x4ced::placeholder{color:var(--ds-warn)}
+html.nrs-setup .x5dc{gap:2px}
+html.nrs-setup .x5hd{min-height:28px}
+html.nrs-setup .x4tag.info{background:var(--ds-info-soft);color:var(--ds-info)}
+
+html.nrs-setup .x4b.x4next{padding:0 12px 0 14px}html.nrs-setup .x4b.primary:hover{background:var(--ds-action-pressed)}
 </style>
 <!-- @@NR-SHELL:BEGIN  The shared frame of the Cockpit, the Findings dashboard and Engagement setup.
      One definition: this block in NR OpEx Quickscan Builder/2 Toolkit/engagement-dashboard.html. Edit it there only;
@@ -5368,7 +5407,7 @@ table.tteams .tt-h2{display:none}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
 })();
 </script>
-<script>window.__NR_FOLDER_BUILD__={"id": "northwind", "builtAt": "2026-11-16 17:22"};</script>
+<script>window.__NR_FOLDER_BUILD__={"id": "northwind", "builtAt": "2026-11-16 18:13"};</script>
 <script>window.__NR_VIEW__='client';</script>
 </head>
 <body>
@@ -6705,7 +6744,7 @@ const s1in=(label,path,o)=>{ o=o||{}; const v=get(E,path), t=o.type||'text';
 PAGES.s1=()=>{
   const a=E.assignment, opex=isOpex(), pr=practiceOf(a);
   const tCur=(M.types[a.type]||{}).group, tier=S1_TIER||tCur||'scan';
-  const startsAt=a.depth&&M.approaches[a.depth]?`Every team starts at ${M.approaches[a.depth].label} depth. You can change it per team in Teams in scope.`:'';
+  const startsAt=a.depth&&M.approaches[a.depth]?`Every team starts at ${M.approaches[a.depth].label} depth. You can change it per team in Analyses per team.`:'';
   const offers=Object.entries(M.types).filter(([k,x])=>x.group===tier);
   const pick=(k,c)=>{ if(!c.pick) return ''; const cur=a[c.pick.key]||c.pick.opts[0][0];
     return `<span class="sr-pick" onclick="event.stopPropagation()">${s1seg(c.pick.opts,cur,'pickFocus')}</span>`; };
@@ -6964,7 +7003,7 @@ function pasteTeams(){
   openPanel(`<div class="psec"><div class="psec-l">One team per line</div>
     <p style="font-size:var(--fs-115);color:var(--muted);line-height:1.55;margin-bottom:12px">Optional extra columns separated by a tab, semicolon or comma:<br><code>Name ; Division ; FTE ; Lead</code></p>
     <textarea id="pt" rows="10" style="width:100%;font-family:var(--fb);font-size:12.5px;padding:10px;border:1px solid var(--divider);border-radius:9px;background:var(--surface-2);color:var(--text)" placeholder="Customer Service ; Indemnity &amp; Service ; 62 ; Marie Lefèvre&#10;Claims Handling ; Indemnity &amp; Service ; 48 ; Tom Peeters"></textarea></div>
-    <div class="psec"><button class="fchip go" onclick="doPaste()">Add teams</button></div>`,'Paste a team list','Step 3 · Teams in scope');
+    <div class="psec"><button class="fchip go" onclick="doPaste()">Add teams</button></div>`,'Paste a team list','Perimeter');
 }
 function doPaste(){
   ($('#pt').value||'').split(/\r?\n/).map(l=>l.trim()).filter(Boolean).forEach(line=>{
@@ -7216,7 +7255,7 @@ PAGES.s5=()=>{
         ${teams.length?`<div style="overflow-x:auto"><table class="tb-tbl"><thead><tr><th>Team</th>${BASELINE_CHOSEN.map(i=>`<th>${esc((M.inst[i]||{}).label||INSTRUMENT_NAMES[i]||i)}</th>`).join('')}</tr></thead>
           <tbody>${teams.map(t=>{ const ch=chosenFor(t); return `<tr><td>${esc(t.name)}</td>${BASELINE_CHOSEN.map(i=>{ const on=ch.includes(i);
             return `<td><button class="tb-ck ${on?'on':''}" aria-pressed="${on}" aria-label="${esc((M.inst[i]||{}).label||i)} for ${esc(t.name)}" onclick="tbTog('${t.id}','${i}')">${on?'&#10003;':''}</button></td>`; }).join('')}</tr>`; }).join('')}</tbody></table></div>`
-          :`<p class="empty">No teams in scope yet. Add them under Teams in scope and they appear here.</p>`}
+          :`<p class="empty">No teams in scope yet. Add them under Perimeter and they appear here.</p>`}
       </div>
     </div>
   </div>
@@ -7224,7 +7263,7 @@ PAGES.s5=()=>{
   <div class="dd-section">${sec('Every team at a glance')}
   ${teams.length?`<p class="lead-in" style="margin:0 0 12px">Click a square to change what runs there, or a team to tick its analyses one by one. <b>Set…</b> changes a whole dimension.</p>
     ${matrixHTML(true)}`
-    :`<div class="card"><p class="empty">No teams in scope yet — add them under Teams in scope and they appear here.</p></div>`}
+    :`<div class="card"><p class="empty">No teams in scope yet — add them under Perimeter and they appear here.</p></div>`}
   </div>`;
 };
 
@@ -7920,7 +7959,7 @@ PAGES.execplain=()=>{
             .map(([n,c])=>`<span class="lgd"><i style="background:${c};border:1px solid rgba(15,43,82,.10)"></i>${n}</span>`).join('')}
           <span class="lgd"><i style="border:1.5px dashed var(--border-heavy);background:transparent"></i>Assessment ongoing</span>
         </div>
-        ${divs.length?tree:`<p style="font-size:12.5px;color:var(--muted-2)">No teams in scope yet. Add them in Engagement setup, under Teams in scope.</p>`}
+        ${divs.length?tree:`<p style="font-size:12.5px;color:var(--muted-2)">No teams in scope yet. Add them in Engagement setup, under Perimeter.</p>`}
       </div></div>
     <div><span class="eyebrow" style="display:block;margin-bottom:9px">Where the six dimensions stand</span>
       <div class="card" style="height:calc(100% - 26px)">
@@ -8557,7 +8596,7 @@ function chainMount(){
 PAGES.chain=()=>{
   const chains=VCS();
   if(!chains.length) return fempty('Set the client&rsquo;s value chain first',
-    `The value chain says how the client earns its money: distribution, underwriting, servicing, claims. It is set in Engagement setup, under Scope, where each team is placed on a stage. Until then there is nothing to draw along it.`);
+    `The value chain says how the client earns its money: distribution, underwriting, servicing, claims. It is set in Engagement setup: the chain under Problem and scope, each team's stage under Perimeter. Until then there is nothing to draw along it.`);
   setTimeout(chainMount,0);
   return `<div class="qsx">${chains.map((c,i)=>`${chains.length>1?`<span class="eyebrow" style="display:block;margin:0 0 8px">${esc(c.name||'Value chain')}</span>`:''}<div id="fo-vc-${i}" class="fo-vc"></div>`).join('')}</div>`+heatGrid(fdModel());
 };
@@ -8656,7 +8695,7 @@ PAGES.benefits=()=>{
       Pure cost-out basis — every releasable FTE is valued at the fully-loaded cost of <b style="color:var(--text)">${eur(v.cost)}</b> a year${v.real!==1?`, of which <b style="color:var(--text)">${Math.round(v.real*100)}%</b> is assumed to actually be realised`:''}.
       ${v.impl?`Implementation is estimated at <b style="color:var(--text)">${eur(v.impl)}</b> per releasable FTE.`:'What it costs to get there is not estimated yet.'} The three-year figure phases each horizon by when it starts paying:
       ${H.map((h,i)=>i?`${h.label.toLowerCase()} for ${h.ramp}`:`${h.label.toLowerCase()} counts for ${h.ramp} of the three years`).join(', ')}.
-      The cost of an FTE is set in Engagement setup, under Scope. How much lands and what it costs to get there come out of the diagnostic.
+      The cost of an FTE is set in Engagement setup, under Analyses per team. How much lands and what it costs to get there come out of the diagnostic.
       All three stay assumptions until the client confirms them. The FTE behind them is what the analyses measure.</p></div>
   </div>`;
 };
@@ -9127,7 +9166,7 @@ function plDiffers(t){ const T=inScopeTeams(), out=[];
   return {own:!!t.depth&&t.depth!==E.assignment.depth, list:out}; }
 PAGES.s5=()=>{
   const T=inScopeTeams();
-  if(!T.length) return lead('What we run, team by team.')+`<div class="card"><p class="empty">No teams in scope yet. Add them under Teams in scope and they appear here.</p></div>`;
+  if(!T.length) return lead('What we run, team by team.')+`<div class="card"><p class="empty">No teams in scope yet. Add them under Perimeter and they appear here.</p></div>`;
   const always=BASELINE_ALWAYS.concat(REGISTERS_ALWAYS).map(i=>`<span class="pl-chip all lock"><button tabindex="-1">&#10003; ${esc((M.inst[i]||{}).label||INSTRUMENT_NAMES[i]||i)}</button></span>`).join('');
   const base=`<div class="pl-drow"><span class="pl-dn"><span class="pl-dot" style="background:var(--muted-2)"></span>Baseline</span><div class="pl-chips">${always}${BASELINE_CHOSEN.map(i=>plChip('base',i,(M.inst[i]||{}).label||INSTRUMENT_NAMES[i]||i)).join('')}</div></div>`;
   const dims=M.dims.map(d=>{ const L=(M.offers[d.k]||[]).filter(i=>plCanRun(i)||plCount(d.k,i).n);
@@ -9731,7 +9770,7 @@ function x3dd(value,items,pick,o){ o=o||{}; const id='d'+(++X3DDN); X3DD[id]={va
   const multi=Array.isArray(value), cur=multi?null:items.find(x=>x.v===value);
   const label=multi?(value.length?items.filter(x=>value.includes(x.v)).map(x=>x.l).join(', '):''):(cur?cur.l:'');
   const cls=o.cell?'x4cell':'x4in x4dd';
-  return `<button type="button" class="${cls}${o.warn&&!label?' warn':''}" data-dd="${id}" onclick="x3open(this)" aria-haspopup="listbox" aria-label="${esc(o.aria||'')}" title="${esc(label)}">${o.cell?'':x3ico(cur)}<span class="x3dv${label?'':' ph'}">${esc(label||o.ph||'Choose')}</span>${X3CHEV}</button>`; }
+  return `<button type="button" class="${cls}${o.warn&&!label?' warn':''}" data-dd="${id}" onclick="x3open(this)" aria-haspopup="listbox" aria-label="${esc(o.aria||'')}" title="${esc(label)}">${o.cell?'':x3ico(cur)}${o.tag&&cur&&cur.tag?`<span class="x4tag ${cur.tag}">${esc(label)}</span>`:`<span class="x3dv${label?'':' ph'}">${esc(label||o.ph||'Choose')}</span>`}${X3CHEV}</button>`; }
 function x3open(btn){ const id=btn.dataset.dd; if(X3CUR&&X3CUR.id===id){ x3close(); return; } x3close(); x3popClose(); const d=X3DD[id]; if(!d) return;
   X3CUR={id,btn,d,armed:-1}; btn.classList.add('open'); x3drawMenu(); }
 function x3drawMenu(){ if(!X3CUR) return; const {btn,d}=X3CUR, o=d.o, fk=o.key&&X3FIL[o.key]||'all', multi=Array.isArray(d.value);
@@ -9745,8 +9784,9 @@ function x3drawMenu(){ if(!X3CUR) return; const {btn,d}=X3CUR, o=d.o, fk=o.key&&
     return `<button type="button" class="${fk===k?'on':''}" aria-pressed="${fk===k}" onclick="X3FIL['${o.key}']='${k}';x3drawMenu()">${esc(l)} <small>${n}</small></button>`; }).join('')}</div>`;
   list.forEach(([x,i])=>{ if(x.h&&x.h!==last){ h+=`<div class="x3mh">${esc(x.h)}</div>`; last=x.h; }
     const on=multi?d.value.includes(x.v):x.v===d.value, armed=X3CUR.armed===i;
-    h+=`<button type="button" class="x3it${on?' on':''}${x.danger?' danger':''}${x.link?' link':''}" role="${o.more?'menuitem':'option'}" aria-selected="${on}" onclick="x3pick(${i})">${o.more?'':`<span class="x3mck">${on?X3CK:''}</span>`}${x3ico(x)}<span class="x3mt">${esc(armed?'Click again to remove':x.l)}</span>${x.s?`<small>${esc(x.s)}</small>`:''}</button>`; });
-  m.innerHTML=h; m.classList.add('open'); document.getElementById('x3scrim').classList.add('open');
+    h+=`<button type="button" class="x3it${on?' on':''}${x.danger?' danger':''}${x.link?' link':''}" role="${o.more?'menuitem':'option'}" aria-selected="${on}" onclick="x3pick(${i})">${o.more?'':`<span class="x3mck">${on?X3CK:''}</span>`}${x3ico(x)}<span class="x3mt">${x.tag?`<span class="x4tag ${x.tag}">${esc(x.l)}</span>`:esc(armed?'Click again to remove':x.l)}</span>${x.s?`<small>${esc(x.s)}</small>`:''}</button>`; });
+  m.innerHTML=h; m.classList.add('open'); document.getElementById('x3scrim').classList.add('open'); x3posMenu(); }
+function x3posMenu(){ if(!X3CUR) return; const {btn,d}=X3CUR, o=d.o, m=document.getElementById('x3menu'); if(!m) return;
   const r=btn.getBoundingClientRect(), vw=innerWidth, vh=innerHeight;
   m.style.width='auto'; m.style.minWidth=Math.max(o.more?180:200,r.width)+'px'; m.style.maxWidth='480px'; if(o.wide) m.style.width='440px';
   const W=m.offsetWidth; let left=o.more?r.right-W:r.left; left=Math.max(8,Math.min(left,vw-W-8)); m.style.left=left+'px';
@@ -9786,10 +9826,10 @@ function x4head(k){ const sub=document.getElementById('tb-sub'); if(sub) sub.hid
     const F=X4FIGS[k]?X4FIGS[k]().filter(Boolean):[];
     if(F.length) std.insertAdjacentHTML('beforeend',`<div class="x4figs">${F.map(f=>`<div class="x4fig${f.warn?' warn':''}"><b>${esc(String(f.v))}</b><span>${esc(f.l)}</span></div>`).join('')}</div>`); }
   const right=document.getElementById('tb-right'); if(right){ const steps=setupSteps(), si=steps.findIndex(x=>x.k===k), nx=steps[si+1];
-    right.innerHTML=(X4RIGHT[k]?X4RIGHT[k]():'')+(nx?`<button type="button" class="x4b" onclick="go('${nx.k}')">Next: ${esc((TITLES[nx.k]||[nx.l||''])[0])} ›</button>`:''); } }
+    right.innerHTML=(X4RIGHT[k]?X4RIGHT[k]():'')+(nx?`<button type="button" class="x4b primary x4next" onclick="go('${nx.k}')">Next: ${esc((TITLES[nx.k]||[nx.l||''])[0])}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>`:''); } }
 const X3_GO=go;
 go=function(k){ x3close(); X3_GO(k); if(MODE==='setup') x4head(PAGE);
-  const pg=document.getElementById('page'); if(pg&&!pg._x3){ pg._x3=1; pg.addEventListener('scroll',()=>{ if(X3CUR&&X3CUR.btn.isConnected) x3drawMenu(); else x3close(); if(X3POP) x3popDraw(); },{passive:true}); }
+  const pg=document.getElementById('page'); if(pg&&!pg._x3){ pg._x3=1; pg.addEventListener('scroll',()=>{ if(X3CUR&&X3CUR.btn.isConnected) x3posMenu(); else x3close(); if(X3POP) x3popDraw(); },{passive:true}); }
   if(X3POP) setTimeout(x3popDraw,0); };
 
 /* ── a list edited in place: click a line to type, Enter keeps it, empty removes it ── */
@@ -9877,24 +9917,28 @@ PAGES.s4=()=>{
 function x4personAdd(){ E.nrMembers=E.nrMembers||[]; E.nrMembers.push({id:mNewId(),name:'',role:'Consultant',affiliation:'internal',skills:[]}); save(); goKeep('s4');
   setTimeout(()=>{ const r=document.querySelectorAll('#page .x4t .x4tr'); const x=r[r.length-1]&&r[r.length-1].querySelector('input'); if(x) x.focus(); },30); }
 
-/* ═════════════ 3 · Scope ═════════════ */
+/* ═════════════ 3 · Problem and scope ═════════════ */
 var X3STMT=false;
 function x3paras(txt){ return String(txt||'').split(/\n+/).filter(x=>x.trim()).map(line=>{ const m=line.match(/^([^:*]{2,24}):\s*(.*)$/), lead=m?m[1]:'', body=m?m[2]:line;
   return `<p class="x4p">${lead?`<b>${esc(lead)}.</b> `:''}${body.split('**').map((t,k)=>k%2?`<b>${esc(t)}</b>`:esc(t)).join('')}</p>`; }).join(''); }
+/* key deliverables: what the client gets, with its due date and owner. Until someone names them, the objectives
+   written before show here, so nothing gets lost; the objectives follow every change. */
 function x3dels(){ const s=E.scope; if(Array.isArray(s.deliverables)&&s.deliverables.length) return s.deliverables;
   return (s.objectives||[]).filter(x=>String(x||'').trim()).map(x=>({name:'',desc:x,_fromObj:1})); }
-function x3delsSave(list){ E.scope.deliverables=list.map(d=>({name:String(d.name||'').trim(),desc:String(d.desc||'').trim()})).filter(d=>d.name||d.desc);
-  E.scope.objectives=E.scope.deliverables.map(d=>d.name&&d.desc?d.name+': '+d.desc:(d.name||d.desc)); save(); }
+function x5kdId(L){ let n=1; while(L.some(d=>d.id==='kd'+n)) n++; return 'kd'+n; }
+function x3delsSave(list){ const out=[]; list.forEach(d=>{ const x={id:d.id||x5kdId(out.concat(list)),name:String(d.name||'').trim(),desc:String(d.desc||'').trim()};
+    if(d.due) x.due=d.due; if(d.owner) x.owner=d.owner; if(x.name||x.desc||x.due) out.push(x); });
+  E.scope.deliverables=out; E.scope.objectives=out.map(d=>d.name&&d.desc?d.name+': '+d.desc:(d.name||d.desc)); save(); }
 function x3delSet(i,k,v){ const L=x3dels().map(d=>Object.assign({},d)); if(!L[i]) return; L[i][k]=v; x3delsSave(L); }
-function x3delDel(i){ const L=x3dels().map(d=>Object.assign({},d)); L.splice(i,1); x3delsSave(L); goKeep('s2'); }
-function x4delAdd(){ const L=x3dels().map(d=>Object.assign({},d)); L.push({name:'New deliverable',desc:''}); x3delsSave(L); goKeep('s2');
+function x3delDel(i){ const L=x3dels().map(d=>Object.assign({},d)); L.splice(i,1); x3delsSave(L); goKeep(PAGE); }
+function x4delAdd(){ const L=x3dels().map(d=>Object.assign({},d)); L.push({name:'New deliverable',desc:''}); x3delsSave(L); goKeep(PAGE);
   setTimeout(()=>{ const r=document.querySelectorAll('#x4dels .x4tr'); const x=r[r.length-1]&&r[r.length-1].querySelector('input'); if(x){ x.focus(); x.select(); } },30); }
 const X3BY=[['Value chain','flow','Stages in a fixed order'],['Customer journey','cc',''],['Products and services','tag',''],['Business lines','layers',''],
   ['Markets','globe',''],['Customer segments','team',''],['Business units','tom',''],['Functions','cols',''],['Companies','building',''],['Sites','pin',''],['Something else','more','']];
 X4FIGS.s2=()=>{ const b=scBy(1), c=sxCount(), lab=b.type==='Value chain'?'Stages in scope':b.type==='Customer journey'?'Steps in scope':'In scope';
-  return [x4fig(c.all?c.on+' of '+c.all:'—',lab),x4fig((E.hypotheses||[]).filter(x=>String(x||'').trim()).length,'Hypotheses'),x4fig(x3dels().length,'Key deliverables'),x4fig((E.scope.constraints||[]).filter(x=>String(x||'').trim()).length,'Constraints')]; };
+  return [x4fig(c.all?c.on+' of '+c.all:'—',lab),x4fig((E.hypotheses||[]).filter(x=>String(x||'').trim()).length,'Hypotheses'),x4fig((E.scope.constraints||[]).filter(x=>String(x||'').trim()).length,'Constraints')]; };
 PAGES.s2=()=>{
-  const sc=E.scope, opex=isOpex(), b=scBy(1), vc=b.type==='Value chain', dels=x3dels();
+  const sc=E.scope, opex=isOpex(), b=scBy(1), vc=b.type==='Value chain';
   const byItems=X3BY.map(([v,i])=>({v,l:v,i,c:v==='Something else'?X3C.grey:X3C.navy}));
   let chips='';
   if(vc){ const C=vcArrC(); if(!C.length) C.push({id:vcNewId(),name:'',stages:[]});
@@ -9907,83 +9951,89 @@ PAGES.s2=()=>{
   const second=sc.by2?sxList(2)+sxGrid():'';
   const links=[vc?'<button type="button" class="x4lnk" onclick="vcAddChain()">+ Add another value chain</button>':'',sc.by2?'':'<button type="button" class="x4lnk" onclick="sxAddSecond()">+ Cross with a second list</button>'].filter(Boolean).join('');
   const scope=x4card('Our scope',`${custom}<div class="x4chips">${chips}</div>${links?`<div class="x4links">${links}</div>`:''}
-     <div class="x4fg" style="margin-top:12px">${x4f('Perimeter',x4ta('scope.entity',{ph:'Belgian P&C entity',aria:'Perimeter'}),'w')}</div>
      ${opex?`<div class="x4sub">Processes in scope</div>${x4list('scope.processes','Add a process')}`:''}
      ${second?`<div class="x4second">${second}</div>`:''}`,
     {span:1,right:`<span class="x4note">Scope by</span>${x3dd(b.type,byItems,v=>sxPickType(1,v),{aria:'Scope by',cell:1})}`});
   const editing=X3STMT||!String(sc.statement||'').trim();
-  const problem=x4card('The problem',editing?`<textarea class="x4in x4ta x4stmt" aria-label="The problem" placeholder="Why now: …&#10;The pain: our claims teams are always behind and **nobody can say where the time goes**.&#10;This phase: …" oninput="upd('scope.statement',this.value)">${esc(sc.statement||'')}</textarea>
+  const problem=x4card('Problem statement',editing?`<textarea class="x4in x4ta x4stmt" aria-label="Problem statement" placeholder="Why now: …&#10;The pain: our claims teams are always behind and **nobody can say where the time goes**.&#10;This phase: …" oninput="upd('scope.statement',this.value)">${esc(sc.statement||'')}</textarea>
       <p class="x4hint">One paragraph per line, starting with a short label and a colon. Put **two stars** around the words to show in bold.</p>`:x3paras(sc.statement),
     {span:1,right:x4btn(editing?'Done':'Edit',"X3STMT=!X3STMT;goKeep('s2')")});
-  const delRows=dels.map((d,i)=>`<div class="x4tr">
-      <span><input class="x4pill-in${d.name?'':' empty'}" value="${esc(d.name)}" placeholder="Name it" aria-label="Deliverable" oninput="x3delSet(${i},'name',this.value)" onchange="goKeep('s2')" size="${Math.max(8,Math.min(30,(d.name||'Name it').length+1))}"></span>
-      <span>${x4ced(d.desc,`x3delSet(${i},'desc',this.value)`,{ph:'What it holds',aria:'What it holds'})}</span>
-      <span class="r">${x4more([x4rm(()=>x3delDel(i))],'More')}</span></div>`);
-  const deliv=x4card('Key deliverables',`<div id="x4dels">${x4tbl('minmax(0,.8fr) minmax(0,2fr) 32px',['Deliverable','What it holds',''],delRows,x4add('Add a deliverable','x4delAdd()'))}</div>`,{n:dels.length||''});
-  let numbers;
-  if(opex){ const v=E.valueInputs=E.valueInputs||{}; if(!v.currency) v.currency='EUR';
-    const curs=[['EUR','Euro','€'],['USD','US dollar','$'],['GBP','Pound sterling','£'],['CHF','Swiss franc','F']].map(([k,l,g])=>({v:k,l:k+' · '+l,g,c:X3C.soft}));
-    if(!curs.some(x=>x.v===v.currency)) curs.push({v:v.currency,l:v.currency,g:String(v.currency).slice(0,1),c:X3C.soft});
-    numbers=x4card('Numbers every analysis uses',`<div class="x4fg">
-      ${x4f('Loaded cost of one FTE a year',`<input class="x4in r" inputmode="numeric" value="${v.costPerFte==null?'':esc(v.costPerFte)}" placeholder="Not set yet" aria-label="Loaded cost of one FTE a year" oninput="upd('valueInputs.costPerFte',this.value===''?null:+this.value)">`)}
-      ${x4f('Currency',x3dd(v.currency,curs,k=>{ upd('valueInputs.currency',k); goKeep('s2'); },{aria:'Currency'}))}
-      ${x4f('Hours one FTE works a year',`<input class="x4in r" inputmode="numeric" value="${v.hoursPerFte==null?'':esc(v.hoursPerFte)}" placeholder="1,600" aria-label="Hours one FTE works a year" oninput="upd('valueInputs.hoursPerFte',this.value===''?null:+this.value)">`)}
-    </div>`);
-  } else { const N=sc.numbers=Array.isArray(sc.numbers)?sc.numbers:[];
+  let numbers='';
+  if(!opex){ const N=sc.numbers=Array.isArray(sc.numbers)?sc.numbers:[];
     numbers=x4card('Numbers we start from',x4tbl('minmax(0,1.4fr) minmax(0,1fr) 32px',['What it is',['Figure','r'],''],N.map((x,i)=>`<div class="x4tr"><span>${x4ced(x.label,`sxNum(${i},'label',this.value)`,{ph:'Revenue last year',aria:'What it is',strong:1})}</span><span>${x4ced(x.value,`sxNum(${i},'value',this.value)`,{ph:'The figure',aria:'Figure',r:1})}</span><span class="r">${x4more([x4rm(()=>sxNumDel(i))],'More')}</span></div>`),
-      x4add('Add a number',"sxNumAdd('New number')"))); }
+      x4add('Add a number',"sxNumAdd('New number')")),{span:1}); }
   return `<div class="x3"><div class="x4g">
       ${problem}${scope}
       ${x4card('Our day-one hypotheses',x4list('hypotheses','Add a hypothesis',{num:'H'}),{span:1,n:(E.hypotheses||[]).filter(x=>String(x||'').trim()).length||''})}
-      ${deliv}
-      ${x4card('Constraints',x4list('scope.constraints','Add a constraint'),{n:(sc.constraints||[]).filter(x=>String(x||'').trim()).length||''})}
       ${x4card('Out of scope',x4list('scope.outOfScope','Add what stays out'))}
+      ${x4card('Constraints',x4list('scope.constraints','Add a constraint'),{n:(sc.constraints||[]).filter(x=>String(x||'').trim()).length||''})}
       ${numbers}
     </div></div>`;
 };
 
-/* ═════════════ 4 · Teams in scope ═════════════ */
-var X3TV='list', X4NEWDIV=null;
-X4FIGS.s3=()=>{ const all=E.teams.filter(t=>t.name), ins=all.filter(t=>t.inScope!==false), fte=ins.filter(t=>t.fte!=null).reduce((a,t)=>a+(+t.fte||0),0);
-  return [x4fig(ins.length+' of '+all.length,'Teams in scope'),x4fig(plDivs(ins).length,'Divisions'),x4fig(fte?plFmt(fte):'—','FTE in scope'),x4fig(ins.filter(t=>t.lead).length+' of '+ins.length,'Leads known',ins.some(t=>!t.lead))]; };
+/* ═════════════ 4 · Perimeter: who we look at, department by department ═════════════
+   One white card per department on the page, the department and its head on the left, its teams beside it.
+   Every team is core scope (we analyse it), an interface (it only matters at the hand-offs) or out of scope.
+   Data: E.divisions [{name, head, teams}] (the field the cockpit already reads) gives the order and the heads; a team names its department in team.division;
+   team.scope is 'core', 'interface' or 'out' (team.inScope stays true only for core, so the analyses follow). */
+var X3TV='list';
+const X5SC=[{v:'core',l:'Core scope',tag:'good',s:'We analyse it'},{v:'interface',l:'Interface',tag:'info',s:'Hand-offs only'},{v:'out',l:'Out of scope',tag:'none',s:''}];
+const x5st=t=>t.scope&&X5SC.some(x=>x.v===t.scope)?t.scope:(t.inScope===false?'out':'core');
+function x5setSt(i,v){ const t=E.teams[i]; if(!t) return; t.scope=v; t.inScope=v==='core'; derivePlan(); save(); goKeep('s3'); }
+function x5depsArr(){ E.divisions=Array.isArray(E.divisions)?E.divisions.filter(d=>d&&typeof d==='object'):[]; return E.divisions; }
+function x5deps(){ const D=x5depsArr(), all=E.teams.map((t,i)=>[t,i]).filter(([t])=>t.name||t._auto), out=[];
+  /* every department a team names gets its place in the list, in the order the teams name them */
+  all.forEach(([t])=>{ const n=String(t.division||'').trim(); if(n&&!D.some(d=>String(d.name||'').trim()===n)) D.push({name:n,head:''}); });
+  D.forEach(d=>out.push({name:String(d.name||''),head:d.head||'',teams:[]}));
+  all.forEach(([t,i])=>{ const n=String(t.division||'').trim(); let g=out.find(x=>x.name.trim()===n); if(!g){ g={name:n,head:'',teams:[],loose:!n}; out.push(g); } g.teams.push(i); });
+  return out.sort((a,b)=>(a.loose?1:0)-(b.loose?1:0)); }
+function x5depHead(name,v){ const D=x5depsArr(); let d=D.find(x=>String(x.name||'').trim()===name.trim()); if(!d){ d={name,head:''}; D.push(d); } d.head=v; save(); }
+function x5depName(old,v){ v=String(v||'').trim(); const D=x5depsArr(); let d=D.find(x=>String(x.name||'').trim()===old.trim()); if(!d){ d={name:old,head:''}; D.push(d); }
+  d.name=v; E.teams.forEach(t=>{ if(String(t.division||'').trim()===old.trim()&&old.trim()) t.division=v; }); save(); goKeep('s3'); }
+function x5depDel(name){ const D=x5depsArr(), k=D.findIndex(x=>String(x.name||'').trim()===name.trim()); if(k>=0) D.splice(k,1);
+  E.teams.forEach(t=>{ if(String(t.division||'').trim()===name.trim()) t.division=''; }); save(); goKeep('s3'); }
+function x5depAdd(){ const D=x5depsArr(); let n='New department', k=2; while(D.some(x=>x.name===n)) n='New department '+(k++); D.push({name:n,head:''}); save(); goKeep('s3');
+  setTimeout(()=>{ const c=document.querySelectorAll('#page .x5dep .x5dn'); const x=c[c.length-1]; if(x){ x.focus(); x.select(); } },30); }
+function x5teamAdd(dep){ X3TV='list'; addTeam(true); const t=E.teams[E.teams.length-1]; t.division=dep||''; t.scope='core'; save(); goKeep('s3');
+  setTimeout(()=>{ const x=document.querySelector(`#page .x5dep [data-team="${E.teams.length-1}"] input`); if(x) x.focus(); },30); }
+X4FIGS.s3=()=>{ const T=E.teams.filter(t=>t.name), core=T.filter(t=>x5st(t)==='core'), itf=T.filter(t=>x5st(t)==='interface'), D=x5deps().filter(d=>d.name.trim()), heads=D.filter(d=>String(d.head||'').trim()).length;
+  const fte=core.filter(t=>t.fte!=null).reduce((a,t)=>a+(+t.fte||0),0);
+  return [x4fig(D.length,D.length===1?'Department':'Departments'),x4fig(core.length,'Teams in core scope'),x4fig(itf.length,itf.length===1?'Interface':'Interfaces'),
+    isOpex()?x4fig(fte?plFmt(fte):'—','FTE in core scope'):null,x4fig(heads+' of '+D.length,'Heads named',D.length&&heads<D.length)]; };
 X4RIGHT.s3=()=>`<span class="x4seg" role="radiogroup" aria-label="View">${[['list','List'],['org','Org chart']].map(([k,l])=>`<button type="button" role="radio" aria-checked="${X3TV===k}" class="${X3TV===k?'on':''}" onclick="X3TV='${k}';goKeep('s3')">${l}</button>`).join('')}</span>`;
-function x4stageItems(t){ const out=[]; VCS().forEach(c=>(c.stages||[]).filter(Boolean).forEach((s,n)=>out.push({v:c.id+'|'+s,l:s,g:String(n+1),c:X3C.navy,h:VCS().length>1?(c.name||'Value chain'):''}))); return out; }
+function x4stageItems(){ const out=[]; VCS().forEach(c=>(c.stages||[]).filter(Boolean).forEach((s,n)=>out.push({v:c.id+'|'+s,l:s,g:String(n+1),c:X3C.navy,h:VCS().length>1?(c.name||'Value chain'):''}))); return out; }
 PAGES.s3=()=>{
-  const all=E.teams.filter(t=>t.name||t._auto), divs=plDivs(all), stages=VCS().some(c=>(c.stages||[]).filter(Boolean).length);
-  const foot=`<div class="x4addr">${'<button type="button" class="x4lnk" onclick="x4teamAdd()">+ Add a team</button><button type="button" class="x4lnk" onclick="pasteTeams()">Paste a list</button>'}</div>`;
-  let body;
-  if(!all.length) body=`<p class="x4empty">No teams yet. Paste the client’s list, add them one by one, or start from an example.</p><div class="x4sugg">${Object.keys(TEAM_EXAMPLES).map(k=>`<button type="button" class="x4pill" onclick="loadExampleTeams('${x4q(k)}')">${esc(k)} · ${TEAM_EXAMPLES[k].length} teams</button>`).join('')}</div>${foot}`;
-  else if(X3TV==='list'){
-    const divNames=[...new Set(E.teams.map(x=>String(x.division||'').trim()).filter(Boolean))];
-    const rows=all.map(t=>{ const i=E.teams.indexOf(t), inn=t.inScope!==false, d=String(t.division||'').trim();
-      const divCell=X4NEWDIV===i?`<input class="x4ced" placeholder="New division" aria-label="New division" onblur="X4NEWDIV=null;if(this.value.trim())plTSet(${i},'division',this.value.trim());goKeep('s3')" onkeydown="if(event.key==='Enter')this.blur()">`
-        :x3dd(d,divNames.map(n=>({v:n,l:n})).concat([{v:'__new',l:'New division…',link:1}]),v=>{ if(v==='__new'){ X4NEWDIV=i; goKeep('s3'); setTimeout(()=>{ const x=document.querySelector('#page .x4tr input[placeholder="New division"]'); if(x) x.focus(); },20); } else { plTSet(i,'division',v); goKeep('s3'); } },{cell:1,aria:'Division',ph:'Pick a division',warn:1});
-      const placed=VCS().map(c=>placedOn(t,c.id)?c.id+'|'+placedOn(t,c.id):'').filter(Boolean);
-      const stageCell=stages?x3dd(placed,x4stageItems(t),(v)=>{ const [cid,st]=v.split('|'); setPlacement(t,cid,placedOn(t,cid)===st?'':st); save(); },{cell:1,aria:'Stage',ph:'Not placed',onclose:()=>goKeep('s3')}):'';
-      return `<div class="x4tr${inn?'':' out'}" data-team="${i}">
-        <span>${x4ced(t.name,`tName(${i},this.value)`,{ph:'Team name',aria:'Team',strong:1})}</span>
-        <span>${divCell}</span>
-        <span>${x4ced(t.lead,`plTSet(${i},'lead',this.value)`,{ph:'Not known yet',aria:'Team lead'})}</span>
-        ${stages?`<span>${stageCell}</span>`:''}
-        <span>${x4ced(t.fte==null?'':t.fte,`plTSet(${i},'fte',plNum(this.value))`,{ph:'—',aria:'FTE',num:1,r:1})}</span>
-        <span>${x4ced(t.hc==null?'':t.hc,`plTSet(${i},'hc',plNum(this.value))`,{ph:'—',aria:'Headcount',num:1,r:1})}</span>
-        <span class="c"><button type="button" class="x4ck${inn?'':' off'}" role="checkbox" aria-checked="${inn}" aria-label="In scope" onclick="ogIn(${i},${!inn})">${inn?X3CK:''}</button></span>
-        <span class="r">${x4more([x4rm(()=>tDel(i),'Remove this team')],'More')}</span></div>`; });
-    const cols='minmax(0,1.8fr) minmax(0,1.4fr) minmax(0,1.3fr)'+(stages?' minmax(0,1.5fr)':'')+' 72px 88px 72px 32px';
-    body=x4tbl(cols,['Team','Division','Lead'].concat(stages?['Stage']:[]).concat([['FTE','r'],['Headcount','r'],['In scope','c'],'']),rows,foot);
-  } else { OG_DIVS=divs; body=`<div class="x3org">${divs.map((d,di)=>{ const L=all.filter(t=>String(t.division||'').trim()===d), on=L.filter(t=>t.inScope!==false&&t.name);
+  const opex=isOpex(), stages=opex&&VCS().some(c=>(c.stages||[]).filter(Boolean).length), deps=x5deps();
+  const cols=['minmax(0,1.35fr)','minmax(0,1.7fr)','minmax(0,1.2fr)','140px'].concat(stages?['minmax(0,1fr)']:[]).concat(opex?['64px','88px']:[]).concat(['36px']).join(' ');
+  const head=['Department','Team','Lead','Scope'].concat(stages?['Stage']:[]).concat(opex?[['FTE','r'],['Headcount','r']]:[]).concat(['']);
+  const top=`<div class="x5top"><h2>Organisational perimeter</h2><span class="x4r"><button type="button" class="x4b x5w" onclick="pasteTeams()">Paste a list</button></span></div>`;
+  if(!E.teams.filter(t=>t.name||t._auto).length&&!x5depsArr().length)
+    return `<div class="x3">${top}<div class="x4c"><p class="x4empty">No departments or teams yet. Paste the client’s list, add a department, or start from an example.</p><div class="x4sugg">${Object.keys(TEAM_EXAMPLES).map(k=>`<button type="button" class="x4pill" onclick="loadExampleTeams('${x4q(k)}')">${esc(k)} · ${TEAM_EXAMPLES[k].length} teams</button>`).join('')}</div>${x4add('Add a department','x5depAdd()')}</div></div>`;
+  if(X3TV==='org'){ OG_DIVS=plDivs(E.teams.filter(t=>t.name||t._auto)); const all=E.teams.filter(t=>t.name||t._auto);
+    return `<div class="x3">${top}<div class="x4c"><div class="x3org">${OG_DIVS.map((d,di)=>{ const L=all.filter(t=>String(t.division||'').trim()===d), on=L.filter(t=>x5st(t)==='core');
       const f=on.filter(t=>t.fte!=null).reduce((a,t)=>a+(+t.fte||0),0);
       return `<div class="x3oc" ondragover="if(TDRAG!==null){event.preventDefault();this.classList.add('over')}" ondragleave="if(!this.contains(event.relatedTarget))this.classList.remove('over')" ondrop="event.preventDefault();ogDiv(${di})">
-        <div class="x3dh"><b>${esc(d||'No division yet')}</b><span>${on.length?(f?plFmt(f)+' FTE':on.length+' in scope'):'Not in scope'}</span></div>
-        ${L.map(t=>{ const i=E.teams.indexOf(t), inn=t.inScope!==false;
-          return `<div class="x3trow${inn?'':' out'}" draggable="true" ondragstart="TDRAG=${i};this.classList.add('dragging')" ondragend="tdEnd(this)">
-            <button type="button" class="x3tmain" onclick="x4goTeam(${i})" title="${esc(t.name)}${t.lead?' · '+esc(t.lead):''}"><span class="x3tx"><b>${esc(t.name||'New team')}</b><span>${t.lead?esc(t.lead):'<span class="x4warn">No lead yet</span>'}</span></span><span class="x3fte">${t.fte==null?'—':plFmt(t.fte)}</span></button>
-            <button type="button" class="x4ck${inn?'':' off'}" role="checkbox" aria-checked="${inn}" aria-label="In scope" onclick="ogIn(${i},${!inn})">${inn?X3CK:''}</button></div>`; }).join('')}
-      </div>`; }).join('')}</div>${foot}`; }
-  return `<div class="x3"><div class="x4g">${x4card('Teams',body,{span:1})}</div></div>`;
+        <div class="x3dh"><b>${esc(d||'No department yet')}</b><span>${on.length?(opex&&f?plFmt(f)+' FTE':on.length+' core'):'No core teams'}</span></div>
+        ${L.map(t=>{ const i=E.teams.indexOf(t), st=x5st(t);
+          return `<div class="x3trow${st==='core'?'':' out'}" draggable="true" ondragstart="TDRAG=${i};this.classList.add('dragging')" ondragend="tdEnd(this)">
+            <button type="button" class="x3tmain" onclick="X3TV='list';goKeep('s3')" title="${esc(t.name)}"><span class="x3tx"><b>${esc(t.name||'New team')}</b><span>${t.lead?esc(t.lead):'<span class="x4warn">Lead to confirm</span>'}</span></span>${st==='core'?'':`<span class="x4tag ${st==='interface'?'info':'none'}">${st==='interface'?'Interface':'Out'}</span>`}</button></div>`; }).join('')}
+      </div>`; }).join('')}</div></div></div>`; }
+  const cards=deps.map(d=>{ const n=d.teams.length, dn=d.name;
+    const left=`<div class="x5dc" style="grid-row:1 / span ${Math.max(n,1)}">
+        ${d.loose?'<b class="x5loose">No department yet</b>':`<input class="x4ced strong x5dn" value="${esc(dn)}" aria-label="Department" title="${esc(dn)}" onchange="x5depName('${x4q(dn)}',this.value)" onkeydown="if(event.key==='Enter')this.blur()">`}
+        ${d.loose?'':`<span class="x5hd">${d.head?x4av(d.head,'cl'):''}<input class="x4ced" value="${esc(d.head||'')}" placeholder="Add the head" aria-label="Head of ${esc(dn)}" oninput="x5depHead('${x4q(dn)}',this.value)" onchange="goKeep('s3')"></span>`}
+        <span class="x5acts"><button type="button" class="x4lnk x5sm" onclick="x5teamAdd('${x4q(dn)}')">+ Team</button>${d.loose?'':x4more([x4rm(()=>x5depDel(dn),'Remove the department')],'More for '+dn)}</span></div>`;
+    const rows=n?d.teams.map((i,k)=>{ const t=E.teams[i], st=x5st(t), placed=VCS().map(c=>placedOn(t,c.id)?c.id+'|'+placedOn(t,c.id):'').filter(Boolean), cls='x5c'+(k?' x5sep':'');
+      return `<span class="${cls}" data-team="${i}">${x4ced(t.name,`tName(${i},this.value)`,{ph:'Team name',aria:'Team',strong:1})}</span>
+        <span class="${cls}${t.lead?'':' nolead'}">${t.lead?x4av(t.lead,'cl'):''}${x4ced(t.lead,`plTSet(${i},'lead',this.value)`,{ph:'Lead to confirm',aria:'Team lead',change:"goKeep('s3')"})}</span>
+        <span class="${cls}">${x3dd(st,X5SC,v=>x5setSt(i,v),{cell:1,aria:'Scope',tag:1})}</span>
+        ${stages?`<span class="${cls}">${x3dd(placed,x4stageItems(),v=>{ const [cid,sv]=v.split('|'); setPlacement(t,cid,placedOn(t,cid)===sv?'':sv); save(); },{cell:1,aria:'Stage',ph:'Not placed',onclose:()=>goKeep('s3')})}</span>`:''}
+        ${opex?`<span class="${cls} r">${x4ced(t.fte==null?'':t.fte,`plTSet(${i},'fte',plNum(this.value))`,{ph:'—',aria:'FTE',num:1,r:1})}</span><span class="${cls} r">${x4ced(t.hc==null?'':t.hc,`plTSet(${i},'hc',plNum(this.value))`,{ph:'—',aria:'Headcount',num:1,r:1})}</span>`:''}
+        <span class="${cls} r">${x4more([x4rm(()=>tDel(i),'Remove this team')],'More')}</span>`; }).join('')
+      :`<span class="x5c x5none" style="grid-column:2 / -1">No teams yet</span>`;
+    return `<div class="x5dep" style="--cols:${cols}">${left}${rows}</div>`; }).join('');
+  return `<div class="x3">${top}<div class="x5head" style="--cols:${cols}">${head.map(h=>`<span${Array.isArray(h)?` class="${h[1]}"`:''}>${esc(Array.isArray(h)?h[0]:h)}</span>`).join('')}</div>${cards}${x4add('Add a department','x5depAdd()')}</div>`;
 };
-function x4teamAdd(){ X3TV='list'; addTeam(true); save(); goKeep('s3'); setTimeout(()=>{ const r=document.querySelectorAll('#page .x4t .x4tr'); const x=r[r.length-1]&&r[r.length-1].querySelector('input'); if(x) x.focus(); },30); }
-function x4goTeam(i){ X3TV='list'; goKeep('s3'); setTimeout(()=>{ const r=document.querySelector(`#page .x4tr[data-team="${i}"]`); if(r){ r.scrollIntoView({block:'center'}); r.classList.add('flash'); const x=r.querySelector('input'); if(x) x.focus(); setTimeout(()=>r.classList.remove('flash'),1400); } },30); }
 
 /* ═════════════ 5 · Analyses per team ═════════════ */
 function x3anItems(t,k){ return k==='base'?BASELINE_CHOSEN.slice():(M.offers[k]||[]).filter(i=>plCanRun(i)||plHas(t,k,i)); }
@@ -10011,22 +10061,36 @@ function x3anPop(tid,k){ x3pop('an:'+tid+':'+k,()=>{ const t=inScopeTeams().find
 function x3anSet(tid,k,j,on){ const t=inScopeTeams().find(x=>x.id===tid); if(!t) return; const ik=x3anItems(t,k)[j]; if(!ik) return; plSetOne(t,k,ik,on); derivePlan(); save(); x3re(); }
 function x3anAll(tid,k){ const t=inScopeTeams().find(x=>x.id===tid); if(!t) return; x3anItems(t,k).forEach(ik=>{ if(!plHas(t,k,ik)) plSetOne(t,k,ik,true); }); derivePlan(); save(); x3re(); }
 
-/* ═════════════ 6 · Key moments ═════════════ */
-X4FIGS.moments=()=>{ msEnsure(); const n=E.milestones.length, d=E.milestones.filter(m=>m.date).length; return [x4fig(n,'Moments'),x4fig(d+' of '+n,'With a date',d<n),x4fig(x4weeks()||'—','Weeks')]; };
+/* ═════════════ 6 · Plan: key deliverables and key moments on one timeline ═════════════ */
+X4FIGS.moments=()=>{ msEnsure(); const n=E.milestones.length, d=E.milestones.filter(m=>m.date).length, kd=x3dels().filter(x=>x.name||x.desc).length;
+  return [x4fig(kd,kd===1?'Key deliverable':'Key deliverables'),x4fig(n,'Key moments'),x4fig(d+' of '+n,'Moments dated',d<n),x4fig(x4weeks()||'—','Weeks')]; };
+const x5people=blank=>[{v:'',l:blank,c:X3C.grey}].concat((E.nrMembers||[]).filter(m=>m&&m.name).map(m=>({v:m.id,l:m.name,s:m.role==='Case Lead'?'Case lead':(m.role||''),h:m.affiliation==='external'?'The client':'Our team'})));
 PAGES.moments=()=>{
   msEnsure();
-  const a=E.assignment, s=a.start, e=a.target, D=x=>new Date(x+'T00:00:00'), ok=x=>x&&!isNaN(D(x));
-  const all=E.milestones.map(m=>m.date).filter(ok).concat([s,e].filter(ok)).sort();
+  const a=E.assignment, s=a.start, e=a.target, D=x=>new Date(x+'T00:00:00'), ok=x=>x&&!isNaN(D(x)), dels=x3dels();
+  const all=E.milestones.map(m=>m.date).concat(dels.map(d=>d.due)).filter(ok).concat([s,e].filter(ok)).sort();
   const t0=all.length?D(all[0]):null, t1=all.length?D(all[all.length-1]):null, span=t0&&t1&&t1>t0?t1-t0:0;
   const weeks=x4weeks()||0, today=new Date(); today.setHours(0,0,0,0);
   const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
   const pct=d=>{ const x=D(d); return span&&!isNaN(x)?Math.max(0,Math.min(1,(x-t0)/span))*100:null; };
-  const dated=E.milestones.filter(m=>ok(m.date)).slice().sort((x,y)=>x.date<y.date?-1:1);
   const now=span&&today>=t0&&today<=t1?(today-t0)/span*100:null;
   const label=m=>m.kind==='steerco'?(m.name||STEER):(m.name||msLabel(m.kind)||'Moment');
+  const marks=E.milestones.filter(m=>ok(m.date)).map(m=>({p:pct(m.date),n:label(m),d:m.date,k:m.kind==='steerco'?'steer':'',past:D(m.date)<today}))
+    .concat(dels.filter(d=>ok(d.due)).map(d=>({p:pct(d.due),n:d.name||'Key deliverable',d:d.due,k:'kd',past:D(d.due)<today})))
+    .sort((x,y)=>x.d<y.d?-1:1);
   const wk=weeks&&span?Array.from({length:weeks},(_,w)=>{ const d=iso(new Date(D(s).getTime()+w*7*864e5)), p=pct(d); return `<span style="left:${p}%" class="${p>94?'last':''}">W${w+1} · ${x3fmt(d)}</span>`; }).join(''):'';
-  const marks=dated.map(m=>{ const p=pct(m.date); return `<span class="x3mk${m.kind==='steerco'?' steer':''}${D(m.date)<today?' past':''}" style="left:${p}%"></span><span class="x3mkl" data-p="${p}" style="left:${p}%">${esc(label(m))}<small>${esc(x3fmt(m.date))}</small></span>`; }).join('');
+  const mk=marks.map(m=>`<span class="x3mk ${m.k}${m.past?' past':''}" style="left:${m.p}%"></span><span class="x3mkl" data-p="${m.p}" style="left:${m.p}%">${esc(m.n)}<small>${esc(x3fmt(m.d))}</small></span>`).join('');
   if(span) setTimeout(x3tlLay,0);
+  const timeline=span?x4card('Timeline',`<div class="x3tl"><div class="x3tlw">${wk}</div><div class="x3trk"><span class="ln"></span>${now!=null?`<span class="now" style="left:${now}%"></span>`:''}${mk}</div></div>
+      <div class="x5leg"><span><i class="x3mk kd"></i>Key deliverable</span><span><i class="x3mk"></i>Key moment</span>${now!=null?'<span><i class="x5now"></i>Today</span>':''}</div>`,{span:1}):'';
+  const delRows=dels.map((d,i)=>`<div class="x4tr">
+      <span><input class="x4pill-in${d.name?'':' empty'}" value="${esc(d.name)}" placeholder="Name it" aria-label="Key deliverable" oninput="x3delSet(${i},'name',this.value)" onchange="goKeep('moments')" size="${Math.max(8,Math.min(30,(d.name||'Name it').length+1))}"></span>
+      <span>${x4ced(d.desc,`x3delSet(${i},'desc',this.value)`,{ph:'What it holds',aria:'What it holds'})}</span>
+      <span>${x4date(d.due,`x3delSet(${i},'due',this.value||null);goKeep('moments')`,'Due',1)}</span>
+      <span>${x3dd(d.owner||'',x5people('Add an owner'),v=>{ x3delSet(i,'owner',v||null); goKeep('moments'); },{cell:1,aria:'Owner',ph:'Add an owner'})}</span>
+      <span class="r">${x4more([x4rm(()=>x3delDel(i))],'More')}</span></div>`);
+  const deliv=x4card('Key deliverables',`<div id="x4dels">${x4tbl('minmax(0,1fr) minmax(0,2fr) 110px minmax(0,1fr) 32px',['Key deliverable','What it holds','Due','Owner',''],delRows,x4add('Add a key deliverable','x4delAdd()'))}</div>`
+    +(dels.some(d=>d._fromObj)?'<p class="x4hint">These come from the objectives written earlier: give each one a short name and a date.</p>':''),{span:1,n:dels.length||''});
   const always=msAlways();
   const kinds=m=>MS_NAMED.map(n=>({v:'n:'+n,l:n})).concat(MS_KINDS.filter(x=>MS_OFFER.includes(x[0])||x[0]===m.kind).map(([k,l])=>({v:k,l:k==='other'?'Other moment':l})));
   const rows=E.milestones.map((m,i)=>{ const named=m.kind==='steerco'||msNamed(m), keep=always.includes(m.kind)&&E.milestones.filter(x=>x.kind===m.kind).length===1;
@@ -10036,9 +10100,8 @@ PAGES.moments=()=>{
       <span>${x4date(m.date,`msSet(${i},'date',this.value||null)`,'Date',1)}</span>
       <span>${x4ced(m.note,`E.milestones[${i}].note=this.value;save()`,{ph:'Add a note',aria:'Note'})}</span>
       <span class="r">${keep?'':x4more([x4rm(()=>msDel(i),'Remove this moment')],'More')}</span></div>`; });
-  const foot=`<div class="x4addr"><button type="button" class="x4lnk" onclick="msAdd()">+ Add a moment</button><button type="button" class="x4lnk" onclick="msAdd('steerco')">+ Add a SteerCo</button></div>`;
-  return `<div class="x3"><div class="x4g">${x4card('Key moments',`${span?`<div class="x3tl"><div class="x3tlw">${wk}</div><div class="x3trk"><span class="ln"></span>${now!=null?`<span class="now" style="left:${now}%"></span>`:''}${marks}</div></div>`:''}
-    ${x4tbl('minmax(0,1.2fr) minmax(0,1.4fr) 120px minmax(0,2fr) 32px',['Moment','Name','Date','Note',''],rows,foot)}`,{span:1})}</div></div>`;
+  const foot=`<div class="x4addr"><button type="button" class="x4lnk" onclick="msAdd()">+ Add a key moment</button><button type="button" class="x4lnk" onclick="msAdd('steerco')">+ Add a SteerCo</button></div>`;
+  return `<div class="x3"><div class="x4g">${timeline}${deliv}${x4card('Key moments',x4tbl('minmax(0,1.2fr) minmax(0,1.4fr) 110px minmax(0,2fr) 32px',['Key moment','Name','Date','Note',''],rows,foot),{span:1})}</div></div>`;
 };
 function x3tlLay(){ const tk=document.querySelector('.x3trk'); if(!tk) return; const W=tk.clientWidth, rows=[]; let n=0;
   [...tk.querySelectorAll('.x3mkl')].sort((a,b)=>a.dataset.p-b.dataset.p).forEach(l=>{ const w=l.offsetWidth, c=+l.dataset.p/100*W;
@@ -10061,13 +10124,15 @@ X4FIGS.ws=()=>{ const R=x3wsRows(), nD=allStreams().reduce((a,w)=>a+(w.deliverab
 PAGES.ws=()=>{
   const st=wsS(), opex=isOpex(), R=x3wsRows(), agreed=st.status==='agreed';
   const phases=st.phases.map((p,pi)=>({v:String(pi),l:p.name||'Phase '+(pi+1),g:String(pi+1),c:[X3C.navy,X3C.green,X3C.slate][pi%3],s:pi===0&&E.assignment.start&&E.assignment.target?x3fmt(E.assignment.start)+' – '+x3fmt(E.assignment.target):''}));
-  const cols='minmax(0,2.2fr) minmax(0,1.1fr)'+(opex?' minmax(0,1.3fr)':'')+' minmax(0,1.5fr) 32px';
-  const head=['Deliverable','Phase'].concat(opex?['Covers']:[]).concat(['Owner','']);
+  const KD=x3dels().filter(d=>d.id&&d.name), feeds=KD.length>0;
+  const cols='minmax(0,2.1fr) minmax(0,1fr)'+(opex?' minmax(0,1.2fr)':'')+(feeds?' minmax(0,1.4fr)':'')+' minmax(0,1.3fr) 32px';
+  const head=['Deliverable','Phase'].concat(opex?['Covers']:[]).concat(feeds?['Feeds']:[]).concat(['Owner','']);
+  const kdItems=[{v:'',l:'Not linked yet',c:X3C.grey}].concat(KD.map(d=>({v:d.id,l:d.name,s:d.due?x3fmt(d.due):''})));
   const rows=[];
   R.forEach((r,ri)=>{ const n=r.at.reduce((a,[pi,wi])=>a+(st.phases[pi].workStreams[wi].deliverables||[]).length,0);
     rows.push(`<div class="x4tr x4grp">
       <span class="x4nm">${x4av(r.owner?memberName(r.owner):'',(E.nrMembers||[]).find(m=>m.id===r.owner)?.affiliation)}${x4ced(r.name,`x4wsName('${x4q(r.key)}',this.value)`,{ph:'Name the work stream',aria:'Work stream',strong:1,change:"goKeep('ws')"})}<span class="x4n">${n} ${n===1?'deliverable':'deliverables'}</span></span>
-      <span></span>${opex?'<span></span>':''}
+      <span></span>${opex?'<span></span>':''}${feeds?'<span></span>':''}
       <span>${x3dd(r.owner||'',x4people('No owner yet'),v=>{ x3wsRows().find(x=>x.key===r.key).at.forEach(([pi,wi])=>{ wsS().phases[pi].workStreams[wi].owner=v||null; }); save(); goKeep('ws'); },{cell:1,aria:'Owner of '+(r.name||'the work stream'),ph:'No owner yet',warn:1})}</span>
       <span class="r">${x4more([x4rm(()=>x4wsDel(r.key),'Remove this work stream')],'More')}</span></div>`);
     r.at.forEach(([pi,wi])=>{ const w=st.phases[pi].workStreams[wi]; (w.deliverables||[]).forEach(d=>{
@@ -10075,6 +10140,7 @@ PAGES.ws=()=>{
         <span>${x4ced(d.name,`x3dlSet('${x4q(d.id)}','name',this.value)`,{ph:'Name the deliverable',aria:'Deliverable',strong:1})}</span>
         <span>${x3dd(String(pi),phases,v=>x3dlMove(d.id,+v),{cell:1,aria:'Phase'})}</span>
         ${opex?`<span>${x3dd(d.scope==='engagement'?'engagement':'per-team',[{v:'per-team',l:'Every team in scope'},{v:'engagement',l:'The whole engagement'}],v=>{ x3dlSet(d.id,'scope',v); goKeep('ws'); },{cell:1,aria:'Covers'})}</span>`:''}
+        ${feeds?`<span>${x3dd(d.feeds||'',kdItems,v=>{ x3dlSet(d.id,'feeds',v||null); goKeep('ws'); },{cell:1,aria:'Feeds',ph:'Not linked yet'})}</span>`:''}
         <span>${x3dd(d.owner||'',x4people('Stream owner'),v=>{ const f=x3dlFind(d.id); if(f){ f.d.owner=v||null; f.d.teamOwners={}; save(); } goKeep('ws'); },{cell:1,aria:'Owner'})}</span>
         <span class="r">${x4more([x4rm(()=>x3dlDel(d.id))],'More')}</span></div>`); }); });
     rows.push(`<div class="x4addr in"><button type="button" class="x4lnk" onclick="x3dlAdd(${ri})">+ Add a deliverable</button></div>`); });
@@ -10100,7 +10166,7 @@ const X3_DR=drCard;
 drCard=function(){ if(!document.documentElement.classList.contains('nrs-setup')) return X3_DR(); const rows=drRows(true);
   return `<section class="x4c" id="dr-card"><div class="x4ch"><h2>Data request</h2>${rows.length?`<span class="x4n">${rows.length}</span><span class="x4r"><button type="button" class="x4b" id="dr-draft" onclick="draftDataRequest()">Draft the data request</button></span>`:''}</div>
     ${rows.length?`<div class="x4ls">${rows.map(r=>`<div class="x4li" title="${esc(r[1])}"><span class="x4tx"><b>${esc(r[0])}</b><span class="x4mut"> · ${esc(r[1])}</span></span></div>`).join('')}</div>`:'<p class="x4empty">Nothing to ask the client right now.</p>'}</section>`; };
-const X3K={client:'s1',id:'s1',practice:'s1',offer:'s1',name:'s1',nr:'s4',partner:'s4',lead:'s4',scope:'s2',cost:'s2',teams:'s3',unnamed:'s3',dup:'s3',fte:'s3',mix:'s3',off:'s5',ms:'moments',ms0:'moments',wsa:'ws',wso:'ws',wsp:'ws'};
+const X3K={client:'s1',id:'s1',practice:'s1',offer:'s1',name:'s1',nr:'s4',partner:'s4',lead:'s4',scope:'s2',cost:'s5',teams:'s3',unnamed:'s3',dup:'s3',fte:'s3',mix:'s3',off:'s5',ms:'moments',ms0:'moments',wsa:'ws',wso:'ws',wsp:'ws'};
 /* the hand-over list says what to do in the words of this screen */
 const X3_ISS=issues; issues=function(){ return X3_ISS().map(i=>i.k==='wsa'?Object.assign({},i,{s:'The work streams are still a proposal. Mark them as agreed once the team agrees.'}):i); };
 X4FIGS.s6=()=>{ const steps=setupSteps().filter(x=>x.k!=='s6'), done=steps.filter(x=>stepDone(x.k)).length, iss=issues(), hard=iss.filter(i=>!i.soft).length;
@@ -10119,6 +10185,40 @@ PAGES.s6=()=>{
       ${drCard()}${hand}
     </div></div>`;
 };
+
+/* ═════════════ the order of the steps (16 Nov 2026, evening) ═════════════
+   The engagement, for every practice: Client and offering, Our team, Problem and scope, Perimeter.
+   Then the practice's own steps (OpEx: Analyses per team, with the numbers every analysis uses).
+   Then the plan (Plan: key deliverables and key moments; Work streams) and the hand-over. */
+setupNav=function(){ let n=0; const step=(k,l,later)=>({k,n:++n,l,later:!!later});
+  const out=[{sec:'The engagement'}, step('s1','Client and offering'), step('s4','Our team'), step('s2','Problem and scope',1), step('s3','Perimeter',1)];
+  if(isOpex()) out.push({sec:'OpEx'}, step('s5','Analyses per team',1));
+  out.push({sec:'The plan'}, step('moments','Plan'), step('ws','Work streams',1), {sec:'Finish'}, step('s6','Hand over'));
+  return out; };
+TITLES.s2=['Problem and scope','What the client asks, what we expect to find, what we look at'];
+TITLES.s3=['Perimeter','The departments and teams we look at, and who leads them'];
+TITLES.moments=['Plan','What the client gets, and when'];
+TITLES.s5=['Analyses per team','What we run, team by team, and the numbers every analysis uses'];
+const X5_DONE=stepDone;
+stepDone=function(k){ if(!E) return false;
+  if(k==='s3') return E.teams.some(t=>t&&t.name);
+  if(k==='moments') return (E.milestones||[]).some(m=>m&&m.date)||x3dels().some(d=>d.due);
+  return X5_DONE(k); };
+/* the hand-over list names the steps as they are called now */
+const X5_ISS=issues; issues=function(){ return X5_ISS().map(i=>Object.assign({},i,{s:String(i.s)
+  .replace('(Scope)','(Analyses per team)').replace('in Teams in scope','in Perimeter').replace('under Teams in scope','under Perimeter')})); };
+/* OpEx: the numbers every analysis uses sit under the analyses */
+const X5_S5=PAGES.s5;
+PAGES.s5=()=>{ const html=X5_S5(); if(!isOpex()) return html;
+  const v=E.valueInputs=E.valueInputs||{}; if(!v.currency) v.currency='EUR';
+  const curs=[['EUR','Euro','€'],['USD','US dollar','$'],['GBP','Pound sterling','£'],['CHF','Swiss franc','F']].map(([k,l,g])=>({v:k,l:k+' · '+l,g,c:X3C.soft}));
+  if(!curs.some(x=>x.v===v.currency)) curs.push({v:v.currency,l:v.currency,g:String(v.currency).slice(0,1),c:X3C.soft});
+  const card=x4card('Numbers every analysis uses',`<div class="x4fg x5f3">
+      ${x4f('Loaded cost of one FTE a year',`<input class="x4in r" inputmode="numeric" value="${v.costPerFte==null?'':esc(v.costPerFte)}" placeholder="Not set yet" aria-label="Loaded cost of one FTE a year" oninput="upd('valueInputs.costPerFte',this.value===''?null:+this.value)">`)}
+      ${x4f('Hours one FTE works a year',`<input class="x4in r" inputmode="numeric" value="${v.hoursPerFte==null?'':esc(v.hoursPerFte)}" placeholder="1,600" aria-label="Hours one FTE works a year" oninput="upd('valueInputs.hoursPerFte',this.value===''?null:+this.value)">`)}
+      ${x4f('Currency',x3dd(v.currency,curs,k=>{ upd('valueInputs.currency',k); goKeep('s5'); },{aria:'Currency'}))}
+    </div>`,{span:1});
+  const k=html.lastIndexOf('</div></div>'); return k>0?html.slice(0,k)+card+html.slice(k):html+card; };
 /* ▲ setup3 */
 
 PAGES.export=()=>
@@ -15933,86 +16033,75 @@ html.nr-client .qsx .tsub-nav .tsub::after{display:none!important}
 <style id="qs-phone-css">
 /* qs-phone-css (Gilles, 16 Nov 2026): the client view shows numbers and visuals, not text. On the laptop the callout
    boxes and the lines that explain a page go; on a phone the roadmap, a team's overview and the initiatives get screens
-   of their own, in the Training Companion's idiom: figures in one card, a chart under them, lists of rows with an icon. */
+   of their own, in the Training Companion's idiom, kept quiet: one chart per screen with its figures above it in one
+   card, colour only where it means something (the type of change is a small dot, never a filled square), each unit
+   said once, titles that wrap instead of being cut, 24px between sections, five rows or fewer before "more". */
 html.nr-client .qsx .dd-verdict,html.nr-client .qsx .qs-note,html.nr-client .qsx .dd-section:has(> .qs-note),html.nr-client .qsx .vc-head>p,html.nr-client #page-roadmap .dd-section p,
 html.nr-client #opp-tbody td.dg-ins,html.nr-client #team-opp-tbody td.dg-ins,html.nr-client table:has(#opp-tbody) thead th:last-child,
 html.nr-client table:has(#team-opp-tbody) thead th:last-child,html.nr-client #page-roadmap .pos-leg>span:last-child{display:none!important}
 .qsp-on>:not(.qsp){display:none!important}
-.qsp{letter-spacing:normal;font-family:var(--ds-font);color:var(--ds-text);font-variant-numeric:tabular-nums;display:flex;flex-direction:column;gap:10px;padding-bottom:12px}
+.qsp{letter-spacing:normal;font-family:var(--ds-font);color:var(--ds-text);font-variant-numeric:tabular-nums;display:flex;flex-direction:column;padding-bottom:12px}
 .qsp *{box-sizing:border-box}
-.qsp-card{background:var(--ds-card);border-radius:14px;padding:14px 16px;position:relative}
-.qsp-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.qsp-card{background:var(--ds-card);border-radius:14px;padding:16px 18px;position:relative;margin-bottom:24px}
 .qsp-lb{font-size:var(--ds-fs-body);color:var(--ds-text-2)}
-.qsp-figs{display:flex;gap:28px;margin:6px 0 4px}
+.qsp-figs{display:flex;gap:28px}
+.qsp-figs .qsp-lb{margin-top:4px}
 .qsp-big{font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.05;white-space:nowrap}
-.qsp-big small{font-size:var(--ds-fs-heading);font-weight:400;color:var(--ds-text-2);margin-left:3px;letter-spacing:0}
-.qsp-tag{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:10px;font-size:var(--ds-fs-label);font-weight:600;white-space:nowrap;background:var(--ds-fill);color:var(--ds-text-2)}
-.qsp-tag.good{background:var(--ds-accent-soft);color:var(--ds-accent)}.qsp-tag.warn{background:color-mix(in srgb,var(--ds-warn) 13%,transparent);color:var(--ds-warn)}
-.qsp-hd{display:flex;justify-content:space-between;align-items:baseline;margin:14px 2px 0}
-.qsp-hd b{font-size:var(--ds-fs-title);font-weight:700}.qsp-hd span{font-size:var(--ds-fs-label);color:var(--ds-text-2)}
+.qsp-big small{font-size:var(--ds-fs-body);font-weight:400;color:var(--ds-text-2);margin-left:3px;letter-spacing:0}
+.qsp-hd{display:flex;justify-content:space-between;align-items:baseline;margin:0 2px 8px}
+.qsp-hd b{font-size:var(--ds-fs-heading);font-weight:700}.qsp-hd span{font-size:var(--ds-fs-label);color:var(--ds-text-3)}
 .qsp-link{background:none;border:0;padding:0;font:inherit;font-size:var(--ds-fs-body)!important;color:var(--ds-accent)!important;display:inline-flex;align-items:center;gap:2px;cursor:pointer}
 .qsp-link svg{width:14px;height:14px}
-.qsp-list{background:var(--ds-card);border-radius:14px;overflow:hidden}
-.qsp-it{display:flex;align-items:center;gap:11px;min-height:56px;padding:6px 12px 6px 14px;position:relative;cursor:pointer}
+.qsp-list{background:var(--ds-card);border-radius:14px;overflow:hidden;margin-bottom:24px}
+.qsp-it{display:flex;align-items:center;gap:12px;padding:12px 16px;position:relative;cursor:pointer}
 .qsp-it:active{background:var(--ds-fill)}
-.qsp-it+.qsp-it:before{content:"";position:absolute;top:0;right:0;left:55px;border-top:.5px solid var(--ds-line)}
-.qsp-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;flex:none}
-.qsp-ic svg{width:17px;height:17px}
+.qsp-it+.qsp-it:before{content:"";position:absolute;top:0;right:0;left:16px;border-top:.5px solid var(--ds-line)}
 .qsp-tx{flex:1;min-width:0}
-.qsp-t1{font-size:var(--ds-fs-heading);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.qsp-t2{font-size:var(--ds-fs-label);color:var(--ds-text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:4px}
-.qsp-t2 span{min-width:0;overflow:hidden;text-overflow:ellipsis}.qsp-t2 svg{width:12px;height:12px;flex:none;color:var(--ds-warn)}
-.qsp-vl{font-size:var(--ds-fs-heading);font-weight:600;white-space:nowrap}.qsp-vl small{font-size:var(--ds-fs-label);color:var(--ds-text-2);font-weight:400;margin-left:2px}
-.qsp-chv{width:16px;height:16px;color:var(--ds-text-3);flex:none}
-.qsp-chip{width:40px;height:40px;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;background:var(--ds-fill);line-height:1.1}
-.qsp-chip span{font-size:var(--ds-fs-label);color:var(--ds-text-2);font-weight:600}.qsp-chip b{font-size:var(--ds-fs-heading);font-weight:700}
-.qsp-chip.cur{background:var(--ds-accent)}.qsp-chip.cur span,.qsp-chip.cur b{color:#fff}
-.qsp-bub{position:absolute;background:var(--ds-card);border-radius:8px;box-shadow:0 4px 16px rgba(15,43,82,.16);padding:6px 9px;font-size:var(--ds-fs-body);font-weight:600;white-space:nowrap;pointer-events:none;z-index:3}
+.qsp-t1{font-size:var(--ds-fs-body);line-height:1.3}
+.qsp-t2{font-size:var(--ds-fs-label);color:var(--ds-text-3);margin-top:2px;display:flex;align-items:center;gap:6px;min-width:0}
+.qsp-t2 span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qsp-t2 svg{width:12px;height:12px;flex:none;color:var(--ds-text-3)}
+.qsp-vl{font-size:var(--ds-fs-body);font-weight:600;white-space:nowrap}
+.qsp-wk{font-size:var(--ds-fs-label);color:var(--ds-text-2);width:44px;flex:none;line-height:1.25}
+.qsp-wk b{display:block;font-weight:600;color:var(--ds-text)}
+.qsp-more{justify-content:center;color:var(--ds-accent);font-size:var(--ds-fs-body)}
+.qsp-dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex:none}
+.qsp-bub{position:absolute;background:var(--ds-card);border-radius:8px;padding:5px 9px;font-size:var(--ds-fs-body);white-space:nowrap;pointer-events:none;z-index:3;display:none}
 html .qsx .qsp .qsp-bub{box-shadow:0 4px 16px rgba(15,43,82,.16)!important}
-.qsp-bub div{font-size:var(--ds-fs-label);color:var(--ds-text-2);font-weight:400;display:flex;align-items:center;gap:5px}
-.qsp-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
-.qsp-lg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:var(--ds-fs-label);color:var(--ds-text-2);margin-bottom:10px}
-.qsp-lg span{display:flex;align-items:center;gap:5px}
-.qsp-grid{display:grid;grid-template-columns:96px repeat(4,minmax(0,1fr));gap:4px;align-items:center}
-.qsp-grid .n{font-size:var(--ds-fs-label);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.qsp-cell{height:26px;border-radius:6px;cursor:pointer}.qsp-cell.e{border:1px dashed var(--ds-fill-strong)}
-.qsp-gx{font-size:var(--ds-fs-label);color:var(--ds-text-3);text-align:center;margin-top:4px;cursor:pointer}.qsp-gx.on{color:var(--ds-text);font-weight:600}
-.qsp-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.qsp-tl{background:var(--ds-card);border-radius:14px;padding:12px 13px 11px;display:flex;flex-direction:column;gap:5px;min-width:0}
-.qsp-tl .nm{font-size:var(--ds-fs-body);font-weight:600;color:var(--ds-text-2);display:flex;align-items:center;gap:6px}
-.qsp-tl .nm svg{width:15px;height:15px}
-.qsp-tl .ft{display:flex;align-items:center;gap:6px;font-size:var(--ds-fs-label);color:var(--ds-text-2);white-space:nowrap;overflow:hidden}
-.qsp-bar{flex:1;height:6px;border-radius:3px;background:var(--ds-fill);overflow:hidden}.qsp-bar i{display:block;height:100%;border-radius:3px}
-.qsp-seg{display:flex;background:var(--ds-fill-strong);border-radius:10px;padding:3px}
+.qsp-bub span{color:var(--ds-text-2)}
+.qsp-grid{display:grid;grid-template-columns:88px repeat(4,minmax(0,1fr));column-gap:6px;row-gap:12px;align-items:center}
+.qsp-grid .n{font-size:var(--ds-fs-label);color:var(--ds-text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qsp-grid .c{height:8px;border-radius:4px;cursor:pointer;transition:opacity .2s}
+.qsp-grid .h{font-size:var(--ds-fs-label);color:var(--ds-text-3);text-align:center;cursor:pointer;padding:4px 0;border-radius:6px;line-height:1.3}
+.qsp-grid .h b{display:block;font-size:var(--ds-fs-body);font-weight:600;color:var(--ds-text-2)}
+.qsp-grid .h.on{background:var(--ds-ground)}.qsp-grid .h.on,.qsp-grid .h.on b{color:var(--ds-text)}
+.qsp-gl{background:var(--ds-card);border-radius:14px;padding:2px 18px;margin-bottom:24px}
+.qsp-gr{display:flex;justify-content:space-between;align-items:center;min-height:46px;font-size:var(--ds-fs-body);position:relative;cursor:pointer;width:100%;border:0;background:none;padding:0;font-family:inherit;color:inherit}
+.qsp-gr+.qsp-gr:before{content:"";position:absolute;top:0;left:0;right:0;border-top:.5px solid var(--ds-line)}
+.qsp-gr span{color:var(--ds-text-2)}.qsp-gr b{font-weight:600;display:flex;align-items:center;gap:6px}
+.qsp-gr em{font-style:normal;font-size:var(--ds-fs-label);color:var(--ds-text-3);font-weight:400}
+.qsp-gr em.warn{color:var(--ds-warn)}
+.qsp-gr svg{width:15px;height:15px;color:var(--ds-text-3)}
+.qsp-seg{display:flex;background:var(--ds-fill-strong);border-radius:10px;padding:3px;margin-bottom:18px}
 .qsp-seg button{flex:1;height:30px;border:0;background:none;border-radius:7px;font:inherit;font-size:var(--ds-fs-body);color:var(--ds-text-2);cursor:pointer}
 .qsp-seg button.on{background:var(--ds-card);color:var(--ds-text);font-weight:600}
-.qsp-split{display:flex;gap:2px;height:10px;border-radius:5px;overflow:hidden;margin-bottom:12px}
-.qsp-splg{display:grid;grid-template-columns:1fr 1fr;gap:7px 18px}
-.qsp-row{display:flex;align-items:center;gap:8px;font-size:var(--ds-fs-body)}.qsp-row span{flex:1;color:var(--ds-text-2)}.qsp-row b{font-weight:600}
-.qsp-ring{display:flex;gap:16px;align-items:center}
+.qsp-split{display:flex;gap:2px;height:6px;border-radius:3px;overflow:hidden;margin-top:14px}
+.qsp-ring{display:flex;gap:18px;align-items:center}
 .qsp svg text{font-family:var(--ds-font)}
 </style>
 <script id="qs-phone">
 /* qs-phone (Gilles, 16 Nov 2026): on a phone the client view's roadmap, a team's overview and the initiatives are
    screens built for the phone, from the same numbers as the laptop pages (QS.teamPeriods, QS.valueWaterfall,
-   QS.readinessModel, the benefit assumptions). The laptop pages stay as they are underneath and come back above 760px. */
+   QS.readinessModel, QS.weightedOverall, the benefit assumptions). The laptop pages stay as they are underneath and come
+   back above 760px. Quiet by rule: one chart per screen, figures in one card above it, colour only as a small dot. */
 (function(){
 if(!window.QS) return;
 var TT={opex:['OpEx','#2A4D8F'],e2e:['End-to-end','#C0392B'],mining:['Process mining','#2A8C82'],auto:['Automation','#5B8ACB'],ai:['AI','#1D7044'],data:['Data','#B8620A']};
 var ORDER=['opex','e2e','mining','auto','ai','data'];
 var OF={process:'opex',lean:'opex',change:'opex',journey:'e2e',org:'e2e',data:'data',auto:'auto',aiacc:'ai',aienh:'ai'};
 var S='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
-var IC={opex:S+'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/></svg>',
-  e2e:S+'<circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h8.5a3.5 3.5 0 0 0 0-7h-9a3.5 3.5 0 0 1 0-7H16"/></svg>',
-  mining:S+'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg>',
-  auto:S+'<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>',
-  ai:S+'<path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"/></svg>',
-  data:S+'<ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></svg>',
-  lock:S+'<rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
-  chev:S+'<path d="M9 6l6 6-6 6"/></svg>',
-  stairs:S+'<path d="M4 20h5v-5h5v-5h6"/></svg>', spark:S+'<path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"/></svg>',
-  euro:S+'<path d="M17 6.5A7 7 0 1 0 17 17.5"/><path d="M4 10h9M4 14h9"/></svg>', cal:S+'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>'};
-var HL=['H1 2026','H2 2026','H1 2027','H2 2027'], HS=[['H1','’26'],['H2','’26'],['H1','’27'],['H2','’27']];
+var IC={lock:S+'<rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>', chev:S+'<path d="M9 6l6 6-6 6"/></svg>'};
+var HL=['H1 2026','H2 2026','H1 2027','H2 2027'], HS=[['H1','2026'],['H2','2026'],['H1','2027'],['H2','2027']], HT=['H1 ’26','H2 ’26','H1 ’27','H2 ’27'];
 function phone(){ return window.matchMedia('(max-width:760px)').matches; }
 function esc(x){ return String(x==null?'':x).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 function mid(r){ return Array.isArray(r)?(r[0]+r[1])/2:(+r||0); }
@@ -16026,104 +16115,84 @@ function items(only){ var out=[]; (QS.TEAMS||[]).forEach(function(t){ if(only&&t
   QS.teamPeriods(t).forEach(function(arr,p){ arr.forEach(function(o){ out.push({o:o,t:t,p:p,k:OF[o.lever]||'opex',f:mid(o.fte),h:hi(o.fte),ok:ok(o,t)}); }); }); }); return out; }
 function sum(a,k){ return a.reduce(function(s,x){ return s+x[k]; },0); }
 function dom(list){ var m={}; list.forEach(function(x){ m[x.k]=(m[x.k]||0)+x.f; }); var b=null; Object.keys(m).forEach(function(k){ if(b===null||m[k]>m[b]) b=k; }); return b; }
+function figs(a){ return '<div class="qsp-figs">'+a.map(function(x){ return '<div><div class="qsp-big">'+x[0]+(x[1]?'<small>'+x[1]+'</small>':'')+'</div><div class="qsp-lb">'+x[2]+'</div></div>'; }).join('')+'</div>'; }
 var REG=[];
-function row(x,lead,sub){ var i=REG.push(x.o)-1;
-  return '<div class="qsp-it" data-o="'+i+'">'+(lead||'<div class="qsp-ic" style="background:'+TT[x.k][1]+'">'+IC[x.k]+'</div>')
-    +'<div class="qsp-tx"><div class="qsp-t1">'+esc(x.o.activity)+'</div><div class="qsp-t2"><span>'+esc(sub)+'</span>'+(x.ok?'':IC.lock)+'</div></div>'
-    +'<div class="qsp-vl">'+f1(x.f)+'<small>FTE</small></div>'+IC.chev.replace('<svg','<svg class="qsp-chv"')+'</div>'; }
+function row(x,lead,meta){ var i=REG.push(x.o)-1;
+  return '<div class="qsp-it" data-o="'+i+'">'+(lead||'')+'<div class="qsp-tx"><div class="qsp-t1">'+esc(x.o.activity)+'</div>'
+    +'<div class="qsp-t2"><i class="qsp-dot" style="background:'+TT[x.k][1]+'" title="'+TT[x.k][0]+'"></i><span>'+esc(meta)+'</span>'+(x.ok?'':IC.lock)+'</div></div>'
+    +'<div class="qsp-vl">'+f1(x.f)+'</div></div>'; }
+function more(n,key){ return '<div class="qsp-it qsp-more" data-more="'+key+'">'+n+' more</div>'; }
 function wireRows(el){ el.querySelectorAll('.qsp-it[data-o]').forEach(function(r){ r.onclick=function(){ try{ QS.oppDetail(REG[+r.getAttribute('data-o')]); }catch(e){} }; }); }
 function arc(cx,cy,r,a0,a1){ var p=function(a){ return [cx+r*Math.sin(a*2*Math.PI),cy-r*Math.cos(a*2*Math.PI)]; }, s=p(a0), e=p(a1);
   return 'M'+s[0].toFixed(2)+' '+s[1].toFixed(2)+' A'+r+' '+r+' 0 '+(a1-a0>.5?1:0)+' 1 '+e[0].toFixed(2)+' '+e[1].toFixed(2); }
-function ring(size,stroke,parts,total,center,unit){ var c=size/2, r=c-stroke/2-1, a=0, g=parts.length>1?.005:0,
-  s='<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" style="flex:none"><circle cx="'+c+'" cy="'+c+'" r="'+r+'" fill="none" stroke="var(--ds-fill)" stroke-width="'+stroke+'"/>';
-  parts.forEach(function(p,i){ var b=a+p[1]/total; if(b-a>.002) s+='<path data-r="'+i+'" d="'+arc(c,c,r,a+g,Math.min(b-g,.9999))+'" fill="none" stroke="'+p[2]+'" stroke-width="'+stroke+'" style="cursor:pointer"/>'; a=b; });
-  return s+'<text x="'+c+'" y="'+(c+(size>110?6:4))+'" text-anchor="middle" style="font-size:'+(size>110?'28px':'var(--ds-fs-title)')+'" font-weight="600" fill="var(--ds-text)">'+center+'</text>'
-    +'<text x="'+c+'" y="'+(c+(size>110?24:19))+'" text-anchor="middle" style="font-size:var(--ds-fs-label)" fill="var(--ds-text-2)">'+unit+'</text></svg>'; }
 function bubble(card,html,x,y){ var b=card.querySelector(':scope > .qsp-bub'); if(!b){ b=document.createElement('div'); b.className='qsp-bub'; card.appendChild(b); }
-  b.innerHTML=html; b.style.display='block'; var w=b.offsetWidth, cw=card.clientWidth; b.style.left=Math.max(6,Math.min(cw-w-6,x-w/2))+'px'; b.style.top=(y-b.offsetHeight-8)+'px'; }
+  b.innerHTML=html; b.style.display='block'; var w=b.offsetWidth, cw=card.clientWidth; b.style.left=Math.max(6,Math.min(cw-w-6,x-w/2))+'px'; b.style.top=(y-b.offsetHeight-10)+'px'; }
 
-/* ---------------- Roadmap ---------------- */
-var selP=null;
+/* ---------------- Roadmap: the figures, then one plan (half-year totals over a thin bar per team) ---------------- */
+var selP=null, roadAll=false;
 function road(el){ REG=[]; var all=items(); var P=[0,1,2,3].map(function(p){ var a=all.filter(function(x){ return x.p===p; }); return {p:p,a:a,f:sum(a,'f')}; });
   if(selP===null){ selP=0; for(var i=0;i<4;i++){ if(P[i].a.length){ selP=i; break; } } }
   var tot=sum(all,'f'), y26=tot?Math.round((P[0].f+P[1].f)/tot*100):0;
   var teams=(QS.TEAMS||[]).filter(function(t){ return t.opps&&t.opps.length; });
-  var used=ORDER.filter(function(k){ return all.some(function(x){ return x.k===k; }); });
-  var sel=P[selP], list=sel.a.slice().sort(function(a,b){ return b.f-a.f; });
-  el.innerHTML='<div class="qsp-card" data-c="bars"><div class="qsp-top"><span class="qsp-lb">Potential</span><span class="qsp-tag good">'+y26+'% in 2026</span></div>'
-    +'<div class="qsp-figs"><div class="qsp-big">'+f0(tot)+'<small>FTE</small></div><div class="qsp-big">'+eur(money(sum(all,'h')))+'<small>a year</small></div></div><div class="qsp-bars"></div></div>'
-    +'<div class="qsp-hd"><b>By team</b></div><div class="qsp-card"><div class="qsp-lg">'+used.map(function(k){ return '<span><i class="qsp-dot" style="background:'+TT[k][1]+'"></i>'+TT[k][0]+'</span>'; }).join('')+'</div>'
-    +'<div class="qsp-grid">'+teams.map(function(t){ return '<div class="n">'+esc(t.name)+'</div>'+[0,1,2,3].map(function(p){ var a=all.filter(function(x){ return x.t===t&&x.p===p; });
-        return a.length?'<div class="qsp-cell" data-p="'+p+'" style="background:'+TT[dom(a)][1]+'"></div>':'<div class="qsp-cell e" data-p="'+p+'"></div>'; }).join(''); }).join('')
-    +'<div></div>'+HS.map(function(h,p){ return '<div class="qsp-gx'+(p===selP?' on':'')+'" data-p="'+p+'">'+h[0]+' '+h[1]+'</div>'; }).join('')+'</div></div>'
-    +'<div class="qsp-hd"><b>'+HL[selP]+'</b><span>'+list.length+' initiative'+(list.length===1?'':'s')+' · '+f1(sel.f)+' FTE</span></div>'
-    +(list.length?'<div class="qsp-list">'+list.map(function(x){ return row(x,null,x.t.name); }).join('')+'</div>':'');
-  var card=el.querySelector('[data-c="bars"]'), box=card.querySelector('.qsp-bars'), W=Math.max(200,box.clientWidth), H=150, base=128, mx=Math.max(.1,Math.max.apply(null,P.map(function(x){ return x.f; })));
-  var slot=W/4, bw=Math.min(56,slot-18), s='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" style="display:block">';
-  P.forEach(function(x,p){ var h=Math.max(3,x.f/mx*(base-58)), bx=p*slot+(slot-bw)/2;
-    s+='<rect x="'+bx.toFixed(1)+'" y="'+(base-h).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="4" fill="'+(p===selP?'var(--ds-accent)':'var(--ds-fill-strong)')+'"/>'
-      +'<text x="'+(p*slot+slot/2).toFixed(1)+'" y="'+(H-4)+'" text-anchor="middle" style="font-size:var(--ds-fs-label)" font-weight="'+(p===selP?600:400)+'" fill="'+(p===selP?'var(--ds-text)':'var(--ds-text-3)')+'">'+HS[p][0]+' '+HS[p][1]+'</text>'
-      +'<rect data-p="'+p+'" x="'+(p*slot).toFixed(1)+'" y="0" width="'+slot.toFixed(1)+'" height="'+H+'" fill="transparent" style="cursor:pointer"/>'; });
-  box.innerHTML=s+'<line x1="0" x2="'+W+'" y1="'+(base+.5)+'" y2="'+(base+.5)+'" stroke="var(--ds-line)"/></svg>';
-  var sh=Math.max(3,sel.f/mx*(base-58)); bubble(card,'<div>'+HL[selP]+'</div>'+f1(sel.f)+' FTE',box.offsetLeft+selP*slot+slot/2,box.offsetTop+base-sh);
-  el.querySelectorAll('[data-p]').forEach(function(n){ n.addEventListener('click',function(){ selP=+n.getAttribute('data-p'); road(el); }); });
+  var sel=P[selP], list=sel.a.slice().sort(function(a,b){ return b.f-a.f; }), shown=roadAll?list:list.slice(0,5);
+  el.innerHTML='<div class="qsp-card">'+figs([[f0(tot),'FTE','potential'],[eur(money(sum(all,'h'))),'','a year'],[y26+'%','','in 2026']])+'</div>'
+    +'<div class="qsp-hd"><b>Plan</b><span>FTE per half-year</span></div>'
+    +'<div class="qsp-card" style="padding:14px 14px 16px"><div class="qsp-grid"><div></div>'
+      +P.map(function(x){ return '<div class="h'+(x.p===selP?' on':'')+'" data-p="'+x.p+'"><b>'+f1(x.f)+'</b>'+HT[x.p]+'</div>'; }).join('')
+      +teams.map(function(t){ return '<div class="n">'+esc(t.name)+'</div>'+[0,1,2,3].map(function(p){ var a=all.filter(function(x){ return x.t===t&&x.p===p; });
+          return '<div class="c" data-p="'+p+'" style="background:'+(a.length?TT[dom(a)][1]:'var(--ds-fill)')+';opacity:'+(a.length&&p!==selP?.35:1)+'"'+(a.length?' title="'+esc(t.name+' · '+HL[p]+' · '+TT[dom(a)][0]+' · '+f1(sum(a,'f'))+' FTE')+'"':'')+'></div>'; }).join(''); }).join('')
+    +'</div></div>'
+    +'<div class="qsp-hd"><b>'+HL[selP]+'</b><span>'+list.length+' initiative'+(list.length===1?'':'s')+' · FTE</span></div>'
+    +(list.length?'<div class="qsp-list">'+shown.map(function(x){ return row(x,null,x.t.name); }).join('')+(list.length>shown.length?more(list.length-shown.length,'road'):'')+'</div>':'');
+  el.querySelectorAll('[data-p]').forEach(function(n){ n.addEventListener('click',function(){ selP=+n.getAttribute('data-p'); roadAll=false; road(el); }); });
+  var m=el.querySelector('[data-more]'); if(m) m.onclick=function(){ roadAll=true; road(el); };
   wireRows(el); }
 
-/* ---------------- Initiatives ---------------- */
+/* ---------------- Initiatives: the figures and one split bar, then every initiative biggest first ---------------- */
 var flt='all';
-function opps(el){ REG=[]; var all=items(), nR=all.filter(function(x){ return x.ok; }).length;
+function opps(el){ REG=[]; var all=items();
   var list=all.filter(function(x){ return flt==='all'||(flt==='act'?x.ok:!x.ok); }).sort(function(a,b){ return b.f-a.f; });
   var by=ORDER.map(function(k){ return [k,sum(list.filter(function(x){ return x.k===k; }),'f')]; }).filter(function(x){ return x[1]>.001; }).sort(function(a,b){ return b[1]-a[1]; });
-  el.innerHTML='<div class="qsp-seg">'+[['all','All '+all.length],['act','Ready '+nR],['fix','Waiting '+(all.length-nR)]].map(function(s){ return '<button data-f="'+s[0]+'" class="'+(flt===s[0]?'on':'')+'">'+s[1]+'</button>'; }).join('')+'</div>'
-    +'<div class="qsp-card"><span class="qsp-lb">By type of change</span><div class="qsp-figs"><div class="qsp-big">'+f0(sum(list,'f'))+'<small>FTE</small></div><div class="qsp-big">'+eur(money(sum(list,'h')))+'<small>a year</small></div></div>'
-    +'<div class="qsp-split">'+by.map(function(x){ return '<i style="flex:'+x[1]+';background:'+TT[x[0]][1]+'"></i>'; }).join('')+'</div>'
-    +'<div class="qsp-splg">'+by.map(function(x){ return '<div class="qsp-row"><i class="qsp-dot" style="background:'+TT[x[0]][1]+'"></i><span>'+TT[x[0]][0]+'</span><b>'+f1(x[1])+'</b></div>'; }).join('')+'</div></div>'
-    +'<div class="qsp-hd"><b>Biggest first</b></div>'
-    +(list.length?'<div class="qsp-list">'+list.map(function(x){ return row(x,null,HS[x.p][0]+' '+HS[x.p][1]+' · '+x.t.name); }).join('')+'</div>':'');
+  el.innerHTML='<div class="qsp-seg">'+[['all','All'],['act','Ready'],['fix','Waiting']].map(function(s){ return '<button data-f="'+s[0]+'" class="'+(flt===s[0]?'on':'')+'">'+s[1]+'</button>'; }).join('')+'</div>'
+    +'<div class="qsp-card" data-c="split">'+figs([[String(list.length),'','initiatives'],[f0(sum(list,'f')),'FTE','potential'],[eur(money(sum(list,'h'))),'','a year']])
+    +'<div class="qsp-split">'+by.map(function(x){ return '<i data-k="'+x[0]+'" style="flex:'+x[1]+';background:'+TT[x[0]][1]+'"></i>'; }).join('')+'</div></div>'
+    +'<div class="qsp-hd"><b>Biggest first</b><span>FTE</span></div>'
+    +(list.length?'<div class="qsp-list">'+list.map(function(x){ return row(x,null,HT[x.p]+' · '+x.t.name); }).join('')+'</div>':'');
   el.querySelectorAll('.qsp-seg button').forEach(function(b){ b.onclick=function(){ flt=b.getAttribute('data-f'); opps(el); }; });
+  var card=el.querySelector('[data-c="split"]'), bar=card.querySelector('.qsp-split');
+  var tip=function(e){ var k=e.target.getAttribute&&e.target.getAttribute('data-k'); var b=card.querySelector(':scope > .qsp-bub'); if(!k){ if(b) b.style.display='none'; return; }
+    var v=by.filter(function(x){ return x[0]===k; })[0], cr=card.getBoundingClientRect(), br=bar.getBoundingClientRect();
+    bubble(card,'<span>'+TT[k][0]+'</span> '+f1(v[1])+' FTE',e.clientX-cr.left,br.top-cr.top); };
+  bar.addEventListener('pointermove',tip); bar.addEventListener('click',tip); bar.addEventListener('pointerleave',function(){ var b=card.querySelector(':scope > .qsp-bub'); if(b) b.style.display='none'; });
   wireRows(el); }
 
-/* ---------------- A team's overview ---------------- */
+/* ---------------- A team's overview: one ring, four quiet rows, the first initiatives ---------------- */
 function team(el,t){ REG=[]; var WF=QS.valueWaterfall(t), scope=WF.totActFte||t.fte||0, pot=WF.nowFte+WF.laterFte+WF.notYet;
   var R=[['Addressable now',WF.nowFte,'var(--ds-accent)'],['After the enablers',WF.laterFte,'#B8620A'],['Not yet identified',WF.notYet,'var(--ds-fill-strong)']];
-  var mine=items(t.id), all=items(), first=mine.length?Math.min.apply(null,mine.map(function(x){ return x.p; })):0;
-  var scored=(QS.TEAMS||[]).filter(function(x){ return x.scores&&Object.keys(x.scores).every(function(k){ return x.scores[k]!=null; }); });
-  var wo=function(x){ try{ return QS.weightedOverall(x); }catch(e){ return NaN; } }, mt=wo(t), ws=scored.map(wo).filter(function(v){ return !isNaN(v)&&v>0; });
-  var avg=ws.length?ws.reduce(function(a,b){ return a+b; },0)/ws.length:mt, lo=ws.length?Math.min.apply(null,ws):mt, hiW=ws.length?Math.max.apply(null,ws):mt;
-  var mtag=isNaN(mt)?['','—']:mt>avg+.25?['good','Above average']:mt<avg-.25?['warn','Below average']:['','Average'];
-  var keys=Object.keys(t.scores||{}).filter(function(k){ return t.scores[k]!=null; }), minS=Math.min.apply(null,keys.map(function(k){ return t.scores[k]; })), nMin=keys.filter(function(k){ return t.scores[k]===minS; }).length;
-  var mb='<svg width="100%" height="22" viewBox="0 0 '+(keys.length*22)+' 22" preserveAspectRatio="none">'+keys.map(function(k,i){ var v=t.scores[k], h=Math.max(3,v/5*22);
-    return '<rect x="'+(i*22)+'" y="'+(22-h)+'" width="18" height="'+h+'" rx="2" fill="'+(v===minS&&nMin===1?'#B8620A':'var(--ds-navy)')+'"/>'; }).join('')+'</svg>';
-  var rs=+t.readinessScore||0, ready=rs>=50, sc=t.scores||{}, mn=function(a){ return Math.min.apply(null,a.map(function(k){ return sc[k]==null?5:sc[k]; })); };
-  var gates=[['Data',mn(['data'])],['Organisation',mn(['org','mgmt'])],['Process',mn(['proc','mind'])]].sort(function(a,b){ return a[1]-b[1]; });
-  var th=sum(mine,'h'), ah=sum(all,'h'), share=ah?Math.round(th/ah*100):0;
-  var per=[0,1,2,3].map(function(p){ return sum(mine.filter(function(x){ return x.p===p; }),'f'); }), tf=sum(mine,'f'), p26=tf?Math.round((per[0]+per[1])/tf*100):0, yr=p26>=50?'2026':'2027';
-  var pm=Math.max(.1,Math.max.apply(null,per));
-  var tb='<svg width="100%" height="22" viewBox="0 0 130 22" preserveAspectRatio="none">'+per.map(function(v,p){ var h=v>0?Math.max(3,v/pm*22):2;
-    return '<rect x="'+(p*34)+'" y="'+(22-h)+'" width="28" height="'+h+'" rx="2" fill="'+((p<2)===(yr==='2026')&&v>0?'var(--ds-accent)':'var(--ds-fill-strong)')+'"/>'; }).join('')+'</svg>';
-  var tile=function(ic,col,nm,v,u,viz,ft){ return '<div class="qsp-tl"><div class="nm"><span style="color:'+col+';display:flex">'+ic+'</span>'+nm+'</div><div class="qsp-big">'+v+(u?'<small>'+u+'</small>':'')+'</div><div style="height:22px;display:flex;align-items:center">'+viz+'</div><div class="ft">'+ft+'</div></div>'; };
-  var by=ORDER.map(function(k){ return [k,sum(mine.filter(function(x){ return x.k===k; }),'f')]; }).filter(function(x){ return x[1]>.001; }).sort(function(a,b){ return b[1]-a[1]; });
-  var kl=mine.slice().sort(function(a,b){ return a.p-b.p||b.f-a.f; });
-  var kpis=by.length<=3
-    ? '<div class="qsp-card qsp-ring">'+ring(96,11,by.map(function(x){ return [TT[x[0]][0],x[1],TT[x[0]][1]]; }),Math.max(.01,tf),f1(tf),'FTE')
-      +'<div style="flex:1;display:flex;flex-direction:column;gap:9px">'+by.map(function(x){ return '<div class="qsp-row"><i class="qsp-dot" style="background:'+TT[x[0]][1]+'"></i><span>'+TT[x[0]][0]+'</span><b>'+f1(x[1])+'</b></div>'; }).join('')+'</div></div>'
-    : '<div class="qsp-card"><div class="qsp-split">'+by.map(function(x){ return '<i style="flex:'+x[1]+';background:'+TT[x[0]][1]+'"></i>'; }).join('')+'</div><div class="qsp-splg">'
-      +by.map(function(x){ return '<div class="qsp-row"><i class="qsp-dot" style="background:'+TT[x[0]][1]+'"></i><span>'+TT[x[0]][0]+'</span><b>'+f1(x[1])+'</b></div>'; }).join('')+'</div></div>';
-  el.innerHTML='<div class="qsp-card qsp-ring" data-c="ring">'+ring(124,13,R,Math.max(.01,scope),f1(pot),'FTE')
-      +'<div><div class="qsp-lb">Improvement potential</div><div class="qsp-big" style="margin:4px 0 2px">'+(scope?Math.round(pot/scope*100):0)+'%</div><div class="qsp-lb">of the team\'s '+f0(scope)+' FTE</div>'
-      +'<button class="qsp-link" data-sub="potential" style="margin-top:10px">Potential'+IC.chev+'</button></div></div>'
-    +'<div class="qsp-tiles">'
-      +tile(IC.stairs,'var(--ds-navy)','Maturity',isNaN(mt)?'—':mt.toFixed(1),'/ 5',mb,(mtag[0]||mtag[1]!=='—'?'<span class="qsp-tag '+mtag[0]+'">'+mtag[1]+'</span>':'')+(ws.length>1?'teams '+lo.toFixed(1)+'–'+hiW.toFixed(1):''))
-      +tile(IC.spark,'var(--ds-accent)','AI readiness',f0(rs),'/ 100','<div class="qsp-bar"><i style="width:'+Math.min(100,rs)+'%;background:'+(ready?'var(--ds-accent)':'#B8620A')+'"></i></div>','<span class="qsp-tag '+(ready?'good':'warn')+'">'+(ready?'Ready':'Not ready')+'</span>'+(ready?'':gates[0][0].toLowerCase()+' first'))
-      +tile(IC.euro,'var(--ds-accent)','Value',eur(money(th)),'a year','<div class="qsp-bar"><i style="width:'+share+'%;background:var(--ds-accent)"></i></div>',share+'% of the total')
-      +tile(IC.cal,'var(--ds-navy)','Timing',tf?yr:'—','',tb,tf?p26+'% in 2026':'')
+  var mine=items(t.id), all=items();
+  var mt=NaN; try{ mt=QS.weightedOverall(t); }catch(e){}
+  var rs=+t.readinessScore||0, ready=rs>=50;
+  var th=sum(mine,'h'), per=[0,1,2,3].map(function(p){ return sum(mine.filter(function(x){ return x.p===p; }),'f'); }), tf=sum(mine,'f'), p26=tf?(per[0]+per[1])/tf:0;
+  var ring='<svg width="112" height="112" viewBox="0 0 112 112" style="flex:none"><circle cx="56" cy="56" r="46" fill="none" stroke="var(--ds-fill)" stroke-width="9"/>', a=0;
+  R.forEach(function(x,i){ var b=a+x[1]/Math.max(.01,scope); if(b-a>.002) ring+='<path data-r="'+i+'" d="'+arc(56,56,46,a+.004,Math.min(b-.004,.9999))+'" fill="none" stroke="'+x[2]+'" stroke-width="9" style="cursor:pointer"/>'; a=b; });
+  ring+='<text x="56" y="61" text-anchor="middle" style="font-size:var(--ds-fs-title)" font-weight="600" fill="var(--ds-text)">'+f1(pot)+'</text><text x="56" y="78" text-anchor="middle" style="font-size:var(--ds-fs-label)" fill="var(--ds-text-2)">FTE</text></svg>';
+  var gr=function(label,val,sub,go,cls){ return '<button class="qsp-gr" data-sub="'+go+'"><span>'+label+'</span><b>'+(cls?'<em class="'+cls+'">'+cls.split(' ')[1]+'</em>':'')+val+(sub?' <em>'+sub+'</em>':'')+IC.chev+'</b></button>'; };
+  var kl=mine.slice().sort(function(a,b){ return a.p-b.p||b.f-a.f; }).slice(0,3);
+  el.innerHTML='<div class="qsp-card qsp-ring" data-c="ring">'+ring
+      +'<div><div class="qsp-big">'+(scope?Math.round(pot/scope*100):0)+'%</div><div class="qsp-lb" style="margin:4px 0 12px">of the team\'s '+f0(scope)+' FTE</div>'
+      +'<button class="qsp-link" data-sub="potential">Potential'+IC.chev+'</button></div></div>'
+    +'<div class="qsp-gl">'
+      +gr('Maturity',isNaN(mt)?'—':mt.toFixed(1),'/ 5','maturity')
+      +'<button class="qsp-gr" data-sub="maturity"><span>AI readiness</span><b>'+(ready?'':'<em class="warn">not ready</em>')+f0(rs)+' <em>/ 100</em>'+IC.chev+'</b></button>'
+      +gr('Value',eur(money(th)),'a year','potential')
+      +(tf?gr('Mostly lands in',p26>=.5?'2026':'2027','','roadmap'):'')
     +'</div>'
-    +(mine.length?'<div class="qsp-hd"><b>Key initiatives</b><button class="qsp-link" data-sub="potential">All '+mine.length+IC.chev+'</button></div>'+kpis
-      +'<div class="qsp-list">'+kl.map(function(x){ return row(x,'<div class="qsp-chip'+(x.p===first?' cur':'')+'"><span>'+HS[x.p][0]+'</span><b>'+HS[x.p][1]+'</b></div>',TT[x.k][0]); }).join('')+'</div>':'');
+    +(mine.length?'<div class="qsp-hd"><b>Key initiatives</b><button class="qsp-link" data-sub="potential">All '+mine.length+IC.chev+'</button></div>'
+      +'<div class="qsp-list">'+kl.map(function(x){ return row(x,'<div class="qsp-wk"><b>'+HS[x.p][0]+'</b>'+HS[x.p][1]+'</div>',TT[x.k][0]); }).join('')+'</div>':'');
   el.querySelectorAll('[data-sub]').forEach(function(b){ b.onclick=function(){ QS.setTeamSub(b.getAttribute('data-sub')); }; });
   var card=el.querySelector('[data-c="ring"]'), svg=card.querySelector('svg');
   var show=function(e){ var i=e.target.getAttribute&&e.target.getAttribute('data-r'); var b=card.querySelector(':scope > .qsp-bub'); if(i===null||i===undefined){ if(b) b.style.display='none'; return; }
-    var x=R[+i], cr=card.getBoundingClientRect(); bubble(card,'<div><i class="qsp-dot" style="background:'+x[2]+'"></i>'+x[0]+'</div>'+f1(x[1])+' FTE',e.clientX-cr.left,e.clientY-cr.top); };
+    var x=R[+i], cr=card.getBoundingClientRect(); bubble(card,'<span>'+x[0]+'</span> '+f1(x[1])+' FTE',e.clientX-cr.left,e.clientY-cr.top); };
   svg.addEventListener('pointermove',show); svg.addEventListener('click',show); svg.addEventListener('pointerleave',function(){ var b=card.querySelector(':scope > .qsp-bub'); if(b) b.style.display='none'; });
   wireRows(el); }
 
