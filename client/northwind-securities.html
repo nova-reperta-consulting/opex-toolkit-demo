@@ -11609,6 +11609,8 @@ function vcWireTips(el){
     let left=r.right+10; if(left+tw>window.innerWidth-8) left=r.left-tw-10; if(left<8) left=8;
     let top=r.top; if(top+th>window.innerHeight-8) top=window.innerHeight-th-8; if(top<8) top=8;
     tip.style.left=left+'px'; tip.style.top=top+'px';
+    for(let k=0;k<3;k++){ const rr=tip.getBoundingClientRect(), dx=rr.left-left, dy=rr.top-top; if(Math.abs(dx)<=1&&Math.abs(dy)<=1) break;
+      tip.style.left=(parseFloat(tip.style.left)-dx)+'px'; tip.style.top=(parseFloat(tip.style.top)-dy)+'px'; }
   }
   grid.addEventListener('mouseover',e=>{ const c=e.target.closest('.vc-card'); if(c&&grid.contains(c)) place(c); });
   if(window.NR_TOUCH){ let armed=null;   /* a touchscreen has no hover: the first tap shows the detail, a second tap opens the team */
@@ -11684,7 +11686,10 @@ function renderValueChain(stagesOpt,elOpt){
   const stageTeams=STAGES.map(s=>s.ids.map(teamById).filter(Boolean));
   const maxRows=Math.max(...stageTeams.map(a=>a.length));
   let cells='';
+  const DA=STAGES.map((s,i)=>{ const tm=stageTeams[i].filter(t=>!isOngoing(t)); return tm.length?tm.reduce((a,t)=>a+overall(t),0)/tm.length:0; });
+  const DAv=DA.filter(v=>v>0), WK=DAv.length>1?DA.indexOf(Math.min(...DAv)):-1;
   STAGES.forEach((s,i)=>{ const tm=stageTeams[i].filter(t=>!isOngoing(t)); const da=tm.length?tm.reduce((a,t)=>a+overall(t),0)/tm.length:0;
+    if(window.NR_CLIENT_VIEW){ cells+=vcChevClient(s,i,da,stageTeams[i],i===WK); return; }
     cells+=`<div class="vc-chev${i===0?' first':''}" style="--o:${i*100}"><span class="vc-chev-nm">${s.name}</span><span class="vc-chev-avg">${da?da.toFixed(1)+' /5 lean maturity':''}</span></div>`; });
   for(let r=0;r<maxRows;r++){ for(let i=0;i<STAGES.length;i++){ const t=stageTeams[i][r];
     if(!t){ cells+='<div class="vc-empty"></div>'; continue; }
@@ -11986,7 +11991,7 @@ function renderOpportunities(){
       <span class="dd-verdict-l">Backlog</span><span class="dd-verdict-t">${verdict}</span>
     </div>
 
-    <div class="kpi-row">
+    ${window.NR_CLIENT_VIEW?oppKpisClient(opps,actOpps,fteMid):''}<div class="kpi-row">
       <div class="kpi-grp"><div class="kpi-grp-label">Backlog</div>
         <div class="kpi-boxes">
           ${kpi('Opportunities',opps.length,'across '+teamsCovered+' teams',ic.opp)}
@@ -13123,9 +13128,11 @@ function renderTeamContent(){
   const ovGrid=`<div class="dd-section"><div class="dd6">${waterfallCard}${keyPrioCard}${workloadCard}${radarCard}</div></div>`;
   const pages={ overview:ovGrid, baseline:kpiBaseline+secBaseline, diagnostic:kpiDiag+secDiag, findings:NRD?window.nrDiag.findingsHtml(t.id):'', potential:potentialPage(t), readiness:readinessPage(t), analyses:analysesPage(t), opportunities:kpiOpp+secOpp, roadmap:teamRoadmapHTML(t) };
   if(CL){
-    pages.maturity=pages.diagnostic+'<div style="margin-top:32px">'+pages.readiness+'</div>';
+    pages.roadmap='<div id="rtl-team"></div>';
+    pages.maturity=isOngoing(t)?'<div class="card nrc-empty"><div class="ct">Lean maturity</div><div class="nrc-empty-t">This team is still being assessed. Its scores appear here once the assessment is done.</div></div>':pages.diagnostic+'<div style="margin-top:32px">'+pages.readiness+'</div>';
     }
   c.innerHTML = subnav + `<div id="team-sub-content">${pages[teamSub]||pages.overview}</div>`;
+  if(CL&&teamSub==='roadmap'){ try{ renderTimeline(document.getElementById('rtl-team'),t.id); }catch(e){} }
 
   if(teamSub==='overview'){
     const txt=cssVar('--muted'), grid=cssVar('--divider');
@@ -13149,11 +13156,11 @@ function renderTeamContent(){
     // waterfall tooltips, compact, structured (title · value · sub) in the shared tooltip
     wireWaterfallTips();
   }
-  else if(teamSub==='diagnostic'||teamSub==='maturity'){ renderDimDetail(); newChart('team-radar', teamRadarCfg(t, dimSel)); }
+  else if((teamSub==='diagnostic'||teamSub==='maturity')&&!(CL&&isOngoing(t))){ renderDimDetail(); newChart('team-radar', teamRadarCfg(t, dimSel)); }
   else if(teamSub==='potential'){ wireWaterfallTips(); }
   else if(teamSub==='readiness'){ wireReadinessTips(); }
   else if(teamSub==='opportunities'){ renderTeamOppRows(); buildTeamMatrix(t.opps.map(o=>({...o, team:t.name, teamId:t.id}))); }
-  if(CL&&teamSub==='maturity') wireReadinessTips();
+  if(CL&&teamSub==='maturity'&&!isOngoing(t)) wireReadinessTips();
   if(CL&&teamSub==='potential'){ renderTeamOppRows(); buildTeamMatrix(t.opps.map(o=>({...o, team:t.name, teamId:t.id}))); }
 }
 /* the client view's team: five views in one segmented control (Gilles, 16 Nov 2026) */
@@ -14640,7 +14647,7 @@ function tlTip(x){ const T=TTYPES[x.k];
 function renderTimeline(elOpt,only){
   const el=elOpt||document.getElementById('page-timeline'); if(!el) return;
   const all=oppSchedule(only);
-  if(!all.length){ el.innerHTML='<div class="pagelead">No initiatives yet.</div>'; return; }
+  if(!all.length){ el.innerHTML=NRC_EMPTY_INI; return; }
   const q0=Math.floor(Math.min(...all.map(x=>x.s))/3)*3;
   let q1=Math.ceil((Math.max(...all.map(x=>x.l))+3)/3)*3; if(q1-q0<12) q1=q0+12;
   const span=q1-q0, pc=n=>((n-q0)/span*100).toFixed(3)+'%', wd=(a,b)=>((b-a)/span*100).toFixed(3)+'%';
@@ -14694,6 +14701,7 @@ function renderTimeline(elOpt,only){
     r.onmouseleave=()=>{ bub.style.display='none'; };
     r.onclick=()=>{ bub.style.display='none'; try{ oppDetail(x.o); }catch(e){} }; });
 }
+const NRC_EMPTY_INI='<div class="card nrc-empty"><div class="ct">No initiatives yet</div><div class="nrc-empty-t">They appear here once the teams are assessed and their improvements sized.</div></div>';
 /* the benefits: one model, used by the Benefits page and the Summary's Benefits card */
 function benModel(){
   const A=getAssumptions(), cpf=A.costPerFte||80000, rr=(A.realisationRate||100)/100, ipf=A.implPerFte||25000;
@@ -14713,7 +14721,7 @@ let benMode='y';
 function benSet(m){ benMode=m; renderBenefits(); }
 function renderBenefits(elOpt){
   const el=elOpt||document.getElementById('page-benefits'); if(!el) return;
-  const B=benModel(); if(!B){ el.innerHTML='<div class="pagelead">No initiatives yet.</div>'; return; }
+  const B=benModel(); if(!B){ el.innerHTML=NRC_EMPTY_INI; return; }
   const yA=Math.floor(B.last/12), yB=yA+1;
   const F=benMode==='y'
     ? [[benFmt(B.run),'','a year, once live · from '+tlLab(B.last),1],['~'+B.fte.toFixed(0),'FTE','freed up · at '+benFmt(B.cpf)+' per FTE',0],[tlMonth(B.first),String(Math.floor(B.first/12)),'first saving',0]]
@@ -14724,7 +14732,7 @@ function renderBenefits(elOpt){
   const inDiv={}; const byDiv=DIVISIONS.map(d=>{ d.teams.forEach(id=>inDiv[id]=1); return { l:d.name, v:B.all.filter(x=>d.teams.includes(x.t.id)).reduce((s,x)=>s+B.val(x),0) }; });
   const other=B.all.filter(x=>!inDiv[x.t.id]).reduce((s,x)=>s+B.val(x),0); if(other) byDiv.push({ l:'Other teams', v:other });
   el.innerHTML=`<div class="bnx"><div class="dd6">
-      <div class="card span4 ccd"><div class="ccd-h"><span class="ccd-t">${NRC_ICO.euro}The saving</span>
+      <div class="card span4 ccd"><div class="ccd-h"><span class="ccd-t">${NRC_ICO.euro}Planned benefit materialization</span>
         <span class="nrseg" data-seg="ben"><button class="${benMode==='y'?'on':''}" data-v="y">A year</button><button class="${benMode==='c'?'on':''}" data-v="c">Saved so far</button></span></div>
         <div class="ccd-figs">${F.map(f=>`<div><div class="ccd-v${f[3]?' g':''}">${f[0]}${f[1]?`<small>${f[1]}</small>`:''}</div><div class="ccd-l">${f[2]}</div></div>`).join('')}</div>
         <div class="ccd-chart" id="ben-chart"></div></div>
@@ -14778,7 +14786,7 @@ const NRC_ICO={
   search:NRC_S+'<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>' };
 /* the Summary's first row: four summary cards, each opens its page (the Training Companion's summary card) */
 function summaryCards(){
-  const sc=TEAMS.filter(t=>!isOngoing(t)); if(!sc.length) return '';
+  const sc=TEAMS.filter(t=>!isOngoing(t)&&isFinite(weightedOverall(t))); if(!sc.length) return '';
   const avg=sc.reduce((s,t)=>s+weightedOverall(t),0)/sc.length, low=sc.slice().sort((a,b)=>weightedOverall(a)-weightedOverall(b))[0];
   const WORD=['—','Critical','Weak','Adequate','Good','Excellent'][Math.min(5,Math.max(1,Math.round(avg)))];
   const ready=sc.filter(t=>t.readiness==='act').length;
@@ -14788,7 +14796,8 @@ function summaryCards(){
   const B=benModel();
   const ring=(f,c)=>{ const r=17,C=2*Math.PI*r; return `<svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="${r}" fill="none" stroke="rgba(15,43,82,.08)" stroke-width="6"/><circle cx="22" cy="22" r="${r}" fill="none" stroke="${c}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${(Math.max(0,Math.min(1,f))*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 22 22)"/></svg>`; };
   const rs=sc.map(t=>Math.round(t.readinessScore||0)), rmx=Math.max(...rs);
-  const mbars=`<svg width="${sc.length*13}" height="36">${rs.map((v,i)=>`<rect x="${i*13}" y="${34-Math.max(2,v/100*32)}" width="8" height="${Math.max(2,v/100*32)}" rx="2" fill="#1D7044" opacity="${v===rmx?1:.35}"/>`).join('')}</svg>`;
+  const bw=Math.min(13,96/sc.length);
+  const mbars=`<svg width="${(sc.length*bw).toFixed(0)}" height="36">${rs.map((v,i)=>`<rect x="${(i*bw).toFixed(1)}" y="${34-Math.max(2,v/100*32)}" width="${Math.max(2,bw*.62).toFixed(1)}" height="${Math.max(2,v/100*32)}" rx="2" fill="#1D7044" opacity="${v===rmx?1:.35}"/>`).join('')}</svg>`;
   let spark=''; if(B){ const d=B.rate, mx=Math.max(1,...d), w=88, h=34; spark=`<svg width="${w}" height="${h}"><polyline fill="none" stroke="#006843" stroke-width="1.8" stroke-linejoin="round" points="${d.map((v,i)=>`${(2+i/(d.length-1)*(w-6)).toFixed(1)},${(h-3-v/mx*(h-8)).toFixed(1)}`).join(' ')}"/><circle cx="${w-4}" cy="${(h-3-d[d.length-1]/mx*(h-8)).toFixed(1)}" r="2.6" fill="#006843"/></svg>`; }
   const card=(pg,c,ico,title,v,u,st,stc,vis)=>`<button class="nsc" onclick="${pg==='@wait'?'QS.goWaiting()':`go('${pg}')`}"><span class="nsc-h" style="color:${c}">${ico}${title}<span class="nsc-ch">${NRC_ICO.chev}</span></span>
     <span class="nsc-b"><span><span class="nsc-v">${v}${u?`<small>${u}</small>`:''}</span><span class="nsc-s" style="color:${stc}">${st}</span></span>${vis}</span></button>`;
@@ -14808,7 +14817,33 @@ const NRC_DIRECT={ id:'nrDirect', afterDatasetsDraw(c){ try{ if(!window.NR_CLIEN
   c.data.datasets.forEach((ds,di)=>{ const m=c.getDatasetMeta(di); if(!m||m.hidden||!m.data.length||!ds.label) return; const p=m.data[di===0?0:Math.min(3,m.data.length-1)]; if(!p) return;
     const col=typeof ds.borderColor==='string'?ds.borderColor:'#5B6270'; ctx.fillStyle=col; ctx.fillText(String(ds.label).replace(/^Company average.*/,'Company average'),p.x+9,p.y+(di===0?-2:2)); });
   ctx.restore(); }catch(e){} } };
-/* the summary's heatmap tiles in the client view/* the value chain card in the client view: the baseline first (FTE today, what can be freed up), then the two scores */
+/* the summary's heatmap tiles in the client view/* the value chain's chevrons in the client view: the stage's lean maturity as a large number in its maturity colour
+   (tinted to read on navy) with a thin bar, the teams and FTE behind it, and the weakest stage marked */
+const VCC_STOPS=[[1,[255,138,122]],[2,[255,160,90]],[3,[242,207,91]],[4,[143,212,122]],[5,[95,203,142]]];
+function vccTint(v){ v=Math.max(1,Math.min(5,v)); let c=VCC_STOPS[4][1]; for(let i=0;i<4;i++){ const a=VCC_STOPS[i], b=VCC_STOPS[i+1]; if(v<=b[0]){ const f=(v-a[0])/(b[0]-a[0]); c=a[1].map((x,k)=>Math.round(x+(b[1][k]-x)*f)); break; } } return `rgb(${c[0]},${c[1]},${c[2]})`; }
+function vcChevClient(s,i,da,teams,weak){
+  const fte=teams.reduce((a,t)=>a+(+t.fte||0),0), c=da?vccTint(da):'';
+  return `<div class="vc-chev vcc${i===0?' first':''}${weak?' weak':''}" style="--o:${i*100}"><span class="vc-chev-nm">${tlEsc(s.name)}</span>`
+    +(da?`<span class="vcc-pill" style="background:${c}">${da.toFixed(1)}<small>/5</small>${weak?'<em>· weakest</em>':''}</span>`:'<span class="vcc-pill vcc-na">not scored yet</span>')
+    +`<span class="vcc-meta">${teams.length} team${teams.length===1?'':'s'} · ${Number.isInteger(fte)?fte:fte.toFixed(1)} FTE</span></div>`;
+}
+/* the initiatives' four figures in the client view: every figure with its unit and what it is out of; navy for counts,
+   green for FTE */
+function oppKpisClient(opps,act,fteMid){
+  const mid=o=>(o.fte[0]+o.fte[1])/2, rdy=act.reduce((s,o)=>s+mid(o),0), n=opps.length||1;
+  const ai=opps.filter(o=>['aiacc','aienh'].includes(o.lever)).length, au=opps.filter(o=>o.lever==='auto').length, ot=opps.length-ai-au;
+  const teams=new Set(opps.map(o=>o.teamId)).size, cpf=(getAssumptions().costPerFte||80000);
+  const box=(ico,lab,v,u,vis,sub,g)=>`<div class="kpi-box${g?' pot-box':''}"><div><div class="kpi-eyebrow">${lab}</div><div class="kpi-v">${v}${u?`<small class="kpi-u">${u}</small>`:''}</div>${vis?`<div class="kpi-vis">${vis}</div>`:''}<div class="kpi-sub">${sub}</div></div><div class="kpi-icon">${ico}</div></div>`;
+  const split=`<div class="kpi-split"><i style="flex:${au};background:#5B8ACB" title="Automation"></i><i style="flex:${ai};background:#1D7044" title="AI"></i><i style="flex:${ot};background:#C9CDD4" title="Other"></i></div>`;
+  const prog=`<div class="kpi-prog"><i style="width:${Math.min(100,rdy/Math.max(.1,fteMid)*100).toFixed(1)}%"></i></div>`;
+  return `<div class="kpi-row nrc-okpi"><div class="kpi-grp"><div class="kpi-boxes">`
+    +box(NRC_ICO.pot,'Opportunities',String(opps.length),'initiatives','',`across ${teams} team${teams===1?'':'s'}`,0)
+    +box(NRC_ICO.ai,'AI candidates',String(ai),`of ${opps.length}`,split,`${au} automation · ${ai} AI · ${ot} other`,0)
+    +box(NRC_ICO.ready,'Ready now','~'+rdy.toFixed(1),`of ~${fteMid.toFixed(0)} FTE`,prog,`${Math.round(rdy/Math.max(.1,fteMid)*100)}% of the backlog can start now`,1)
+    +box(NRC_ICO.bolt,'Releasable capacity','~'+fteMid.toFixed(0),'FTE','',`≈ ${benFmt(fteMid*cpf)} a year at ${benFmt(cpf)} per FTE`,1)
+    +`</div></div></div>`;
+}
+/* the value chain card in the client view: the baseline first (FTE today, what can be freed up), then the two scores */
 function vcCardClient(t,i,r,go,ov,fte){
   const rs=Math.round(t.readinessScore||0), now=+t.fte||0, pct=now?Math.round(fte/now*100):0;
   const n=v=>Number.isInteger(v)?String(v):v.toFixed(1);
@@ -14881,7 +14916,7 @@ function clientType(){ if(!window.NR_CLIENT_VIEW) return; const pg=document.getE
     try{ Object.assign(window.Chart.defaults.plugins.tooltip,TT); }catch(e){}
     try{ Object.values(window.Chart.instances||{}).forEach(c=>{ try{ Object.assign(c.options.plugins.tooltip,TT); c.update('none'); }catch(e){} }); }catch(e){} }
   /* figures a client does not need: one department; on the initiatives page the levers count and a second ready count */
-  pg.querySelectorAll('.kpi-box:not([data-qk])').forEach(b=>{ b.setAttribute('data-qk','1'); const l=(b.querySelector('.kpi-eyebrow')||{}).textContent||'', v=((b.querySelector('.kpi-v')||{}).textContent||'').trim();
+  pg.querySelectorAll('.kpi-box:not([data-qk]):not(.nrc-okpi .kpi-box)').forEach(b=>{ b.setAttribute('data-qk','1'); const l=(b.querySelector('.kpi-eyebrow')||{}).textContent||'', v=((b.querySelector('.kpi-v')||{}).textContent||'').trim();
     if((l.trim()==='Departments'&&v==='1')||l.trim()==='Levers in play'||l.trim()==='Ready now') b.style.setProperty('display','none','important'); });
   pg.querySelectorAll('.kpi-eyebrow,.kpi-sub,#f-actonly').forEach(x=>{ if(x.children.length) return; const t=x.textContent;
     const n=t.replace(/^Runnable now( only)?$/,'Ready now$1').replace(/clears? the AI readiness bar/,'ready now'); if(n!==t) x.textContent=n; });
@@ -16615,6 +16650,41 @@ html.nr-client .qsx .card:has(#team-radar)>div:last-child:not(:has(canvas)){disp
 html.nr-client .qsx .vcx{position:relative}
 html.nr-client .qsx .vcx:after{content:"";position:absolute;top:16px;right:14px;width:6px;height:6px;border-right:1.75px solid var(--ds-text-3);border-top:1.75px solid var(--ds-text-3);transform:rotate(45deg)}
 html.nr-client .qsx .vcx .vc-nm{padding-right:14px}
+/* the value chain's chevrons in the client view: score, bar, teams and FTE; the weakest stage marked */
+html.nr-client .qsx .vc-chev.vcc{min-height:90px;gap:3px;padding-top:12px;padding-bottom:12px;position:relative}
+html.nr-client .qsx .vcc .vc-chev-nm{font-size:var(--ds-fs-body)!important;font-weight:600!important;color:#fff!important}
+html.nr-client .qsx .vcc-pill{display:inline-flex;align-items:baseline;gap:2px;margin-top:5px;padding:3px 10px;border-radius:12px;font-size:var(--ds-fs-body);font-weight:700;color:#0F2B52;white-space:nowrap;line-height:1.2}
+html.nr-client .qsx .vcc-pill small{font-size:var(--ds-fs-label);font-weight:400;opacity:.75}
+html.nr-client .qsx .vcc-pill em{font-style:normal;font-size:var(--ds-fs-label);font-weight:600;margin-left:4px}
+html.nr-client .qsx .vcc-pill.vcc-na{background:rgba(255,255,255,.14);color:rgba(255,255,255,.75);font-weight:400;font-size:var(--ds-fs-label)}
+html.nr-client .qsx .vcc-meta{font-size:var(--ds-fs-label);color:rgba(255,255,255,.78);margin-top:3px}
+html.nr-client .qsx .vcc.weak{background:#0A1E3B!important}
+/* the initiatives' four figures: unit and base beside the number, a small bar under it */
+html.nr-client #page-opportunities>.kpi-row:not(.nrc-okpi){display:none!important}
+html.nr-client .qsx .nrc-okpi .kpi-box{grid-template-areas:"ic lab" "v v" "vis vis" "s s"!important}
+html.nr-client .qsx .nrc-okpi{display:block!important}
+html.nr-client .qsx .nrc-okpi .kpi-grp{width:100%;max-width:none;flex:1 1 100%}
+html.nr-client .qsx .nrc-okpi .kpi-sub{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
+html.nr-client .qsx .nrc-okpi .kpi-vis{grid-area:vis;margin-top:8px}
+html.nr-client .qsx .kpi-u{font-size:13px;font-weight:400;color:var(--ds-text-2);margin-left:5px;letter-spacing:0}
+html.nr-client .qsx .kpi-split{display:flex;gap:2px;height:6px;border-radius:3px;overflow:hidden}
+html.nr-client .qsx .kpi-split i{display:block;min-width:2px}
+html.nr-client .qsx .kpi-prog{height:6px;border-radius:3px;background:rgba(15,43,82,.08);overflow:hidden}
+html.nr-client .qsx .kpi-prog i{display:block;height:100%;background:#006843;border-radius:3px}
+/* found by the stress test (17 Nov): narrow value chain cards, the readiness grid, the heatmap's chips */
+html.nr-client .qsx .vcx{container-type:inline-size}
+@container (max-width:180px){ html.nr-client .qsx .vcx-f{flex-wrap:wrap;row-gap:6px} html.nr-client .qsx .vcx-f b{font-size:18px} html.nr-client .qsx .vcx-f .g{text-align:left} }
+html.nr-client .qsx .rdyc{grid-template-columns:28px repeat(6,minmax(0,1fr)) minmax(72px,96px)!important;column-gap:6px!important}
+html.nr-client .qsx .rdyc *{min-width:0;overflow-wrap:anywhere;text-transform:none!important;letter-spacing:0!important}
+html.nr-client .qsx .oc-team>div:has(>.oc-chip){flex-wrap:wrap;row-gap:4px}
+/* a chart in a card whose height follows its content gets a fixed height: otherwise Chart.js and the card grow each other
+   and the radar drifts out of sight (seen on the Maturity tab, 17 Nov) */
+html.nr-client .qsx .dd6>.card:not(.ov-clickcard) div:has(>canvas){flex:none!important;height:460px!important;min-height:0!important}
+/* the radar's bubble: the sub-dimension rows in readable text on the light glass */
+html.nr-client #tooltip .rt-subs-l{color:var(--ds-text-2)!important;text-transform:none!important;letter-spacing:0!important;font-weight:600!important}
+html.nr-client #tooltip .rt-nm{color:var(--ds-text)!important}
+html.nr-client #tooltip .rt-track{background:rgba(15,43,82,.08)!important}
+html.nr-client #tooltip .rt-sc{font-weight:600!important}
 /* the team picker: the name and its status stay inside the button, the arrow keeps its place */
 .tbt-pick{max-width:min(520px,44vw)}
 .tbt-id{flex:1 1 auto;min-width:0;overflow:hidden}
