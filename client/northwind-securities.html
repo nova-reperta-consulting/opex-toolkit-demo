@@ -14739,9 +14739,36 @@ function renderBenefits(elOpt){
       <div class="card span2"><div class="ch"><div class="ct">Where the value sits</div></div>
         <div class="bn-h">By type of change</div>${barsOf(byType)}
         ${byDiv.filter(d=>d.v).length>1?`<div class="bn-h">By division</div>${barsOf(byDiv.filter(d=>d.v).sort((a,b)=>b.v-a.v))}`:''}</div>
-    </div></div>`;
+    </div><div class="dd6">${benStarts(B)}</div></div>`;
   el.querySelectorAll('[data-seg="ben"] button').forEach(b=>b.onclick=()=>benSet(b.getAttribute('data-v')));
-  benChart(B);
+  benChart(B); benStartsWire(el,B);
+}
+/* when each saving starts: one row per initiative in go-live order (build bar, dot at go-live, light tail while it saves),
+   on the same whole years as the chart above; the bottom row adds up what lands in each calendar year (Gilles, 17 Nov) */
+let BNS_ROWS=[];
+function benStarts(B){
+  const m0=B.months[0], n=B.months.length, P=m=>((Math.max(m0,Math.min(m0+n,m))-m0)/n*100).toFixed(2)+'%';
+  const years=[]; for(let m=m0;m<m0+n;m+=12) years.push(Math.floor(m/12));
+  const inYear=years.map(y=>B.months.reduce((s,m,i)=>s+(Math.floor(m/12)===y?B.rate[i]/12:0),0));
+  BNS_ROWS=B.all.slice().sort((a,b)=>a.l-b.l||a.s-b.s||b.hi-a.hi);
+  const grid=`<div class="bns-yg" style="grid-template-columns:repeat(${years.length},minmax(0,1fr))">${years.map(()=>'<i></i>').join('')}</div>`;
+  const pay=B.pay!=null?` · pays back in ~${B.pay-B.start+1} months`:'';
+  const rows=BNS_ROWS.map((x,i)=>{ const c=(TTYPES[x.k]||TTYPES.opex).dot;
+    return `<div class="bns-r" data-i="${i}"><div class="bns-n"><span>${tlEsc(x.o.activity)}</span><small>${tlEsc(x.t.name)}</small></div>
+      <div class="bns-l">${grid}<i class="bns-b" style="left:${P(x.s)};width:calc(${P(x.l)} - ${P(x.s)});background:${c}"></i><i class="bns-t" style="left:${P(x.l)};right:0;background:${c}"></i><i class="bns-d" style="left:${P(x.l)};background:${c}"></i></div>
+      <div class="bns-v">${benFmt(B.val(x))}</div></div>`; }).join('');
+  return `<div class="card span6 bns"><div class="ch"><div class="ct">When each saving starts</div><span class="bns-m">${benFmt(B.impl)} to build${pay}</span></div>
+    <div class="bns-r bns-ax"><div></div><div class="bns-yl" style="grid-template-columns:repeat(${years.length},minmax(0,1fr))">${years.map(y=>`<span>${y}</span>`).join('')}</div><div class="bns-v">a year</div></div>
+    ${rows}
+    <div class="bns-r bns-tot"><div class="bns-n"><span>Saved in the year</span></div><div class="bns-yl" style="grid-template-columns:repeat(${years.length},minmax(0,1fr))">${inYear.map(v=>`<b>${v>0?benFmt(v):'—'}</b>`).join('')}</div><div></div></div></div>`;
+}
+function benStartsWire(el,B){
+  const bub=tlBubble();
+  el.querySelectorAll('.bns-r[data-i]').forEach(r=>{ const x=BNS_ROWS[+r.getAttribute('data-i')]; if(!x) return;
+    r.onmousemove=e=>{ bub.innerHTML=`<b>${tlEsc(x.o.activity)}</b><br>${tlEsc(x.t.name)}<br><span>Build from ${tlLab(x.s)} · live ${tlLab(x.l)}${x.est?' (estimated)':''}</span><br>${benFmt(B.val(x))} a year`; bub.style.display='block';
+      const w=bub.offsetWidth, h=bub.offsetHeight; bub.style.left=Math.max(8,Math.min(innerWidth-w-8,e.clientX-w/2))+'px'; bub.style.top=(e.clientY-h-14<8?e.clientY+18:e.clientY-h-14)+'px'; };
+    r.onmouseleave=()=>{ bub.style.display='none'; };
+    r.onclick=()=>{ bub.style.display='none'; try{ oppDetail(x.o); }catch(e){} }; });
 }
 /* the chart of the chart card: drawn at its size on screen, named where the line ends, three dates on the axis */
 function benChart(B){
@@ -16696,6 +16723,32 @@ html.nr-client #tooltip .rt-sc{font-weight:600!important}
 .tbt-nm{min-width:0}
 .tbt-nt{overflow:hidden;text-overflow:ellipsis;min-width:0}
 .tbt-nm .tb-pill{flex:none}
+/* Benefits second row: when each saving starts */
+html.nr-client .qsx .bnx>.dd6+.dd6{margin-top:16px}
+html.nr-client .qsx .bns{grid-column:1/-1!important;height:auto!important}
+html.nr-client .qsx .bns .ch{display:flex;align-items:baseline;gap:12px}
+html.nr-client .qsx .bns-m{margin-left:auto;font-size:var(--ds-fs-body);color:var(--ds-text-2)}
+html.nr-client .qsx .bns-r{display:grid;grid-template-columns:minmax(200px,28%) minmax(0,1fr) 64px;gap:14px;align-items:center;min-height:40px;border-radius:6px}
+html.nr-client .qsx .bns-r[data-i]{cursor:pointer}
+html.nr-client .qsx .bns-r[data-i]:hover{background:rgba(15,43,82,.035)}
+html.nr-client .qsx .bns-n{display:flex;flex-direction:column;gap:1px;min-width:0;font-size:var(--ds-fs-body);color:var(--ds-text);padding-left:4px}
+html.nr-client .qsx .bns-n span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;line-height:1.3}
+html.nr-client .qsx .bns-n small{line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:var(--ds-fs-label);color:var(--ds-text-3)}
+html.nr-client .qsx .bns-l{position:relative;height:40px}
+html.nr-client .qsx .bns-yg,html.nr-client .qsx .bns-yl{display:grid}
+html.nr-client .qsx .bns-yg{position:absolute;inset:0}
+html.nr-client .qsx .bns-yg i{border-left:1px solid rgba(15,43,82,.07)}
+html.nr-client .qsx .bns-b,html.nr-client .qsx .bns-t,html.nr-client .qsx .bns-d{position:absolute;top:50%}
+html.nr-client .qsx .bns-b{height:6px;margin-top:-3px;border-radius:3px;opacity:.35}
+html.nr-client .qsx .bns-t{height:6px;margin-top:-3px;opacity:.12}
+html.nr-client .qsx .bns-d{width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%}
+html.nr-client .qsx .bns-v{text-align:right;font-size:var(--ds-fs-body);color:var(--ds-text-2);padding-right:4px}
+html.nr-client .qsx .bns-ax{min-height:22px}
+html.nr-client .qsx .bns-ax .bns-yl span{font-size:var(--ds-fs-label);color:var(--ds-text-3);padding-left:5px}
+html.nr-client .qsx .bns-ax .bns-v{font-size:var(--ds-fs-label);color:var(--ds-text-3)}
+html.nr-client .qsx .bns-tot{border-top:1px solid rgba(15,43,82,.1);border-radius:0;margin-top:6px;padding-top:8px;min-height:36px}
+html.nr-client .qsx .bns-tot .bns-n span{font-weight:600}
+html.nr-client .qsx .bns-tot b{font-size:var(--ds-fs-heading);font-weight:700;color:#006843;padding-left:5px}
 </style>
 <style id="qs-phone-css">
 /* qs-phone-css (Gilles, 16 Nov 2026): the client view shows numbers and visuals, not text. On the laptop the callout
