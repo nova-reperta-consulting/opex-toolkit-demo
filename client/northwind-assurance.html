@@ -5407,7 +5407,7 @@ table.tteams .tt-h2{display:none}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
 })();
 </script>
-<script>window.__NR_FOLDER_BUILD__={"id": "northwind", "builtAt": "2026-11-16 19:52"};</script>
+<script>window.__NR_FOLDER_BUILD__={"id": "northwind", "builtAt": "2026-11-17 10:56"};</script>
 <script>window.__NR_VIEW__='client';</script>
 </head>
 <body>
@@ -11188,7 +11188,10 @@ function artifactCard(r){
           ? `<button class="artf-open" onclick="QS.setTeamSub('${r.openTab}')">Open analysis →</button>`
           : `<a class="artf-open" href="${r.path}" target="_blank" rel="noopener">Open analysis →</a>`)
     : `<span class="artf-plan">Not yet produced${pstat?` · skill ${pstat}`:''}</span>`;
-  return `<div class="artf-card ${on?'is-on':'is-off'}">
+  const XO=window.NR_CLIENT_VIEW&&window.__NR_OUTPUTS__&&window.__NR_OUTPUTS__.found||[];
+  const th=(XO.filter(x=>x.inst===r.instrument&&x.team===r.team&&x.thumb)[0]||XO.filter(x=>x.inst===r.instrument&&x.thumb)[0]||{}).thumb;
+  return `<div class="artf-card ${on?'is-on':'is-off'}${th?' has-th':''}">
+    ${th?`<div class="artf-th" style="background-image:url(${th})" role="img" aria-label="${r.label}"></div>`:''}
     <div class="artf-top"><span class="artf-badge ${on?'b-on':'b-off'}">${on?'Produced':'Planned'}</span></div>
     <div class="artf-name">${r.label}</div>
     <div class="artf-meta">${on&&r.producedAt?r.producedAt:''}</div>
@@ -11199,7 +11202,7 @@ function artifactCard(r){
 // grouped by dimension and linked up to the lean maturity overview
 function analysesPage(t){
   const rows=teamArtifacts(t.id);
-  if(!rows.length) return `<div class="dd-section"><div class="eyebrow">Analyses · evidence</div>
+  if(!rows.length) return `<div class="dd-section"><div class="eyebrow qs-dup">Analyses · evidence</div>
     <div class="artf-head">No analyses configured for this team yet, set the depth per lens in the <button class="artf-inline-link" onclick="QS.nav('configurator')">Analysis configurator</button>.</div></div>`;
   const prod=rows.filter(r=>r.status==='produced').length;
   const byLens={}; rows.forEach(r=>{ (byLens[r.lens]=byLens[r.lens]||[]).push(r); });
@@ -11237,7 +11240,7 @@ function analysesPage(t){
     </div>`:'';
   const totalCnt=rows.length+baseInstr.length;
   const prodCnt=prod+baseInstr.filter(r=>r.status==='produced').length;
-  return `<div class="dd-section"><div class="eyebrow">Analyses · evidence</div>
+  return `<div class="dd-section"><div class="eyebrow qs-dup">Analyses · evidence</div>
     <div class="artf-head qs-note">The specific instruments run on each dimension, the evidence behind the readiness scores. <b>${prodCnt}</b> of ${totalCnt} produced. Each dimension links up to its <button class="artf-inline-link" onclick="QS.setTeamSub('diagnostic')">Lean maturity overview</button>; produced analyses open as a standalone view.</div>
     ${groups}${twGroup}</div>`;
 }
@@ -13012,7 +13015,7 @@ function renderTeamContent(){
   const leverPhrase={ ia:'use AI to take on its judgment-heavy, semi-structured work', auto:'automate its stable, rule-based work', exop:'tighten its processes and management routines before adding technology', mining:'mine its high-volume process to pinpoint where redesign pays off', data:'fix its data foundation, which unlocks every technology lever' }[hl.key]||'improve how it works';
   const focusLine=`<b>${t.name}</b> ${posturePhrase}. The biggest opportunity is to ${leverPhrase}${topG?`, leading with ${topG.label}`:''}. So far about <b>${+oppSum.toFixed(1)} FTE, roughly ${Math.round(oppSum/Math.max(0.1,totActFte)*100)}% of the team's ${+totActFte.toFixed(0)} FTE scope</b>, has been turned into concrete opportunities, out of an estimated ${+totalOpt.toFixed(1)} FTE of total improvement potential.`;
   const keyPrioCard=`<div class="card span3 ov-kp-card" style="display:flex;flex-direction:column;min-height:clamp(300px, calc((100vh - 300px) / 2), 560px);">
-      <div class="ch"><div><div class="ct">Key initiatives</div><div style="font-size:var(--fs-10);color:var(--muted-2);margin-top:2px;">${grps.reduce((s,g)=>s+g.n,0)} initiatives · ~${+oppSum.toFixed(1)} FTE of the team's ${+totActFte.toFixed(0)} FTE scope</div></div><button class="ov-gobtn" onclick="QS.setTeamSub('roadmap')">Roadmap →</button></div>
+      <div class="ch"><div><div class="ct">Key initiatives</div><div class="qs-dup" style="font-size:var(--fs-10);color:var(--muted-2);margin-top:2px;">${grps.reduce((s,g)=>s+g.n,0)} initiatives · ~${+oppSum.toFixed(1)} FTE of the team's ${+totActFte.toFixed(0)} FTE scope</div></div><button class="ov-gobtn" onclick="QS.setTeamSub('roadmap')">Roadmap →</button></div>
       ${(function(){
         if(!grps.length) return '<div class="ov-kp-levers" style="justify-content:center;"><div class="trm-empty">No opportunities identified yet.</div></div>';
         /* biggest transformation type first, this card is about where the weight sits */
@@ -13039,7 +13042,7 @@ function renderTeamContent(){
           <thead><tr><th style="width:44%;">Initiative</th><th>Lever</th><th>Horizon</th><th class="r">FTE</th></tr></thead>
           <tbody>${body}</tbody></table></div>`;
       })()}
-      <div class="ov-kp-foot">
+      <div class="ov-kp-foot qs-dup">
         <span style="font-size:var(--fs-9);font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted-2);">Starting point</span>
         <span class="lever-chip" style="background:${POS.bg};color:${POS.t};" title="${POS.desc}">${POS.label}</span>
       </div>
@@ -13048,7 +13051,7 @@ function renderTeamContent(){
   if(NRD&&teamSub==='diagnostic'&&!LMA) teamSub='findings';
   if(!NRD&&teamSub==='findings') teamSub='overview';
   const CL=!!window.NR_CLIENT_VIEW;
-  if(CL) teamSub=({diagnostic:'maturity',readiness:'maturity',findings:'maturity',opportunities:'potential',analyses:'overview'})[teamSub]||teamSub;
+  if(CL) teamSub=({diagnostic:'maturity',readiness:'maturity',findings:'maturity',opportunities:'potential'})[teamSub]||teamSub;
   const SUBS=CL?CLIENT_SUBS:NRD?TEAM_SUBS.flatMap(s=>s.key==='diagnostic'?[{key:'findings',label:'Findings by dimension'}].concat(LMA?[s]:[]):[s]):TEAM_SUBS;
   const subnav=`<div class="tsub-nav">${SUBS.map(s=>`<button class="tsub ${s.key===teamSub?'active':''}" onclick="QS.setTeamSub('${s.key}')">${s.label}</button>`).join('')}</div>`;
   // per-page KPI strips, a few headline cards relevant to each sub-page (values kept to one line → equal-height tiles)
@@ -13087,12 +13090,12 @@ function renderTeamContent(){
     </div>`:`<div class="card span3 ov-clickcard" onclick="QS.setTeamSub('diagnostic')" title="Open the Lean maturity page" style="display:flex;flex-direction:column;height:clamp(300px, calc((100vh - 300px) / 2), 560px);">
       <div class="ch"><div class="ct">Lean maturity assessment</div><button class="ov-gobtn" onclick="event.stopPropagation();setTeamSub('diagnostic')">Lean maturity →</button></div>
       <div style="flex:1;position:relative;min-height:0;"><canvas id="ov-radar"></canvas></div>
-      ${dimLo?`<div style="font-size:var(--fs-95);color:var(--muted-2);text-align:center;padding:2px 6px 0;">Focus area, <b style="color:var(--text);">${dimLo.l} (${dimLo.v}/5)</b>, the weakest dimension</div>`:''}
+      ${dimLo?`<div class="qs-dup" style="font-size:var(--fs-95);color:var(--muted-2);text-align:center;padding:2px 6px 0;">Focus area, <b style="color:var(--text);">${dimLo.l} (${dimLo.v}/5)</b>, the weakest dimension</div>`:''}
     </div>`;
   const workloadCard=`<div class="card span3 ov-clickcard" onclick="QS.setTeamSub('baseline')" title="Open the Baseline page" style="display:flex;flex-direction:column;height:clamp(300px, calc((100vh - 300px) / 2), 560px);">
       <div class="ch"><div class="ct">Activity workload</div><button class="ov-gobtn" onclick="event.stopPropagation();setTeamSub('baseline')">Baseline →</button></div>
       <div style="flex:1;position:relative;min-height:0;"><canvas id="ov-workload"></canvas></div>
-      <div style="display:flex;justify-content:center;gap:13px;font-size:var(--fs-85);color:var(--muted-2);padding:3px 6px 0;flex-wrap:wrap;">
+      <div class="ov-wl-lg" style="display:flex;justify-content:center;gap:13px;font-size:var(--fs-85);color:var(--muted-2);padding:3px 6px 0;flex-wrap:wrap;">
         <span style="display:inline-flex;align-items:center;gap:4px;"><i style="width:8px;height:8px;border-radius:2px;background:#3B6FBF;display:inline-block;"></i>Rule-based → automation</span>
         <span style="display:inline-flex;align-items:center;gap:4px;"><i style="width:8px;height:8px;border-radius:2px;background:var(--green-2);display:inline-block;"></i>Semi-structured → AI</span>
         <span style="display:inline-flex;align-items:center;gap:4px;"><i style="width:8px;height:8px;border-radius:2px;background:var(--purple);display:inline-block;"></i>Knowledge → AI augment</span>
@@ -13100,7 +13103,7 @@ function renderTeamContent(){
     </div>`;
   const ovGrid=`<div class="dd-section"><div class="dd6">${waterfallCard}${keyPrioCard}${workloadCard}${radarCard}</div></div>`;
   const pages={ overview:ovGrid, baseline:kpiBaseline+secBaseline, diagnostic:kpiDiag+secDiag, findings:NRD?window.nrDiag.findingsHtml(t.id):'', potential:potentialPage(t), readiness:readinessPage(t), analyses:analysesPage(t), opportunities:kpiOpp+secOpp, roadmap:teamRoadmapHTML(t) };
-  if(CL){ pages.overview=pages.overview+'<div style="margin-top:24px">'+pages.analyses+'</div>';
+  if(CL){
     pages.maturity=pages.diagnostic+'<div style="margin-top:32px">'+pages.readiness+'</div>';
     pages.potential=pages.potential+'<div style="margin-top:32px">'+pages.opportunities+'</div>'; }
   c.innerHTML = subnav + `<div id="team-sub-content">${pages[teamSub]||pages.overview}</div>`;
@@ -13123,7 +13126,7 @@ function renderTeamContent(){
               const L=[]; let cur=''; String(acts[i].name).split(' ').forEach(w=>{ const t=(cur+' '+w).trim(); if(fit(t)||!cur) cur=t; else { L.push(cur); cur=w; } }); if(cur) L.push(cur);
               let out=L.map(x=>fit(x)?x:cutw(x)); if(out.length>3){ out=out.slice(0,3); out[2]=cutw(out[2].replace(/…$/,'')); }
               ctx.restore(); return out; } } },
-          y:{ grid:{display:false}, border:{display:false}, ticks:{color:txt, font:{size:11}}, beginAtZero:true, title:{display:true,text:'FTE',color:txt,font:{size:11,weight:'600'}} } } } });
+          y:{ grid:{display:false}, border:{display:false}, ticks:{color:txt, font:{size:11}}, beginAtZero:true, title:{display:!window.NR_CLIENT_VIEW,text:'FTE',color:txt,font:{size:11,weight:'600'}} } } } });
     // waterfall tooltips, compact, structured (title · value · sub) in the shared tooltip
     wireWaterfallTips();
   }
@@ -13141,6 +13144,7 @@ const CLIENT_SUBS=[
   { key:'maturity',  label:'Maturity' },
   { key:'potential', label:'Potential' },
   { key:'roadmap',   label:'Plan' },
+  { key:'analyses',  label:'Analyses' },
 ];
 const TEAM_SUBS=[
   { key:'overview',      label:'Overview' },
@@ -16088,6 +16092,27 @@ html .qsx .qsp .qsp-bub{box-shadow:0 4px 16px rgba(15,43,82,.16)!important}
 .qsp-split{display:flex;gap:2px;height:6px;border-radius:3px;overflow:hidden;margin-top:14px}
 .qsp-ring{display:flex;gap:18px;align-items:center}
 .qsp svg text{font-family:var(--ds-font)}
+.qsp-br{display:grid;grid-template-columns:minmax(0,1fr) 46% 30px;align-items:center;gap:10px;font-size:var(--ds-fs-body);padding:8px 0;cursor:pointer;width:100%;border:0;background:none;font-family:inherit;color:inherit;text-align:left}
+.qsp-br span{color:var(--ds-text-2);line-height:1.3}
+.qsp-br .tr{height:8px;border-radius:4px;background:var(--ds-fill);position:relative}
+.qsp-br .tr i{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+.qsp-br .tr em{position:absolute;top:-4px;bottom:-4px;width:0;border-left:1.5px dashed var(--ds-text)}
+.qsp-br b{font-weight:600;text-align:right}
+.qsp-sub{padding:2px 0 10px;display:none}.qsp-sub.on{display:block}
+.qsp-sub div{display:flex;justify-content:space-between;gap:12px;font-size:var(--ds-fs-label);color:var(--ds-text-2);padding:3px 0}
+.qsp-sub div b{font-weight:600;color:var(--ds-text)}
+.qsp-sec{font-size:var(--ds-fs-label);color:var(--ds-text-3);padding:10px 16px 2px}
+.qsp-chain{position:relative;padding:6px 18px}
+.qsp-chain:before{content:"";position:absolute;left:33px;top:28px;bottom:28px;border-left:1.5px solid var(--ds-line)}
+.qsp-step{display:flex;gap:12px;align-items:flex-start;padding:10px 0;position:relative;cursor:pointer}
+.qsp-nd{width:30px;height:30px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:var(--ds-fs-label);font-weight:600;color:#fff;position:relative;z-index:1}
+.qsp-wf{display:grid;grid-template-columns:118px minmax(0,1fr) 36px;align-items:center;gap:10px;font-size:var(--ds-fs-body);padding:8px 0}
+.qsp-wf span{color:var(--ds-text-2)}.qsp-wf b{font-weight:600;text-align:right}
+.qsp-wf .tr{height:12px;position:relative}.qsp-wf .tr i{position:absolute;top:0;bottom:0;border-radius:3px}
+.qsp-gr .ok{color:var(--ds-accent)}
+.qsp-figs.n4{justify-content:space-between;gap:8px}.qsp-figs.n4 .qsp-big{font-size:22px}.qsp-figs.n4 .qsp-lb{white-space:nowrap}
+.qsp-gr span{flex:1;min-width:0;text-align:left;padding-right:10px}.qsp-gr b{white-space:nowrap;flex:none}.qsp-gr b svg{flex:none}
+
 </style>
 <script id="qs-phone">
 /* qs-phone (Gilles, 16 Nov 2026): on a phone the client view's roadmap, a team's overview and the initiatives are
@@ -16196,6 +16221,112 @@ function team(el,t){ REG=[]; var WF=QS.valueWaterfall(t), scope=WF.totActFte||t.
   svg.addEventListener('pointermove',show); svg.addEventListener('click',show); svg.addEventListener('pointerleave',function(){ var b=card.querySelector(':scope > .qsp-bub'); if(b) b.style.display='none'; });
   wireRows(el); }
 
+
+/* ---------------- shared for the screens below ---------------- */
+var DL=[['proc','Processes','#2A4D8F'],['cust','Customer','#C0392B'],['mgmt','Management systems','#145530'],['data','Data, digital & AI','#B8620A'],['mind','Mindset & behaviors','#6B4E9E'],['org','Organisation','#2A8C82']];
+try{ var MD=(window.__QS_DATA__&&__QS_DATA__.model&&__QS_DATA__.model.dimensions)||null; if(MD&&MD.length) DL=MD.map(function(d){ return [d.key,d.label,d.color||'#2A4D8F']; }); }catch(e){}
+function dimName(k){ var d=DL.filter(function(x){ return x[0]===k; })[0]; return d?d[1]:k; }
+function dimCol(k){ var d=DL.filter(function(x){ return x[0]===k; })[0]; return d?d[2]:'var(--ds-text-3)'; }
+function ongoing(t){ return t.status==='none'||t.status==='baseline'||t.status==='diagnostic'; }
+function avgOf(t){ var v=Object.keys(t.scores||{}).map(function(k){ return t.scores[k]; }).filter(function(x){ return x!=null&&!isNaN(x); }); return v.length?v.reduce(function(a,b){ return a+b; },0)/v.length:NaN; }
+function scored(){ return (QS.TEAMS||[]).filter(function(t){ return !ongoing(t)&&!isNaN(avgOf(t))&&avgOf(t)>0; }); }
+function heat(v){ var S=[[1,[214,69,65]],[2,[232,140,58]],[3,[232,191,73]],[4,[126,184,96]],[5,[38,128,79]]]; v=Math.max(1,Math.min(5,v));
+  for(var i=0;i<S.length-1;i++){ var a=S[i],b=S[i+1]; if(v<=b[0]){ var f=(v-a[0])/(b[0]-a[0]); var c=a[1].map(function(x,j){ return Math.round(x+(b[1][j]-x)*f); }); return 'rgb('+c.join(',')+')'; } } return 'rgb(38,128,79)'; }
+function dimAvg(k){ var a=scored().map(function(t){ return t.scores[k]; }).filter(function(x){ return x!=null; }); return a.length?a.reduce(function(x,y){ return x+y; },0)/a.length:NaN; }
+function teamFte(t){ return (t.opps||[]).reduce(function(s,o){ return s+mid(o.fte); },0); }
+function bars(rows,opts){ opts=opts||{}; var mx=opts.max||5;
+  return rows.map(function(r,i){ return '<button class="qsp-br" data-i="'+i+'"'+(opts.cols?' style="grid-template-columns:'+opts.cols+'"':'')+'><span>'+esc(r.l)+'</span><div class="tr"><i style="width:'+Math.max(0,Math.min(100,r.v/mx*100))+'%;background:'+(r.c||'var(--ds-navy)')+'"></i>'
+    +(r.ref!=null&&!isNaN(r.ref)?'<em style="left:'+Math.min(100,r.ref/mx*100)+'%"></em>':'')+'</div><b>'+(r.t!=null?r.t:r.v.toFixed(1))+'</b></button>'
+    +(r.sub?'<div class="qsp-sub" data-s="'+i+'">'+r.sub+'</div>':''); }).join(''); }
+function wireBars(el){ el.querySelectorAll('.qsp-br').forEach(function(b){ var s=b.parentElement.querySelector('.qsp-sub[data-s="'+b.getAttribute('data-i')+'"]'); if(s) b.onclick=function(){ s.classList.toggle('on'); }; else b.style.cursor='default'; }); }
+var CHV=IC.chev.replace('<svg','<svg class="qsp-chv" style="width:15px;height:15px;color:var(--ds-text-3);flex:none"');
+
+/* ---------------- Executive summary: the figures, the six dimensions, the teams ---------------- */
+function summary(el){ var T=QS.TEAMS||[], sc=scored(), all=items();
+  var lm=sc.length?sc.reduce(function(s,t){ return s+avgOf(t); },0)/sc.length:NaN;
+  var dims=DL.map(function(d){ return {k:d[0],l:d[1],v:dimAvg(d[0])}; }).filter(function(x){ return !isNaN(x.v); });
+  var lo=Math.min.apply(null,dims.map(function(x){ return x.v; }));
+  var divs=((window.__QS_DATA__||{}).engagement||{}).divisions||[], seen={}, groups=[];
+  divs.forEach(function(d){ var ts=(d.teams||[]).map(function(id){ return T.filter(function(t){ return t.id===id; })[0]; }).filter(Boolean); ts.forEach(function(t){ seen[t.id]=1; }); if(ts.length) groups.push([d.name,ts]); });
+  var rest=T.filter(function(t){ return !seen[t.id]; }); if(rest.length) groups.push([groups.length?'Other teams':'',rest]);
+  el.innerHTML='<div class="qsp-card"><div class="qsp-figs n4">'+[[String(T.length),'','teams'],[f0(T.reduce(function(s,t){ return s+(+t.fte||0); },0)),'FTE','in scope'],[isNaN(lm)?'—':lm.toFixed(1),'/ 5','maturity'],[f0(sum(all,'f')),'FTE','potential']]
+      .map(function(x){ return '<div><div class="qsp-big">'+x[0]+(x[1]?'<small>'+x[1]+'</small>':'')+'</div><div class="qsp-lb">'+x[2]+'</div></div>'; }).join('')+'</div></div>'
+    +(dims.length?'<div class="qsp-hd"><b>Lean maturity</b><span>average of '+sc.length+' teams, out of 5</span></div><div class="qsp-card" style="padding:8px 18px">'
+      +bars(dims.map(function(x){ return {l:x.l,v:x.v,c:x.v<=lo+.001?'#B8620A':'var(--ds-navy)'}; }))+'</div>':'')
+    +'<div class="qsp-hd"><b>Teams</b><span>lean maturity</span></div><div class="qsp-list">'
+    +groups.map(function(g){ return (g[0]?'<div class="qsp-sec">'+esc(g[0])+'</div>':'')+g[1].map(function(t){ var v=avgOf(t), on=ongoing(t)||isNaN(v)||!v;
+        return '<div class="qsp-it" data-t="'+esc(t.id)+'"><div class="qsp-tx"><div class="qsp-t1">'+esc(t.name)+'</div><div class="qsp-t2"><span>'+f0(+t.fte||0)+' FTE'+(on?' · assessment ongoing':'')+'</span></div></div>'
+          +(on?'<div class="qsp-vl" style="color:var(--ds-text-3)">—</div>':'<i class="qsp-dot" style="width:9px;height:9px;background:'+heat(v)+'"></i><div class="qsp-vl">'+v.toFixed(1)+'</div>')+CHV+'</div>'; }).join(''); }).join('')+'</div>';
+  wireBars(el); el.querySelectorAll('[data-t]').forEach(function(r){ r.onclick=function(){ if(window.nrOpenTeam) nrOpenTeam(r.getAttribute('data-t')); }; }); }
+
+/* ---------------- Value chain: one chain, a circle per team in stage order ---------------- */
+function chainStages(){ var T=QS.TEAMS||[], out=[];
+  try{ if(typeof VCS==='function'&&typeof stagesOf==='function'){ VCS().forEach(function(c){ stagesOf(c.id).forEach(function(s){ var ts=(s.teams||[]).map(function(x){ return T.filter(function(t){ return t.id===x.id; })[0]; }).filter(Boolean); if(ts.length) out.push({name:s.name,teams:ts}); }); }); } }catch(e){}
+  if(!out.length){ var divs=((window.__QS_DATA__||{}).engagement||{}).divisions||[]; divs.forEach(function(d){ var ts=(d.teams||[]).map(function(id){ return T.filter(function(t){ return t.id===id; })[0]; }).filter(Boolean); if(ts.length) out.push({name:d.name,teams:ts}); }); }
+  return out; }
+function chain(el){ var st=chainStages(), all=items(), rows=[];
+  st.forEach(function(s){ s.teams.forEach(function(t){ rows.push({s:s.name,t:t}); }); });
+  var ready=rows.filter(function(r){ return (+r.t.readinessScore||0)>=50; }).length;
+  el.innerHTML='<div class="qsp-card">'+figs([[String(st.length),'','stages'],[String(ready),'','ready for AI'],[f0(sum(all,'f')),'FTE','potential']])+'</div>'
+    +'<div class="qsp-hd"><b>Along the chain</b><span>FTE potential</span></div><div class="qsp-card qsp-chain">'
+    +rows.map(function(r){ var t=r.t, v=avgOf(t), on=ongoing(t)||isNaN(v)||!v, rs=Math.round(+t.readinessScore||0);
+      return '<div class="qsp-step" data-t="'+esc(t.id)+'"><div class="qsp-nd" style="background:'+(on?'var(--ds-fill-strong)':heat(v))+'">'+(on?'—':v.toFixed(1))+'</div>'
+        +'<div class="qsp-tx" style="padding-top:1px"><div class="qsp-t1">'+esc(r.s)+'</div><div class="qsp-t2"><span>'+esc(t.name)+(on?'':' · AI '+rs)+'</span>'+(!on&&rs<50?IC.lock:'')+'</div></div>'
+        +'<div class="qsp-vl" style="padding-top:5px">'+(on?'—':f1(teamFte(t)))+'</div></div>'; }).join('')+'</div>';
+  el.querySelectorAll('[data-t]').forEach(function(r){ r.onclick=function(){ if(window.nrOpenTeam) nrOpenTeam(r.getAttribute('data-t')); }; }); }
+
+/* ---------------- A team's Baseline: where the time goes, the biggest inefficiencies ---------------- */
+var inAll=false;
+function baseline(el,t){ var A=(t.activities||[]).slice().sort(function(a,b){ return (b.fte||0)-(a.fte||0); }), mx=Math.max.apply(null,A.map(function(a){ return a.fte||0; }).concat([.1]));
+  var IN=(t.inefficiency||[]).map(function(x){ var m=String(x.val||'').match(/([\d.]+)\s*FTE/i); return {t:x.ind,v:m?+m[1]:null,d:x.dim}; }).sort(function(a,b){ return (b.v==null?-1:b.v)-(a.v==null?-1:a.v); });
+  var shown=inAll?IN:IN.slice(0,5);
+  el.innerHTML='<div class="qsp-card">'+figs([[f0(+t.fte||0),'FTE','in scope'],[String(A.length),'','activity blocks'],[String(IN.length),'','inefficiencies']])+'</div>'
+    +(A.length?'<div class="qsp-hd"><b>Where the time goes</b><span>FTE</span></div><div class="qsp-card" style="padding:8px 18px">'
+      +bars(A.map(function(a){ return {l:a.name,v:(a.fte||0),t:f1(a.fte||0),c:'var(--ds-navy)',sub:(a.tasks||[]).map(function(x){ return '<div><span>'+esc(x)+'</span></div>'; }).join('')}; }),{max:mx,cols:'minmax(0,1fr) 30% 30px'})+'</div>':'')
+    +(IN.length?'<div class="qsp-hd"><b>Biggest inefficiencies</b><span>FTE</span></div><div class="qsp-list">'
+      +shown.map(function(x){ return '<div class="qsp-it" style="cursor:default"><div class="qsp-tx"><div class="qsp-t1">'+esc(x.t)+'</div><div class="qsp-t2"><i class="qsp-dot" style="background:'+dimCol(x.d)+'"></i><span>'+esc(dimName(x.d))+'</span></div></div><div class="qsp-vl"'+(x.v==null?' style="color:var(--ds-text-3)"':'')+'>'+(x.v==null?'—':f1(x.v))+'</div></div>'; }).join('')
+      +(IN.length>shown.length?more(IN.length-shown.length,'in'):'')+'</div>':'');
+  wireBars(el); var m=el.querySelector('[data-more]'); if(m) m.onclick=function(){ inAll=true; baseline(el,t); }; }
+
+/* ---------------- A team's Maturity: six bars against the average, the three readiness questions ---------------- */
+function maturity(el,t){ var sc=t.scores||{}, mt=NaN; try{ mt=QS.weightedOverall(t); }catch(e){}
+  var ds=DL.filter(function(d){ return sc[d[0]]!=null; }), best=ds.slice().sort(function(a,b){ return sc[b[0]]-sc[a[0]]; })[0], rs=Math.round(+t.readinessScore||0);
+  var G=[['Can AI run at all?',['data']],['Can the saving be materialised?',['org','mgmt']],['Can the solution be properly embedded?',['proc','mind']]].map(function(g){
+    var low=g[1].map(function(k){ return [k,sc[k]==null?5:sc[k]]; }).sort(function(a,b){ return a[1]-b[1]; })[0]; return {q:g[0],k:low[0],v:low[1]}; });
+  el.innerHTML='<div class="qsp-card">'+figs([[isNaN(mt)?'—':mt.toFixed(1),'/ 5','lean maturity'],[String(rs),'/ 100','AI readiness'],best?[String(sc[best[0]]),'/ 5','best: '+best[1].split(/[ ,&]/)[0].toLowerCase()]:['—','','']])+'</div>'
+    +'<div class="qsp-hd"><b>Lean maturity</b><span>dashed: average of all teams</span></div><div class="qsp-card" style="padding:8px 18px">'
+    +bars(ds.map(function(d){ var subs=((t.subs||{})[d[0]]||[]).filter(function(x){ return x&&x[1]!=null; });
+        return {l:d[1],v:sc[d[0]],ref:dimAvg(d[0]),c:'var(--ds-navy)',sub:subs.map(function(x){ return '<div><span>'+esc(x[0])+'</span><b>'+(+x[1]).toFixed(1)+'</b></div>'; }).join('')}; }))+'</div>'
+    +'<div class="qsp-hd"><b>Ready for AI?</b><span>each needs 3 out of 5</span></div><div class="qsp-gl">'
+    +G.map(function(g){ var okk=g.v>=3; return '<div class="qsp-gr" style="cursor:default"><span>'+g.q+'</span><b>'+(okk?'':'<em class="warn">'+esc(dimName(g.k).split(/[ ,&]/)[0].toLowerCase())+'</em>')+g.v+' <em>/ 5</em>'
+      +(okk?'<svg class="ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>':IC.lock)+'</b></div>'; }).join('')+'</div>';
+  wireBars(el); }
+
+/* ---------------- A team's Potential: from scope to potential, then its initiatives ---------------- */
+function potential(el,t){ REG=[]; var WF=QS.valueWaterfall(t), scope=WF.totActFte||t.fte||0, pot=WF.nowFte+WF.laterFte+WF.notYet, mine=items(t.id).sort(function(a,b){ return b.f-a.f; });
+  var W=[['Team scope',0,scope,'var(--ds-fill-strong)'],['Addressable now',0,WF.nowFte,'var(--ds-accent)'],['After the enablers',WF.nowFte,WF.laterFte,'#B8620A'],['Not yet identified',WF.nowFte+WF.laterFte,WF.notYet,'#C9C5BC'],['Stays as it is',pot,Math.max(0,scope-pot),'var(--ds-fill)']];
+  var pc=function(x){ return scope?x/scope*100:0; };
+  el.innerHTML='<div class="qsp-card">'+figs([[f1(pot),'FTE','potential'],[f1(sum(mine,'f')),'FTE','in '+mine.length+' initiative'+(mine.length===1?'':'s')],[String(mine.filter(function(x){ return x.ok; }).length),'','ready now']])+'</div>'
+    +'<div class="qsp-hd"><b>From scope to potential</b><span>FTE</span></div><div class="qsp-card" style="padding:6px 18px">'
+    +W.map(function(w){ return '<div class="qsp-wf"><span>'+w[0]+'</span><div class="tr"><i style="left:'+pc(w[1])+'%;width:'+Math.max(w[2]>0?1:0,pc(w[2]))+'%;background:'+w[3]+'"></i></div><b>'+f1(w[2])+'</b></div>'; }).join('')+'</div>'
+    +(mine.length?'<div class="qsp-hd"><b>Initiatives</b><span>FTE</span></div><div class="qsp-list">'+mine.map(function(x){ return row(x,null,TT[x.k][0]+' · '+HT[x.p]); }).join('')+'</div>':'');
+  wireRows(el); }
+
+/* ---------------- A team's Plan: the same grid as the Roadmap, one row per type of change ---------------- */
+var planSel={};
+function plan(el,t){ REG=[]; var mine=items(t.id), P=[0,1,2,3].map(function(p){ var a=mine.filter(function(x){ return x.p===p; }); return {p:p,a:a,f:sum(a,'f')}; });
+  if(planSel[t.id]==null){ planSel[t.id]=0; for(var i=0;i<4;i++){ if(P[i].a.length){ planSel[t.id]=i; break; } } }
+  var sel=planSel[t.id], tf=sum(mine,'f'), types=ORDER.filter(function(k){ return mine.some(function(x){ return x.k===k; }); }), L=P[sel].a.slice().sort(function(a,b){ return b.f-a.f; });
+  el.innerHTML='<div class="qsp-card">'+figs([[f1(tf),'FTE','potential'],[String(mine.length),'','initiatives'],[(tf?Math.round((P[0].f+P[1].f)/tf*100):0)+'%','','in 2026']])+'</div>'
+    +'<div class="qsp-hd"><b>Plan</b><span>FTE per half-year</span></div><div class="qsp-card" style="padding:14px 14px 16px"><div class="qsp-grid"><div></div>'
+    +P.map(function(x){ return '<div class="h'+(x.p===sel?' on':'')+'" data-p="'+x.p+'"><b>'+f1(x.f)+'</b>'+HT[x.p]+'</div>'; }).join('')
+    +types.map(function(k){ return '<div class="n">'+TT[k][0]+'</div>'+[0,1,2,3].map(function(p){ var a=mine.filter(function(x){ return x.k===k&&x.p===p; });
+        return '<div class="c" data-p="'+p+'" style="background:'+(a.length?TT[k][1]:'var(--ds-fill)')+';opacity:'+(a.length&&p!==sel?.35:1)+'"></div>'; }).join(''); }).join('')
+    +'</div></div><div class="qsp-hd"><b>'+HL[sel]+'</b><span>'+L.length+' initiative'+(L.length===1?'':'s')+' · FTE</span></div>'
+    +(L.length?'<div class="qsp-list">'+L.map(function(x){ return row(x,null,TT[x.k][0]); }).join('')+'</div>':'');
+  el.querySelectorAll('[data-p]').forEach(function(n){ n.addEventListener('click',function(){ planSel[t.id]=+n.getAttribute('data-p'); plan(el,t); }); });
+  wireRows(el); }
+
 /* ---------------- mounting ---------------- */
 function host(id){ var n=document.getElementById(id); return n&&n.parentElement; }
 function place(h,id,draw,key){ if(!h) return; var m=h.querySelector(':scope > #'+id);
@@ -16204,15 +16335,91 @@ function place(h,id,draw,key){ if(!h) return; var m=h.querySelector(':scope > #'
   if(!m){ m=document.createElement('div'); m.className='qsp'; m.id=id; h.insertBefore(m,h.firstChild); }
   m.setAttribute('data-k',key); h.classList.add('qsp-on'); try{ draw(m); }catch(e){ m.remove(); h.classList.remove('qsp-on'); } }
 function run(){ if(!window.NR_CLIENT_VIEW) return;
-  if(typeof PAGE!=='undefined'&&PAGE==='croad') place(host('page-roadmap'),'qsp-road',road,'r');
-  if(typeof PAGE!=='undefined'&&PAGE==='copps') place(host('page-opportunities'),'qsp-opps',opps,'o');
+  var pg=typeof PAGE!=='undefined'?PAGE:'';
+  if(pg==='cexec') place(host('page-summary'),'qsp-sum',summary,'s');
+  if(pg==='cchain'){ var ch=document.getElementById('cl-vc-0')||document.getElementById('page-valuechain'); place(ch&&ch.parentElement,'qsp-chain',chain,'c'); }
+  if(pg==='croad') place(host('page-roadmap'),'qsp-road',road,'r');
+  if(pg==='copps') place(host('page-opportunities'),'qsp-opps',opps,'o');
   var tc=document.getElementById('team-sub-content'), act=document.querySelector('.tsub-nav .tsub.active');
-  if(tc){ var ov=!!(act&&/'overview'/.test(act.getAttribute('onclick')||'')), t=(QS.TEAMS||[]).filter(function(x){ return x.id===QS.activeTeamId; })[0];
-    if(ov&&t) place(tc,'qsp-team',function(m){ team(m,t); },t.id); else { var m=tc.querySelector(':scope > #qsp-team'); if(m) m.remove(); tc.classList.remove('qsp-on'); } } }
+  if(tc){ var m=(act&&(act.getAttribute('onclick')||'').match(/setTeamSub\('(\w+)'\)/)), sub=m?m[1]:'', t=(QS.TEAMS||[]).filter(function(x){ return x.id===QS.activeTeamId; })[0];
+    var D={overview:team,baseline:baseline,maturity:maturity,potential:potential,roadmap:plan}[sub];
+    if(D&&t) place(tc,'qsp-team',function(el){ D(el,t); },t.id+':'+sub); else { var mm=tc.querySelector(':scope > #qsp-team'); if(mm) mm.remove(); tc.classList.remove('qsp-on'); } } }
 var tm; function soon(){ clearTimeout(tm); tm=setTimeout(run,40); }
 new MutationObserver(soon).observe(document.documentElement,{childList:true,subtree:true});
-var lastPh=phone(); window.addEventListener('resize',function(){ var p=phone(); if(p!==lastPh){ lastPh=p; ['qsp-road','qsp-opps','qsp-team'].forEach(function(id){ var m=document.getElementById(id); if(m) m.setAttribute('data-k',''); }); } soon(); });
+var lastPh=phone(); window.addEventListener('resize',function(){ var p=phone(); if(p!==lastPh){ lastPh=p; ['qsp-sum','qsp-chain','qsp-road','qsp-opps','qsp-team'].forEach(function(id){ var m=document.getElementById(id); if(m) m.setAttribute('data-k',''); }); } soon(); });
 window.NRPhone={run:run};
+})();
+</script>
+<style id="qs-lap-css">
+/* qs-lap-css (Gilles, 17 Nov 2026): the client view on the laptop. One start line for every page, no repeats,
+   readable contrast, the brand sizes, a clean grid on a team's overview, the analyses on their own tab. */
+html.nr-client{--muted:#5B6270;--muted-2:#5B6270}
+html.nr-client[data-theme="dark"],html.nr-client.dark{--muted:#A8AEB9;--muted-2:#A8AEB9}
+html.nr-client .qsx .vc-head,html.nr-client .qsx .qs-dup,html.nr-client svg.nr-wf text[data-r="s"]{display:none!important}
+html.nr-client .qsx .qs-lg-btns{margin-left:auto;display:flex;gap:8px}
+html.nr-client #page-roadmap .dd-section>div:not([class]):not(:has(.fchip)):not(:has(canvas,table,svg)){display:none!important}
+/* the summary: the org chart from the top of its card, the radar at a fixed height */
+html.nr-client .qsx .org{justify-content:flex-start!important;height:auto!important}
+html.nr-client .qsx .diag-canvas-wrap{height:460px!important;flex:none!important}
+html.nr-client .qsx .diag-box{height:auto!important}
+html.nr-client .qsx .oc-team .oc-nm,html.nr-client .qsx .oc-team .oc-chip,html.nr-client .qsx .oc-team .oc-chip *{color:#0F2B52!important}
+html.nr-client .qsx .oc-team .oc-chip{background:rgba(255,255,255,.38)!important}
+/* scores: the number in text colour, the colour stays in the bar */
+html.nr-client .qsx .vc-sc b{color:var(--ds-text)!important}
+/* sizes: names on the body size */
+html.nr-client .qsx .vc-nm,html.nr-client .qsx .oc-nm,html.nr-client .qsx .kpi-nm,html.nr-client .qsx .ov-kp-tbl td,
+html.nr-client .qsx #opp-tbody td,html.nr-client .qsx #team-opp-tbody td{font-size:var(--ds-fs-body)!important}
+/* a team's overview: the four cards share their edges; the legend of the workload chart above it, top left */
+html.nr-client .qsx .dd6>.card:not(.ov-clickcard){height:auto!important;min-height:clamp(300px,calc((100vh - 300px)/2),560px)}
+html.nr-client .qsx .ov-clickcard:has(#ov-workload)>.ch{order:0}
+html.nr-client .qsx .ov-wl-lg{order:1;justify-content:flex-start!important;padding:0 0 6px!important}
+html.nr-client .qsx .ov-clickcard:has(#ov-workload)>div:has(>canvas){order:2}
+/* one line between rows, no double rules */
+html.nr-client .qsx .ov-kp-tbl{border-collapse:collapse!important}
+html.nr-client .qsx .ov-kp-tbl td,html.nr-client .qsx .ov-kp-tbl th{border:0!important;box-shadow:none!important}
+html.nr-client .qsx .ov-kp-tbl tbody tr+tr td{border-top:.5px solid var(--ds-line)!important}
+html.nr-client .qsx .ov-kp-tblwrap{border:0!important;box-shadow:none!important}
+/* the analyses tab: a grid of cards, each with its thumbnail */
+html.nr-client .qsx .artf-grid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))!important;gap:12px!important}
+html.nr-client .qsx .artf-card{display:flex;flex-direction:column;gap:6px;border:0!important;box-shadow:none!important;background:var(--ds-card)!important;border-radius:14px!important;padding:12px 14px 14px!important}
+html.nr-client .qsx .artf-th{height:140px;border-radius:8px;background:var(--ds-fill) center top/cover no-repeat;margin:0 0 4px}
+html.nr-client .qsx .artf-card .artf-top{display:none}
+html.nr-client .qsx .artf-grp-arrow,html.nr-client .qsx .artf-grp-cnt{display:none!important}
+html.nr-client .qsx .artf-name{font-size:var(--ds-fs-heading)!important}
+@media (max-width:760px){ html.nr-client .qsx .artf-grid{grid-template-columns:1fr!important} html.nr-client .qsx .artf-th{height:160px} }
+</style>
+<script id="qs-lap">
+/* qs-lap (Gilles, 17 Nov 2026): two things CSS cannot do in the client view. The roadmap's Expand/Collapse buttons move
+   into its legend row, so the page has no row of its own for them. And every text is checked against what sits behind it:
+   below 4.5:1 (3:1 for 18px, or 14px bold) its colour is moved towards navy (or white on a dark ground) until it passes. */
+(function(){
+function rgb(s){ var m=String(s).match(/[\d.]+/g); return m?m.map(Number):[0,0,0]; }
+function lum(c){ var a=c.slice(0,3).map(function(v){ v/=255; return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4); }); return .2126*a[0]+.7152*a[1]+.0722*a[2]; }
+function cr(a,b){ var x=lum(a),y=lum(b); return (Math.max(x,y)+.05)/(Math.min(x,y)+.05); }
+function bgOf(e){ while(e&&e.nodeType===1){ var c=rgb(getComputedStyle(e).backgroundColor); if(c.length<4||c[3]>.5) return c.slice(0,3); e=e.parentElement; } return [255,255,255]; }
+function mix(a,b,t){ return [0,1,2].map(function(i){ return Math.round(a[i]+(b[i]-a[i])*t); }); }
+function fix(root){ (root||document).querySelectorAll('#page *').forEach(function(e){ if(e.__cx) return;
+  var own=false; for(var n=e.firstChild;n;n=n.nextSibling){ if(n.nodeType===3&&n.textContent.trim()){ own=true; break; } } if(!own) return;
+  var r=e.getBoundingClientRect(); if(!r.width) return; e.__cx=1;
+  var cs=getComputedStyle(e), svg=e instanceof SVGElement, fg=rgb(svg?cs.fill:cs.color); if(fg.length>3&&fg[3]<1) fg=mix(bgOf(e),fg,fg[3]);
+  if(svg&&lum(fg)>.7) return;
+  var bg=bgOf(svg?e.ownerSVGElement:e), fs=parseFloat(cs.fontSize)*(svg&&e.ownerSVGElement&&e.ownerSVGElement.viewBox.baseVal.width?e.ownerSVGElement.getBoundingClientRect().width/e.ownerSVGElement.viewBox.baseVal.width:1);
+  var need=(fs>=18||(fs>=14&&+cs.fontWeight>=700))?3:4.5;
+  if(!svg&&+cs.opacity<1&&+cs.opacity>.3) e.style.opacity='1';
+  if(cr(fg,bg)>=need) return;
+  var to=lum(bg)>.4?[15,43,82]:[255,255,255], c=fg;
+  for(var t=.1;t<=1.001;t+=.1){ c=mix(fg,to,t); if(cr(c,bg)>=need) break; }
+  _set(e,svg?'fill':'color','rgb('+c.join(',')+')'); }); }
+function legend(){ var r=document.getElementById('page-roadmap'); if(!r) return; var b=r.querySelector('.dd-section .fchip'); if(!b) return;
+  var grp=b.parentElement, lg=r.querySelector('.tt-legend'); if(!lg||grp.classList.contains('qs-lg-btns')) return;
+  var row=grp.parentElement, sec=lg.parentElement, eb=sec&&sec.querySelector(':scope > .eyebrow'); if(eb) eb.style.display='none';
+  grp.classList.add('qs-lg-btns'); lg.style.display='flex'; lg.style.alignItems='center';  lg.appendChild(grp); [].forEach.call(sec.children,function(c){ if(c!==lg&&!c.textContent.trim()&&!c.querySelector('canvas,table')&&c.offsetHeight<40) c.style.display='none'; }); var pg=document.getElementById('page'); if(pg){ var d=Math.round(pg.getBoundingClientRect().top+20-lg.getBoundingClientRect().top); lg.style.marginTop=(parseFloat(getComputedStyle(lg).marginTop)+d)+'px'; } }
+var FX=[], th=''; var _set=function(e,p,v){ e.style.setProperty(p,v,'important'); FX.push([e,p]); };
+function themeKey(){ var d=document.documentElement; return d.className.indexOf('dark')>=0||d.getAttribute('data-theme')==='dark'?'d':'l'; }
+var tm; function soon(){ clearTimeout(tm); tm=setTimeout(function(){ if(!window.NR_CLIENT_VIEW) return; var k=themeKey(); if(k!==th){ th=k; FX.forEach(function(x){ x[0].style.removeProperty(x[1]); x[0].__cx=0; }); FX=[];
+  document.querySelectorAll('#page *').forEach(function(e){ e.__cx=0; }); } try{ legend(); }catch(e){} try{ fix(); }catch(e){} },120); }
+new MutationObserver(soon).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['class','data-theme']});
+window.addEventListener('resize',soon); soon();
 })();
 </script>
 <script id="find-client">
