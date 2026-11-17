@@ -5407,7 +5407,7 @@ table.tteams .tt-h2{display:none}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
 })();
 </script>
-<script>window.__NR_FOLDER_BUILD__={"id": "northwind", "builtAt": "2026-11-17 17:39"};</script>
+<script>window.__NR_FOLDER_BUILD__={"id": "northwind", "builtAt": "2026-11-17 18:26"};</script>
 <script>window.__NR_VIEW__='client';</script>
 </head>
 <body>
@@ -11222,12 +11222,16 @@ function analysesPage(t){
   }).join('');
   // Team-wide & baseline, run once per team: baselining (MAE, OTE) + cross-dimension registers.
   // MAE is the Baseline Activity Map already built into the dashboard, so it's produced and opens that tab.
+  const BI=['mae','ote-waterfall','org-baseline'];
+  const prodOf=(i,dept)=>rows.find(r=>r.instrument===i&&r.status==='produced')||(dept?(ARTIFACTS.artifacts||[]).find(r=>r.instrument===i&&r.status==='produced'):null);
+  const bi=(i,label,by,dept,fb)=>{ const r=t.id==='ch'?null:prodOf(i,dept);
+    return r?Object.assign({},r,{label,team:t.id}):Object.assign({ instrument:i, label, producedBy:by, status:'planned', producedAt:null, team:t.id, pstat:'live' },fb||{}); };
   const baseInstr=[
-    { instrument:'mae', label:'Activity map (MAE)', producedBy:'mae-builder', status:'produced', openTab:'baseline', producedAt:'2026-06-27', team:t.id, pstat:'live' },
-    { instrument:'ote-waterfall', label:'OTE, Overall Team Efficiency', producedBy:'ote-waterfall-builder', status:t.id==='ch'?'produced':'planned', producedAt:t.id==='ch'?'5 Sep 2026':null, team:t.id, pstat:'live' },
-    { instrument:'org-baseline', label:'Org baseline', producedBy:'org-baseline-builder', status:t.id==='ch'?'produced':'planned', producedAt:t.id==='ch'?'4 Sep 2026':null, team:t.id, pstat:'live' }
+    bi('mae','Activity map (MAE)','mae-builder',false,{ status:'produced', openTab:'baseline' }),
+    bi('ote-waterfall','OTE, Overall Team Efficiency','ote-waterfall-builder',false,t.id==='ch'?{ status:'produced', producedAt:'5 Sep 2026' }:null),
+    bi('org-baseline','Org baseline','org-baseline-builder',true,t.id==='ch'?{ status:'produced', producedAt:'4 Sep 2026' }:null)
   ];
-  const twAll=baseInstr.concat(byLens['team']||[]);
+  const twAll=baseInstr.concat((byLens['baseline']||[]).filter(r=>!BI.includes(r.instrument)),byLens['team']||[]);
   const twGroup=twAll.length?`<div class="artf-group">
       <div class="artf-grp-head">
         <div class="artf-grp-dim" style="--dc:#5B4B8A;cursor:default;">
@@ -11238,8 +11242,9 @@ function analysesPage(t){
       </div>
       <div class="artf-grid">${twAll.map(artifactCard).join('')}</div>
     </div>`:'';
-  const totalCnt=rows.length+baseInstr.length;
-  const prodCnt=prod+baseInstr.filter(r=>r.status==='produced').length;
+  const shown=rows.filter(r=>DIMS.some(d=>d.key===r.lens)).concat(twAll);
+  const totalCnt=shown.length;
+  const prodCnt=shown.filter(r=>r.status==='produced').length;
   return `<div class="dd-section"><div class="eyebrow qs-dup">Analyses · evidence</div>
     <div class="artf-head qs-note">The specific instruments run on each dimension, the evidence behind the readiness scores. <b>${prodCnt}</b> of ${totalCnt} produced. Each dimension links up to its <button class="artf-inline-link" onclick="QS.setTeamSub('diagnostic')">Lean maturity overview</button>; produced analyses open as a standalone view.</div>
     ${groups}${twGroup}</div>`;
@@ -14714,33 +14719,35 @@ function benModel(){
   let c=0; const rate=months.map(m=>at(m)), cum=rate.map(v=>(c+=v/12));
   let pay=null; for(let i=0;i<months.length;i++){ if(cum[i]>=impl){ pay=months[i]; break; } }
   const cumAt=m=>{ const i=months.indexOf(m); return i<0?null:cum[i]; };
-  return { all, val, at, run, fte, impl, cpf, first, last, start, months, rate, cum, pay, cumAt };
+  /* actual delivery: the month an initiative really went live and the FTE it really released (timeline.actualLive,
+     realisedFte), drawn up to today next to the plan (Gilles, 17 Nov evening) */
+  const now=new Date(), today=now.getFullYear()*12+now.getMonth();
+  const done=all.filter(x=>tlNum(x.o.actualLive)!=null), hasAct=done.length>0;
+  const aval=x=>(+x.o.realisedFte||0)*cpf*rr, actAt=m=>done.filter(x=>tlNum(x.o.actualLive)<=m).reduce((s,x)=>s+aval(x),0);
+  const due=all.filter(x=>x.l<=today), liveDue=due.filter(x=>tlNum(x.o.actualLive)!=null&&tlNum(x.o.actualLive)<=today);
+  return { all, val, at, run, fte, impl, cpf, first, last, start, months, rate, cum, pay, cumAt, today, hasAct, actAt, due, liveDue };
 }
 const benFmt=v=>v>=1e6?`€${(v/1e6).toFixed(1)}M`:v>=1e3?`€${Math.round(v/1e3)}k`:`€${Math.round(v)}`;
-let benMode='y';
-function benSet(m){ benMode=m; renderBenefits(); }
 function renderBenefits(elOpt){
   const el=elOpt||document.getElementById('page-benefits'); if(!el) return;
   const B=benModel(); if(!B){ el.innerHTML=NRC_EMPTY_INI; return; }
   const yA=Math.floor(B.last/12), yB=yA+1;
-  const F=benMode==='y'
-    ? [[benFmt(B.run),'','a year, once live · from '+tlLab(B.last),1],['~'+B.fte.toFixed(0),'FTE','freed up · at '+benFmt(B.cpf)+' per FTE',0],[tlMonth(B.first),String(Math.floor(B.first/12)),'first saving',0]]
-    : [[benFmt(B.cumAt(yA*12+11)||0),'','saved by end '+yA,1],[benFmt(B.cumAt(yB*12+11)||0),'','saved by end '+yB,0],[B.pay!=null?'~'+(B.pay-B.start+1):'—',B.pay!=null?'months':'','to pay back the '+benFmt(B.impl)+' build',0]];
+  const F=B.hasAct
+    ? [[benFmt(B.actAt(B.today)),'','a year today · plan '+benFmt(B.at(B.today)),1],[String(B.liveDue.length),'of '+B.due.length,'initiatives live that should be',0],[benFmt(B.run),'','a year once all are live · '+tlLab(B.last),0]]
+    : [[benFmt(B.run),'','a year, once live · from '+tlLab(B.last),1],['~'+B.fte.toFixed(0),'FTE','freed up · at '+benFmt(B.cpf)+' per FTE',0],[tlMonth(B.first),String(Math.floor(B.first/12)),'first saving',0]];
   const types=TTYPE_ORDER.filter(k=>B.all.some(x=>x.k===k));
   const barsOf=rows=>{ const mx=Math.max(1,...rows.map(r=>r.v)); return `<div class="bn-bars">${rows.map(r=>`<div class="r"><span>${r.dot?`<i class="rtl-dot" style="background:${r.dot}"></i>`:''}${tlEsc(r.l)}</span><div class="tr"><i style="width:${(r.v/mx*100).toFixed(1)}%;background:${r.dot||'#006843'}"></i></div><b>${benFmt(r.v)}</b></div>`).join('')}</div>`; };
   const byType=types.map(k=>({ l:TTYPES[k].label, dot:TTYPES[k].dot, v:B.all.filter(x=>x.k===k).reduce((s,x)=>s+B.val(x),0) })).sort((a,b)=>b.v-a.v);
   const inDiv={}; const byDiv=DIVISIONS.map(d=>{ d.teams.forEach(id=>inDiv[id]=1); return { l:d.name, v:B.all.filter(x=>d.teams.includes(x.t.id)).reduce((s,x)=>s+B.val(x),0) }; });
   const other=B.all.filter(x=>!inDiv[x.t.id]).reduce((s,x)=>s+B.val(x),0); if(other) byDiv.push({ l:'Other teams', v:other });
   el.innerHTML=`<div class="bnx"><div class="dd6">
-      <div class="card span4 ccd"><div class="ccd-h"><span class="ccd-t">${NRC_ICO.euro}Planned benefit materialization</span>
-        <span class="nrseg" data-seg="ben"><button class="${benMode==='y'?'on':''}" data-v="y">A year</button><button class="${benMode==='c'?'on':''}" data-v="c">Saved so far</button></span></div>
+      <div class="card span4 ccd"><div class="ccd-h"><span class="ccd-t">${NRC_ICO.euro}Planned benefit materialization</span></div>
         <div class="ccd-figs">${F.map(f=>`<div><div class="ccd-v${f[3]?' g':''}">${f[0]}${f[1]?`<small>${f[1]}</small>`:''}</div><div class="ccd-l">${f[2]}</div></div>`).join('')}</div>
         <div class="ccd-chart" id="ben-chart"></div></div>
       <div class="card span2"><div class="ch"><div class="ct">Where the value sits</div></div>
         <div class="bn-h">By type of change</div>${barsOf(byType)}
         ${byDiv.filter(d=>d.v).length>1?`<div class="bn-h">By division</div>${barsOf(byDiv.filter(d=>d.v).sort((a,b)=>b.v-a.v))}`:''}</div>
     </div><div class="dd6">${benStarts(B)}</div></div>`;
-  el.querySelectorAll('[data-seg="ben"] button').forEach(b=>b.onclick=()=>benSet(b.getAttribute('data-v')));
   benChart(B); benStartsWire(el,B);
 }
 /* when each saving starts: one row per initiative in go-live order (build bar, dot at go-live, light tail while it saves),
@@ -14771,25 +14778,35 @@ function benStartsWire(el,B){
     r.onclick=()=>{ bub.style.display='none'; try{ oppDetail(x.o); }catch(e){} }; });
 }
 /* the chart of the chart card: drawn at its size on screen, named where the line ends, three dates on the axis */
+/* the chart card: the plan as a step line to the end; once delivery is tracked, the actual saving as a second step line
+   that stops at today. Both are euros a year, so they share one axis (Gilles, 17 Nov evening) */
 function benChart(B){
   const host=document.getElementById('ben-chart'); if(!host) return;
-  const W=Math.max(320,host.clientWidth), H=Math.max(200,host.clientHeight||240), pr=96, pb=26, pt=10;
-  const data=benMode==='y'?B.rate:B.cum, n=data.length, mx=Math.max(1,...data)*1.08;
+  const W=Math.max(320,host.clientWidth), H=Math.max(200,host.clientHeight||240), pr=64, pb=26, pt=18;
+  const n=B.months.length, ti=B.months.indexOf(B.today), act=B.hasAct&&ti>=0?B.months.slice(0,ti+1).map(m=>B.actAt(m)):[];
+  const mx=Math.max(1,...B.rate,...act)*1.08;
   const X=i=>2+i/(n-1)*(W-pr-4), Y=v=>pt+(H-pb-pt)*(1-v/mx);
-  let d=''; data.forEach((v,i)=>{ d+=i?(benMode==='y'?`H${X(i).toFixed(1)}V${Y(v).toFixed(1)}`:`L${X(i).toFixed(1)},${Y(v).toFixed(1)}`):`M${X(0).toFixed(1)},${Y(v).toFixed(1)}`; });
+  const step=d=>{ let p=''; d.forEach((v,i)=>{ p+=i?`H${X(i).toFixed(1)}V${Y(v).toFixed(1)}`:`M${X(0).toFixed(1)},${Y(v).toFixed(1)}`; }); return p; };
+  const plan=step(B.rate), A=act.length?step(act):'';
   const yrs=[]; B.months.forEach((m,i)=>{ if(m%12===0) yrs.push(i); });
   const ticks=[0, yrs[Math.floor(yrs.length/2)]||Math.floor(n/2), n-1];
+  const G='#006843', P=act.length?'#8C919A':G;
   host.innerHTML=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-    <path d="${d} V${H-pb} H${X(0)} Z" fill="#006843" opacity=".08"/><path d="${d}" fill="none" stroke="#006843" stroke-width="2" stroke-linejoin="round"/>
-    <text x="${X(n-1)+8}" y="${Y(data[n-1])+4}" font-size="12.5" font-weight="600" fill="#006843">${benMode==='y'?'A year':'Saved so far'}</text>
+    ${act.length?`<path d="${A} V${H-pb} H${X(0)} Z" fill="${G}" opacity=".1"/>`:`<path d="${plan} V${H-pb} H${X(0)} Z" fill="${G}" opacity=".08"/>`}
+    <path d="${plan}" fill="none" stroke="${P}" stroke-width="${act.length?1.6:2}"${act.length?' stroke-dasharray="5 4"':''} stroke-linejoin="round"/>
+    <text x="${X(n-1)+8}" y="${Y(B.rate[n-1])+4}" font-size="12.5" font-weight="600" fill="${act.length?'#5B6270':G}">Plan</text>
+    ${act.length?`<path d="${A}" fill="none" stroke="${G}" stroke-width="2.4" stroke-linejoin="round"/>
+      <circle cx="${X(ti)}" cy="${Y(act[ti])}" r="4" fill="${G}"/>
+      <text x="${X(ti)+8}" y="${Y(act[ti])+4}" font-size="12.5" font-weight="600" fill="${G}">Actual</text>`:''}
+    ${ti>=0?`<line x1="${X(ti)}" x2="${X(ti)}" y1="${pt}" y2="${H-pb}" stroke="rgba(15,43,82,.3)"/><text x="${X(ti)}" y="${pt-6}" font-size="11" fill="#5B6270" text-anchor="middle">Today</text>`:''}
     ${ticks.map((i,k)=>`<text x="${X(i)}" y="${H-7}" font-size="11" fill="#8C919A" text-anchor="${k===0?'start':k===2?'end':'middle'}">${tlLab(B.months[i])}</text>`).join('')}
     <line class="ccd-hl" x1="0" x2="0" y1="${pt}" y2="${H-pb}" stroke="rgba(15,43,82,.25)" stroke-dasharray="3 3" style="display:none"/>
-    <circle class="ccd-hd" r="3.5" fill="#006843" style="display:none"/></svg>`;
+    <circle class="ccd-hd" r="3.5" fill="${P}" style="display:none"/></svg>`;
   const svg=host.querySelector('svg'), hl=svg.querySelector('.ccd-hl'), hd=svg.querySelector('.ccd-hd'), bub=tlBubble();
   svg.onmousemove=e=>{ const r=svg.getBoundingClientRect(); let i=Math.round((e.clientX-r.left-2)/(W-pr-4)*(n-1)); i=Math.max(0,Math.min(n-1,i));
-    hl.setAttribute('x1',X(i)); hl.setAttribute('x2',X(i)); hl.style.display=''; hd.setAttribute('cx',X(i)); hd.setAttribute('cy',Y(data[i])); hd.style.display='';
-    const live=B.all.filter(x=>x.l<=B.months[i]).length;
-    bub.innerHTML=`<b>${tlLab(B.months[i])}</b><br>${benFmt(data[i])}${benMode==='y'?' a year':' saved'}<br><span>${live} of ${B.all.length} initiatives live</span>`; bub.style.display='block';
+    hl.setAttribute('x1',X(i)); hl.setAttribute('x2',X(i)); hl.style.display=''; hd.setAttribute('cx',X(i)); hd.setAttribute('cy',Y(B.rate[i])); hd.style.display='';
+    const m=B.months[i], live=B.all.filter(x=>x.l<=m).length;
+    bub.innerHTML=`<b>${tlLab(m)}</b><br>Plan ${benFmt(B.rate[i])} a year`+(act.length&&i<=ti?`<br>Actual ${benFmt(act[i])} a year`:'')+`<br><span>${live} of ${B.all.length} initiatives planned live</span>`; bub.style.display='block';
     const w=bub.offsetWidth, h=bub.offsetHeight; bub.style.left=Math.max(8,Math.min(innerWidth-w-8,e.clientX-w/2))+'px'; bub.style.top=(e.clientY-h-14)+'px'; };
   svg.onmouseleave=()=>{ hl.style.display='none'; hd.style.display='none'; bub.style.display='none'; };
 }
@@ -16749,6 +16766,8 @@ html.nr-client .qsx .bns-ax .bns-v{font-size:var(--ds-fs-label);color:var(--ds-t
 html.nr-client .qsx .bns-tot{border-top:1px solid rgba(15,43,82,.1);border-radius:0;margin-top:6px;padding-top:8px;min-height:36px}
 html.nr-client .qsx .bns-tot .bns-n span{font-weight:600}
 html.nr-client .qsx .bns-tot b{font-size:var(--ds-fs-heading);font-weight:700;color:#006843;padding-left:5px}
+/* a team's tabs open on their content: no KPI cards above it (Gilles, 17 Nov evening); the Initiatives' figures stay */
+html.nr-client .qsx #page-teams .kpi-row:not(.nrc-okpi),html.nr-client .qsx #page-teams .kpi-boxes:not(.nrc-okpi .kpi-boxes){display:none!important}
 </style>
 <style id="qs-phone-css">
 /* qs-phone-css (Gilles, 16 Nov 2026): the client view shows numbers and visuals, not text. On the laptop the callout
