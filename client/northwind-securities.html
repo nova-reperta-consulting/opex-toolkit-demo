@@ -5407,7 +5407,7 @@ table.tteams .tt-h2{display:none}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
 })();
 </script>
-<script>window.__NR_FOLDER_BUILD__={"id": "northwind-securities", "builtAt": "2026-11-17 13:24"};</script>
+<script>window.__NR_FOLDER_BUILD__={"id": "northwind-securities", "builtAt": "2026-11-17 15:18"};</script>
 <script>window.__NR_VIEW__='client';</script>
 </head>
 <body>
@@ -12830,7 +12830,7 @@ const _norm=s=>(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
 function actMatch(t,name){ const n=_norm(name); return t.activities.find(a=>{ const an=_norm(a.name); return an===n||an.includes(n)||n.includes(an); })||null; }
 function flashBaselineAll(){ if(teamSub!=='baseline') setTeamSub('baseline'); const rows=document.querySelectorAll('[data-base-act]'); if(rows[0]) rows[0].scrollIntoView({behavior:'smooth',block:'center'}); rows.forEach(flash); }
 function jumpToBaseline(name){ if(teamSub!=='baseline') setTeamSub('baseline'); const el=document.querySelector('[data-base-act="'+CSS.escape(name)+'"]'); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); flash(el); } }
-function jumpToOpp(name){ if(teamSub!=='opportunities') setTeamSub('opportunities'); const el=document.querySelector('[data-opp-act="'+CSS.escape(name)+'"]'); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); flash(el); } }
+function jumpToOpp(name){ if(window.NR_CLIENT_VIEW){ const A=allOpps(); const o=A.find(x=>x.activity===name&&x.teamId===activeTeam)||A.find(x=>x.teamId===activeTeam&&x.activity.startsWith(name))||A.find(x=>x.activity===name); if(o) oppDetail(o); return; } if(teamSub!=='opportunities') setTeamSub('opportunities'); const el=document.querySelector('[data-opp-act="'+CSS.escape(name)+'"]'); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); flash(el); } }
 function sevColor(v){ const s=(v||'').toLowerCase(); const m=s.match(/(\d+)\s*%/); if((m&&+m[1]>=15)||/\b(high|slow|unmanaged|none|minimal|poor|low)\b/.test(s)) return 'var(--red)'; if(m||/moderate|partial/.test(s)) return 'var(--amber)'; return 'var(--muted)'; }
 
 function renderTeams(){
@@ -14790,11 +14790,11 @@ function summaryCards(){
   const rs=sc.map(t=>Math.round(t.readinessScore||0)), rmx=Math.max(...rs);
   const mbars=`<svg width="${sc.length*13}" height="36">${rs.map((v,i)=>`<rect x="${i*13}" y="${34-Math.max(2,v/100*32)}" width="8" height="${Math.max(2,v/100*32)}" rx="2" fill="#1D7044" opacity="${v===rmx?1:.35}"/>`).join('')}</svg>`;
   let spark=''; if(B){ const d=B.rate, mx=Math.max(1,...d), w=88, h=34; spark=`<svg width="${w}" height="${h}"><polyline fill="none" stroke="#006843" stroke-width="1.8" stroke-linejoin="round" points="${d.map((v,i)=>`${(2+i/(d.length-1)*(w-6)).toFixed(1)},${(h-3-v/mx*(h-8)).toFixed(1)}`).join(' ')}"/><circle cx="${w-4}" cy="${(h-3-d[d.length-1]/mx*(h-8)).toFixed(1)}" r="2.6" fill="#006843"/></svg>`; }
-  const card=(pg,c,ico,title,v,u,st,stc,vis)=>`<button class="nsc" onclick="go('${pg}')"><span class="nsc-h" style="color:${c}">${ico}${title}<span class="nsc-ch">${NRC_ICO.chev}</span></span>
+  const card=(pg,c,ico,title,v,u,st,stc,vis)=>`<button class="nsc" onclick="${pg==='@wait'?'QS.goWaiting()':`go('${pg}')`}"><span class="nsc-h" style="color:${c}">${ico}${title}<span class="nsc-ch">${NRC_ICO.chev}</span></span>
     <span class="nsc-b"><span><span class="nsc-v">${v}${u?`<small>${u}</small>`:''}</span><span class="nsc-s" style="color:${stc}">${st}</span></span>${vis}</span></button>`;
   return `<div class="nsc-row">`
-    +card('cteams','#2A4D8F',NRC_ICO.mat,'Lean maturity',avg.toFixed(1),'/ 5',`${WORD} · ${tlEsc(low.name)} lowest`,avg<2.6?'#A85A0C':'var(--ds-text-2)',ring(avg/5,'#2A4D8F'))
-    +card('cchain','#1D7044',NRC_ICO.ai,'AI readiness',String(ready),`of ${sc.length} teams`,ready<sc.length?`${weak.l} holds the rest back`:'Every team is ready',ready<sc.length?'#A85A0C':'var(--ds-text-2)',mbars)
+    +card('cchain','#2A4D8F',NRC_ICO.mat,'Lean maturity',avg.toFixed(1),'/ 5',`${WORD} · ${tlEsc(low.name)} lowest`,avg<2.6?'#A85A0C':'var(--ds-text-2)',ring(avg/5,'#2A4D8F'))
+    +card('@wait','#1D7044',NRC_ICO.ai,'AI readiness',String(ready),`of ${sc.length} teams`,ready<sc.length?`${weak.l} holds the rest back`:'Every team is ready',ready<sc.length?'#A85A0C':'var(--ds-text-2)',mbars)
     +card('copps','#006843',NRC_ICO.bolt,'Potential','~'+pot.toFixed(0),'FTE',`${Math.round(pot/Math.max(1,scope)*100)}% of the ${scope} in scope`,'var(--ds-text-2)',ring(pot/Math.max(1,scope),'#006843'))
     +(B?card('cben','#006843',NRC_ICO.euro,'Benefits',benFmt(B.run),'a year',`From ${tlLab(B.last)}`,'var(--ds-text-2)',spark):'')
     +`</div>`;
@@ -14819,6 +14819,10 @@ function vcCardClient(t,i,r,go,ov,fte){
     +`<div class="vcx-ss"><div class="vcx-s"><span>Lean maturity</span>${harvey(Math.max(0,Math.min(1,ov/5)))}<em>${ov.toFixed(1)}</em></div>`
     +`<div class="vcx-s"><span>AI readiness</span>${harvey(Math.max(0,Math.min(1,rs/100)))}<em>${rs}</em></div></div></div>`;
 }
+/* open one initiative by team and name (the ranked bars, the activity table's links) */
+function oppOpen(tid,name){ try{ name=decodeURIComponent(name); }catch(e){} const A=allOpps(); const o=A.find(x=>x.teamId===tid&&x.activity===name)||A.find(x=>x.activity===name); if(o) oppDetail(o); }
+/* the Summary's AI readiness card: the initiatives that wait, and on what */
+function goWaiting(){ window.__nrcReady='fix'; try{ go('copps'); }catch(e){} }
 /* a team's key initiatives in the client view: ranked bars, biggest first */
 function kiRanked(t,grps){
   const sch={}; try{ oppSchedule(t.id).forEach(x=>sch[x.o.activity]=x); }catch(e){}
@@ -14826,7 +14830,7 @@ function kiRanked(t,grps){
   const mx=Math.max(.1,...items.map(i=>i.fte));
   const types=grps.slice().sort((a,b)=>b.fte-a.fte);
   return `<div class="kir">${items.map(it=>{ const x=sch[it.name], w=(it.fte/mx*68).toFixed(1);
-      return `<div class="kir-r" onclick="QS.jumpToOpp('${apEsc(it.name)}')" title="Open this initiative"><div class="kir-t">${tlEsc(it.name)}<span>${tlEsc(it.lever)}${x?' · live '+tlLab(x.l):''}</span></div>`
+      return `<div class="kir-r" onclick="QS.oppOpen('${t.id}','${encodeURIComponent(it.name||'')}')" title="Open this initiative"><div class="kir-t">${tlEsc(it.name)}<span>${tlEsc(it.lever)}${x?' · live '+tlLab(x.l):''}</span></div>`
         +`<div class="kir-b"><i style="width:${w}%;background:${it.dot}"></i><b style="left:calc(${w}% + 8px)">${it.fte.toFixed(1)}</b></div></div>`; }).join('')}</div>`
     +`<div class="kir-leg">${types.map(g=>`<span><i class="rtl-dot" style="background:${g.dot}"></i>${g.label}</span>`).join('')}</div>`;
 }
@@ -14860,9 +14864,10 @@ function clientType(){ if(!window.NR_CLIENT_VIEW) return; const pg=document.getE
   /* the initiatives' filter row: one segmented control for readiness, a search field and the count */
   const fb=pg.querySelector('#page-opportunities .filterbar');
   if(fb&&!fb.querySelector('.nrseg')){ fb.classList.add('nrc-fb');
-    fb.insertAdjacentHTML('afterbegin',`<span class="nrseg" data-seg="ready"><button class="on" data-v="all">All</button><button data-v="act">${NRC_ICO.ready}Ready now</button><button data-v="fix">${NRC_ICO.wait}Waiting</button></span>`
+    const r0=window.__nrcReady||'all'; window.__nrcReady=null;
+    fb.insertAdjacentHTML('afterbegin',`<span class="nrseg" data-seg="ready"><button class="${r0==='all'?'on':''}" data-v="all">All</button><button class="${r0==='act'?'on':''}" data-v="act">${NRC_ICO.ready}Ready now</button><button class="${r0==='fix'?'on':''}" data-v="fix">${NRC_ICO.wait}Waiting</button></span>`
       +`<label class="nrc-search">${NRC_ICO.search}<input type="search" placeholder="Search by initiative, team or lever" aria-label="Search the initiatives"></label><span class="nrc-lv" hidden></span><span class="nrc-cnt"></span>`);
-    oppFilters.ready='all'; oppFilters.q=''; oppFilters.actOnly=false; oppSort.key='fte'; oppSort.dir=-1;
+    oppFilters.ready=r0; oppFilters.q=''; oppFilters.actOnly=false; oppSort.key='fte'; oppSort.dir=-1;
     fb.querySelectorAll('[data-seg="ready"] button').forEach(b=>b.onclick=()=>{ fb.querySelectorAll('[data-seg="ready"] button').forEach(x=>x.classList.toggle('on',x===b)); oppFilters.ready=b.getAttribute('data-v'); renderOppTable(); });
     const inp=fb.querySelector('.nrc-search input'); let qt; inp.oninput=()=>{ clearTimeout(qt); qt=setTimeout(()=>{ oppFilters.q=inp.value.trim().toLowerCase(); renderOppTable(); },120); };
     renderOppTable(); }
@@ -14895,7 +14900,7 @@ function clientType(){ if(!window.NR_CLIENT_VIEW) return; const pg=document.getE
 (function(){ let tm; const soon=()=>{ clearTimeout(tm); tm=setTimeout(()=>{ try{ clientType(); }catch(e){} },150); };
   try{ new MutationObserver(soon).observe(document.documentElement,{childList:true,subtree:true}); window.addEventListener('resize',()=>{ document.querySelectorAll('svg.nr-wf').forEach(s=>s.__k=0); soon(); }); }catch(e){} })();
 
-return {oppSchedule, renderTimeline, renderBenefits, tlSetMode, tlToggle, tlSetAll, actIneff, actMatch, actOpp, addMember, aiReadinessVerdict, analysesPage, apEsc, applyDivState, applyEngagementConfig, applyMethodology, applyPrivate, applyTeamStatus, approachInstruments, artifactCard, assignOwner, boot, buildMatrix, buildOrgChart, buildTeamMatrix, cellDetail, cfgActive, clearAllOverrides, closeApArtifact, closeDataMaturity, closePanel, closePerfWheel, closeTeamBarometer, curOpt, cycleOpt, defaultAssign, depthOf, deriveHorizon, diagSide, diagSideAvg, dimAverages, dimRadarTip, dmEsc, domType, dotJitter, effInstruments, ensureTip, exportData, flash, flashBaselineAll, getAssumptions, gotoTeam, harvey, headlineLever, heatDetail, hideTip, jumpToBaseline, jumpToOpp, leverChip, leverWhy, moveTip, nav, openApArtifact, openCellEditor, openDataMaturity, openPanel, openPerfWheel, openTeamBarometer, oppDetail, oppExplain, oppPotential, oppReadiness, optCellInner, pickTeam, positionTip, potColor, potText, potentialPage, progDragEnd, progDragLeave, progDragOver, progDragStart, progDrop, progNav, progStats, pwAdapt, pwAggRag, pwEsc, pwMean, pwSegRag, pwTemplateSrcdoc, radarCfg, radarExternal, rdyChartHTML, rdyDimDetail, rdyGateMap, rdyGateStatus, rdyOpps, rdySubInsight, readinessBinding, readinessGates, readinessModel, readinessPage, refreshOpt, removeMember, renderConfigurator, renderDiagRadar, renderDimDetail, renderEngagement, renderExport, renderHeatmap, renderHowTo, renderLevers, renderOppTable, renderOpportunities, renderPage, renderProgAnalyses, renderProgKanban, renderProgOverview, renderProgPlanning, renderProgress, renderRoadmap, renderScoring, renderSummary, renderTeamContent, renderTeamOppRows, renderTeams, renderValueChain, renderValueStake, renderValueStake__deprecated, renderWeightSliders, openTeamAnalyses, resetApproachDefault, resetOpt, resetTeamStages, rmBasePeriod, rmFirstPeriod, roadSetAll, saveAssumptions, saveEngagementConfig, saveMethodology, saveOpt, saveTeamStatus, scoreColor, scoreRGB, scoreText, selectDim, selectRdyDim, selectSummaryTeam, selectTeam, setApproach, setCellDepth, setColDepth, setOppFilter, setOppLever, setOverride, setRoadGroup, setRowDepth, setTeamOppF, setTeamStage, setTeamSub, setVS, setWeightPreset, sevColor, shortInstr, showTip, showTipHTML, sortOpps, stepTeam, subAvg, subInsight, tbEsc, teamArtifacts, teamOptTotal, teamPanel, teamPeriods, teamPosture, teamRadarCfg, teamRoadmapHTML, toggleActOnly, toggleDark, toggleDiv, toggleInstrument, togglePrivate, toggleTeamMenu, txShare, updateAssumption, updateMember, updateProgBadge, updateWeight, valueWaterfall, vcTipHtml, vcWireTips, vsCompute, vsRecalc, vsSave, weightedOverall, wireReadinessTips, wireWaterfallTips, mount, get TEAMS(){return TEAMS;}, get activeTeamId(){return activeTeam;},
+return {oppOpen, goWaiting, oppSchedule, renderTimeline, renderBenefits, tlSetMode, tlToggle, tlSetAll, actIneff, actMatch, actOpp, addMember, aiReadinessVerdict, analysesPage, apEsc, applyDivState, applyEngagementConfig, applyMethodology, applyPrivate, applyTeamStatus, approachInstruments, artifactCard, assignOwner, boot, buildMatrix, buildOrgChart, buildTeamMatrix, cellDetail, cfgActive, clearAllOverrides, closeApArtifact, closeDataMaturity, closePanel, closePerfWheel, closeTeamBarometer, curOpt, cycleOpt, defaultAssign, depthOf, deriveHorizon, diagSide, diagSideAvg, dimAverages, dimRadarTip, dmEsc, domType, dotJitter, effInstruments, ensureTip, exportData, flash, flashBaselineAll, getAssumptions, gotoTeam, harvey, headlineLever, heatDetail, hideTip, jumpToBaseline, jumpToOpp, leverChip, leverWhy, moveTip, nav, openApArtifact, openCellEditor, openDataMaturity, openPanel, openPerfWheel, openTeamBarometer, oppDetail, oppExplain, oppPotential, oppReadiness, optCellInner, pickTeam, positionTip, potColor, potText, potentialPage, progDragEnd, progDragLeave, progDragOver, progDragStart, progDrop, progNav, progStats, pwAdapt, pwAggRag, pwEsc, pwMean, pwSegRag, pwTemplateSrcdoc, radarCfg, radarExternal, rdyChartHTML, rdyDimDetail, rdyGateMap, rdyGateStatus, rdyOpps, rdySubInsight, readinessBinding, readinessGates, readinessModel, readinessPage, refreshOpt, removeMember, renderConfigurator, renderDiagRadar, renderDimDetail, renderEngagement, renderExport, renderHeatmap, renderHowTo, renderLevers, renderOppTable, renderOpportunities, renderPage, renderProgAnalyses, renderProgKanban, renderProgOverview, renderProgPlanning, renderProgress, renderRoadmap, renderScoring, renderSummary, renderTeamContent, renderTeamOppRows, renderTeams, renderValueChain, renderValueStake, renderValueStake__deprecated, renderWeightSliders, openTeamAnalyses, resetApproachDefault, resetOpt, resetTeamStages, rmBasePeriod, rmFirstPeriod, roadSetAll, saveAssumptions, saveEngagementConfig, saveMethodology, saveOpt, saveTeamStatus, scoreColor, scoreRGB, scoreText, selectDim, selectRdyDim, selectSummaryTeam, selectTeam, setApproach, setCellDepth, setColDepth, setOppFilter, setOppLever, setOverride, setRoadGroup, setRowDepth, setTeamOppF, setTeamStage, setTeamSub, setVS, setWeightPreset, sevColor, shortInstr, showTip, showTipHTML, sortOpps, stepTeam, subAvg, subInsight, tbEsc, teamArtifacts, teamOptTotal, teamPanel, teamPeriods, teamPosture, teamRadarCfg, teamRoadmapHTML, toggleActOnly, toggleDark, toggleDiv, toggleInstrument, togglePrivate, toggleTeamMenu, txShare, updateAssumption, updateMember, updateProgBadge, updateWeight, valueWaterfall, vcTipHtml, vcWireTips, vsCompute, vsRecalc, vsSave, weightedOverall, wireReadinessTips, wireWaterfallTips, mount, get TEAMS(){return TEAMS;}, get activeTeamId(){return activeTeam;},
   get DIVISIONS(){return DIVISIONS;}, STATUS_DOT, lev, STATUS_LABEL, leverChip};
 })();
 </script>
