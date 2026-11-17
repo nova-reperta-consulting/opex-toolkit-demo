@@ -5407,7 +5407,7 @@ table.tteams .tt-h2{display:none}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
 })();
 </script>
-<script>window.__NR_FOLDER_BUILD__={"id": "northwind", "builtAt": "2026-11-17 11:41"};</script>
+<script>window.__NR_FOLDER_BUILD__={"id": "northwind", "builtAt": "2026-11-17 12:00"};</script>
 <script>window.__NR_VIEW__='client';</script>
 </head>
 <body>
@@ -11788,14 +11788,13 @@ function buildOrgChart(){
     teams.forEach(t=>{ const ongoing=isOngoing(t); const ov=weightedOverall(t);
       const sChip = ongoing ? `<span class="oc-chip oc-pending">Ongoing</span>` : `<span class="oc-chip">${ov.toFixed(1)}<small>/5</small></span>`;
       const txt = ongoing ? '' : scoreText(ov);
-      const bg = ongoing ? '' : window.NR_CLIENT_VIEW ? ` style="background:${softTile(ov)};color:#1B2230;--chipbg:rgba(15,43,82,.10);"`
-        : ` style="background:${scoreColor(ov)};color:${txt};${txt==='#0F2B52'?'--chipbg:rgba(15,43,82,.13);':''}"`;
+      const bg = ongoing ? '' : ` style="background:${scoreColor(ov)};color:${txt};${txt==='#0F2B52'?'--chipbg:rgba(15,43,82,.13);':''}"`;
       tiles+=`<div class="oc-team${t.id===summarySel?' selected':''}${ongoing?' ongoing':''}" data-team="${t.id}"${bg}>
         <div class="oc-nm">${t.name}</div>
         <div class="oc-foot">${sChip}<span class="oc-chip fte">${t.fte} FTE</span></div>
       </div>`; });
     cols+=`<div class="oc-col">
-      <div class="oc-dept"><div class="dn"><span class="oc-dept-dot" style="background:${avg!==null?(window.NR_CLIENT_VIEW?softTile(avg):scoreColor(avg)):'var(--border-heavy)'};"></span>${div.name}</div><div class="dm">${teams.length} teams · ${avg!==null?'average '+avg.toFixed(1):'scoring pending'}</div></div>
+      <div class="oc-dept"><div class="dn"><span class="oc-dept-dot" style="background:${avg!==null?scoreColor(avg):'var(--border-heavy)'};"></span>${div.name}</div><div class="dm">${teams.length} teams · ${avg!==null?'average '+avg.toFixed(1):'scoring pending'}</div></div>
       <div class="oc-teams">${tiles}</div></div>`;
   });
   const busInset=(50/DIVISIONS.length).toFixed(2);
@@ -12061,7 +12060,7 @@ function renderOpportunities(){
           <th onclick="QS.sortOpps('lever')">Lever</th>
           <th onclick="QS.sortOpps('fte')">FTE impact</th>
           <th onclick="QS.sortOpps('readiness')">Readiness</th>
-          <th onclick="QS.sortOpps('horizon')">Horizon</th>
+          <th onclick="QS.sortOpps('horizon')">${window.NR_CLIENT_VIEW?'Go-live':'Horizon'}</th>
           <th>Why this lever</th>
         </tr></thead><tbody id="opp-tbody"></tbody></table></div>
       </div>
@@ -12122,7 +12121,18 @@ function renderOppTable(){
     return oppSort.dir*(va-vb);
   });
   const tb=$('#opp-tbody');
+  const CLV=!!window.NR_CLIENT_VIEW, LV={}; if(CLV){ try{ oppSchedule().forEach(x=>LV[x.t.id+'|'+x.o.activity]=x.l); }catch(e){} }
+  const GAP={ data:'data', proc:'process', mind:'mindset' };
+  const rdyTxt=(o,rm)=>{ if(rm.verdict==='act') return 'Ready now'; const s=(teamById(o.teamId)||{}).scores||{}; const need=o.lever==='auto'?['data','proc']:['data','mind'];
+    const g=need.filter(k=>(s[k]||0)<(k==='data'&&o.lever==='aienh'?2:3)).map(k=>GAP[k]); return 'Waits on '+(g.join(' and ')||'the foundation'); };
   tb.innerHTML=rows.map(o=>{ const rm=readinessModel(o);
+    if(CLV){ const l=LV[o.teamId+'|'+o.activity];
+      return `<tr style="cursor:pointer;" onclick='QS.oppDetail(${JSON.stringify(o).replace(/'/g,"&#39;")})'>
+      <td style="font-weight:600;">${o.team}</td><td style="min-width:175px;">${o.activity}</td>
+      <td><span class="lever-chip" style="background:${lev(o.lever).bg};color:${lev(o.lever).t}">${lev(o.lever).label}</span></td>
+      <td><span class="fte-range" style="color:var(--green);">${fmtFte(o.fte)}</span></td>
+      <td>${rm.verdict==='act'?'':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;color:#A85A0C;vertical-align:-1px;margin-right:5px"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>'}${rdyTxt(o,rm)}</td>
+      <td>${l!=null?tlLab(l):'—'}</td><td class="dg-ins"></td></tr>`; }
     return `<tr style="cursor:pointer;" onclick='QS.oppDetail(${JSON.stringify(o).replace(/'/g,"&#39;")})'>
       <td style="font-weight:600;">${o.team}</td>
       <td style="min-width:175px;"><span class="nature nat-${o.nature}" title="${o.nature==='R'?'Rule-based':o.nature==='S'?'Semi-structured':'Knowledge-driven'}" style="margin-right:8px;vertical-align:middle;">${o.nature}</span>${o.activity}</td>
@@ -12917,7 +12927,7 @@ function renderTeamContent(){
         </div>
         <div class="card span4" style="padding:0;overflow:hidden;display:flex;flex-direction:column;height:560px;">
           <div style="padding:15px 16px 4px;display:flex;align-items:baseline;justify-content:space-between;gap:10px;"><span><span class="ct">Scores &amp; key insights</span>
-            <span style="font-size:var(--fs-10);color:var(--muted-2);margin-left:6px;">select a dimension to inspect its sub-scores</span></span>
+            <span class="qs-hint" style="font-size:var(--fs-10);color:var(--muted-2);margin-left:6px;">select a dimension to inspect its sub-scores</span></span>
             <button class="ov-gobtn" onclick="QS.setTeamSub('analyses')">Analyses →</button></div>
           <div class="dim-pills" id="dim-pills">
             ${DIMS.map(d=>`<button class="dimf ${d.key===dimSel?'active':''}" data-dim="${d.key}" onclick="QS.selectDim('${d.key}')" style="--dc:${d.color};">
@@ -13107,11 +13117,9 @@ function renderTeamContent(){
   const ovGrid=`<div class="dd-section"><div class="dd6">${waterfallCard}${keyPrioCard}${workloadCard}${radarCard}</div></div>`;
   const pages={ overview:ovGrid, baseline:kpiBaseline+secBaseline, diagnostic:kpiDiag+secDiag, findings:NRD?window.nrDiag.findingsHtml(t.id):'', potential:potentialPage(t), readiness:readinessPage(t), analyses:analysesPage(t), opportunities:kpiOpp+secOpp, roadmap:teamRoadmapHTML(t) };
   if(CL){
-    pages.roadmap='<div id="rtl-team"></div>';
     pages.maturity=pages.diagnostic+'<div style="margin-top:32px">'+pages.readiness+'</div>';
-    pages.potential=pages.potential+'<div style="margin-top:32px">'+pages.opportunities+'</div>'; }
+    }
   c.innerHTML = subnav + `<div id="team-sub-content">${pages[teamSub]||pages.overview}</div>`;
-  if(CL&&teamSub==='roadmap'){ try{ renderTimeline(document.getElementById('rtl-team'),t.id); }catch(e){} }
 
   if(teamSub==='overview'){
     const txt=cssVar('--muted'), grid=cssVar('--divider');
@@ -13222,7 +13230,7 @@ function valueWaterfall(t, opt){
   const stack=(col,top,segs,label,fill)=>{ let cum=0, out='';
     segs.forEach((g,i)=>{ const yT=wfY(top-cum); const h=wfHt(g.fte); cum+=g.fte;
       out+=R(wfBx(col),yT,wfBar,h,fill,` opacity="${(1-i*0.16).toFixed(2)}" stroke="#fff" stroke-width="1.4" style="cursor:default" data-tip="${E(g.label)}" data-tipv="~${g.fte.toFixed(1)} FTE" data-tips="${label} · ${g.n} initiative${g.n===1?'':'s'}" data-tipl="${tipList(g.items)}"`)
-        + (h>=15?T(wfCx(col),yT+h/2+3.4*fs,String(g.no),9.5,'#fff',800):'');
+        + (h>=15?T(wfCx(col),yT+h/2+3.4*fs,String(g.no),9.5,'#fff',800,0,'n'):'');
     });
     return out; };
   svgBody += stack(1,r0,segNow,'addressable now',cGreen);
@@ -13314,7 +13322,9 @@ function potentialPage(t){
         <span class="gno" style="background:${g.dot}">${g.no}</span><span class="lv-gn">${esc(g.label)}</span>
         <span class="lv-gs">${g.n} initiative${g.n===1?'':'s'} · ${g.pct}%</span>
       </td><td class="lv-f" style="color:${g.dot};">~${g.shown.toFixed(1)}</td></tr>`;
-  const lvCard=`<div class="card span2" style="display:flex;flex-direction:column;height:${H}px;">
+  const lvCard=window.NR_CLIENT_VIEW?`<div class="card span2" style="display:flex;flex-direction:column;height:${H}px;">
+      <div class="ch"><div class="ct">Initiatives</div></div><div style="flex:1;overflow-y:auto;min-height:0;display:flex;flex-direction:column;">${kiRanked(t,valueWaterfall(t).grps)}</div></div>`
+    :`<div class="card span2" style="display:flex;flex-direction:column;height:${H}px;">
       <div class="ch"><div class="ct">Improvement levers</div>
         <button class="ov-gobtn" onclick="QS.setTeamSub('opportunities')">Detail →</button></div>
       <div style="flex:1;overflow-y:auto;min-height:0;">
@@ -13587,7 +13597,7 @@ function readinessPage(t){
   const insight=`<div class="card span3" style="padding:0;overflow:hidden;display:flex;flex-direction:column;height:560px;">
       <div style="padding:15px 16px 4px;display:flex;align-items:baseline;justify-content:space-between;gap:10px;">
         <span><span class="ct">Scores &amp; what drives them</span>
-          <span style="font-size:var(--fs-10);color:var(--muted-2);margin-left:6px;">select a dimension to inspect its sub-scores</span></span></div>
+          <span class="qs-hint" style="font-size:var(--fs-10);color:var(--muted-2);margin-left:6px;">select a dimension to inspect its sub-scores</span></span></div>
       <div class="dim-pills">
         ${DIMS.map(d=>`<button class="dimf ${d.key===rdyDimSel?'active':''}" onclick="QS.selectRdyDim('${d.key}')" style="--dc:${d.color};">
           <span class="di">${d.icon}</span><span class="lb">${d.label}</span>
@@ -14660,14 +14670,14 @@ function renderTimeline(elOpt,only){
   }
   tlLast=[el,only,groups.map(g=>g.key)];
   const years=[]; qs.forEach(m=>{ const y=Math.floor(m/12); if(!years.length||years[years.length-1].y!==y) years.push({ y, m }); });
-  const axis=`<div class="rtl-r rtl-ax"><div class="rtl-l"></div><div class="rtl-t">${grid}${years.map(Y=>`<span class="rtl-yr" style="left:${pc(Y.m)}">${Y.y}</span>`).join('')}${qs.map(m=>`<span class="rtl-q" style="left:${pc(m)}">${tlMonth(m)}</span>`).join('')}</div></div>`;
+  const ctl=only?'':`<div class="rtl-ctl"><div class="rtl-seg"><button class="${tlMode!=='type'?'on':''}" data-m="team">By team</button><button class="${tlMode==='type'?'on':''}" data-m="type">By type</button></div>`
+    +`<button class="rtl-btn" data-all="1">Expand</button><button class="rtl-btn" data-all="0">Collapse</button></div>`;
+  const axis=`<div class="rtl-r rtl-ax"><div class="rtl-l">${ctl}</div><div class="rtl-t">${grid}${years.map(Y=>`<span class="rtl-yr" style="left:${pc(Y.m)}">${Y.y}</span>`).join('')}${qs.map(m=>`<span class="rtl-q" style="left:${pc(m)}">${tlMonth(m)}</span>`).join('')}</div></div>`;
   const types=TTYPE_ORDER.filter(k=>all.some(x=>x.k===k));
   const legend=`<div class="rtl-leg">${types.map(k=>`<span><i class="rtl-dot" style="background:${TTYPES[k].dot}"></i>${TTYPES[k].label}</span>`).join('')}`
     +`<span><i class="rtl-sw" style="background:var(--ds-text-2)"></i>Build</span><span><i class="rtl-sw" style="background:var(--ds-text-2);opacity:.22"></i>Saving counts</span>`
     +(all.some(x=>!x.ok)?`<span class="rtl-lk">${TL_LOCK}Waits on the data foundation</span>`:'')+`</div>`;
-  const ctl=only?'':`<div class="rtl-ctl"><div class="rtl-seg"><button class="${tlMode!=='type'?'on':''}" data-m="team">By team</button><button class="${tlMode==='type'?'on':''}" data-m="type">By type of change</button></div>`
-    +`<button class="rtl-btn" data-all="1">Expand all</button><button class="rtl-btn" data-all="0">Collapse all</button></div>`;
-  el.innerHTML=`<div class="tlx${only?' rtl-flat':''}"><div class="rtl-top">${legend}${ctl}</div><div class="rtl">${axis}${body}</div></div>`;
+  el.innerHTML=`<div class="tlx${only?' rtl-flat':''}"><div class="rtl-top">${legend}</div><div class="rtl">${axis}${body}</div></div>`;
   el.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>tlSetMode(b.getAttribute('data-m')));
   el.querySelectorAll('[data-all]').forEach(b=>b.onclick=()=>tlSetAll(b.getAttribute('data-all')==='1'));
   el.querySelectorAll('.rtl-g').forEach(r=>r.onclick=()=>tlToggle(r.getAttribute('data-g')));
@@ -14756,11 +14766,32 @@ function kiRanked(t,grps){
         +`<div class="kir-b"><i style="width:${w}%;background:${it.dot}"></i><b style="left:calc(${w}% + 8px)">${it.fte.toFixed(1)}</b></div></div>`; }).join('')}</div>`
     +`<div class="kir-leg">${types.map(g=>`<span><i class="rtl-dot" style="background:${g.dot}"></i>${g.label}</span>`).join('')}</div>`;
 }
-/* the summary's heatmap tiles in the client view: one hue each way, red below 3 and green above, white at 3, and capped
-   so dark text always reads (Gilles, 17 Nov 2026: an Excel-style scale shows the bottlenecks better than a rainbow) */
-const HM_RED=[235,112,100], HM_GREEN=[88,180,120], HM_MID=3;
-function softTile(v){ v=Math.max(1,Math.min(5,v)); const to=v<HM_MID?HM_RED:HM_GREEN, f=Math.min(1,Math.abs(v-HM_MID)/2);
-  const c=[255,255,255].map((x,k)=>Math.round(x+(to[k]-x)*f)); return `rgb(${c[0]},${c[1]},${c[2]})`; }
+/* the client view on the laptop and the phone: the type keeps to the delivery system's weights (400, 600, 700; Aptos turns
+   into a different-looking cut at 800 and 900), and chart text is set at its size on screen, not scaled with the drawing:
+   numbers at body size, words at label size (Gilles, 17 Nov 2026) */
+function clientType(){ if(!window.NR_CLIENT_VIEW) return; const pg=document.getElementById('page'); if(!pg) return;
+  pg.querySelectorAll('*').forEach(e=>{ if(e.__wt) return; let own=false; for(let n=e.firstChild;n;n=n.nextSibling){ if(n.nodeType===3&&n.textContent.trim()){ own=true; break; } } if(!own) return;
+    const w=+getComputedStyle(e).fontWeight; e.__wt=1;
+    if(w>700) e.style.setProperty('font-weight','700','important'); else if(w>400&&w<700&&w!==600) e.style.setProperty('font-weight','600','important'); });
+  /* figures a client does not need: one department; on the initiatives page the levers count and a second ready count */
+  pg.querySelectorAll('.kpi-box:not([data-qk])').forEach(b=>{ b.setAttribute('data-qk','1'); const l=(b.querySelector('.kpi-eyebrow')||{}).textContent||'', v=((b.querySelector('.kpi-v')||{}).textContent||'').trim();
+    if((l.trim()==='Departments'&&v==='1')||l.trim()==='Levers in play'||l.trim()==='Ready now') b.style.setProperty('display','none','important'); });
+  pg.querySelectorAll('.kpi-eyebrow,.kpi-sub,#f-actonly').forEach(x=>{ if(x.children.length) return; const t=x.textContent;
+    const n=t.replace(/^Runnable now( only)?$/,'Ready now$1').replace(/clears? the AI readiness bar/,'ready now'); if(n!==t) x.textContent=n; });
+  pg.querySelectorAll('.act-table').forEach(t=>{ const c=t.closest('.card'); if(!c) return; c.querySelectorAll('span').forEach(s=>{ if(!s.children.length||!/^Nature:/.test(s.textContent.trim())) return; s.style.display='none'; }); });
+  pg.querySelectorAll('.filterbar .flabel').forEach(f=>{ if(f.textContent.trim()==='Nature') f.style.display='none'; });
+  /* scores beside a dimension: a Harvey ball and the score, no colour chip */
+  pg.querySelectorAll('.dimf-sc:not([data-hb]),.dg-sc:not([data-hb])').forEach(c=>{ const v=parseFloat(c.textContent); if(isNaN(v)) return; c.setAttribute('data-hb','1'); c.innerHTML=harvey(Math.max(0,Math.min(1,v/5)))+'<b>'+tlEsc(c.textContent.trim())+'</b>'; });
+  /* an analysis card opens as a whole */
+  pg.querySelectorAll('.artf-card:not([data-ck])').forEach(c=>{ c.setAttribute('data-ck','1'); const o=c.querySelector('.artf-open'); if(o){ c.classList.add('artf-clk'); c.onclick=e=>{ if(e.target.closest('.artf-open')) return; o.click(); }; } });
+  /* an activity opens to its tasks, tools and data */
+  pg.querySelectorAll('.act-table tr[data-base-act]:not([data-ck])').forEach(r=>{ r.setAttribute('data-ck','1'); r.onclick=e=>{ if(e.target.closest('.xlink,.opt-cell,button,a')) return; r.classList.toggle('act-open'); }; });
+  pg.querySelectorAll('svg.nr-wf').forEach(s=>{ const vb=s.viewBox&&s.viewBox.baseVal, r=s.getBoundingClientRect(); if(!vb||!vb.width||!r.width) return;
+    const k=Math.min(r.width/vb.width,r.height/vb.height); if(s.__k&&Math.abs(s.__k-k)<.01) return; s.__k=k;
+    s.querySelectorAll('text').forEach(t=>{ const num=/^[\s~−\-+]*[\d.,]+/.test(t.textContent||''); const px=num?12.5:11;
+      t.setAttribute('font-size',(px/k).toFixed(2)); t.style.fontSize=(px/k).toFixed(2)+'px'; t.style.fontWeight=num?'700':'600'; }); }); }
+(function(){ let tm; const soon=()=>{ clearTimeout(tm); tm=setTimeout(()=>{ try{ clientType(); }catch(e){} },150); };
+  try{ new MutationObserver(soon).observe(document.documentElement,{childList:true,subtree:true}); window.addEventListener('resize',()=>{ document.querySelectorAll('svg.nr-wf').forEach(s=>s.__k=0); soon(); }); }catch(e){} })();
 
 return {oppSchedule, renderTimeline, renderBenefits, tlSetMode, tlToggle, tlSetAll, actIneff, actMatch, actOpp, addMember, aiReadinessVerdict, analysesPage, apEsc, applyDivState, applyEngagementConfig, applyMethodology, applyPrivate, applyTeamStatus, approachInstruments, artifactCard, assignOwner, boot, buildMatrix, buildOrgChart, buildTeamMatrix, cellDetail, cfgActive, clearAllOverrides, closeApArtifact, closeDataMaturity, closePanel, closePerfWheel, closeTeamBarometer, curOpt, cycleOpt, defaultAssign, depthOf, deriveHorizon, diagSide, diagSideAvg, dimAverages, dimRadarTip, dmEsc, domType, dotJitter, effInstruments, ensureTip, exportData, flash, flashBaselineAll, getAssumptions, gotoTeam, harvey, headlineLever, heatDetail, hideTip, jumpToBaseline, jumpToOpp, leverChip, leverWhy, moveTip, nav, openApArtifact, openCellEditor, openDataMaturity, openPanel, openPerfWheel, openTeamBarometer, oppDetail, oppExplain, oppPotential, oppReadiness, optCellInner, pickTeam, positionTip, potColor, potText, potentialPage, progDragEnd, progDragLeave, progDragOver, progDragStart, progDrop, progNav, progStats, pwAdapt, pwAggRag, pwEsc, pwMean, pwSegRag, pwTemplateSrcdoc, radarCfg, radarExternal, rdyChartHTML, rdyDimDetail, rdyGateMap, rdyGateStatus, rdyOpps, rdySubInsight, readinessBinding, readinessGates, readinessModel, readinessPage, refreshOpt, removeMember, renderConfigurator, renderDiagRadar, renderDimDetail, renderEngagement, renderExport, renderHeatmap, renderHowTo, renderLevers, renderOppTable, renderOpportunities, renderPage, renderProgAnalyses, renderProgKanban, renderProgOverview, renderProgPlanning, renderProgress, renderRoadmap, renderScoring, renderSummary, renderTeamContent, renderTeamOppRows, renderTeams, renderValueChain, renderValueStake, renderValueStake__deprecated, renderWeightSliders, openTeamAnalyses, resetApproachDefault, resetOpt, resetTeamStages, rmBasePeriod, rmFirstPeriod, roadSetAll, saveAssumptions, saveEngagementConfig, saveMethodology, saveOpt, saveTeamStatus, scoreColor, scoreRGB, scoreText, selectDim, selectRdyDim, selectSummaryTeam, selectTeam, setApproach, setCellDepth, setColDepth, setOppFilter, setOppLever, setOverride, setRoadGroup, setRowDepth, setTeamOppF, setTeamStage, setTeamSub, setVS, setWeightPreset, sevColor, shortInstr, showTip, showTipHTML, sortOpps, stepTeam, subAvg, subInsight, tbEsc, teamArtifacts, teamOptTotal, teamPanel, teamPeriods, teamPosture, teamRadarCfg, teamRoadmapHTML, toggleActOnly, toggleDark, toggleDiv, toggleInstrument, togglePrivate, toggleTeamMenu, txShare, updateAssumption, updateMember, updateProgBadge, updateWeight, valueWaterfall, vcTipHtml, vcWireTips, vsCompute, vsRecalc, vsSave, weightedOverall, wireReadinessTips, wireWaterfallTips, mount, get TEAMS(){return TEAMS;}, get activeTeamId(){return activeTeam;},
   get DIVISIONS(){return DIVISIONS;}, STATUS_DOT, lev, STATUS_LABEL, leverChip};
@@ -16223,7 +16254,8 @@ html.nr-client .qsx .tsub-nav .tsub::after{display:none!important}
 .qsx .rtl-dot{width:8px;height:8px;border-radius:50%;flex:none;display:inline-block}
 .qsx .rtl-sw{width:18px;height:8px;border-radius:2px;flex:none;display:inline-block}
 .qsx .rtl-lk svg,.qsx .rtl-i .rtl-l svg{width:12px;height:12px;flex:none;color:#A85A0C}
-.qsx .rtl-ctl{margin-left:auto;display:flex;gap:8px;align-items:center}
+.qsx .rtl-ctl{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.qsx .rtl-ax .rtl-l{padding:6px 10px}
 .qsx .rtl-seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--divider);border-radius:8px;padding:2px}
 .qsx .rtl-seg button,.qsx .rtl-btn{border:0;background:none;font-family:inherit;font-size:var(--ds-fs-label);color:var(--ds-text-2);padding:5px 10px;border-radius:6px;cursor:pointer;white-space:nowrap}
 .qsx .rtl-seg button.on{background:var(--surface);color:var(--ds-text);font-weight:600}
@@ -16315,9 +16347,66 @@ html.dark .qsx .vcx-f .g b{color:#5FBF8C}
 .qsx .vcx-s .hb{width:16px;height:16px;color:var(--ds-text);margin-left:auto;flex:none}
 .qsx .vcx-s em{font-style:normal;color:var(--ds-text);font-weight:600;min-width:26px;text-align:right}
 .qsx .vcx .vc-nm{min-height:2.5em}
-/* the heatmap's scale in the client view: red, white at 3, green, as its tiles */
-html.nr-client .qsx .oc-team:not(.ongoing):not(.selected){border-color:rgba(15,43,82,.07)!important}
-html.nr-client .qsx .hm-grad{background:linear-gradient(90deg,rgb(235,112,100),#fff,rgb(88,180,120))!important;border:1px solid rgba(15,43,82,.08)}
+/* the client view's KPI cards: a tinted icon beside a bold label, the number large, a short line under it (Gilles picked
+   option A, 17 Nov 2026: the Training Companion's metric tile). Navy for scope, green for potential. */
+html.nr-client .qsx .kpi-boxes{display:flex!important;gap:var(--ds-gap,12px)}
+html.nr-client .qsx .kpi-box{flex:1 1 0;min-width:0;display:grid!important;grid-template-columns:30px minmax(0,1fr);grid-template-areas:"ic lab" "v v" "s s";column-gap:10px;align-items:center;align-content:start;padding:14px 16px 15px!important;min-height:0!important;height:auto!important}
+html.nr-client .qsx .kpi-box>div:first-child{display:contents}
+html.nr-client .qsx .kpi-box .kpi-icon{grid-area:ic;width:30px;height:30px;border-radius:8px;background:#E8EDF5;color:#0F2B52;display:flex!important;align-items:center;justify-content:center;margin:0;position:static;opacity:1}
+html.nr-client .qsx .kpi-box .kpi-icon svg{width:17px;height:17px}
+html.nr-client .qsx .kpi-box .kpi-eyebrow{grid-area:lab;font-size:var(--ds-fs-body)!important;font-weight:600!important;color:var(--ds-text)!important;text-transform:none!important;letter-spacing:0!important;margin:0!important;min-width:0;line-height:1.25;white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
+html.nr-client .qsx .kpi-box .kpi-v{grid-area:v;font-size:28px!important;font-weight:600!important;letter-spacing:-.02em;line-height:1.05;margin:12px 0 0!important;color:var(--ds-text)!important;white-space:nowrap}
+html.nr-client .qsx .kpi-box .kpi-sub{grid-area:s;font-size:var(--ds-fs-label)!important;color:var(--ds-text-2)!important;margin-top:4px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.nr-client .qsx .kpi-grp.pot .kpi-icon,html.nr-client .qsx .pot-box .kpi-icon{background:#E3F0EA;color:#006843}
+html.nr-client .qsx .kpi-grp.pot .kpi-v,html.nr-client .qsx .pot-box .kpi-v{color:#006843!important}
+html.nr-client .qsx .kpi-box .kpi-pre{font-size:13px!important;font-weight:400!important;color:var(--ds-text-2)!important;margin-right:4px;letter-spacing:0}
+html.nr-client.dark .qsx .kpi-box .kpi-icon{background:rgba(255,255,255,.08);color:var(--ds-text)}
+html.nr-client.dark .qsx .kpi-grp.pot .kpi-icon,html.nr-client.dark .qsx .pot-box .kpi-icon{background:rgba(95,191,140,.16);color:#5FBF8C}
+html.nr-client.dark .qsx .kpi-grp.pot .kpi-v,html.nr-client.dark .qsx .pot-box .kpi-v{color:#5FBF8C!important}
+/* the summary: no captions over cards that have their own title; the radar's reset only when a team is picked */
+html.nr-client .qsx .diag-grp>.eyebrow,html.nr-client #diag-caption,html.nr-client #diag-reset.active{display:none!important}
+html.nr-client #diag-reset{background:var(--surface-2)!important;color:var(--ds-text)!important;border:0!important}
+/* initiatives: no 2x2 for the client, the lever mix across the width, no nature codes */
+html.nr-client #page-opportunities .dd6>.card:has(#matrix){display:none!important}
+html.nr-client #page-opportunities .dd6>.card:has(.lvmix){grid-column:1/-1!important}
+html.nr-client #page-opportunities .dd6>.card:has(.lvmix)>div:last-child{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:40px}
+html.nr-client [data-nature],html.nr-client #opp-tbody .nature{display:none!important}
+/* a team's activities: four columns; a click opens the tasks, tools and data */
+html.nr-client .qsx .act-table{min-width:0!important;width:100%}
+html.nr-client .qsx .act-table .act-x,html.nr-client .qsx .act-table .act-wl{display:none!important}
+html.nr-client .qsx .act-table .act-wc{display:inline!important}
+html.nr-client .qsx .act-table td.act-c{display:table-cell!important}
+html.nr-client .qsx .act-table td.act-nm>div:nth-child(2),html.nr-client .qsx .act-table .act-meta{display:none!important}
+html.nr-client .qsx .act-table tr.act-open td.act-nm>div:nth-child(2){display:block!important;margin-top:6px}
+html.nr-client .qsx .act-table tr.act-open .act-meta{display:block!important;margin-top:6px;font-size:var(--ds-fs-label);color:var(--ds-text-2);line-height:1.45}
+html.nr-client .qsx .act-table tr[data-base-act]{cursor:pointer}
+html.nr-client .qsx .act-table tr[data-base-act] td.act-nm>div:first-child:after{content:"";display:inline-block;width:6px;height:6px;margin-left:8px;border-right:1.5px solid var(--ds-text-3);border-bottom:1.5px solid var(--ds-text-3);transform:rotate(45deg) translateY(-3px)}
+html.nr-client .qsx .act-table tr.act-open td.act-nm>div:first-child:after{transform:rotate(-135deg)}
+html.nr-client .qsx .act-table td.act-wk{min-width:118px!important;width:160px}
+html.nr-client .qsx .act-table td.act-if{min-width:160px!important;width:260px}
+html.nr-client .qsx .act-table td.opt-cell{min-width:104px!important;width:130px}
+/* dimensions: the name, a Harvey ball and the score; no letter badges and no colour chips */
+html.nr-client .qsx .dimf .di,html.nr-client .qsx .artf-grp-dim .di,html.nr-client .qsx .qs-hint{display:none!important}
+html.nr-client .qsx .dg-sc{background:none!important;color:var(--ds-text)!important;display:inline-flex!important;align-items:center;gap:5px;padding:0!important;font-size:var(--ds-fs-body)!important}
+html.nr-client .qsx .dg-sc .hb{width:14px;height:14px;color:var(--ds-text)}
+html.nr-client .qsx .dimf-sc{background:none!important;color:var(--ds-text)!important;display:inline-flex!important;align-items:center;gap:5px;padding:0 0 0 4px!important}
+html.nr-client .qsx .dimf-sc .hb{width:14px;height:14px;color:var(--ds-text)}
+html.nr-client .qsx .dimf-sc b{font-weight:600}
+html.nr-client .qsx .dimf.active .dimf-sc,html.nr-client .qsx .dimf.active .dimf-sc .hb{color:#fff!important}
+html.nr-client #team-sub-content .dd6>.card.span2:has(#team-radar){grid-column:span 3!important}
+html.nr-client #team-sub-content .dd6>.card.span2:has(#team-radar)+.card.span4{grid-column:span 3!important}
+/* potential: the bar segments carry no numbers */
+html.nr-client svg.nr-wf text[data-r="n"]{display:none!important}
+/* analyses: the whole card opens, a chevron says so; the grid uses the width */
+html.nr-client .qsx .artf-grid{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))!important}
+html.nr-client .qsx .artf-card.artf-clk{cursor:pointer;position:relative}
+html.nr-client .qsx .artf-card.artf-clk .artf-open{display:none!important}
+html.nr-client .qsx .artf-card.artf-clk:after{content:"";position:absolute;right:16px;bottom:18px;width:7px;height:7px;border-right:1.75px solid var(--ds-text-2);border-top:1.75px solid var(--ds-text-2);transform:rotate(45deg)}
+html.nr-client .qsx .artf-card.artf-clk:hover{background:var(--surface-2)}
+/* the heatmap never scrolls sideways: its columns share the card's width */
+html.nr-client .qsx .orgchart{min-width:0!important}
+html.nr-client .qsx .oc-col{min-width:0!important}
+html.nr-client .qsx .org{overflow-x:visible!important}
 /* the team picker: the name and its status stay inside the button, the arrow keeps its place */
 .tbt-pick{max-width:min(520px,44vw)}
 .tbt-id{flex:1 1 auto;min-width:0;overflow:hidden}
@@ -16685,8 +16774,6 @@ html.nr-client #page-roadmap .dd-section>div:not([class]):not(:has(.fchip)):not(
 html.nr-client .qsx .org{justify-content:flex-start!important;height:auto!important}
 html.nr-client .qsx .diag-canvas-wrap{height:460px!important;flex:none!important}
 html.nr-client .qsx .diag-box{height:auto!important}
-html.nr-client .qsx .oc-team:not(.ongoing) .oc-nm,html.nr-client .qsx .oc-team:not(.ongoing) .oc-chip,html.nr-client .qsx .oc-team:not(.ongoing) .oc-chip *{color:#1B2230!important}
-html.nr-client .qsx .oc-team:not(.ongoing) .oc-chip{background:rgba(15,43,82,.10)!important}
 html.nr-client .qsx .vc-chev-nm,html.nr-client .qsx .vc-chev-avg{color:#fff!important}
 /* scores: the number in text colour, the colour stays in the bar */
 html.nr-client .qsx .vc-sc b{color:var(--ds-text)!important}
