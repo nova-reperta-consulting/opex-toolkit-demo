@@ -11202,6 +11202,7 @@ function artifactCard(r){
 // grouped by dimension and linked up to the lean maturity overview
 function analysesPage(t){
   const rows=teamArtifacts(t.id);
+  if(!rows.length&&window.NR_CLIENT_VIEW) return `<div class="card nrc-empty"><div class="ct">No analyses for this team yet</div><div class="nrc-empty-t">They appear here once the team's analyses are done.</div></div>`;
   if(!rows.length) return `<div class="dd-section"><div class="eyebrow qs-dup">Analyses · evidence</div>
     <div class="artf-head">No analyses configured for this team yet, set the depth per lens in the <button class="artf-inline-link" onclick="QS.nav('configurator')">Analysis configurator</button>.</div></div>`;
   const prod=rows.filter(r=>r.status==='produced').length;
@@ -11887,7 +11888,7 @@ function renderDiagRadar(){
       scales:{ r:{ min:0, max:5, ticks:{stepSize:1, display:false}, grid:{color:grid}, angleLines:{color:grid},
         pointLabels:{ color:txt, font:{size:11,family:'Aptos, Segoe UI, sans-serif',weight:'600'} } } } } });
 }
-function gotoTeam(id){ activeTeam=id; nav('teams'); }
+function gotoTeam(id){ if(window.NR_CLIENT_VIEW&&window.nrOpenTeam){ window.nrOpenTeam(id); return; } activeTeam=id; nav('teams'); }
 function diagSide(t){
   return `
     <div class="diag-teamhead">
@@ -13677,7 +13678,8 @@ function wireReadinessTips(){
     if(window.NR_TOUCH) el.addEventListener('click', e=>{ showTipHTML(html, e); e.stopPropagation(); });
   });
 }
-function setTeamSub(k){ if(window.nrTeamSub&&window.nrTeamSub(k)) return;   /* the findings dashboard shows each tab on its own page */
+function setTeamSub(k){ if(window.NR_CLIENT_VIEW) k={diagnostic:'maturity',findings:'maturity',readiness:'maturity',opportunities:'potential'}[k]||k;
+  if(window.nrTeamSub&&window.nrTeamSub(k)) return;   /* the findings dashboard shows each tab on its own page */
   teamSub=k; renderTeamContent();
   const sc=document.querySelector('.tdd-bar'); if(sc) sc.scrollIntoView({block:'nearest'});
 }
@@ -14650,6 +14652,7 @@ function tlTip(x){ const T=TTYPES[x.k];
     +`<span>~${x.f.toFixed(1)} FTE · dates ${x.est?'estimated':'agreed with the owner'}</span>`
     +(x.ok?'':'<br><span class="w">Waits on the data foundation</span>'); }
 function renderTimeline(elOpt,only){
+  if(typeof tlBubHide==='function') tlBubHide();
   const el=elOpt||document.getElementById('page-timeline'); if(!el) return;
   const all=oppSchedule(only);
   if(!all.length){ el.innerHTML=NRC_EMPTY_INI; return; }
@@ -14706,6 +14709,9 @@ function renderTimeline(elOpt,only){
     r.onmouseleave=()=>{ bub.style.display='none'; };
     r.onclick=()=>{ bub.style.display='none'; try{ oppDetail(x.o); }catch(e){} }; });
 }
+/* inline buttons in a team's view call setTeamSub() as a global; give them the app's (17 Nov, click-through check) */
+try{ if(!window.setTeamSub) window.setTeamSub=function(k){ setTeamSub(k); }; }catch(e){}
+const tlBubHide=()=>{ const b=document.getElementById('rtl-bub'); if(b) b.style.display='none'; };
 const NRC_EMPTY_INI='<div class="card nrc-empty"><div class="ct">No initiatives yet</div><div class="nrc-empty-t">They appear here once the teams are assessed and their improvements sized.</div></div>';
 /* the benefits: one model, used by the Benefits page and the Summary's Benefits card */
 function benModel(){
@@ -14729,6 +14735,7 @@ function benModel(){
 }
 const benFmt=v=>v>=1e6?`€${(v/1e6).toFixed(1)}M`:v>=1e3?`€${Math.round(v/1e3)}k`:`€${Math.round(v)}`;
 function renderBenefits(elOpt){
+  tlBubHide();
   const el=elOpt||document.getElementById('page-benefits'); if(!el) return;
   const B=benModel(); if(!B){ el.innerHTML=NRC_EMPTY_INI; return; }
   const yA=Math.floor(B.last/12), yB=yA+1;
@@ -14952,7 +14959,10 @@ function clientType(){ if(!window.NR_CLIENT_VIEW) return; const pg=document.getE
     fb.querySelectorAll('[data-seg="ready"] button').forEach(b=>b.onclick=()=>{ fb.querySelectorAll('[data-seg="ready"] button').forEach(x=>x.classList.toggle('on',x===b)); oppFilters.ready=b.getAttribute('data-v'); renderOppTable(); });
     const inp=fb.querySelector('.nrc-search input'); let qt; inp.oninput=()=>{ clearTimeout(qt); qt=setTimeout(()=>{ oppFilters.q=inp.value.trim().toLowerCase(); renderOppTable(); },120); };
     renderOppTable(); }
-  if(window.Chart&&!window.Chart.__nrd){ window.Chart.__nrd=1; try{ window.Chart.register(NRC_DIRECT); }catch(e){} }
+  if(window.Chart&&!window.Chart.__nrd){ window.Chart.__nrd=1; try{ window.Chart.register(NRC_DIRECT); }catch(e){}
+    /* a click or hover that lands while a chart is redrawn can point at a point that is gone: drop it (click-through check) */
+    try{ window.Chart.register({ id:'nrSafeActive', beforeEvent(c){ const ok=a=>{ const m=c.getDatasetMeta(a.datasetIndex); return m&&m.data&&m.data[a.index]; };
+      try{ if(c.tooltip&&c.tooltip._active) c.tooltip._active=c.tooltip._active.filter(ok); if(c._active) c._active=c._active.filter(ok); }catch(e){} } }); }catch(e){} }
   if(window.Chart){ try{ Object.values(window.Chart.instances||{}).forEach(c=>{ if(c.config.type==='radar'&&c.options.plugins&&c.options.plugins.legend&&c.options.plugins.legend.display!==false){ c.options.plugins.legend.display=false; c.update('none'); } }); }catch(e){} }
   /* chart bubbles: the light glass bubble of the delivery system, not Chart.js's dark default */
   if(window.Chart&&!window.Chart.__nrc){ window.Chart.__nrc=1; const dk=document.documentElement.classList.contains('dark');
@@ -14973,6 +14983,7 @@ function clientType(){ if(!window.NR_CLIENT_VIEW) return; const pg=document.getE
   /* an analysis card opens as a whole */
   pg.querySelectorAll('.artf-card:not([data-ck])').forEach(c=>{ c.setAttribute('data-ck','1'); const o=c.querySelector('.artf-open'); if(o){ c.classList.add('artf-clk'); c.onclick=e=>{ if(e.target.closest('.artf-open')) return; o.click(); }; } });
   /* an activity opens to its tasks, tools and data */
+  pg.querySelectorAll('td.opt-cell[onclick]').forEach(c=>c.removeAttribute('onclick'));   /* read-only here: nothing to click */
   pg.querySelectorAll('.act-table tr[data-base-act]:not([data-ck])').forEach(r=>{ r.setAttribute('data-ck','1'); r.onclick=e=>{ if(e.target.closest('.xlink,.opt-cell,button,a')) return; r.classList.toggle('act-open'); }; });
   pg.querySelectorAll('svg.nr-wf').forEach(s=>{ const vb=s.viewBox&&s.viewBox.baseVal, r=s.getBoundingClientRect(); if(!vb||!vb.width||!r.width) return;
     const k=Math.min(r.width/vb.width,r.height/vb.height); if(s.__k&&Math.abs(s.__k-k)<.01) return; s.__k=k;
@@ -16768,6 +16779,9 @@ html.nr-client .qsx .bns-tot .bns-n span{font-weight:600}
 html.nr-client .qsx .bns-tot b{font-size:var(--ds-fs-heading);font-weight:700;color:#006843;padding-left:5px}
 /* a team's tabs open on their content: no KPI cards above it (Gilles, 17 Nov evening); the Initiatives' figures stay */
 html.nr-client .qsx #page-teams .kpi-row:not(.nrc-okpi),html.nr-client .qsx #page-teams .kpi-boxes:not(.nrc-okpi .kpi-boxes){display:none!important}
+/* the inefficiency level cannot be changed in the client view, so it does not look clickable */
+html.nr-client .qsx td.opt-cell,html.nr-client .qsx .opt-cell{cursor:default!important}
+html.nr-client .qsx .act-table th{cursor:default!important}
 </style>
 <style id="qs-phone-css">
 /* qs-phone-css (Gilles, 16 Nov 2026): the client view shows numbers and visuals, not text. On the laptop the callout
