@@ -5407,7 +5407,7 @@ table.tteams .tt-h2{display:none}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
 })();
 </script>
-<script>window.__NR_FOLDER_BUILD__={"id": "northwind-securities", "builtAt": "2026-11-17 15:18"};</script>
+<script>window.__NR_FOLDER_BUILD__={"id": "northwind-securities", "builtAt": "2026-11-17 17:37"};</script>
 <script>window.__NR_VIEW__='client';</script>
 </head>
 <body>
@@ -14822,10 +14822,12 @@ const NRC_DIRECT={ id:'nrDirect', afterDatasetsDraw(c){ try{ if(!window.NR_CLIEN
 const VCC_STOPS=[[1,[255,138,122]],[2,[255,160,90]],[3,[242,207,91]],[4,[143,212,122]],[5,[95,203,142]]];
 function vccTint(v){ v=Math.max(1,Math.min(5,v)); let c=VCC_STOPS[4][1]; for(let i=0;i<4;i++){ const a=VCC_STOPS[i], b=VCC_STOPS[i+1]; if(v<=b[0]){ const f=(v-a[0])/(b[0]-a[0]); c=a[1].map((x,k)=>Math.round(x+(b[1][k]-x)*f)); break; } } return `rgb(${c[0]},${c[1]},${c[2]})`; }
 function vcChevClient(s,i,da,teams,weak){
-  const fte=teams.reduce((a,t)=>a+(+t.fte||0),0), c=da?vccTint(da):'';
-  return `<div class="vc-chev vcc${i===0?' first':''}${weak?' weak':''}" style="--o:${i*100}"><span class="vc-chev-nm">${tlEsc(s.name)}</span>`
-    +(da?`<span class="vcc-pill" style="background:${c}">${da.toFixed(1)}<small>/5</small>${weak?'<em>· weakest</em>':''}</span>`:'<span class="vcc-pill vcc-na">not scored yet</span>')
-    +`<span class="vcc-meta">${teams.length} team${teams.length===1?'':'s'} · ${Number.isInteger(fte)?fte:fte.toFixed(1)} FTE</span></div>`;
+  const fte=teams.reduce((a,t)=>a+(+t.fte||0),0);
+  const pc=da?(()=>{ const c=scoreRGB(da); return `rgba(${c[0]},${c[1]},${c[2]},.5)`; })():'';
+  return `<div class="vcc-col" style="--o:${i*100}"><div class="vcc-fig">`
+    +(da?`<span class="vcc-pill" style="background:${pc}">${da.toFixed(1)}<small>/5</small>${weak?'<em>· weakest</em>':''}</span>`:'<span class="vcc-pill vcc-na">not scored yet</span>')
+    +`<span class="vcc-meta">${teams.length} team${teams.length===1?'':'s'} · ${Number.isInteger(fte)?fte:fte.toFixed(1)} FTE</span></div>`
+    +`<div class="vc-chev vcc${i===0?' first':''}${weak?' weak':''}"><span class="vc-chev-nm">${tlEsc(s.name)}</span></div></div>`;
 }
 /* the initiatives' four figures in the client view: every figure with its unit and what it is out of; navy for counts,
    green for FTE */
@@ -16650,14 +16652,17 @@ html.nr-client .qsx .card:has(#team-radar)>div:last-child:not(:has(canvas)){disp
 html.nr-client .qsx .vcx{position:relative}
 html.nr-client .qsx .vcx:after{content:"";position:absolute;top:16px;right:14px;width:6px;height:6px;border-right:1.75px solid var(--ds-text-3);border-top:1.75px solid var(--ds-text-3);transform:rotate(45deg)}
 html.nr-client .qsx .vcx .vc-nm{padding-right:14px}
-/* the value chain's chevrons in the client view: score, bar, teams and FTE; the weakest stage marked */
-html.nr-client .qsx .vc-chev.vcc{min-height:90px;gap:3px;padding-top:12px;padding-bottom:12px;position:relative}
-html.nr-client .qsx .vcc .vc-chev-nm{font-size:var(--ds-fs-body)!important;font-weight:600!important;color:#fff!important}
-html.nr-client .qsx .vcc-pill{display:inline-flex;align-items:baseline;gap:2px;margin-top:5px;padding:3px 10px;border-radius:12px;font-size:var(--ds-fs-body);font-weight:700;color:#0F2B52;white-space:nowrap;line-height:1.2}
+/* the value chain's chevrons in the client view: a slim chevron with the stage's name; the stage's score pill, teams and
+   FTE above it on the page; the weakest stage marked (Gilles, option A, 17 Nov evening) */
+html.nr-client .qsx .vcc-col{display:flex;flex-direction:column;min-width:0}
+html.nr-client .qsx .vcc-fig{display:flex;flex-direction:column;align-items:center;gap:4px;padding:0 6px 8px}
+html.nr-client .qsx .vcc-pill{display:inline-flex;align-items:baseline;gap:2px;padding:3px 10px;border-radius:12px;font-size:var(--ds-fs-body);font-weight:700;color:var(--ds-text);white-space:nowrap;line-height:1.2}
 html.nr-client .qsx .vcc-pill small{font-size:var(--ds-fs-label);font-weight:400;opacity:.75}
 html.nr-client .qsx .vcc-pill em{font-style:normal;font-size:var(--ds-fs-label);font-weight:600;margin-left:4px}
-html.nr-client .qsx .vcc-pill.vcc-na{background:rgba(255,255,255,.14);color:rgba(255,255,255,.75);font-weight:400;font-size:var(--ds-fs-label)}
-html.nr-client .qsx .vcc-meta{font-size:var(--ds-fs-label);color:rgba(255,255,255,.78);margin-top:3px}
+html.nr-client .qsx .vcc-pill.vcc-na{background:rgba(15,43,82,.06);color:var(--ds-text-2);font-weight:400;font-size:var(--ds-fs-label)}
+html.nr-client .qsx .vcc-meta{font-size:var(--ds-fs-label);color:var(--ds-text-2);white-space:nowrap}
+html.nr-client .qsx .vc-chev.vcc{min-height:40px!important;height:auto;padding-top:8px;padding-bottom:8px;flex:1}
+html.nr-client .qsx .vcc .vc-chev-nm{font-size:var(--ds-fs-body)!important;font-weight:600!important;color:#fff!important;line-height:1.15;text-align:center}
 html.nr-client .qsx .vcc.weak{background:#0A1E3B!important}
 /* the initiatives' four figures: unit and base beside the number, a small bar under it */
 html.nr-client #page-opportunities>.kpi-row:not(.nrc-okpi){display:none!important}
