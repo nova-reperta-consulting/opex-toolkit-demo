@@ -5407,7 +5407,7 @@ table.tteams .tt-h2{display:none}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
 })();
 </script>
-<script>window.__NR_FOLDER_BUILD__={"id": "northwind-securities", "builtAt": "2026-11-17 11:58"};</script>
+<script>window.__NR_FOLDER_BUILD__={"id": "northwind-securities", "builtAt": "2026-11-17 12:05"};</script>
 <script>window.__NR_VIEW__='client';</script>
 </head>
 <body>
@@ -11066,7 +11066,7 @@ function teamPanel(id){
     <div class="psec"><div class="psec-l">Recommended lever & readiness</div>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
         ${leverChip(t.lever)}
-        <span class="ready-badge ${t.readiness==='act'?'ready-act':'ready-fix'}">${t.readiness==='act'?'Runnable now':'Behind the bar'}</span>
+        <span class="ready-badge ${t.readiness==='act'?'ready-act':'ready-fix'}">${rdyWord(t)}</span>
         <span style="font-family:var(--fh);font-weight:800;color:var(--green);font-size:var(--ds-fs-body);">${fmtFte(t.fteImpact)} FTE impact</span>
       </div>
     </div>`;
@@ -11823,7 +11823,7 @@ function showTip(t,e){ const tip=ensureTip();
     <div class="tip-find">${t.finding}</div>
     <div class="tip-row"><span>Lever</span>${leverChip(t.lever)}</div>
     <div class="tip-row"><span>FTE impact</span><b style="color:var(--green-soft);">${fmtFte(t.fteImpact)} FTE</b></div>
-    <div class="tip-row"><span>Readiness</span><b>${t.readiness==='act'?'Runnable now':'Behind the bar'}</b></div>
+    <div class="tip-row"><span>Readiness</span><b>${rdyWord(t)}</b></div>
     <div class="tip-prio-l">Top priorities</div>
     ${t.opps.slice(0,3).map(o=>`<div class="tip-prio"><span class="tip-prio-dot" style="background:${lev(o.lever).dot};"></span><span class="tip-prio-tx">${o.activity}</span><span class="tip-prio-lev">${lev(o.lever).label}</span></div>`).join('')}
     <div class="tip-scores">${DIMS.map(d=>`<span class="tip-sc ${sClass(t.scores[d.key])}">${DIM_SHORT[d.key]} ${t.scores[d.key]}</span>`).join('')}</div>`;
@@ -12145,6 +12145,7 @@ function renderOppTable(){
 }
 
 function oppDetail(o){
+  if(window.NR_CLIENT_VIEW) return oppDetailClient(o);
   const L=lev(o.lever); const t=teamById(o.teamId); const d=DIMS.find(x=>x.key===o.driver); const r=readinessModel(o,t); const dh=deriveHorizon(o,t);
   const html=`
     <div class="psec">
@@ -14766,6 +14767,23 @@ function kiRanked(t,grps){
         +`<div class="kir-b"><i style="width:${w}%;background:${it.dot}"></i><b style="left:calc(${w}% + 8px)">${it.fte.toFixed(1)}</b></div></div>`; }).join('')}</div>`
     +`<div class="kir-leg">${types.map(g=>`<span><i class="rtl-dot" style="background:${g.dot}"></i>${g.label}</span>`).join('')}</div>`;
 }
+/* the readiness word on a team: plain words in the client view */
+function rdyWord(t){ const c=!!window.NR_CLIENT_VIEW; return t.readiness==='act'?(c?'Ready for AI':'Runnable now'):(c?'Not ready for AI yet':'Behind the bar'); }
+/* one initiative, opened in the client view: the figures, the facts in plain words, what changes; no method notes */
+function oppDetailClient(o){
+  const L=lev(o.lever), t=teamById(o.teamId)||{}, r=readinessModel(o,t);
+  let x=null; try{ x=oppSchedule(o.teamId).find(y=>y.o.activity===o.activity)||null; }catch(e){}
+  const NAT={ R:'Rule-based', S:'Semi-structured', K:'Knowledge-driven' }, GAP={ data:'data', proc:'process', mind:'mindset' };
+  const s=t.scores||{}, need=o.lever==='auto'?['data','proc']:['data','mind'];
+  const rd=r.verdict==='act'?'Ready now':'Waits on '+(need.filter(k=>(s[k]||0)<(k==='data'&&o.lever==='aienh'?2:3)).map(k=>GAP[k]).join(' and ')||'the foundation');
+  const d=DIMS.find(z=>z.key===o.driver);
+  const fig=(v,u,l)=>`<div><div class="odc-v">${v}${u?`<small>${u}</small>`:''}</div><div class="odc-l">${l}</div></div>`;
+  const row=(k,v)=>`<div class="prio-row"><span class="k">${k}</span><span class="v">${v}</span></div>`;
+  const html=`<div class="odc-figs">${fig(fmtFte(o.fte),'FTE','to free up')}${x?fig(tlMonth(x.l),String(Math.floor(x.l/12)),'saving counts from'):''}${x?fig(tlMonth(x.s),String(Math.floor(x.s/12)),'build starts'):''}</div>
+    <div class="psec odc-rows">${row('Team',tlEsc(t.name||o.team||''))}${row('Type of change',TTYPES[ttOf(o)].label)}${row('Lever',L.label)}${o.nature?row('Type of work',NAT[o.nature]||'—'):''}${d?row('Improves',d.label):''}${row('Readiness',rd)}${x?row('Dates',x.est?'Estimated':'Agreed with the owner'):''}</div>
+    ${o.note?`<div class="psec"><div class="psec-l">What changes</div><div class="odc-tx">${tlEsc(o.note)}</div></div>`:''}`;
+  openPanel(html, o.activity, (t.name||o.team||'')+' · '+L.label);
+}
 /* the client view on the laptop and the phone: the type keeps to the delivery system's weights (400, 600, 700; Aptos turns
    into a different-looking cut at 800 and 900), and chart text is set at its size on screen, not scaled with the drawing:
    numbers at body size, words at label size (Gilles, 17 Nov 2026) */
@@ -14773,6 +14791,13 @@ function clientType(){ if(!window.NR_CLIENT_VIEW) return; const pg=document.getE
   pg.querySelectorAll('*').forEach(e=>{ if(e.__wt) return; let own=false; for(let n=e.firstChild;n;n=n.nextSibling){ if(n.nodeType===3&&n.textContent.trim()){ own=true; break; } } if(!own) return;
     const w=+getComputedStyle(e).fontWeight; e.__wt=1;
     if(w>700) e.style.setProperty('font-weight','700','important'); else if(w>400&&w<700&&w!==600) e.style.setProperty('font-weight','600','important'); });
+  /* chart bubbles: the light glass bubble of the delivery system, not Chart.js's dark default */
+  if(window.Chart&&!window.Chart.__nrc){ window.Chart.__nrc=1; const dk=document.documentElement.classList.contains('dark');
+    const TT={ backgroundColor:dk?'rgba(30,36,48,.94)':'rgba(255,255,255,.95)', titleColor:dk?'#E8EAEE':'#1B2230', bodyColor:dk?'#C9CDD4':'#3D4350', footerColor:dk?'#A8AEB9':'#5B6270',
+      borderColor:dk?'rgba(255,255,255,.10)':'rgba(15,43,82,.10)', borderWidth:1, padding:10, cornerRadius:10, boxPadding:4, caretSize:5,
+      titleFont:{ family:'Aptos, Segoe UI, sans-serif', size:12.5, weight:'600' }, bodyFont:{ family:'Aptos, Segoe UI, sans-serif', size:11 } };
+    try{ Object.assign(window.Chart.defaults.plugins.tooltip,TT); }catch(e){}
+    try{ Object.values(window.Chart.instances||{}).forEach(c=>{ try{ Object.assign(c.options.plugins.tooltip,TT); c.update('none'); }catch(e){} }); }catch(e){} }
   /* figures a client does not need: one department; on the initiatives page the levers count and a second ready count */
   pg.querySelectorAll('.kpi-box:not([data-qk])').forEach(b=>{ b.setAttribute('data-qk','1'); const l=(b.querySelector('.kpi-eyebrow')||{}).textContent||'', v=((b.querySelector('.kpi-v')||{}).textContent||'').trim();
     if((l.trim()==='Departments'&&v==='1')||l.trim()==='Levers in play'||l.trim()==='Ready now') b.style.setProperty('display','none','important'); });
@@ -16407,6 +16432,45 @@ html.nr-client .qsx .artf-card.artf-clk:hover{background:var(--surface-2)}
 html.nr-client .qsx .orgchart{min-width:0!important}
 html.nr-client .qsx .oc-col{min-width:0!important}
 html.nr-client .qsx .org{overflow-x:visible!important}
+/* overlays in the client view follow the delivery system (Gilles, 17 Nov 2026): every bubble is the light glass bubble,
+   and one item opens in a centred glass window with a light header, not a navy side panel */
+html.nr-client #tooltip,html.nr-client #rtl-bub,html.nr-client .vc-tip,html.nr-client .nrs-tip{background:rgba(255,255,255,.86)!important;-webkit-backdrop-filter:blur(14px) saturate(185%);backdrop-filter:blur(14px) saturate(185%);color:var(--ds-text)!important;border:1px solid rgba(15,43,82,.07)!important;border-radius:10px!important;padding:9px 12px!important;box-shadow:0 10px 28px -8px rgba(11,35,71,.22),0 1px 3px rgba(11,35,71,.08)!important;font-size:var(--ds-fs-label)!important;width:auto!important;max-width:300px}
+html.nr-client.dark #tooltip,html.nr-client.dark #rtl-bub,html.nr-client.dark .vc-tip,html.nr-client.dark .nrs-tip{background:rgba(30,36,48,.9)!important;border-color:rgba(255,255,255,.08)!important}
+html.nr-client #tooltip .tip-h b{font-size:var(--ds-fs-body)!important;font-weight:600!important;color:var(--ds-text)!important}
+html.nr-client #tooltip .tip-h span{color:#006843!important;font-weight:600!important}
+html.nr-client #tooltip .tip-sub,html.nr-client #tooltip .tip-row,html.nr-client #tooltip .tip-prio-lev,html.nr-client #tooltip .tip-prio-l{color:var(--ds-text-2)!important}
+html.nr-client #tooltip .tip-row b,html.nr-client #tooltip .tip-prio,html.nr-client #tooltip .tip-find{color:var(--ds-text)!important;font-weight:600}
+html.nr-client #tooltip .tip-find{border-bottom-color:rgba(15,43,82,.08)!important;font-weight:400}
+html.nr-client #tooltip .tip-prio-l{text-transform:none!important;letter-spacing:0!important;font-size:var(--ds-fs-label)!important;font-weight:600!important}
+html.nr-client #tooltip .tip-prio-dot{box-shadow:none!important}
+html.nr-client #tooltip .rt-cmp .rt-team{background:rgba(15,43,82,.06)!important;color:var(--ds-text)!important}
+html.nr-client #tooltip .rt-cmp .rt-avg{border-color:rgba(15,43,82,.25)!important;color:var(--ds-text-2)!important}
+html.nr-client #tooltip *{text-shadow:none}
+html.nr-client .vc-tip{width:280px!important;padding:12px 14px!important}
+html.nr-client .nrs-tip{color:var(--ds-text)!important}
+html.nr-client .vc-tip .vct-hd{font-weight:600!important}
+html.nr-client .vc-tip .vct-sec,html.nr-client .vc-tip .vct-dept{text-transform:none!important;letter-spacing:0!important;font-size:var(--ds-fs-label)!important;font-weight:600!important;color:var(--ds-text-2)!important}
+html.nr-client .vc-tip .vct-pot b,html.nr-client .vc-tip b{font-weight:600!important}
+html.nr-client .panel{left:50%!important;right:auto!important;top:50%!important;bottom:auto!important;height:auto!important;max-height:88vh!important;width:min(640px,calc(100vw - 32px))!important;border-radius:20px!important;transform:translate(-50%,-47%) scale(.98)!important;opacity:0;visibility:hidden;transition:transform .32s cubic-bezier(.32,.72,0,1),opacity .2s ease,visibility 0s .32s!important;box-shadow:0 24px 64px rgba(16,24,40,.24)!important}
+html.nr-client .panel.open{transform:translate(-50%,-50%) scale(1)!important;opacity:1;visibility:visible;transition:transform .32s cubic-bezier(.32,.72,0,1),opacity .2s ease!important}
+html.nr-client .panel-head{background:transparent!important;color:var(--ds-text)!important;padding:20px 24px 6px!important;align-items:flex-start!important}
+html.nr-client .panel-head h3{font:700 var(--ds-fs-title)/1.3 var(--ds-font,Aptos,sans-serif)!important;color:var(--ds-text)!important}
+html.nr-client .panel-head .sub{color:var(--ds-text-2)!important;font-size:var(--ds-fs-body)!important;margin-top:4px!important}
+html.nr-client .panel-head button{background:rgba(15,43,82,.06)!important;color:var(--ds-text)!important;width:32px!important;height:32px!important;border-radius:50%!important;flex:none}
+html.nr-client .panel-body{padding:14px 24px 24px!important}
+html.nr-client .scrim{background:rgba(15,20,30,.28)!important;backdrop-filter:none!important}
+html.nr-client .psec{border-bottom-color:rgba(15,43,82,.07)!important}
+html.nr-client .psec-l{text-transform:none!important;letter-spacing:0!important;font-size:var(--ds-fs-heading)!important;font-weight:700!important;color:var(--ds-text)!important;margin-bottom:8px!important}
+html.nr-client .panel .prio-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:7px 0;font-size:var(--ds-fs-body)}
+html.nr-client .panel .prio-row+.prio-row{border-top:1px solid rgba(15,43,82,.06)}
+html.nr-client .panel .prio-row .k{color:var(--ds-text-2)}
+html.nr-client .panel .prio-row .v{font-weight:600;text-align:right;color:var(--ds-text)}
+html.nr-client .odc-figs{display:flex;gap:36px;margin:2px 0 18px}
+html.nr-client .odc-v{font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.05;white-space:nowrap;color:var(--ds-text)}
+html.nr-client .odc-figs>div:first-child .odc-v{color:#006843}
+html.nr-client .odc-v small{font-size:13px;font-weight:400;color:var(--ds-text-2);margin-left:3px;letter-spacing:0}
+html.nr-client .odc-l{font-size:var(--ds-fs-label);color:var(--ds-text-2);margin-top:4px}
+html.nr-client .odc-tx{font-size:var(--ds-fs-body);line-height:1.55;color:var(--ds-text)}
 /* the team picker: the name and its status stay inside the button, the arrow keeps its place */
 .tbt-pick{max-width:min(520px,44vw)}
 .tbt-id{flex:1 1 auto;min-width:0;overflow:hidden}
