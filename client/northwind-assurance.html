@@ -5407,7 +5407,7 @@ table.tteams .tt-h2{display:none}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
 })();
 </script>
-<script>window.__NR_FOLDER_BUILD__={"id": "northwind", "builtAt": "2026-11-17 12:48"};</script>
+<script>window.__NR_FOLDER_BUILD__={"id": "northwind", "builtAt": "2026-11-17 13:25"};</script>
 <script>window.__NR_VIEW__='client';</script>
 </head>
 <body>
@@ -12126,6 +12126,7 @@ function renderOppTable(){
   });
   const tb=$('#opp-tbody');
   const CLV=!!window.NR_CLIENT_VIEW, LV={}; if(CLV){ try{ oppSchedule().forEach(x=>LV[x.t.id+'|'+x.o.activity]=x.l); }catch(e){} }
+  const FMX=Math.max(.1,...allOpps().map(x=>(x.fte[0]+x.fte[1])/2));
   const GAP={ data:'data', proc:'process', mind:'mindset' };
   const rdyTxt=(o,rm)=>{ if(rm.verdict==='act') return 'Ready now'; const s=(teamById(o.teamId)||{}).scores||{}; const need=o.lever==='auto'?['data','proc']:['data','mind'];
     const g=need.filter(k=>(s[k]||0)<(k==='data'&&o.lever==='aienh'?2:3)).map(k=>GAP[k]); return 'Waits on '+(g.join(' and ')||'the foundation'); };
@@ -12134,7 +12135,7 @@ function renderOppTable(){
       return `<tr style="cursor:pointer;" onclick='QS.oppDetail(${JSON.stringify(o).replace(/'/g,"&#39;")})'>
       <td style="font-weight:600;">${o.team}</td><td style="min-width:175px;">${o.activity}</td>
       <td><span class="lever-chip" style="background:${lev(o.lever).bg};color:${lev(o.lever).t}">${lev(o.lever).label}</span></td>
-      <td><span class="fte-range" style="color:var(--green);">${fmtFte(o.fte)}</span></td>
+      <td class="nrc-fte"><span class="fte-range" style="color:var(--green);">${fmtFte(o.fte)}</span><i style="width:${(((o.fte[0]+o.fte[1])/2)/FMX*100).toFixed(1)}%;background:${lev(o.lever).dot}"></i></td>
       <td>${rm.verdict==='act'?'':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;color:#A85A0C;vertical-align:-1px;margin-right:5px"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>'}${rdyTxt(o,rm)}</td>
       <td>${l!=null?tlLab(l):'—'}</td><td class="dg-ins"></td></tr>`; }
     return `<tr style="cursor:pointer;" onclick='QS.oppDetail(${JSON.stringify(o).replace(/'/g,"&#39;")})'>
@@ -14861,7 +14862,7 @@ function clientType(){ if(!window.NR_CLIENT_VIEW) return; const pg=document.getE
   if(fb&&!fb.querySelector('.nrseg')){ fb.classList.add('nrc-fb');
     fb.insertAdjacentHTML('afterbegin',`<span class="nrseg" data-seg="ready"><button class="on" data-v="all">All</button><button data-v="act">${NRC_ICO.ready}Ready now</button><button data-v="fix">${NRC_ICO.wait}Waiting</button></span>`
       +`<label class="nrc-search">${NRC_ICO.search}<input type="search" placeholder="Search by initiative, team or lever" aria-label="Search the initiatives"></label><span class="nrc-lv" hidden></span><span class="nrc-cnt"></span>`);
-    oppFilters.ready='all'; oppFilters.q=''; oppFilters.actOnly=false;
+    oppFilters.ready='all'; oppFilters.q=''; oppFilters.actOnly=false; oppSort.key='fte'; oppSort.dir=-1;
     fb.querySelectorAll('[data-seg="ready"] button').forEach(b=>b.onclick=()=>{ fb.querySelectorAll('[data-seg="ready"] button').forEach(x=>x.classList.toggle('on',x===b)); oppFilters.ready=b.getAttribute('data-v'); renderOppTable(); });
     const inp=fb.querySelector('.nrc-search input'); let qt; inp.oninput=()=>{ clearTimeout(qt); qt=setTimeout(()=>{ oppFilters.q=inp.value.trim().toLowerCase(); renderOppTable(); },120); };
     renderOppTable(); }
@@ -16568,6 +16569,12 @@ html.nr-client .qsx .nrc-lv{display:inline-flex;align-items:center;gap:6px;heigh
 html.nr-client .qsx .nrc-lv[hidden]{display:none}
 html.nr-client .qsx .nrc-lv button{border:0;background:none;width:20px;height:20px;border-radius:50%;cursor:pointer;color:var(--ds-text-2);font-size:14px;line-height:1}
 html.nr-client .qsx .nrc-cnt{font-size:var(--ds-fs-label);color:var(--ds-text-3)}
+/* the initiatives page: no lever mix and no captions; the table ranked by FTE, a thin bar in the lever's colour */
+html.nr-client #page-opportunities .dd-section:has(.lvmix),html.nr-client #page-opportunities .dd-section>.eyebrow,html.nr-client #page-opportunities .kpi-grp-label{display:none!important}
+html.nr-client #page-opportunities .dd-section{margin-top:20px}
+html.nr-client #opp-tbody td.nrc-fte{min-width:120px}
+html.nr-client #opp-tbody td:nth-child(6){white-space:nowrap}
+html.nr-client #opp-tbody td.nrc-fte i{display:block;height:4px;border-radius:2px;margin-top:5px;opacity:.55;max-width:110px}
 /* the Summary's summary cards: the topic's icon and title in its colour, a chevron, the number, one status line, a small visual */
 html.nr-client #page-summary>.kpi-row{display:none!important}
 html.nr-client .qsx .nsc-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:20px}
