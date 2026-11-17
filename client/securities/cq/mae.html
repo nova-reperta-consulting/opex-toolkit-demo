@@ -502,8 +502,8 @@ const DATA = /* DATA */ {
   "people": 28,
   "source": "Team manager intake - Nadia Benali, Client Queries · 23 Oct 2026 · Client Queries call reason log, Jun-Aug 2026 · 23 Oct 2026 · Waste observations - Client Queries · 29 Oct 2026 · Notes - read-out Client Queries · 4 Nov 2026",
   "generatedAt": "2026-11-17",
-  "baselineVersion": "5058b2757ac168ac",
-  "keyMessage": "**4.3 of 26 FTE** is lost today, mostly on calls asking where an event or a payment stands, because nothing tells the client.",
+  "baselineVersion": "4abd640b0d03b832",
+  "keyMessage": "**4.0 of 26 FTE** is lost today, mostly on calls asking where an event or a payment stands, because nothing tells the client.",
   "vocab": {
     "natures": [
       {
@@ -673,6 +673,11 @@ const DATA = /* DATA */ {
         "id": "sys-09",
         "name": "Phone",
         "status": "gap"
+      },
+      {
+        "id": "sys-10",
+        "name": "Client Queries ticket tool",
+        "status": "core"
       }
     ],
     "dataPoints": [
@@ -764,6 +769,42 @@ const DATA = /* DATA */ {
   },
   "activityBlocks": [
     {
+      "id": "act-20",
+      "name": "Take the question",
+      "activities": [
+        {
+          "id": "t-78",
+          "name": "Take the call or sort the shared mailbox"
+        }
+      ],
+      "nature": "S",
+      "fte": 2.0,
+      "volumeDriver": "~3,000 calls and ~2,000 mails a month",
+      "tools": [
+        {
+          "id": "sys-09",
+          "name": "Phone",
+          "role": "",
+          "status": "gap"
+        },
+        {
+          "id": "sys-07",
+          "name": "Email",
+          "role": "",
+          "status": "shadow-it"
+        },
+        {
+          "id": "sys-10",
+          "name": "Client Queries ticket tool",
+          "role": "",
+          "status": "core"
+        }
+      ],
+      "data": [],
+      "ineff": [],
+      "pct": 0
+    },
+    {
       "id": "act-21",
       "name": "Answer status questions",
       "activities": [
@@ -772,14 +813,37 @@ const DATA = /* DATA */ {
           "name": "Look the event up in EventHub"
         },
         {
+          "id": "t-73",
+          "name": "Phone Entitlements when the status is not clear"
+        },
+        {
           "id": "t-49",
           "name": "Explain where it stands"
         }
       ],
       "nature": "S",
-      "fte": 11.0,
-      "volumeDriver": "~1,400 client calls a month, four in ten about status",
-      "tools": [],
+      "fte": 10.0,
+      "volumeDriver": "four in ten calls ask for a status",
+      "tools": [
+        {
+          "id": "sys-09",
+          "name": "Phone",
+          "role": "",
+          "status": "gap"
+        },
+        {
+          "id": "sys-01",
+          "name": "EventHub",
+          "role": "",
+          "status": "core"
+        },
+        {
+          "id": "sys-06",
+          "name": "Client portal",
+          "role": "",
+          "status": "core"
+        }
+      ],
       "data": [],
       "ineff": [
         {
@@ -807,9 +871,34 @@ const DATA = /* DATA */ {
         }
       ],
       "nature": "K",
-      "fte": 9.0,
-      "volumeDriver": "~600 entitlement questions a month",
-      "tools": [],
+      "fte": 8.0,
+      "volumeDriver": null,
+      "tools": [
+        {
+          "id": "sys-01",
+          "name": "EventHub",
+          "role": "",
+          "status": "core"
+        },
+        {
+          "id": "sys-04",
+          "name": "Custody ledger",
+          "role": "",
+          "status": "core"
+        },
+        {
+          "id": "sys-09",
+          "name": "Phone",
+          "role": "",
+          "status": "gap"
+        },
+        {
+          "id": "sys-07",
+          "name": "Email",
+          "role": "",
+          "status": "shadow-it"
+        }
+      ],
       "data": [],
       "ineff": [],
       "pct": 0
@@ -818,6 +907,10 @@ const DATA = /* DATA */ {
       "id": "act-23",
       "name": "Follow up escalations",
       "activities": [
+        {
+          "id": "t-76",
+          "name": "Open a ticket in the Client Queries tool"
+        },
         {
           "id": "t-52",
           "name": "Find someone in the team concerned"
@@ -829,8 +922,33 @@ const DATA = /* DATA */ {
       ],
       "nature": "S",
       "fte": 6.0,
-      "volumeDriver": "~120 escalations a month",
-      "tools": [],
+      "volumeDriver": null,
+      "tools": [
+        {
+          "id": "sys-10",
+          "name": "Client Queries ticket tool",
+          "role": "",
+          "status": "core"
+        },
+        {
+          "id": "sys-09",
+          "name": "Phone",
+          "role": "",
+          "status": "gap"
+        },
+        {
+          "id": "sys-07",
+          "name": "Email",
+          "role": "",
+          "status": "shadow-it"
+        },
+        {
+          "id": "sys-08",
+          "name": "Excel",
+          "role": "",
+          "status": "shadow-it"
+        }
+      ],
       "data": [],
       "ineff": [
         {

@@ -500,9 +500,9 @@ const DATA = /* DATA */ {
   "teamId": "ann",
   "headcount": 18.0,
   "people": 19,
-  "source": "Team manager intake - Sarah Willems, CA Announcements · 22 Oct 2026 · Vendor comparison workbook, CA Announcements, Aug 2026 · 22 Oct 2026 · Waste observations - CA Announcements · 28 Oct 2026 · Notes - read-out CA Announcements · 3 Nov 2026 · Mail - Sarah Willems validates the CA Announcements OTE · 4 Nov 2026",
+  "source": "Team manager intake - Sarah Willems, CA Announcements · 22 Oct 2026 · Vendor comparison workbook, CA Announcements, Aug 2026 · 22 Oct 2026 · Waste observations - CA Announcements · 28 Oct 2026 · Notes - read-out CA Announcements · 3 Nov 2026",
   "generatedAt": "2026-11-17",
-  "baselineVersion": "5058b2757ac168ac",
+  "baselineVersion": "4abd640b0d03b832",
   "keyMessage": "**3.8 of 18 FTE** is lost today, almost all of it rebuilding each event from three vendor feeds and settling differences by email.",
   "vocab": {
     "natures": [
@@ -673,6 +673,11 @@ const DATA = /* DATA */ {
         "id": "sys-09",
         "name": "Phone",
         "status": "gap"
+      },
+      {
+        "id": "sys-10",
+        "name": "Client Queries ticket tool",
+        "status": "core"
       }
     ],
     "dataPoints": [
@@ -779,7 +784,26 @@ const DATA = /* DATA */ {
       "nature": "S",
       "fte": 9.0,
       "volumeDriver": "~1,450 events a month, each in three vendor versions",
-      "tools": [],
+      "tools": [
+        {
+          "id": "sys-02",
+          "name": "Vendor feeds",
+          "role": "",
+          "status": "core"
+        },
+        {
+          "id": "sys-08",
+          "name": "Excel",
+          "role": "",
+          "status": "shadow-it"
+        },
+        {
+          "id": "sys-01",
+          "name": "EventHub",
+          "role": "",
+          "status": "core"
+        }
+      ],
       "data": [],
       "ineff": [
         {
@@ -808,8 +832,21 @@ const DATA = /* DATA */ {
       ],
       "nature": "K",
       "fte": 6.0,
-      "volumeDriver": "~1,450 events a month, about one in five differs from the notice",
-      "tools": [],
+      "volumeDriver": "about one event in four has a difference",
+      "tools": [
+        {
+          "id": "sys-07",
+          "name": "Email",
+          "role": "",
+          "status": "shadow-it"
+        },
+        {
+          "id": "sys-02",
+          "name": "Vendor feeds",
+          "role": "",
+          "status": "core"
+        }
+      ],
       "data": [],
       "ineff": [
         {
@@ -839,7 +876,20 @@ const DATA = /* DATA */ {
       "nature": "R",
       "fte": 3.0,
       "volumeDriver": "~1,450 events a month released to the teams",
-      "tools": [],
+      "tools": [
+        {
+          "id": "sys-01",
+          "name": "EventHub",
+          "role": "",
+          "status": "core"
+        },
+        {
+          "id": "sys-08",
+          "name": "Excel",
+          "role": "",
+          "status": "shadow-it"
+        }
+      ],
       "data": [],
       "ineff": [],
       "pct": 0
@@ -849,8 +899,7 @@ const DATA = /* DATA */ {
     "s1",
     "s2",
     "s3",
-    "s4",
-    "s5"
+    "s4"
   ],
   "sourcePanel": {
     "build": "client",
@@ -874,11 +923,6 @@ const DATA = /* DATA */ {
       "s4": {
         "label": "Notes - read-out CA Announcements",
         "group": "interviews",
-        "date": "Nov 2026"
-      },
-      "s5": {
-        "label": "Document",
-        "group": "documents",
         "date": "Nov 2026"
       }
     }
