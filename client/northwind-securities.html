@@ -5407,7 +5407,7 @@ table.tteams .tt-h2{display:none}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
 })();
 </script>
-<script>window.__NR_FOLDER_BUILD__={"id": "northwind-securities", "builtAt": "2026-11-17 12:05"};</script>
+<script>window.__NR_FOLDER_BUILD__={"id": "northwind-securities", "builtAt": "2026-11-17 12:46"};</script>
 <script>window.__NR_VIEW__='client';</script>
 </head>
 <body>
@@ -11729,7 +11729,7 @@ function renderSummary(){
     <div><div class="kpi-eyebrow">${label}</div><div class="kpi-v">${v}</div><div class="kpi-sub">${sub}</div></div>
     <div class="kpi-icon">${icon}</div></div>`;
 
-  el.innerHTML=`
+  el.innerHTML=(window.NR_CLIENT_VIEW?summaryCards():'')+`
     <div class="kpi-row">
       <div class="kpi-grp"><div class="kpi-grp-label">Scope</div>
         <div class="kpi-boxes">
@@ -12112,6 +12112,10 @@ function renderOppTable(){
   if(oppFilters.team!=='all') rows=rows.filter(o=>o.teamId===oppFilters.team);
   if(oppFilters.nature!=='all') rows=rows.filter(o=>o.nature===oppFilters.nature);
   if(oppFilters.actOnly) rows=rows.filter(o=>verdictOf(o)==='act');
+  if(oppFilters.ready&&oppFilters.ready!=='all') rows=rows.filter(o=>verdictOf(o)===oppFilters.ready);
+  if(oppFilters.q) rows=rows.filter(o=>(o.activity+' '+o.team+' '+lev(o.lever).label).toLowerCase().includes(oppFilters.q));
+  { const c=document.querySelector('.nrc-cnt'); if(c) c.textContent=rows.length+' initiative'+(rows.length===1?'':'s');
+    const lv=document.querySelector('.nrc-lv'); if(lv){ if(oppFilters.lever!=='all'){ lv.hidden=false; lv.innerHTML=lev(oppFilters.lever).label+'<button aria-label="Show every lever" onclick="QS.setOppLever(\''+oppFilters.lever+'\')">×</button>'; } else lv.hidden=true; } }
   const sk=oppSort.key;
   rows.sort((a,b)=>{
     let va,vb;
@@ -13296,7 +13300,7 @@ function potentialPage(t){
   const H=430;
   const wfCard=`<div class="card span4" style="display:flex;flex-direction:column;height:${H}px;">
       <div class="ch"><div class="ct">From total scope to full potential</div>
-        </div>
+        </div>${window.NR_CLIENT_VIEW?wfFigs(W):''}
       <div style="flex:1;position:relative;min-height:0;display:flex;align-items:stretch;justify-content:center;">${W.svg}</div>
     </div>`;
 
@@ -13340,7 +13344,7 @@ function potentialPage(t){
     </div>`;
 
   return `<div class="dd-section"><div class="eyebrow">Improvement potential</div>
-      ${kpi}<div class="dd6">${wfCard}${lvCard}</div></div>`;
+      ${window.NR_CLIENT_VIEW?'':kpi}<div class="dd6">${wfCard}${lvCard}</div></div>`;
 }
 // ===================== TEAM · AI READINESS TAB =====================
 // The lean maturity tab answers "how well does this team run today?". This one answers
@@ -14689,63 +14693,121 @@ function renderTimeline(elOpt,only){
     r.onmouseleave=()=>{ bub.style.display='none'; };
     r.onclick=()=>{ bub.style.display='none'; try{ oppDetail(x.o); }catch(e){} }; });
 }
-/* the benefits: what the plan is worth a year, from when, and where it sits */
-function renderBenefits(elOpt){
-  const el=elOpt||document.getElementById('page-benefits'); if(!el) return;
+/* the benefits: one model, used by the Benefits page and the Summary's Benefits card */
+function benModel(){
   const A=getAssumptions(), cpf=A.costPerFte||80000, rr=(A.realisationRate||100)/100, ipf=A.implPerFte||25000;
-  const all=oppSchedule();
-  if(!all.length){ el.innerHTML='<div class="pagelead">No initiatives yet.</div>'; return; }
-  const val=x=>x.hi*cpf*rr;
-  const fmt=v=>v>=1e6?`€${(v/1e6).toFixed(1)}M`:v>=1e3?`€${Math.round(v/1e3)}k`:`€${Math.round(v)}`;
+  const all=oppSchedule(); if(!all.length) return null;
+  const val=x=>x.hi*cpf*rr, at=m=>all.filter(x=>x.l<=m).reduce((s,x)=>s+val(x),0);
   const run=all.reduce((s,x)=>s+val(x),0), fte=all.reduce((s,x)=>s+x.hi,0), impl=fte*ipf;
   const first=Math.min(...all.map(x=>x.l)), last=Math.max(...all.map(x=>x.l)), start=Math.min(...all.map(x=>x.s));
-  const m0=Math.floor(start/3)*3, m1=Math.max(Math.ceil((last+1)/3)*3+3, m0+12);
-  const months=[]; for(let m=m0;m<m1;m++) months.push(m);
-  const types=TTYPE_ORDER.filter(k=>all.some(x=>x.k===k));
-  const rate=months.map(m=>{ const r={}; let t=0; types.forEach(k=>{ r[k]=all.filter(x=>x.k===k&&x.l<=m).reduce((s,x)=>s+val(x),0); t+=r[k]; }); r.t=t; r.n=all.filter(x=>x.l<=m).length; return r; });
-  /* cumulative saving, and the month it has paid for the build */
-  let cum=0, pay=null; months.forEach((m,i)=>{ cum+=rate[i].t/12; if(pay==null&&cum>=impl) pay=m; });
-  let c2=0, mm=m0; while(pay==null&&mm<m0+120){ c2=0; for(let m=m0;m<=mm;m++) c2+=all.filter(x=>x.l<=m).reduce((s,x)=>s+val(x),0)/12; if(c2>=impl) pay=mm; mm++; }
-  const yEnd=Math.floor(last/12)*12+11; let cumY=0; for(let m=m0;m<=yEnd;m++) cumY+=all.filter(x=>x.l<=m).reduce((s,x)=>s+val(x),0)/12;
-  const ic={ money:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10a2.5 2.5 0 0 1 5 0c0 1.4-1.1 2-2.5 2.5S9.5 12 9.5 14a2.5 2.5 0 0 0 5 0"/></svg>',
-    fte:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="8" r="3.2"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>',
-    trend:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',
-    clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>' };
-  const kpi=(label,v,sub,icon)=>`<div class="kpi-box"><div><div class="kpi-eyebrow">${label}</div><div class="kpi-v">${v}</div><div class="kpi-sub">${sub}</div></div><div class="kpi-icon">${icon}</div></div>`;
-  const pmo=pay!=null?pay-start+1:null;
-  /* the build-up: one column per month, the yearly saving reached that month, by type of change */
-  const top=Math.max(1,run), step=[5e4,1e5,2.5e5,5e5,1e6,2.5e6,5e6].find(s=>Math.ceil(top/s)<=4)||1e7, ymax=Math.ceil(top/step)*step;
-  const ticks=[]; for(let v=ymax;v>=0;v-=step) ticks.push(v);
-  const cols=months.map((m,i)=>{ const r=rate[i];
-    return `<div class="bn-col" data-i="${i}">${types.map(k=>r[k]?`<i style="height:${(r[k]/ymax*100).toFixed(2)}%;background:${TTYPES[k].dot}"></i>`:'').join('')}</div>`; }).join('');
-  const xl=months.map(m=>`<span>${m%3===0?tlMonth(m)+(m%12===0||m===m0?' '+Math.floor(m/12):''):''}</span>`).join('');
-  const barsOf=rows=>{ const mx=Math.max(1,...rows.map(r=>r.v)); return `<div class="bn-bars">${rows.map(r=>`<div class="r"><span>${r.dot?`<i class="rtl-dot" style="background:${r.dot}"></i>`:''}${tlEsc(r.l)}</span><div class="tr"><i style="width:${(r.v/mx*100).toFixed(1)}%;background:${r.dot||'#006843'}"></i></div><b>${fmt(r.v)}</b></div>`).join('')}</div>`; };
-  const byType=types.map(k=>({ l:TTYPES[k].label, dot:TTYPES[k].dot, v:all.filter(x=>x.k===k).reduce((s,x)=>s+val(x),0) })).sort((a,b)=>b.v-a.v);
-  const inDiv={}; const byDiv=DIVISIONS.map(d=>{ d.teams.forEach(id=>inDiv[id]=1); return { l:d.name, v:all.filter(x=>d.teams.includes(x.t.id)).reduce((s,x)=>s+val(x),0) }; });
-  const other=all.filter(x=>!inDiv[x.t.id]).reduce((s,x)=>s+val(x),0); if(other) byDiv.push({ l:'Other teams', v:other });
-  el.innerHTML=`<div class="bnx">
-    <div class="kpi-row"><div class="kpi-grp pot"><div class="kpi-grp-label">What the plan is worth</div><div class="kpi-boxes">
-      ${kpi('A year, once live','<span class="kpi-pre">up to</span>'+fmt(run),'from '+tlLab(last),ic.money)}
-      ${kpi('Capacity freed up','<span class="kpi-pre">up to</span>'+fte.toFixed(0)+' FTE','at '+fmt(cpf)+' per FTE',ic.fte)}
-      ${kpi('Saved by end '+Math.floor(yEnd/12),fmt(cumY),'first saving from '+tlLab(first),ic.trend)}
-      ${kpi('Pays back','~'+(pmo!=null?pmo+' months':'n/a'),'on '+fmt(impl)+' to build',ic.clock)}
-    </div></div></div>
-    <div class="dd6" style="margin-top:20px">
-      <div class="card span4"><div class="ch"><div class="ct">The yearly saving, month by month</div></div>
-        <div class="bn-ch"><div class="bn-y">${ticks.map(v=>`<span>${fmt(v)}</span>`).join('')}</div>
-          <div class="bn-plot"><div class="bn-cols">${cols}</div><div class="bn-x">${xl}</div></div></div>
-        <div class="rtl-leg" style="margin-top:12px">${types.map(k=>`<span><i class="rtl-dot bn-dot" style="background:${TTYPES[k].dot}"></i>${TTYPES[k].label}</span>`).join('')}</div></div>
+  const m0=Math.floor(start/12)*12, m1=Math.floor(last/12)*12+23;          /* whole years, one year past the last go-live */
+  const months=[]; for(let m=m0;m<=m1;m++) months.push(m);
+  let c=0; const rate=months.map(m=>at(m)), cum=rate.map(v=>(c+=v/12));
+  let pay=null; for(let i=0;i<months.length;i++){ if(cum[i]>=impl){ pay=months[i]; break; } }
+  const cumAt=m=>{ const i=months.indexOf(m); return i<0?null:cum[i]; };
+  return { all, val, at, run, fte, impl, cpf, first, last, start, months, rate, cum, pay, cumAt };
+}
+const benFmt=v=>v>=1e6?`€${(v/1e6).toFixed(1)}M`:v>=1e3?`€${Math.round(v/1e3)}k`:`€${Math.round(v)}`;
+let benMode='y';
+function benSet(m){ benMode=m; renderBenefits(); }
+function renderBenefits(elOpt){
+  const el=elOpt||document.getElementById('page-benefits'); if(!el) return;
+  const B=benModel(); if(!B){ el.innerHTML='<div class="pagelead">No initiatives yet.</div>'; return; }
+  const yA=Math.floor(B.last/12), yB=yA+1;
+  const F=benMode==='y'
+    ? [[benFmt(B.run),'','a year, once live · from '+tlLab(B.last),1],['~'+B.fte.toFixed(0),'FTE','freed up · at '+benFmt(B.cpf)+' per FTE',0],[tlMonth(B.first),String(Math.floor(B.first/12)),'first saving',0]]
+    : [[benFmt(B.cumAt(yA*12+11)||0),'','saved by end '+yA,1],[benFmt(B.cumAt(yB*12+11)||0),'','saved by end '+yB,0],[B.pay!=null?'~'+(B.pay-B.start+1):'—',B.pay!=null?'months':'','to pay back the '+benFmt(B.impl)+' build',0]];
+  const types=TTYPE_ORDER.filter(k=>B.all.some(x=>x.k===k));
+  const barsOf=rows=>{ const mx=Math.max(1,...rows.map(r=>r.v)); return `<div class="bn-bars">${rows.map(r=>`<div class="r"><span>${r.dot?`<i class="rtl-dot" style="background:${r.dot}"></i>`:''}${tlEsc(r.l)}</span><div class="tr"><i style="width:${(r.v/mx*100).toFixed(1)}%;background:${r.dot||'#006843'}"></i></div><b>${benFmt(r.v)}</b></div>`).join('')}</div>`; };
+  const byType=types.map(k=>({ l:TTYPES[k].label, dot:TTYPES[k].dot, v:B.all.filter(x=>x.k===k).reduce((s,x)=>s+B.val(x),0) })).sort((a,b)=>b.v-a.v);
+  const inDiv={}; const byDiv=DIVISIONS.map(d=>{ d.teams.forEach(id=>inDiv[id]=1); return { l:d.name, v:B.all.filter(x=>d.teams.includes(x.t.id)).reduce((s,x)=>s+B.val(x),0) }; });
+  const other=B.all.filter(x=>!inDiv[x.t.id]).reduce((s,x)=>s+B.val(x),0); if(other) byDiv.push({ l:'Other teams', v:other });
+  el.innerHTML=`<div class="bnx"><div class="dd6">
+      <div class="card span4 ccd"><div class="ccd-h"><span class="ccd-t">${NRC_ICO.euro}The saving</span>
+        <span class="nrseg" data-seg="ben"><button class="${benMode==='y'?'on':''}" data-v="y">A year</button><button class="${benMode==='c'?'on':''}" data-v="c">Saved so far</button></span></div>
+        <div class="ccd-figs">${F.map(f=>`<div><div class="ccd-v${f[3]?' g':''}">${f[0]}${f[1]?`<small>${f[1]}</small>`:''}</div><div class="ccd-l">${f[2]}</div></div>`).join('')}</div>
+        <div class="ccd-chart" id="ben-chart"></div></div>
       <div class="card span2"><div class="ch"><div class="ct">Where the value sits</div></div>
         <div class="bn-h">By type of change</div>${barsOf(byType)}
         ${byDiv.filter(d=>d.v).length>1?`<div class="bn-h">By division</div>${barsOf(byDiv.filter(d=>d.v).sort((a,b)=>b.v-a.v))}`:''}</div>
     </div></div>`;
-  const bub=tlBubble();
-  el.querySelectorAll('.bn-col').forEach(c=>{ const i=+c.getAttribute('data-i'), r=rate[i];
-    c.onmousemove=e=>{ bub.innerHTML=`<b>${tlLab(months[i])}</b><br>${fmt(r.t)} a year<br><span>${r.n} of ${all.length} initiatives live</span>`+types.filter(k=>r[k]).map(k=>`<br><span>${TTYPES[k].label}: ${fmt(r[k])}</span>`).join(''); bub.style.display='block';
-      const w=bub.offsetWidth, h=bub.offsetHeight; bub.style.left=Math.max(8,Math.min(innerWidth-w-8,e.clientX-w/2))+'px'; bub.style.top=(e.clientY-h-14)+'px'; };
-    c.onmouseleave=()=>{ bub.style.display='none'; }; });
+  el.querySelectorAll('[data-seg="ben"] button').forEach(b=>b.onclick=()=>benSet(b.getAttribute('data-v')));
+  benChart(B);
 }
-/* the value chain card in the client view: the baseline first (FTE today, what can be freed up), then the two scores */
+/* the chart of the chart card: drawn at its size on screen, named where the line ends, three dates on the axis */
+function benChart(B){
+  const host=document.getElementById('ben-chart'); if(!host) return;
+  const W=Math.max(320,host.clientWidth), H=Math.max(200,host.clientHeight||240), pr=96, pb=26, pt=10;
+  const data=benMode==='y'?B.rate:B.cum, n=data.length, mx=Math.max(1,...data)*1.08;
+  const X=i=>2+i/(n-1)*(W-pr-4), Y=v=>pt+(H-pb-pt)*(1-v/mx);
+  let d=''; data.forEach((v,i)=>{ d+=i?(benMode==='y'?`H${X(i).toFixed(1)}V${Y(v).toFixed(1)}`:`L${X(i).toFixed(1)},${Y(v).toFixed(1)}`):`M${X(0).toFixed(1)},${Y(v).toFixed(1)}`; });
+  const yrs=[]; B.months.forEach((m,i)=>{ if(m%12===0) yrs.push(i); });
+  const ticks=[0, yrs[Math.floor(yrs.length/2)]||Math.floor(n/2), n-1];
+  host.innerHTML=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <path d="${d} V${H-pb} H${X(0)} Z" fill="#006843" opacity=".08"/><path d="${d}" fill="none" stroke="#006843" stroke-width="2" stroke-linejoin="round"/>
+    <text x="${X(n-1)+8}" y="${Y(data[n-1])+4}" font-size="12.5" font-weight="600" fill="#006843">${benMode==='y'?'A year':'Saved so far'}</text>
+    ${ticks.map((i,k)=>`<text x="${X(i)}" y="${H-7}" font-size="11" fill="#8C919A" text-anchor="${k===0?'start':k===2?'end':'middle'}">${tlLab(B.months[i])}</text>`).join('')}
+    <line class="ccd-hl" x1="0" x2="0" y1="${pt}" y2="${H-pb}" stroke="rgba(15,43,82,.25)" stroke-dasharray="3 3" style="display:none"/>
+    <circle class="ccd-hd" r="3.5" fill="#006843" style="display:none"/></svg>`;
+  const svg=host.querySelector('svg'), hl=svg.querySelector('.ccd-hl'), hd=svg.querySelector('.ccd-hd'), bub=tlBubble();
+  svg.onmousemove=e=>{ const r=svg.getBoundingClientRect(); let i=Math.round((e.clientX-r.left-2)/(W-pr-4)*(n-1)); i=Math.max(0,Math.min(n-1,i));
+    hl.setAttribute('x1',X(i)); hl.setAttribute('x2',X(i)); hl.style.display=''; hd.setAttribute('cx',X(i)); hd.setAttribute('cy',Y(data[i])); hd.style.display='';
+    const live=B.all.filter(x=>x.l<=B.months[i]).length;
+    bub.innerHTML=`<b>${tlLab(B.months[i])}</b><br>${benFmt(data[i])}${benMode==='y'?' a year':' saved'}<br><span>${live} of ${B.all.length} initiatives live</span>`; bub.style.display='block';
+    const w=bub.offsetWidth, h=bub.offsetHeight; bub.style.left=Math.max(8,Math.min(innerWidth-w-8,e.clientX-w/2))+'px'; bub.style.top=(e.clientY-h-14)+'px'; };
+  svg.onmouseleave=()=>{ hl.style.display='none'; hd.style.display='none'; bub.style.display='none'; };
+}
+(function(){ let tm; try{ window.addEventListener('resize',()=>{ clearTimeout(tm); tm=setTimeout(()=>{ if(document.getElementById('ben-chart')){ const B=benModel(); if(B) benChart(B); } },150); }); }catch(e){} })();
+const NRC_S='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">';
+const NRC_ICO={
+  euro:NRC_S+'<circle cx="12" cy="12" r="8.5"/><path d="M14.8 9.2a3.5 3.5 0 1 0 0 5.6M8 11h5M8 13h5"/></svg>',
+  mat:NRC_S+'<path d="M12 3l8 5v8l-8 5-8-5V8z"/></svg>',
+  ai:NRC_S+'<path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"/></svg>',
+  bolt:NRC_S+'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>',
+  chev:NRC_S+'<path d="M9 6l6 6-6 6"/></svg>',
+  ov:NRC_S+'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>',
+  base:NRC_S+'<path d="M4 19h16"/><rect x="5" y="11" width="3" height="6" rx="1"/><rect x="10.5" y="7" width="3" height="10" rx="1"/><rect x="16" y="13" width="3" height="4" rx="1"/></svg>',
+  pot:NRC_S+'<path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/></svg>',
+  plan:NRC_S+'<path d="M4 6h9M4 12h13M4 18h7"/></svg>',
+  an:NRC_S+'<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 15l3-3 2 2 3-4"/></svg>',
+  team:NRC_S+'<circle cx="9" cy="8" r="3"/><path d="M3 19a6 6 0 0 1 12 0"/><path d="M16 6a3 3 0 0 1 0 5"/></svg>',
+  type:NRC_S+'<circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="7" r="2.5"/><circle cx="7" cy="17" r="2.5"/><circle cx="17" cy="17" r="2.5"/></svg>',
+  ready:NRC_S+'<path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  wait:NRC_S+'<rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+  search:NRC_S+'<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>' };
+/* the Summary's first row: four summary cards, each opens its page (the Training Companion's summary card) */
+function summaryCards(){
+  const sc=TEAMS.filter(t=>!isOngoing(t)); if(!sc.length) return '';
+  const avg=sc.reduce((s,t)=>s+weightedOverall(t),0)/sc.length, low=sc.slice().sort((a,b)=>weightedOverall(a)-weightedOverall(b))[0];
+  const WORD=['—','Critical','Weak','Adequate','Good','Excellent'][Math.min(5,Math.max(1,Math.round(avg)))];
+  const ready=sc.filter(t=>t.readiness==='act').length;
+  const GD=[['data','Data'],['org','Organisation'],['mgmt','Management systems'],['proc','Processes'],['mind','Mindset']];
+  const weak=GD.map(([k,l])=>({ l, v:sc.reduce((s,t)=>s+((t.scores||{})[k]||0),0)/sc.length })).sort((a,b)=>a.v-b.v)[0];
+  const opps=sc.flatMap(t=>t.opps||[]), pot=opps.reduce((s,o)=>s+(o.fte[0]+o.fte[1])/2,0), scope=TEAMS.reduce((s,t)=>s+(+t.fte||0),0);
+  const B=benModel();
+  const ring=(f,c)=>{ const r=17,C=2*Math.PI*r; return `<svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="${r}" fill="none" stroke="rgba(15,43,82,.08)" stroke-width="6"/><circle cx="22" cy="22" r="${r}" fill="none" stroke="${c}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${(Math.max(0,Math.min(1,f))*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 22 22)"/></svg>`; };
+  const rs=sc.map(t=>Math.round(t.readinessScore||0)), rmx=Math.max(...rs);
+  const mbars=`<svg width="${sc.length*13}" height="36">${rs.map((v,i)=>`<rect x="${i*13}" y="${34-Math.max(2,v/100*32)}" width="8" height="${Math.max(2,v/100*32)}" rx="2" fill="#1D7044" opacity="${v===rmx?1:.35}"/>`).join('')}</svg>`;
+  let spark=''; if(B){ const d=B.rate, mx=Math.max(1,...d), w=88, h=34; spark=`<svg width="${w}" height="${h}"><polyline fill="none" stroke="#006843" stroke-width="1.8" stroke-linejoin="round" points="${d.map((v,i)=>`${(2+i/(d.length-1)*(w-6)).toFixed(1)},${(h-3-v/mx*(h-8)).toFixed(1)}`).join(' ')}"/><circle cx="${w-4}" cy="${(h-3-d[d.length-1]/mx*(h-8)).toFixed(1)}" r="2.6" fill="#006843"/></svg>`; }
+  const card=(pg,c,ico,title,v,u,st,stc,vis)=>`<button class="nsc" onclick="go('${pg}')"><span class="nsc-h" style="color:${c}">${ico}${title}<span class="nsc-ch">${NRC_ICO.chev}</span></span>
+    <span class="nsc-b"><span><span class="nsc-v">${v}${u?`<small>${u}</small>`:''}</span><span class="nsc-s" style="color:${stc}">${st}</span></span>${vis}</span></button>`;
+  return `<div class="nsc-row">`
+    +card('cteams','#2A4D8F',NRC_ICO.mat,'Lean maturity',avg.toFixed(1),'/ 5',`${WORD} · ${tlEsc(low.name)} lowest`,avg<2.6?'#A85A0C':'var(--ds-text-2)',ring(avg/5,'#2A4D8F'))
+    +card('cchain','#1D7044',NRC_ICO.ai,'AI readiness',String(ready),`of ${sc.length} teams`,ready<sc.length?`${weak.l} holds the rest back`:'Every team is ready',ready<sc.length?'#A85A0C':'var(--ds-text-2)',mbars)
+    +card('copps','#006843',NRC_ICO.bolt,'Potential','~'+pot.toFixed(0),'FTE',`${Math.round(pot/Math.max(1,scope)*100)}% of the ${scope} in scope`,'var(--ds-text-2)',ring(pot/Math.max(1,scope),'#006843'))
+    +(B?card('cben','#006843',NRC_ICO.euro,'Benefits',benFmt(B.run),'a year',`From ${tlLab(B.last)}`,'var(--ds-text-2)',spark):'')
+    +`</div>`;
+}
+/* the waterfall's chart card: its three key figures above the chart */
+function wfFigs(W){ const f=(v,u,l,g)=>`<div><div class="ccd-v${g?' g':''}">${v}${u?`<small>${u}</small>`:''}</div><div class="ccd-l">${l}</div></div>`;
+  return `<div class="ccd-figs">${f(W.totActFte.toFixed(1),'FTE','total scope',0)}${f(W.totalOpt.toFixed(1),'FTE',Math.round(W.totalOpt/Math.max(0.1,W.totActFte)*100)+'% can be freed up',1)}${f(W.nowFte.toFixed(1),'FTE','ready now',0)}</div>`; }
+/* radars name their lines on the chart, no legend: the team at its first point, the average at its fourth */
+const NRC_DIRECT={ id:'nrDirect', afterDatasetsDraw(c){ try{ if(!window.NR_CLIENT_VIEW||c.config.type!=='radar') return; const ctx=c.ctx; ctx.save();
+  ctx.font='600 11px Aptos, Segoe UI, sans-serif'; ctx.textBaseline='middle';
+  c.data.datasets.forEach((ds,di)=>{ const m=c.getDatasetMeta(di); if(!m||m.hidden||!m.data.length||!ds.label) return; const p=m.data[di===0?0:Math.min(3,m.data.length-1)]; if(!p) return;
+    const col=typeof ds.borderColor==='string'?ds.borderColor:'#5B6270'; ctx.fillStyle=col; ctx.fillText(String(ds.label).replace(/^Company average.*/,'Company average'),p.x+9,p.y+(di===0?-2:2)); });
+  ctx.restore(); }catch(e){} } };
+/* the summary's heatmap tiles in the client view/* the value chain card in the client view: the baseline first (FTE today, what can be freed up), then the two scores */
 function vcCardClient(t,i,r,go,ov,fte){
   const rs=Math.round(t.readinessScore||0), now=+t.fte||0, pct=now?Math.round(fte/now*100):0;
   const n=v=>Number.isInteger(v)?String(v):v.toFixed(1);
@@ -14762,7 +14824,7 @@ function kiRanked(t,grps){
   const items=grps.flatMap(g=>g.items.map(it=>({ ...it, dot:g.dot }))).sort((a,b)=>b.fte-a.fte);
   const mx=Math.max(.1,...items.map(i=>i.fte));
   const types=grps.slice().sort((a,b)=>b.fte-a.fte);
-  return `<div class="kir">${items.map(it=>{ const x=sch[it.name], w=(it.fte/mx*80).toFixed(1);
+  return `<div class="kir">${items.map(it=>{ const x=sch[it.name], w=(it.fte/mx*68).toFixed(1);
       return `<div class="kir-r" onclick="QS.jumpToOpp('${apEsc(it.name)}')" title="Open this initiative"><div class="kir-t">${tlEsc(it.name)}<span>${tlEsc(it.lever)}${x?' · live '+tlLab(x.l):''}</span></div>`
         +`<div class="kir-b"><i style="width:${w}%;background:${it.dot}"></i><b style="left:calc(${w}% + 8px)">${it.fte.toFixed(1)}</b></div></div>`; }).join('')}</div>`
     +`<div class="kir-leg">${types.map(g=>`<span><i class="rtl-dot" style="background:${g.dot}"></i>${g.label}</span>`).join('')}</div>`;
@@ -14791,6 +14853,20 @@ function clientType(){ if(!window.NR_CLIENT_VIEW) return; const pg=document.getE
   pg.querySelectorAll('*').forEach(e=>{ if(e.__wt) return; let own=false; for(let n=e.firstChild;n;n=n.nextSibling){ if(n.nodeType===3&&n.textContent.trim()){ own=true; break; } } if(!own) return;
     const w=+getComputedStyle(e).fontWeight; e.__wt=1;
     if(w>700) e.style.setProperty('font-weight','700','important'); else if(w>400&&w<700&&w!==600) e.style.setProperty('font-weight','600','important'); });
+  /* a team's tabs: the segmented control with a small icon per tab */
+  const TI={ overview:'ov', baseline:'base', maturity:'mat', potential:'pot', roadmap:'plan', analyses:'an' };
+  pg.querySelectorAll('.tsub-nav .tsub:not([data-ic])').forEach(b=>{ const m=(b.getAttribute('onclick')||'').match(/setTeamSub\('(\w+)'\)/); b.setAttribute('data-ic','1'); if(m&&TI[m[1]]) b.insertAdjacentHTML('afterbegin',NRC_ICO[TI[m[1]]]); });
+  /* the initiatives' filter row: one segmented control for readiness, a search field and the count */
+  const fb=pg.querySelector('#page-opportunities .filterbar');
+  if(fb&&!fb.querySelector('.nrseg')){ fb.classList.add('nrc-fb');
+    fb.insertAdjacentHTML('afterbegin',`<span class="nrseg" data-seg="ready"><button class="on" data-v="all">All</button><button data-v="act">${NRC_ICO.ready}Ready now</button><button data-v="fix">${NRC_ICO.wait}Waiting</button></span>`
+      +`<label class="nrc-search">${NRC_ICO.search}<input type="search" placeholder="Search by initiative, team or lever" aria-label="Search the initiatives"></label><span class="nrc-lv" hidden></span><span class="nrc-cnt"></span>`);
+    oppFilters.ready='all'; oppFilters.q=''; oppFilters.actOnly=false;
+    fb.querySelectorAll('[data-seg="ready"] button').forEach(b=>b.onclick=()=>{ fb.querySelectorAll('[data-seg="ready"] button').forEach(x=>x.classList.toggle('on',x===b)); oppFilters.ready=b.getAttribute('data-v'); renderOppTable(); });
+    const inp=fb.querySelector('.nrc-search input'); let qt; inp.oninput=()=>{ clearTimeout(qt); qt=setTimeout(()=>{ oppFilters.q=inp.value.trim().toLowerCase(); renderOppTable(); },120); };
+    renderOppTable(); }
+  if(window.Chart&&!window.Chart.__nrd){ window.Chart.__nrd=1; try{ window.Chart.register(NRC_DIRECT); }catch(e){} }
+  if(window.Chart){ try{ Object.values(window.Chart.instances||{}).forEach(c=>{ if(c.config.type==='radar'&&c.options.plugins&&c.options.plugins.legend&&c.options.plugins.legend.display!==false){ c.options.plugins.legend.display=false; c.update('none'); } }); }catch(e){} }
   /* chart bubbles: the light glass bubble of the delivery system, not Chart.js's dark default */
   if(window.Chart&&!window.Chart.__nrc){ window.Chart.__nrc=1; const dk=document.documentElement.classList.contains('dark');
     const TT={ backgroundColor:dk?'rgba(30,36,48,.94)':'rgba(255,255,255,.95)', titleColor:dk?'#E8EAEE':'#1B2230', bodyColor:dk?'#C9CDD4':'#3D4350', footerColor:dk?'#A8AEB9':'#5B6270',
@@ -16471,6 +16547,62 @@ html.nr-client .odc-figs>div:first-child .odc-v{color:#006843}
 html.nr-client .odc-v small{font-size:13px;font-weight:400;color:var(--ds-text-2);margin-left:3px;letter-spacing:0}
 html.nr-client .odc-l{font-size:var(--ds-fs-label);color:var(--ds-text-2);margin-top:4px}
 html.nr-client .odc-tx{font-size:var(--ds-fs-body);line-height:1.55;color:var(--ds-text)}
+/* (17 Nov, afternoon) the Training Companion's components. The segmented control: a grey track, the selected option
+   raised in white, regular labels, a small icon; used for a team's tabs, the roadmap's view, the benefits' view and the
+   initiatives' readiness filter */
+html.nr-client .qsx .tsub-nav,html.nr-client .qsx .rtl-seg,html.nr-client .qsx .nrseg{display:inline-flex!important;flex-wrap:nowrap!important;width:auto!important;background:#E8E6E1!important;border:0!important;border-radius:12px!important;padding:3px!important;gap:2px!important;margin-bottom:18px}
+html.nr-client .qsx .rtl-seg,html.nr-client .qsx .nrseg{margin-bottom:0}
+html.nr-client .qsx .tsub,html.nr-client .qsx .rtl-seg button,html.nr-client .qsx .nrseg button{display:inline-flex!important;align-items:center;gap:7px;font-family:var(--ds-font,Aptos,sans-serif)!important;font-size:var(--ds-fs-body)!important;font-weight:400!important;color:var(--ds-text-2)!important;padding:7px 14px!important;border-radius:9px!important;border:0!important;background:none!important;cursor:pointer;white-space:nowrap;line-height:1.2;transition:background .15s,color .15s}
+html.nr-client .qsx .tsub svg,html.nr-client .qsx .nrseg button svg{width:15px;height:15px;flex:none}
+html.nr-client .qsx .tsub:hover,html.nr-client .qsx .rtl-seg button:hover,html.nr-client .qsx .nrseg button:hover{color:var(--ds-text)!important}
+html.nr-client .qsx .tsub.active,html.nr-client .qsx .rtl-seg button.on,html.nr-client .qsx .nrseg button.on{background:#fff!important;color:var(--ds-text)!important;box-shadow:0 1px 3px rgba(15,23,42,.10),0 1px 1px rgba(15,23,42,.05)!important}
+html.nr-client.dark .qsx .tsub-nav,html.nr-client.dark .qsx .rtl-seg,html.nr-client.dark .qsx .nrseg{background:rgba(255,255,255,.08)!important}
+html.nr-client.dark .qsx .tsub.active,html.nr-client.dark .qsx .rtl-seg button.on,html.nr-client.dark .qsx .nrseg button.on{background:rgba(255,255,255,.16)!important}
+/* the initiatives' filter row: readiness, search, the lever picked in the mix, the count */
+html.nr-client .qsx .nrc-fb{display:flex!important;align-items:center;gap:12px;flex-wrap:wrap}
+html.nr-client .qsx .nrc-fb>.flabel,html.nr-client .qsx .nrc-fb>select,html.nr-client .qsx .nrc-fb>#f-actonly{display:none!important}
+html.nr-client .qsx .nrc-search{display:inline-flex;align-items:center;gap:8px;height:36px;border-radius:10px;background:var(--surface);border:1px solid rgba(15,43,82,.10);padding:0 12px;min-width:280px;color:var(--ds-text-3)}
+html.nr-client .qsx .nrc-search svg{width:15px;height:15px;flex:none}
+html.nr-client .qsx .nrc-search input{border:0;outline:0;background:none;font:inherit;font-size:var(--ds-fs-body);color:var(--ds-text);width:100%}
+html.nr-client .qsx .nrc-lv{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 4px 0 10px;border-radius:14px;background:rgba(15,43,82,.06);font-size:var(--ds-fs-body);color:var(--ds-text)}
+html.nr-client .qsx .nrc-lv[hidden]{display:none}
+html.nr-client .qsx .nrc-lv button{border:0;background:none;width:20px;height:20px;border-radius:50%;cursor:pointer;color:var(--ds-text-2);font-size:14px;line-height:1}
+html.nr-client .qsx .nrc-cnt{font-size:var(--ds-fs-label);color:var(--ds-text-3)}
+/* the Summary's summary cards: the topic's icon and title in its colour, a chevron, the number, one status line, a small visual */
+html.nr-client #page-summary>.kpi-row{display:none!important}
+html.nr-client .qsx .nsc-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:20px}
+html.nr-client .qsx .nsc{display:flex;flex-direction:column;text-align:left;background:var(--surface);border:0;border-radius:14px;padding:14px 16px;cursor:pointer;font-family:inherit;color:var(--ds-text);transition:transform .12s,background .15s}
+html.nr-client .qsx .nsc:hover{background:#FBFAF8}
+html.nr-client .qsx .nsc:active{transform:scale(.98)}
+html.nr-client .qsx .nsc-h{display:flex;align-items:center;gap:7px;font-size:var(--ds-fs-heading);font-weight:600}
+html.nr-client .qsx .nsc-h svg{width:16px;height:16px;flex:none}
+html.nr-client .qsx .nsc-ch{margin-left:auto;color:var(--ds-text-3);display:flex}
+html.nr-client .qsx .nsc-b{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:12px}
+html.nr-client .qsx .nsc-b>span:first-child{min-width:0}
+html.nr-client .qsx .nsc-v{display:block;font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.05;white-space:nowrap;color:var(--ds-text)}
+html.nr-client .qsx .nsc-v small{font-size:13px;font-weight:400;color:var(--ds-text-2);margin-left:3px;letter-spacing:0}
+html.nr-client .qsx .nsc-s{display:block;font-size:var(--ds-fs-body);margin-top:4px;line-height:1.3}
+html.nr-client .qsx .nsc-b svg{flex:none}
+/* the chart card: title, a switch inside the card, three key figures, the chart */
+html.nr-client .qsx .ccd{display:flex;flex-direction:column;min-height:420px}
+html.nr-client .qsx .ccd-h{display:flex;align-items:center;gap:10px}
+html.nr-client .qsx .ccd-t{display:inline-flex;align-items:center;gap:7px;font-size:var(--ds-fs-heading);font-weight:600;color:#006843}
+html.nr-client .qsx .ccd-t svg{width:16px;height:16px}
+html.nr-client .qsx .ccd-h .nrseg{margin-left:auto}
+html.nr-client .qsx .ccd-figs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:14px 0 8px}
+html.nr-client .qsx .ccd-v{font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.05;white-space:nowrap;color:var(--ds-text)}
+html.nr-client .qsx .ccd-v.g{color:#006843}
+html.nr-client .qsx .ccd-v small{font-size:13px;font-weight:400;color:var(--ds-text-2);margin-left:3px;letter-spacing:0}
+html.nr-client .qsx .ccd-l{font-size:var(--ds-fs-body);color:var(--ds-text-2);margin-top:4px}
+html.nr-client .qsx .ccd-chart{flex:1;min-height:240px;position:relative}
+html.nr-client .qsx .ccd-chart svg{display:block}
+html.nr-client .qsx .card:has(svg.nr-wf) .ccd-figs{margin:10px 0 0}
+/* a radar names its lines on the chart: no legend under it */
+html.nr-client .qsx .card:has(#team-radar)>div:last-child:not(:has(canvas)){display:none!important}
+/* a value chain card opens its team: a chevron says so */
+html.nr-client .qsx .vcx{position:relative}
+html.nr-client .qsx .vcx:after{content:"";position:absolute;top:16px;right:14px;width:6px;height:6px;border-right:1.75px solid var(--ds-text-3);border-top:1.75px solid var(--ds-text-3);transform:rotate(45deg)}
+html.nr-client .qsx .vcx .vc-nm{padding-right:14px}
 /* the team picker: the name and its status stay inside the button, the arrow keeps its place */
 .tbt-pick{max-width:min(520px,44vw)}
 .tbt-id{flex:1 1 auto;min-width:0;overflow:hidden}
